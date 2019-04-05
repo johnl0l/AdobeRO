@@ -1,0 +1,61 @@
+prontera,155,181,5      script  Sample  757,{
+
+function Exchange;
+
+ 
+
+switch( select( "Yggdrasilberry",
+
+                                "Royal Jelly",
+
+                                "etc..." )){
+
+// Exchange( <Item Gained>,<Amount>,<Item Required>,<Amount> );
+
+Case 1: Exchange( 13517,1,607,100 );    break;
+
+Case 2: Exchange( 13516,5,526,50 );     break;
+
+Case 3: Exchange( 12997,10,757,10 );    break;
+
+default:
+
+        mes "Wrong Selection";  break;
+
+}
+
+close;
+
+ 
+
+function        Exchange        {
+
+mes "Exchange "+getarg(3)+" "+getitemname( getarg(2) )+" into "+getarg(1)+" "+getitemname( getarg(0) )+"?";
+
+if( select("Yes:No") == 1 ){
+
+        if( countitem( getarg(2) ) < getarg(3) ){
+
+                mes "Sorry you didnt have enough Items to trade.";
+
+                break;
+
+        }else{
+
+                mes "Done";
+
+                delitem getarg(2),getarg(3);
+
+                getitem getarg(0),getarg(1);
+
+        }
+
+}
+
+return;
+
+}
+
+ 
+
+}

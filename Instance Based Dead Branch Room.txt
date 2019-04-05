@@ -1,0 +1,96 @@
+//===== rAthena Script =======================================
+//= Dead Branch Room Script
+//===== By: ==================================================
+//= Nova http://www.novaragnarok.com
+//============================================================
+
+npc_in,9,103,6	script	Branch Manager	89,{
+	.@n$ = "[^3355FF Branch Manager ^000000]";
+	.@party_id = getcharid(1);
+	.@p_name$ = getpartyname(.@party_id);
+	.@instance$ = "Dead Branch Room";
+
+		if (getcharid(0) == getpartyleader(.@party_id,2)) {
+		mes .@n$;
+		mes "Would you like to reserve a private Dead Branch Room? It'll cost 100K for two full hours.";
+		mes "Remember, the room and everything inside it will disappear after this time frame.";
+			next;
+			switch(select("Rent Dead Branch Room:Enter the Room:Cancel")) {
+			case 1:
+				if (Zeny < 100000) { 
+				mes .@n$;
+				mes "Are you trying to sneak in without paying? You must bring me 100,000 Zeny if you wish to rent a room.";
+				cutin "",255;
+				end;
+				}
+				if (instance_create(.@instance$) < 0) {
+					mes "Party Name: "+.@p_name$;
+					mes "Party Leader: "+strcharinfo(0);
+					mes "^0000ff"+.@instance$+" ^000000- Reservation Failed!";
+					close;
+				}
+				Zeny -= 100000;
+				mes .@n$;
+				mes "Talk to me again to enter the room now that your room has been reserved.";
+				close;
+			case 2:
+				callsub L_Enter,0,1;
+			case 3:
+			mes .@n$;
+			mes "Have a nice day then, and enjoy Dead Branching in Juperos.";
+				close;
+			}
+		}
+		mes .@n$;
+		mes "You may enter a Dead Branch Room if it's been reserved by your party leader.";
+		next;
+		switch(select("Enter the Dead Branch Room:Cancel")) {
+		case 1:
+			callsub L_Enter,1,1;
+		case 2:
+			mes .@n$;
+			mes "Have a nice day then, and enjoy Dead Branching in Juperos.";
+			end;
+		}
+		
+L_Enter:
+	switch(instance_enter("Dead Branch Room")) {
+	case 3:
+		mes .@n$;
+		mes "You are not in a party.";
+		close;
+	case 2:
+			mes .@n$;
+		mes "The private Dead Branch Room has not yet been reserved.";
+		mes "The party leader did not pay the fee.";
+		close;
+	case 1:
+			mes .@n$;
+		mes "You can enter the room after making a party.";
+		close;
+	case 0:
+		mapannounce "npc_in", strcharinfo(0)+" of the party, "+.@p_name$+", is entering a Dead Branch Room.",bc_map,"0x00ff99",FW_NORMAL,12;
+		end;
+	}
+}
+
+//==================================================================================
+//--------|Map Flags|---------------------------------------------------------------
+//==================================================================================
+
+pvp_n_1-3	mapflag	monster_noteleport
+pvp_n_1-3	mapflag	nowarpto
+pvp_n_1-3	mapflag	nomemo
+pvp_n_1-3	mapflag	noteleport
+pvp_n_1-3	mapflag	nosave	SavePoint
+pvp_n_1-3	mapflag	nopenalty
+
+
+/*
+Make sure you add the following line to your instance_db
+16,Dead Branch Room,7200,pvp_n_1-3,99,95,pvp_n_1-3
+Feel free to change the number to whatever is appropriate in your server.
+ 
+You'll likely also need to unset the PvP mapflags from that map, or move it to a different map, and feel free to add the following to the map according to what you want for your server:
+MvP Summoner, Healer, Kafra, Dead Branch Seller.
+*/

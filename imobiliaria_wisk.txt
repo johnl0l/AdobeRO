@@ -1,0 +1,536 @@
+//  ________________________________________________________
+// /                                                        \
+// |   __        ___     _              _     _             |
+// |   \ \      / (_)___| | _______   _(_)___| | ___   _    |
+// |    \ \ /\ / /| / __| |/ / _ \ \ / / / __| |/ / | | |   |
+// |     \ V  V / | \__ \   < (_) \ V /| \__ \   <| |_| |   |
+// |      \_/\_/  |_|___/_|\_\___/ \_/ |_|___/_|\_\\__, |   |
+// |                                               |___/    |
+// |                                                        |
+// |                  Wiskovisky's Script                   |
+// |--------------------------------------------------------|
+// | Nome do Script: Imobiliária (Sistema de Casas)         |
+// |--------------------------------------------------------|
+// | Criado por: Wiskovisky                                 |
+// |--------------------------------------------------------|
+// | Versão: 2.0                                            |
+// |--------------------------------------------------------|
+// | Descrição: Sistema de aluguel de casas em Prontera     |
+// |--------------------------------------------------------|
+// | Changelog:               	                            |
+// | 0.8 Criação                                            |
+// | 1.1 Ajustes realizados, menu GM e Assistente criados   |
+// | 1.5 Portal ajustado e novas opções na assistente       |
+// | 1.8 Novo aviso de aluguel e numeração nas placas       |
+// | 2.0 Adicionado 'Buffs' e Transferência                 |
+// | - Configurações abaixo                                 |
+// \________________________________________________________/
+-	script	imoveis	-1,{
+OnInit:
+//Configurações do sistema
+	set .keyi, 18301; //ID do item usado como chave
+	set .alp, 10000; //Preço do alugel por mês
+	set .perds, 30; //Duração de um período (em dias / a cada período o aluguel deverá ser pago novamente)
+	set .tcont, 3; //Duração do contrato de aluguel (em períodos)
+	set .nims, 7; //Número de casas
+	set .asp, 6000; //Preço da Assistente (pago por contrato inteiro)
+	set .gm, 99; //Nível mínimo GM para entrar nas casas sem ser locatário e acessar o menu
+	set .aviso, 1; //Avisar os jogadores que já podem parar o aluguel ao logarem? (1 = sim)
+	set .tfp, 1000; //Preço para transferência da casa
+	set .buff, 1; //Ativar opção de Buffs na assistente da casa? (1 = sim)
+	set .woeb, 0; //Ativar opção de Buffs na assintente durante a WoE? (1 = sim)
+	setarray $@cmap$[1],"casa","casa","casa","casa","casa","casa","casa","casa","casa","casa";
+	setarray $@casx[1],69,227,167,80,127,207,253,0,0,0;
+	setarray $@casy[1],165,17,127,110,41,175,110,0,0,0;
+//Não editar após essa linha
+	set .perds, .perds*86400;
+	set .pperd, .perds-3*86400;
+end;
+OnHour24:
+for( set .@i, 1; .@i <= .nims; set .@i, .@i +1 ){
+if (getd("$cimovel"+.@i)){
+if(getd("$dimovel"+.@i) < gettimetick(2)-.perds*.tcont){ 
+	setd "$cimovel"+.@i,0;
+	setd "$aassist"+.@i,0;
+	setd "$opimovel"+.@i,0;
+	setd "$psimovel"+.@i,0;
+	setnpcdisplay("imovel"+.@i, "Casa "+.@i+" (Disponível)#"+.@i, 858);
+}
+if(getd("$lpimovel"+.@i) < gettimetick(2)-.pperd){ 
+	setd "$cimovel"+.@i,0;
+	setd "$aassist"+.@i,0;
+	setd "$opimovel"+.@i,0;
+	setd "$psimovel"+.@i,0;
+	setnpcdisplay("imovel"+.@i, "Casa "+.@i+" (Disponível)#"+.@i, 858);
+}
+}
+}
+end;
+OnWhisperGlobal:
+if(getgmlevel() >= .gm){
+	mes "[Imobiliária]";
+	switch(select("Visitar casa:Informações da casa:Visitar Imobiliária")){
+	case 1:
+	mes "Digite o número da casa (1-"+.nims+")...";
+	if(input(@nc,1,.nims) == 0){
+	warp $@cmap$[@nc],$@casx[@nc],$@casy[@nc];
+	}else mes "Número incorreto!";
+	close;
+	end;
+	case 2:
+	mes "Digite o número da casa (1-"+.nims+")...";
+	if(input(@nc,1,.nims) == 0){
+	if (getd("$cimovel"+@nc)){
+	mes "A casa #"+@nc+" está ^880022Ocupada^000000.";
+	mes "Conta: "+getd("$cimovel"+@nc); 
+	if(rid2name(getd("$cimovel"+@nc))) mes "("+rid2name(getd("$cimovel"+@nc))+")";
+	}else mes "A casa #"+@nc+" está ^006622Disponível^000000 para aluguel";
+	}else mes "Número incorreto!";
+	close;
+	end;
+	case 3:
+	warp "prt_in",46,106;
+	close;
+	end;
+	}
+close;
+}
+end;
+OnPCLoginEvent:
+if(.aviso && #casa && getd("$lpimovel"+#casa) < gettimetick(2)-.perds) dispbottom "Imobiliária: Você deve pagar seu aluguel na imobiliária mais próxima, antes que seu contrato seja cancelado.";
+end;
+}
+prt_in,38,104,7	script	Lucy#lucyim	91,{
+	set .keyi, getvariableofnpc(.keyi,"imoveis");
+	set .alp, getvariableofnpc(.alp,"imoveis");
+	set .tcont, getvariableofnpc(.tcont,"imoveis");
+	set .nims, getvariableofnpc(.nims,"imoveis");
+	set .perds, getvariableofnpc(.perds,"imoveis");
+	set .asp, getvariableofnpc(.asp,"imoveis");
+	set .tfp, getvariableofnpc(.tfp,"imoveis");
+	cutin "katsua02",2;
+	mes "["+strnpcinfo(1)+"]";
+	if(#casa){
+	if(getd("$dimovel"+#casa) < gettimetick(2)-.perds*.tcont){
+	mes "Seu contrato de aluguel terminou, mas você pode alugar outra casa novamente.";
+	setd "$cimovel"+#casa,0;
+	set #casa, 0;
+	close2;
+	cutin "",255;
+	end;
+	
+}
+	mes "Olá! O que deseja?";
+	if(getd("$aassist"+#casa)){ menu "Pagar aluguel do mês",-,"Cancelar contrato",Cancelar,"Transferir casa",Transferir; }else{ menu "Pagar aluguel do mês",-,"Contratar Assistente",Contratar,"Cancelar contrato",Cancelar,"Transferir casa",Transferir;}
+	if(getd("$lpimovel"+#casa) < gettimetick(2)-.perds){
+	if(zeny < .alp) goto ZSair;
+	set zeny, zeny-.alp;
+	setd "$lpimovel"+#casa, gettimetick(2);
+	emotion e_thx;
+	mes "Pagamento efetuado!";
+	}else mes "Você não pode pagar o próximo aluguel até o final do período";
+	close2;
+	cutin "",255;
+	end;
+	}else{
+	mes "Olá! o que você acha de morar em uma confortável casa?";
+	menu "Hmm.. Interessante!",-,"Não, obrigado.",NSair;
+	mes "Por apenas ^007777"+.alp+"z^000000/mês você pode alugar uma casa!";
+	next;
+	cutin "katsua01",2;
+	mes "["+strnpcinfo(1)+"]";
+	mes "São varias casas disponíveis em diversos pontos.";
+	mes "Que tal?";
+	menu "Quero alugar uma casa!",-,"Acho melhor não.",NSair;
+	cutin "katsua02",2;
+	mes "Ótimo! Mostrarei-lhe a lista de casas...";
+	next;
+	for( set .@i, 1; .@i <= .nims; set .@i, .@i +1 ){
+	if (getd("$cimovel"+.@i)) mes "Casa #"+.@i+": ^880022Ocupada^000000"; else mes "Casa #"+.@i+": ^006622Disponível^000000";
+	}
+	next;
+	mes "["+strnpcinfo(1)+"]";
+	mes "Digite o número da casa que deseja alugar para mais informações...";
+	if(input(@icasa,1,.nims) == 0){
+	if(getd("$cimovel"+@icasa)) mes "A casa #"+@icasa+" já está ocupada..."; else{
+	if(getmapxy(@casam$,@casax,@casay,1,"imovel"+@icasa) == 0){
+	mes "A casa #"+@icasa+" é localizada em "+@casam$+" ("+@casax+","+@casay+")";
+	menu "Alugar casa",Alugar,"Ver casa",-;
+	mes "Não é permitido entrar na casa, mas vou levá-lo até a porta...";
+	warp @casam$,@casax,@casay;
+	}else{
+	cutin "katsua03",2;
+	emotion e_swt;
+	mes "A casa #"+@icasa+" não foi encontrada... Favor reportar a um GM"; 
+	}
+	}
+	}else{
+	cutin "katsua03",2;
+	mes "Número incorreto...";
+	}
+	close2;
+	cutin "",255;
+	}
+end;
+Alugar:
+	mes "Deixe me pegar a papelada...";
+	next;
+	cutin "katsua01",2;
+	mes "Aqui está! Por ^007777"+.alp+"z^000000/mês você pode alugar a casa por um período de "+getvariableofnpc(.tcont,"imoveis")+" meses";
+	next;
+	mes "Após esse período a casa estará disponível para aluguel novamente.";
+	mes "A cada 30 dias começando pela data de aluguel da casa você terá 3 dias para pagar o aluguel da casa antes que seu aluguel seja cancelado.";	
+	menu "Ok! Quero alugar a casa",-,"Mudei de ideia...",NSair;
+	if(zeny < .alp) goto ZSair;
+	if(checkweight(.keyi,1) == 0){
+	cutin "katsua03",2;
+	emotion e_swt;
+	mes "Você não tem espaço no inventório para carregar a chave...";
+	close2;
+	cutin "",255;
+	end;
+	}
+	cutin "katsua02",2;
+	emotion e_grat;
+	mes "Parabéns! Aqui está sua chave!";	
+	set zeny, zeny-.alp;
+	getitem .keyi,1;
+	setd "$cimovel"+@icasa,getcharid(3);
+	setd "$dimovel"+@icasa, gettimetick(2);
+	setd "$lpimovel"+@icasa, gettimetick(2);
+	set #casa, @icasa;
+	setnpcdisplay("imovel"+@icasa, "Casa#"+@icasa, 45);
+	close2;
+	cutin "",255;
+end;
+Cancelar:
+	mes "Se cancelar seu contrato você poderá alugar outra casa e sua casa atual ficará disponível. Confirmar cancelamento?";
+	menu "Sim.",-,"Não.",NSair;
+	mes "Certo, aguarde um momento...";
+	next;
+	mes "["+strnpcinfo(1)+"]";
+	mes "Aluguel cancelado!";
+	setd "$cimovel"+#casa,0;
+	setd "$dimovel"+#casa,0;
+	setd "$lpimovel"+#casa,0;
+	setd "$aassist"+#casa,0;
+	setd "$opimovel"+#casa,0;
+	setd "$psimovel"+#casa,0;
+	setnpcdisplay("imovel"+#casa, "Casa "+#casa+" (Disponível)#"+#casa, 858);
+	set #casa,0;
+	close2;
+	cutin "",255;
+end;
+ZSair:
+	cutin "katsua03",2;
+	emotion e_swt;
+	mes "Você não tem ^007777"+.alp+"z^000000 para pagar o aluguel...";
+	close2;
+	cutin "",255;
+end;
+NSair:
+	cutin "katsua03",2;
+	mes "Tudo bem então...";
+	mes "Volte se mudar de ideia!";
+	close2;
+	cutin "",255;
+end;
+Contratar:
+	if(getd("$aassist"+#casa) == 0){
+	cutin "katsua01",2;
+	mes "Por apenas ^007777"+.asp+"z^000000 você pode contratar uma assistente para sua casa, com várias funções úteis.";
+	mes "Que tal?";
+	menu "Contratar!",-,"Não, obrigado.",NSair;
+	if(zeny < .asp) goto ZSair;
+	set zeny, zeny-.asp;
+	setd "$aassist"+#casa,1;
+	enablenpc "assist"+#casa;
+	cutin "katsua02",2;
+	emotion e_no1;
+	mes "Ótimo! ela já está em sua casa.";
+	close2;
+	cutin "",255;
+	}else{
+	mes "Você já contratou uma assistente.";
+	close2;
+	cutin "",255;
+	}
+end;
+Transferir:
+	mes "Certo, pegarei a papelada...";
+	next;
+	mes "["+strnpcinfo(1)+"]";
+	mes "Para quem sua casa será transferida?";
+	input(@tname$);
+	set @tid, getcharid(3,@tname$);
+	if(@tid == 0){
+	cutin "katsua03",2;
+	mes "Não encontramos ninguém com o nome '"+@tname$+"'...";
+	}else{
+	getmapxy(@npcmap$,@npcx,@npcy,1);
+	getmapxy(@tmap$,@tx,@ty,0,@tname$);
+	if(@npcmap$ != @tmap$){
+	cutin "katsua03",2;
+	mes "O jogador '+@tname$+' precisa estar presente para realizarmos a transferência...";
+	}else{
+	mes "Confirmar transferência da casa n"+#casa+" para o jogador '+@tname$+' por ^555511"+.tfp+"z^000000 ?";
+	if(select("Sim:Não") == 1){
+	if(zeny >= .tfp){
+	set @tid, getcharid(3,@tname$);
+	if(@tid == 0){
+	set zeny, zeny-.tfp;
+	mes "Ok, a casa será transferida...";
+	close2;
+	cutin "",255;
+	logmes "O jogador "+strcharinfo(0)+" transferiu sua casa (n"+#casa+") para "+@tname$+" ("+@tid+")";
+	set .tcasa, #casa;
+	set #casa, 0;
+	getitem .keyi,1;
+	setd "$cimovel"+.tcasa,@tid;
+	attachrid(@tid);
+	set #casa, .tcasa;
+	dispbottom "A casa n"+.tcasa+" foi transferida para você!";
+	end;
+	}else{
+	cutin "katsua03",2;
+	emotion e_sry;
+	mes "Ops! não conseguimos encontrar o personagem...";	
+	}
+	}else{
+	cutin "katsua03",2;
+	mes "Você não pode pagar ^555511"+.tfp+"z^000000 pela transferência...";
+	}
+	}else{
+	cutin "katsua03",2;
+	mes "Ok, volte se precisar...";
+	}
+	}
+	close2;
+	cutin "",255;
+	}
+	close2;
+	cutin "",255;
+end;
+}
+
+prt_in,131,67,3	script	Wilston#chaveiro	903,{
+	cutin "kh_kyel01",2;
+	mes "[Winston]";
+if(#casa){
+	mes "Hmm... perdeu sua chave?";
+	mes "Posso fazer uma nova por ^555511600z^000000.";
+	if(select("Sim, por favor!:Não, obrigado!") == 1){
+	if(zeny > 600){
+	mes "Aqui está!";
+	set zeny, zeny-600;
+	getitem getvariableofnpc(.keyi,"imoveis"),1;
+	}else mes "Você não pode pagar pelos meus serviços...";
+	}else mes "Tudo bem então, volte se precisar...";
+}else{
+	mes "Haha... Você não precisa de meus serviços...";
+}
+	close2;
+	cutin "",255;
+end;
+}
+
+prontera,102,266,5	script	Casa#1::imovel1	45,1,1,{
+if(getd("$c"+strnpcinfo(3)) == 0){
+if(getgmlevel() >= getvariableofnpc(.gm,"imoveis")) if(select("Visitar Casa:Sair") == 1) warp $@cmap$[atoi(strnpcinfo(2))],$@casx[strnpcinfo(2)],$@casy[strnpcinfo(2)];
+dispbottom "Essa casa (n"+strnpcinfo(2)+") está disponível para aluguel! Fale com Lucy em Prontera (136,186)";
+}
+end;
+OnTouch:
+if(getd("$c"+strnpcinfo(3))){
+if(getgmlevel() >= getvariableofnpc(.gm,"imoveis")) warp $@cmap$[atoi(strnpcinfo(2))],$@casx[atoi(strnpcinfo(2))],$@casy[atoi(strnpcinfo(2))];
+if("imovel"+#casa == strnpcinfo(3)){
+if(countitem(.keyi) > 0){
+if(rand(20) == 10){
+	delitem .keyi,1;
+	dispbottom "Ops! Sua chave quebrou ao tentar abrir a porta... Procure Winston, o chaveiro.";
+}else warp $@cmap$[atoi(strnpcinfo(2))],$@casx[atoi(strnpcinfo(2))],$@casy[atoi(strnpcinfo(2))]; 
+}else dispbottom "Você não pode entrar sem sua chave, procure Winston, o chaveiro.";
+}else{
+if(getd("$op"+strnpcinfo(3)) == 1) warp $@cmap$[atoi(strnpcinfo(2))],$@casx[atoi(strnpcinfo(2))],$@casy[atoi(strnpcinfo(2))];
+if(getd("$ps"+strnpcinfo(3))){
+dispbottom "Digite a senha da casa para entrar...";
+input @pass$;
+if(@pass$ == getd("$ps"+strnpcinfo(3))) warp $@cmap$[atoi(strnpcinfo(2))],$@casx[atoi(strnpcinfo(2))],$@casy[atoi(strnpcinfo(2))]; else dispbottom "Senha incorreta!";
+}else dispbottom "Você não pode entrar nessa casa...";
+}
+}
+end;
+OnInit:
+if(getd("$c"+strnpcinfo(3)) == 0) setnpcdisplay(strnpcinfo(3), "Casa "+strnpcinfo(2)+" (Disponível)#"+strnpcinfo(2), 858);
+set .keyi, getvariableofnpc(.keyi,"imoveis");
+end;
+}
+
+casa,53,167,6	script	Assistente::assist1	895,{
+if(getd("$a"+strnpcinfo(3))){
+	set .buff, getvariableofnpc(.buff,"imoveis");
+	set .woeb, getvariableofnpc(.woeb,"imoveis");
+	cutin "kh_elly01",2;
+	mes "[Assistente]";
+	mes "Bom dia! O que deseja?";
+	if((agitcheck() || agitcheck2()) && .woeb != 1) set .buff, 0;
+	if(.buff) set .opbuff$, "Buffs"; else set .opbuff$, "";
+	switch(select("Opções da Casa:Recuperar HP/SP:Abrir Depósito:Abrir Correio:Abrir Leilão:"+.opbuff$+":Visitar Imobiliária")){
+	case 1:
+	if("assist"+#casa == strnpcinfo(3)){
+	mes "[Opções da Casa]";
+	if(getd("$opimovel"+#casa)) mes "Aberta ao público: ^00aa55Sim^000000"; else mes "Aberta ao público: ^aa0055Não^000000";
+	if(getd("$psimovel"+#casa)) mes "Senha: ^002266"+getd("$psimovel"+#casa)+"^000000"; else mes "Senha: ^aa0055Não^000000";
+	switch(select("Abrir/fechar casa:Modificar senha")){
+	case 1:
+	cutin "kh_elly02",2;
+	if(getd("$opimovel"+#casa)){
+	setd "$opimovel"+#casa, 0;
+	mes "Casa fechada!";
+	}else{
+	setd "$opimovel"+#casa, 1;
+	mes "Casa aberta!";
+	}
+	close2;
+	emotion e_thx;
+	cutin "", 255;
+	end;
+	case 2:
+	cutin "kh_elly02",2;
+	mes "Digite uma nova senha ou 'cancelar' para remover a senha...";
+	input @pass$;
+	if(@pass$ == "cancelar"){
+	setd "$psimovel"+#casa, 0;
+	mes "Senha removida!";
+	}else{
+	setd "$psimovel"+#casa, @pass$;
+	mes "Senha modificada para: ^002266"+@pass$+"^000000";
+	}
+	close2;
+	emotion e_thx;
+	cutin "", 255;
+	end;
+	}
+	}else mes "Apenas o dono pode modificar as opções da casa...";
+	close2;
+	cutin "", 255;
+	end;
+	case 2:
+	cutin "kh_elly02",2;
+	percentheal 100,100;
+	specialeffect2 325;
+	mes "HP/SP recuperados!";
+	close2;
+	emotion e_no1;
+	cutin "", 255;
+	end;
+	case 3:
+	if(getcharid(2) != 0){
+	if(select("Depósito pessoal:Depósito da guilda") == 2){
+	cutin "kh_elly02",2;
+	mes "Ok, abrirei o depósito da guilda...";
+	close2;
+	cutin "", 255;
+	emotion e_thx;
+	guildopenstorage();
+	end;
+	}}
+	cutin "kh_elly02",2;
+	mes "Certo, abrirei seu depósito...";
+	close2;
+	cutin "", 255;
+	emotion e_thx;
+	openstorage;
+	end;
+	case 4:
+	cutin "kh_elly02",2;
+	mes "Certo, abrirei o correio...";
+	close2;
+	cutin "", 255;
+	emotion e_thx;
+	openmail;
+	end;
+	case 5:
+	cutin "kh_elly02",2;
+	mes "Certo, abrirei o leilão...";
+	close2;
+	cutin "", 255;
+	emotion e_thx;
+	openauction;
+	end;
+	case 6:
+	cutin "kh_elly02",2;
+	mes "Certo, aqui está!";
+	specialeffect2 582;
+	specialeffect2 42;
+	sc_start SC_BLESSING,300000,10;
+	sc_start SC_INCREASEAGI,300000,10;
+	sc_start SC_CONCENTRATE,300000,10;
+	sc_start SC_GLORIA,300000,10;
+	sc_start SC_KYRIE,300000,10;
+	sc_start SC_REFLECTSHIELD,300000,10;
+	sc_start SC_ASPDPOTION3,300000,10;
+	sc_start SC_SPEEDUP1,300000,10;
+	sc_start SC_ENERGYCOAT,300000,10;
+	close2;
+	cutin "", 255;
+	emotion e_no1;
+	end;
+	case 7:
+	cutin "kh_elly02",2;
+	mes "Ok, teleportarei você... Até logo!";
+	close2;
+	cutin "", 255;
+	warp "prt_in",46,106;
+	end;
+	}
+	close2;
+	cutin "", 255;
+}
+	end;
+OnInit:
+if(getd("$a"+strnpcinfo(3)) == 0) disablenpc strnpcinfo(3);
+end;
+}
+
+//Casas
+prontera,96,255,5	duplicate(imovel1)	Casa#2::imovel2	45,1,1
+prontera,210,265,3	duplicate(imovel1)	Casa#3::imovel3	45,1,1
+prontera,215,247,2	duplicate(imovel1)	Casa#4::imovel4	45,1,1
+prontera,219,227,2	duplicate(imovel1)	Casa#5::imovel5	45,1,1
+prontera,220,182,2	duplicate(imovel1)	Casa#6::imovel6	45,1,1
+prontera,139,150,6	duplicate(imovel1)	Casa#7::imovel7	45,1,1
+//prontera,108,144,7	duplicate(imovel1)	Casa#8::imovel8	45,1,1
+//prontera,105,167,3	duplicate(imovel1)	Casa#9::imovel9	45,1,1
+//prontera,94,167,6	duplicate(imovel1)	Casa#10::imovel10	45,1,1
+
+//Assistentes
+casa,231,31,4	duplicate(assist1)	Assistente::assist2	895,0,0
+casa,172,132,2	duplicate(assist1)	Assistente::assist3	895,0,0
+casa,88,105,2	duplicate(assist1)	Assistente::assist4	895,0,0
+casa,135,35,2	duplicate(assist1)	Assistente::assist5	895,0,0
+casa,211,169,2	duplicate(assist1)	Assistente::assist6	895,0,0
+casa,233,108,5	duplicate(assist1)	Assistente::assist7	895,0,0
+//casa,0,0,0	duplicate(assist1)	Assistente::assist8	895,0,0
+//casa,0,0,0	duplicate(assist1)	Assistente::assist9	895,0,0
+//casa,0,0,0	duplicate(assist1)	Assistente::assist10	895,0,0
+
+//Mapflags
+casa	mapflag	nowarp
+casa	mapflag	noteleport
+casa	mapflag	nowarpto
+casa	mapflag	nowarp
+
+//Portais
+casa,69,162,0	warp	Casa-1	1,1,prontera,103,264
+casa,228,14,0	warp	Casa-2	1,1,prontera,98,254
+casa,167,124,0	warp	Casa-3	1,1,prontera,208,265
+casa,79,113,0	warp	Casa-4	1,1,prontera,213,247
+casa,127,45,0	warp	Casa-5	1,1,prontera,217,227
+casa,207,179,0	warp	Casa-6a	1,1,prontera,218,181
+casa,217,164,0	warp	Casa-6b	1,1,casa,49,106
+casa,53,106,0	warp	Casa-6c	1,1,casa,212,164
+casa,253,113,0	warp	Casa-7	1,1,prontera,141,150
+//casa,0,0,0	warp	Casa-8	1,1,prontera,110,144
+//casa,0,0,0	warp	Casa-9	1,1,prontera,103,168
+//casa,0,0,0	warp	Casa-10	1,1,prontera,96,167

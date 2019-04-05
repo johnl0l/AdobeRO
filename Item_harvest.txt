@@ -1,0 +1,144 @@
+//===== rAthena Script =======================================
+//= Item Harvest Event
+//=========================  by: =============================
+//= pajodex
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= rAthena Project (pajodex)
+//===== Description: =========================================
+/*
+
+Automated event that runs every 30 mins. Players will enter via
+'item harvest farmer' NPC in prontera. Plants will be spawn on
+the event map. Each plant will give random items.
+
+Enjoy!
+
+*/
+//=====******** Note ********=================================
+//= if you find bugs or problem, please do tell DM me at
+//= Discord (pajodex#1328) or rAthena (pajodex) 
+//= open for suggestions
+//===== Additional Comments: =================================
+/* 
+	1.0 - Initial release
+*/
+//=============================================================
+prontera,150,180,6	script	Item Harvest Farmer	100,{
+	if($@Event == 0) {
+	mes "Harvest will be every 30 mins.";
+	close;
+	}
+	else if($@Event == 1) {
+	mes "Event is starting, want to join?";
+	if(select("Yes:No") == 2) close;
+		mes "Good luck!";
+		close2;
+		warp "pvp_n_1-2",0,0;
+		end;
+	}
+	else {
+	mes "Event has already started, join the next event";
+	close;
+	}
+	end;
+
+OnInit:
+	waitingroom "Item Harvest Farmer",0;
+	end;
+}
+
+pvp_n_1-2,0,0,0	script	#plant_spawner	-1,{
+OnMinute00: // Runs every 30 mins
+OnMinute30: // Runs every 30 mins
+OnEventStart:
+	if($@Event != 0) end;
+	pvpoff .map$;
+	mapwarp .map$,"prontera",150,190,0;
+	killmonsterall .map$;
+	$@Event = 1;
+		announce "[Item Harvest Event] : In 5 mins, it will be harvest time!",0;
+		mapannounce .map$, "Free up your inventory to carry more items",1,0x00FF00;
+			sleep 2000;
+		announce "[Item Harvest Event] : Go to Item Harvest Farmer to join",0;
+		mapannounce .map$, "Free up your inventory to carry more items",1,0x00FF00;
+			sleep 60000;
+		announce "[Item Harvest Event] : 4 mins ",0;
+			sleep 2000;
+		announce "[Item Harvest Event] : Go to Item Harvest Farmer to join",0;
+		mapannounce .map$, "Free up your inventory to carry more items",1,0x00FF00;
+			sleep 60000;
+		announce "[Item Harvest Event] : 3 mins ",0;
+			sleep 2000;
+		announce "[Item Harvest Event] : Go to Item Harvest Farmer to join",0;
+		mapannounce .map$, "Free up your inventory to carry more items",1,0x00FF00;
+			sleep 60000;
+		announce "[Item Harvest Event] : 2 mins ",0;
+			sleep 2000;
+		announce "[Item Harvest Event] : Go to Item Harvest Farmer to join",0;
+		mapannounce .map$, "Free up your inventory to carry more items",1,0x00FF00;
+			sleep 60000;
+		announce "[Item Harvest Event] : 1 min ",0;
+			sleep 2000;
+		announce "[Item Harvest Event] : Go to Item Harvest Farmer to join",0;
+		mapannounce .map$, "Free up your inventory to carry more items",1,0x00FF00;
+			sleep 60000;
+		announce "[Item Harvest Event] : Harvest time!",0;
+		mapannounce .map$, "Free up your inventory to carry more items",1,0x00FF00;
+		$@Event = 2;
+			sleep 2000;
+		mapannounce .map$, "You are given 2 minutes harvest!",1,0x00FF00;
+			sleep 2000;
+		mapannounce .map$, "Each plant will contain random item when killed.",1,0x00FF00;
+			sleep 2000;
+		mapannounce .map$, "Let start harvesting! Goodluck!",1,0x00FF00;
+		.@num = getmapusers(.map$);
+		monster .map$,0,0,"Plant",1083,.@num * 10,strnpcinfo(0)+"::OnKillPlants";
+		initnpctimer;
+		end;
+		
+	OnTimer300000:
+		stopnpctimer;
+		$@Event = 0;
+		announce "[Item Harvest Event] : Harvest time is over! Til' next time!",0;
+		killmonsterall .map$;
+		sleep 5000;
+		mapwarp .map$,"prontera",150,190,0;
+		end;
+		
+	OnKillPlants:
+		.@i = rand(getarraysize(.item_drop));
+		getitem .item_drop[.@i], 1;
+			if(.warp_) warp "prontera",150,190;
+		end;
+	
+OnInit:
+	// set items
+	setarray .item_drop,501,502,503,504,505;
+	
+	// set map
+	.map$ = "pvp_n_1-2";
+	
+	// warp players out when already killed a plant (1 = on || 0 = off)
+	.warp_ = 1; 
+	
+	// use @itemharvest to activate event.
+	bindatcmd "itemharvest",strnpcinfo(3)+"::OnEventStart",0,60;
+
+	
+	setarray .mapflag,
+		mf_nowarp,	mf_nowarpto,		mf_nosave,
+		mf_nomemo,	mf_noteleport,		mf_nopenalty,
+		mf_noreturn,	mf_nobranch,		mf_nomobloot,
+		mf_nomvploot,	MF_NOZENYPENALTY,	MF_NOTRADE,
+		MF_NOCOMMAND,	mf_noskill;
+		
+	for(.@i = 0; .@i < getarraysize(.map$); .@i++){
+		for ( .@f = 0; .@f < .@size; .@f++ )
+			setmapflag .map$[.@i], .mapflag[.@f];
+		}
+		
+	end;
+
+}
