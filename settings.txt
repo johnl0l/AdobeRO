@@ -1,0 +1,127 @@
+//===== rAthena Script =======================================
+//= OnPCLogin NPC
+//===== By: ==================================================
+//= Akkarin
+//===== Current Version: =====================================
+//= 2.0
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= This NPC saves your settings so the next time you login, it
+//= will auto perform the commands you selected. Easy to edit
+//= or duplicate/modify based on cmds you want to allow.
+//===== Additional Comments: =================================
+//= 1.0 First Version.
+//= 2.0 Complete rewrite to make use of binary values and 
+//      switch(select()) instead of menu();
+//============================================================
+prontera,147,175,5	script	Settings	61,{
+	set .@reset$,"^000000";
+	set .@disabled$,"^BE1C1C";
+	set .@enabled$,"^0DB40D";
+	
+UserMenu:
+	mes "[^484848Settings^000000]";
+	mes "Note: These are all account based, not per-character.";
+	mes "Note 2: You must relog for them to take effect.";
+	if (#pcloginflag&1) { set .@st_autoloot$,.@enabled$+#pcloginalp+"%"+.@reset$; } else { set .@st_autoloot$,.@disabled$+"Off"+.@reset$; }
+	if (#pcloginflag&2) { set .@st_showdelay$,.@enabled$+"On"+.@reset$; } else { set .@st_showdelay$,.@disabled$+"Off"+.@reset$; }
+	if (#pcloginflag&4) { set .@st_rates$,.@enabled$+"On"+.@reset$; } else { set .@st_rates$,.@disabled$+"Off"+.@reset$; }
+	if (#pcloginflag&8) { set .@st_showexp$,.@enabled$+"On"+.@reset$; } else { set .@st_showexp$,.@disabled$+"Off"+.@reset$; }
+	if (#pcloginflag&16) { set .@st_showzeny$,.@enabled$+"On"+.@reset$; } else { set .@st_showzeny$,.@disabled$+"Off"+.@reset$; }
+	if (#pcloginflag&32) { set .@st_uptime$,.@enabled$+"On"+.@reset$; } else { set .@st_uptime$,.@disabled$+"Off"+.@reset$; }
+	next;
+	switch(select("Auto Loot ["+.@st_autoloot$+"]:Show Delay ["+.@st_showdelay$+"]:Rates on login ["+.@st_rates$+"]:Show Exp ["+.@st_showexp$+"]:Show Zeny ["+.@st_showzeny$+"]:Uptime on login ["+.@st_uptime$+"]")){
+		case 1:
+			mes "[^484848Settings^000000]";
+			mes "Auto Loot is currently "+.@st_autoloot$;
+			mes "Desc: Auto loot adds items to your inventory automatically.";
+			next;
+			switch(select("Toggle:Back")){
+				case 1:
+					if (#pcloginflag&1) { set #pcloginflag, #pcloginflag &~ 1; } else {
+						mes "[^484848Settings^000000]";
+						mes "Auto Loot is currently "+.@st_autoloot$;
+						mes "Enter the minimum rate an item must drop at before it it looted, 100 will loot all items, 99 will only loot cards, 0 disables it.";
+						next;
+						input .@rate;
+						if ((.@rate >= 0) && (.@rate <= 100)) set #pcloginalp,.@rate;
+						set #pcloginflag, #pcloginflag | 1;
+					}
+					break;
+				case 2: break;
+			}
+			break;
+		case 2:
+			mes "[^484848Settings^000000]";
+			mes "Show Delay is currently "+.@st_showdelay$;
+			mes "Desc: When a skill fails because of delay, it will be hidden.";
+			next;
+			switch(select("Toggle:Back")){
+				case 1:
+					if (#pcloginflag&2) { set #pcloginflag, #pcloginflag &~ 2; } else { set #pcloginflag, #pcloginflag | 2; }
+					break;
+				case 2:	break;
+			}
+			break;
+		case 3:
+			mes "[^484848Settings^000000]";
+			mes "Rates on login is currently "+.@st_rates$;
+			mes "Desc: Displays the current server rates on login.";
+			next;
+			switch(select("Toggle:Back")){
+				case 1:
+					if (#pcloginflag&4) { set #pcloginflag, #pcloginflag &~ 4; } else { set #pcloginflag, #pcloginflag | 4; }
+					break;
+				case 2:	break;
+			}
+			break;
+		case 4:
+			mes "[^484848Settings^000000]";
+			mes "Show Exp is currently "+.@st_showexp$;
+			mes "Desc: When you gain exp, it will be displaied.";
+			next;	
+			switch(select("Toggle:Back")){
+				case 1:
+					if (#pcloginflag&8) { set #pcloginflag, #pcloginflag &~ 8; } else { set #pcloginflag, #pcloginflag | 8; }
+					break;
+				case 2:	break;
+			}
+			break;
+		case 5:
+			mes "[^484848Settings^000000]";
+			mes "Show Zeny is currently "+.@st_showzeny$;
+			mes "Desc: When you gain zeny, it will be displaied.";
+			next;
+			switch(select("Toggle:Back")){
+				case 1:
+					if (#pcloginflag&16) { set #pcloginflag, #pcloginflag &~ 16; } else { set #pcloginflag, #pcloginflag | 16; }
+					break;
+				case 2:	break;
+			}
+			break;
+		case 6:
+			mes "[^484848Settings^000000]";
+			mes "Uptime on login is currently "+.@st_uptime$;
+			mes "Desc: When you log in, server uptime will be displaied.";
+			next;
+			switch(select("Toggle:Back")){
+				case 1:
+					if (#pcloginflag&32) { set #pcloginflag, #pcloginflag &~ 32; } else { set #pcloginflag, #pcloginflag | 32; }
+					break;
+				case 2:	break;
+			}
+			break;
+	}
+	goto UserMenu;
+	
+OnPCLoginEvent:
+	sleep2 1000;
+	if (#pcloginflag&1)		atcommand "@autoloot " + #pcloginalp;
+	if (#pcloginflag&2)		atcommand "@showdelay";
+	if (#pcloginflag&4)		atcommand "@rates";
+	if (#pcloginflag&8)		atcommand "@showexp";
+	if (#pcloginflag&16)	atcommand "@showzeny";
+	if (#pcloginflag&32)	atcommand "@uptime";
+	end;
+}

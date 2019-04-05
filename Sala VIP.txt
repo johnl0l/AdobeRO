@@ -1,0 +1,59 @@
+prontera,162,186,3	script	Sala VIP	435,{
+
+// ------ Configuração de Mapas ------ //
+
+set @mapa1vip$, "job3_war01"; // ----- Apague o (nomemapa), coloque o nome do mapa vip, mais deixe as aspas 
+set @cordx1vip, 26; // ----- Apague o (cordenadas x do mapa) e ponha as cordenadas, serve para o de baixo também.
+set @cordy1vip, 27;
+
+// ------ Configuração Geral ------ //
+
+set @npc$,"[ ^FF0000 Sala VIP ^000000 ]"; // ---- Nome do NPC
+set @site$,"www.google.com.br"; // ---- Site do Servidor
+
+// ------ NPC ------ //
+
+mes @npc$;
+mes "Olá ^A020F0"+strcharinfo(0)+"^000000 !";
+mes "Seja Bem-vind"+ (Sex?"o":"a") +" ao ^A020F0Server^000000!!";
+mes "Deseja ir para a Sala Vip do ^0000FFServer^000000?";
+switch(select("Sim","Não")){
+case 1:
+next;
+mes "Aguarde um momento estou verificando se você é um usuario ^FF0000VIP^000000";
+next;
+if (getgmlevel() < 1){
+mes @npc$;
+mes "Me desculpe";
+mes "Mas vejo que você não é um suários VIP.";
+mes "Se você deseja ser usuário VIP,";
+mes "Entre no site ^FF0000 "+@site$+" ^000000 e descubra como";
+mes "se tornar um VIP.";
+close; 
+}
+if(getgmlevel() == 1 || getgmlevel() > 20){
+mes @npc$;
+mes "Ok, estou te teletransportando";
+mes "Esteja sempre preparado!.";
+if(.@npc < 3){
+mes " ";
+mes "Tenha uma ótimo jogo.";
+}
+dispbottom "Teleportando em 3";
+sleep2 1000;
+dispbottom "Teleportando em 2";
+sleep2 1000;
+dispbottom "Teleportando em 1";
+sleep2 1000;
+warp @mapa1vip$,@cordx1vip,@cordy1vip;
+end;
+}
+
+case 2:
+next;
+mes "Até Breve";
+mes "Desejo um ótimo jogo!";
+close;
+
+}
+}

@@ -1,0 +1,43 @@
+//===== rAthena Script =======================================
+//= Search iRO Wiki/RMS Script (In-Game Browser)
+//===== By: ==================================================
+//= Nova http://www.novaragnarok.com
+//============================================================
+
+-	script	NovaSearch	-1,{
+end;
+
+OnInit:
+	bindatcmd "rms",strnpcinfo(3)+"::OnAtcommand";
+	bindatcmd "irowiki",strnpcinfo(3)+"::OnAtcommand";
+	bindatcmd "search",strnpcinfo(3)+"::OnAtcommand";
+	.n$ = "^3355FF[ Search Engine ]^000000";
+	end;
+	
+OnAtcommand:
+	mes .n$;
+	mes "Note that some information on RMS and iRO wiki might be outdated or inaccurate.";
+	mes "Take your search results with a grain of salt!";
+	next;
+	
+		switch(select("RMS Monster Search:RMS Item Search:iRO Wiki Search:Close")){
+			case 1:
+				input .@search$;
+				mes .n$;
+				mes "<URL>Click here to open the browser!<INFO>http://ratemyserver.net/index.php?all_mob_select=%23&mob_id=&mob_name="+.@search$+"&element=-1&race=-1&size=-1&mlvsn=0&mlv=&mlv2=&bxpsn=0&exp=&exp2=&jxpsn=0&jexp=&jexp2=&flee=&dr=95&hit=&hr=100&rgc=0&immu=0&mvp=0&minib=0&aggr=0&assi=0&sense=0&det=0&natk=0&immo=0&chcha=0&loot=0&chtar=0&plt=0&sort_r=0&sort_o=0&page=re_mob_db&f=1&mob_search=Search,1000,1000</INFO></URL>";
+				close;
+			case 2:
+				input .@search$;
+				mes .n$;
+				mes "<URL>Click here to open the browser!<INFO>http://ratemyserver.net/index.php?page=re_item_db&item_id=&iname="+.@search$+"&itype=-1&islot_sign=-1&islot=-1&ij%5B+%5D=-1&iju=-1&idesc=&iscript=&i_ele=-1&i_status=-1&i_race=-1&i_bonus=-1&icfix=&sort_r=0&sort_o=0&isearch=Search,1000,1000</INFO></URL>";
+				close;
+			case 3:
+				input .@search$;
+				mes .n$;
+				mes "<URL>Click here to open the browser!<INFO>http://irowiki.org/w/index.php?search="+.@search$+",1000,1000</INFO></URL>";
+				close;
+			case 4:
+				end;
+		}
+	end;
+}

@@ -1,0 +1,68 @@
+//===== Cronus Script =================================================
+//= Sala do comércio					       
+//===== Por: ==========================================================
+//= Panda www.pandabro.com	vip@pandabro.com (<<msn)     	       
+//===== Versão Atual: =================================================
+//= 1.0
+//===== Descrição: ====================================================
+//= Uma npc que fica em prontera com um chat em cima escrito
+//= "sala do comércio".
+//===== ChangeLog: ====================================================
+//= Sala do comércio com chat em cima'''''
+//=====================================================================
+//|               MAPFLAG
+//===========================================================
+
+prontera.gat,164,169,4	script	Sala do Comércio	807,{
+
+//==== Configs ============================================//
+set @npc$,"[^ff0000Sala do Comércio^000000]"; //nome do npc
+set @nome$,strcharinfo(0); //não mecha ^^
+//=======================================================//
+show @npc$;
+show "Olá "+strcharinfo(0)+" deseja ir para a Sala do Comércio?";
+next;
+menu "Sim",-,"Não obrigado",exit;
+
+show @npc$;
+show "Ok, teleportando...";
+next;
+warp "sec_in01",	170,    167;
+end;
+
+exit:
+show @npc$;
+show "Até mais!";
+close;
+OnInit:
+	waitingroom "Sala do Comércio", 0;
+	end;
+}
+
+
+sec_in01.gat,173,164,4	script	Saída	94,{
+
+//==== Configs ============================================//
+set @npc$,"[^ff0000Saída^000000]"; //nome do npc
+set @nome$,strcharinfo(0); //não mecha ^^
+//=======================================================//
+show @npc$;
+show "Olá "+strcharinfo(0)+" deseja voltar para prontera?";
+next;
+menu "Sim",-,"Não obrigado",exit;
+
+show @npc$;
+show "Ok, teleportando...";
+next;
+warp "prontera",	156,    191;
+end;
+
+exit:
+show @npc$;
+show "Até mais!";
+close;
+OnInit:
+	waitingroom "Saída", 0;
+	end;
+}
+

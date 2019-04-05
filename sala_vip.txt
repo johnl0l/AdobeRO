@@ -1,0 +1,520 @@
+// Sala VIP by: Kleber Henrique
+// www.ragna-sword.com.br
+// Descrição:
+// teleporta para uma sala vip aonde tem beneficios que player normais não tem. 
+// versão: 0.1
+// contato:
+// Skype: binhoo.gto
+//===============================================================//
+//=====================Teleporte=================================//
+//----------------------Entrada----------------------------------//
+//===============================================================//
+prontera,157,215,3	script	Sala Vip	874,{
+
+        show "[^cc0000Teleportadora VIP^000000]";
+        show "Olá "+strcharinfo(0)+", deseja ser teleportado para a Sala VIP?";
+        Menu "Sim",-,"Não",nao;
+        If (getgmlevel() < 1) {
+        show "Desculpe, somente usuários VIP podem entrar.";
+        Close;
+        } else {
+        Warp "sec_in01",169,166;
+        }
+        Close;
+
+        nao:
+        show "Tchau!";
+        Close;
+}
+
+//=============================================================//
+//---------------------------SAIDA-----------------------------//
+//=============================================================//
+
+sec_in01,168,158,1	script	Saida	708,{
+
+        show "[^cc0000Saida^000000]";
+        show "Olá "+strcharinfo(0)+", deseja da Sala VIP?";
+        Menu "Sim",-,"Não",nao;
+        If (getgmlevel() < 1) {
+        show "Você não é vip o que ta afzendo aqui?";
+        Close;
+        } else {
+        Warp "prontera",155,211;
+        }
+        Close;
+
+        nao:
+        show "ok! Quando quiser sair fale comigo.";
+        Close;
+}
+
+//============================================================//
+//======================SEGURANçA=============================//
+//============================================================//
+sec_in01,172,162,0	script	Segurança		734,30,30,{
+
+if (getgmlevel() < 1) goto r3;
+ 
+mes "[^cc0000 Segurança VIP ^000000]";
+mes "Entrada autorizada !";
+next;
+close;
+ 
+r3:
+mes "[^cc0000 Segurança VIP ^000000]";
+mes "Você não é VIP";
+mes "Saia daqui agora mesmo";
+next;
+warp "prontera.gat",150,181;
+close;
+ 
+}
+
+//=================================//
+//============REPARADOR============//
+//=================================//
+
+sec_in01,177,170,3	script	Reparador		869,{
+
+atcommand "@repairall";
+end;
+
+}
+
+//=================================//
+//=============VENDEDOR============//
+//=================================//
+
+sec_in01,177,174,3	shop	Vendedor Ultilidade	72,7135:5000,7136:5000,7139:7000,678:7000,610:8000,1025:5000,657:3000,717:3000,716:3000,715:3000
+
+//=================================//
+//============TROCA SEXO===========//
+//=================================//
+
+sec_in01,177,178,3	script	Troca de Sexo	402,{
+show "Olá [^0000FF"+ strcharinfo(0) +"^000000] gostaria de trocar de sexo?";
+next;
+menu "Sim",s,"Não",n;
+s:
+show "Muito bem como quiser...";
+changesex;
+end;
+n:
+show "Volte quando quiser...";
+close;
+}
+
+//================================//
+//==========ROUPA DE PRAIA========//
+//================================//
+
+sec_in01,166,181,5	script	Roupas de Praia	845,{
+ 
+	if(getgmlevel() > 0){
+	mes	"Fala bicho! eu tenho um visual irado pra você.";
+	mes	"Uma roupa de praia que vai ficar chocante!";
+	mes	"SÓ NÃO PODE UTILIZAR SKILLS DURANTE 10 MINUTOS!";
+	next;
+	mes	"Escolha uma Opção";
+	next;
+	switch(select("Usar Roupa de Praia:Remover Roupa de Praia:Não Fazer Nada"))	{
+ 
+		case 1:
+			sc_start SC_Summer, 600000, 0; //Roupa de Praia
+			mes	"Olha só! Ficou da hora!";
+			close;
+			end;
+ 
+		case 2: 
+			sc_end SC_Summer;
+			mes	"Prontinho! roupas normais.";
+			close;
+			end;
+ 
+		case 3:
+			mes	"Tranquilo! Tô aqui sempre que precisar.";
+			close;
+			end;
+	}
+	}
+ 
+ 
+	else{
+	mes	"Somente vips podem acessar meus serviços.";
+	close;
+	end;
+	}
+end;
+}
+
+//===========================================//
+//============ANUNCIADOR=====================//
+//===========================================//
+
+sec_in01,174,181,5	script	Anunciador	741,{
+
+//> Início das Configurações
+		// Observações: As cores das mensagens podem ser aleradas nas linhas:
+		//
+		// "DelayAnnounce("Mensagem","Torpedo","0xFFFF00");"
+		//
+		// Onde "0xFFFF00" será a cor delimitada.
+
+		// Opções de menu, coloque 1 para habilitar menus de 'torpedo(normal), compra, venda, troca.
+		set .Opt,1;
+
+		// Palavras bloqueadas.
+		setarray .palavras$[1],"cú","buceta","caralho","pinto"; //Coloque aqui as palavras bloqueadas, cada uma dentro das aspas.
+
+		// Configuração do Tempo de Delay. (Padrão: 10 minutos)
+		set .DelayAnn,10;
+
+		// Configuração Zenys (Padrão: 200.000z)
+		set .Zeny,50000;
+
+		// Nível de BASE mínimo para uso do NPC. (Padrão: 40)
+		set .LevelUser,10;
+
+//> Início do Script
+	function DelayAnnounce;
+	if(!DelayAnnounce("DelayGet",getcharid(3),.DelayAnn))
+	{
+		mes "[Anunciador]";
+		mes "Desculpe, mas você deve esperar ^FF0000"+.DelayAnn+"^000000 minuto(s) para poder enviar outro torpedo.";
+		close;
+	}
+
+	mes "[Anunciador]";
+	mes "Olá "+strcharinfo(0)+", deseja enviar uma mensagem?";
+	mes "Total enviados: ^0000FF"+#envio+"^000000";
+	if (.DelayAnn > 0) { mes "Delay: ^0000FF"+.DelayAnn+" minutos.^000000"; }
+	if (.Zeny > 0) { mes "Valor: ^0000FF"+.Zeny+"z^000000"; }
+	if(select("Sim:Não") == 2) close;
+
+	if(.Opt == 1)
+	{
+		switch(select("Torpedo","Venda","Compra","Troca"))
+		{
+		case 1:
+			DelayAnnounce("Mensagem","Torpedo","0xFFFF00");
+		case 2:
+			DelayAnnounce("Mensagem","vender","0x00BFFF");
+		case 3:
+			DelayAnnounce("Mensagem","comprar","0x00CD00");
+		case 4:
+			DelayAnnounce("Mensagem","trocar","0xFF0000");
+		}
+	} else { DelayAnnounce("Mensagem","Torpedo","0xFFFF00"); }
+
+function	DelayAnnounce	{
+
+	if( GetArg(0) == "DelaySet" )
+	{
+		setd "$anndelay_"+GetArg(1),gettime(4)*24*60 + gettime(6)*60 + gettime(2);
+		return 0;
+	}
+
+	else
+
+	if( GetArg(0) == "DelayGet" )
+	{
+		set .@check, gettime(4)*24*60 + gettime(6)*60 + gettime(2) - getd("$anndelay_"+GetArg(1));
+		return !(.@check >= 0 && .@check < GetArg(2) );
+	}
+
+	if( GetArg(0) == "Mensagem" )
+	{
+	next;
+	Restart:
+	mes "[Anunciador]";
+	mes "Muito bem, digite a sua mensagem:";
+	mes " ";
+	mes "Digite 'fechar' para sair.";
+	digit @msg$;
+	if(@msg$ == "fechar") { close; }
+	next;
+
+	if(Zeny < .Zeny)
+	{
+		mes "[Anunciador]";
+		mes "Me desculpe mas você não tem";
+		mes "zenys suficientes para usar";
+		mes "o serviço de torpedos.";
+		next;
+		mes "[Anunciador]";
+		mes "Você irá precisar de ^FF0000"+.Zeny+"z^000000.";
+		close;
+	}
+
+	if(BaseLevel < .LevelUser)
+	{
+		mes "[Anunciador]";
+		mes "Me desculpe mais por";
+		mes "questões de segurança,";
+		mes "você precisa ter o level";
+		mes "maior que ^FF0000"+.LevelUser+"^000000.";
+		close;
+	}
+
+	for(set .@i,1; .@i < getarraysize(.palavras$); set .@i,.@i+1)
+	{
+		if(compare(@msg$,.palavras$[.@i]))
+		{
+			mes "[Anunciador]";
+			mes "Desculpe, mais não é permitido palavrões no anuncio.";
+			close;
+		}
+	}
+	mes "[Anunciador]";
+	mes "Você digitou:";
+	mes "'^FF0000"+@msg$+"^000000'";
+	if(select("Correto!","Não, está errado...") == 2) { close2;	goto Restart; }
+	if(getarg(1) != "Torpedo") { announce "["+strcharInfo(0)+"] quer "+getarg(1)+": "+@msg$+".",bc_all,getarg(2); } else { announce "["+strcharInfo(0)+"](Torpedo) disse: "+@msg$+".",bc_all,getarg(2); }
+	; }
+	DelayAnnounce("DelaySet",getcharid(3));
+	if (.Zeny > 0) { set Zeny,Zeny-.Zeny; }
+	set #envio,#envio+1;
+	close;
+	}
+}
+
+//================================================//
+//---------------Criador de Homuculos-------------//
+//================================================//
+
+sec_in01,162,178,6	script	Criador de Homunculus	999,{
+
+
+set @np$,"[Criador de Homunculus]";// nome do npc que vai aparecer no chat
+set @precoe,50000;// Preço de cada embriao defina 0 para nao cobrar
+set @precou,50000;//Preco pra upa defina 0 para nao cobrar
+set @precot,50000;//Preço pra evolui defina 0 para nao cobrar
+
+	mes @np$;
+	Mes ""+Strcharinfo(0)+" oque deseja fazer?";
+	switch(select("Evoluir Homunculu","Pegar Embrião","Upar Homunculus"))
+	{
+	case 1:
+		next;
+		if(Class == 4071 && Class == 18) { mes @np$; mes "Você não pode ter um homunculu."; close; }
+		if (Zeny < @precoe) { mes @np$; mes "Você não tem a quatia de zeny necessária."; close; }
+		mes @np$;
+		mes "Saiba que custa "+@precot+"z";
+		mes "para evoluir seu Homonoclu.";
+		mes "Deseja continuar mesmo assim?";
+		if(select("Sim:Não") == 2) close;
+		set Zeny,Zeny-@precot;
+		atcommand "@homevolution";
+		close;
+
+	case 2:
+		next;
+		if(Class == 4071 && Class == 18) { mes @np$; mes "Você não pode ter um homunculu."; close; }
+		if (Zeny < @precoe) { mes @np$; mes "Você não tem a quantia de zenys necessária."; close; }
+		mes @np$;
+		mes "Saiba que custa "+precoe+"z";
+		mes "para adquirir um Embrião";
+		if(select("Sim:Não") == 2) close;
+		set Zeny,Zeny-@precoe;
+		getitem 7142,1;
+		close;
+
+	case 3:
+		next;
+		if(Class == 4071 && Class == 18) { mes @np$; mes "Você não pode ter um homunculu."; close; }
+		if (Zeny < @precou) { mes @np$; mes "Você não tem a quantia de zenys necessária."; close; }
+		mes @np$;
+		mes "Saiba que custa "+precou+"z";
+		mes "para upar seu homunculu.";
+		mes "Deseja continuar mesmo assim?";
+		if(select("Sim:Não") == 2) close;
+		set Zeny,Zeny-@precou;
+		atcommand "@homlvl 99";
+		close;
+	}
+}
+
+//===========================================//
+//=================REMOVEDORA================//
+//===========================================//
+
+sec_in01,170,181,5	script	Removedora	879,{
+
+UPGRADEROOT:
+	show "[Velha Sábia]";
+	show "Bom dia, você é o primeiro. Eu tenho o poder de remover cartas que já foram usados nos seus equipamentos. Essa idéia pode ajudá-lo?";
+	next;
+	menu "Sim, ajudaria muito.",REMOVEMENU,
+	     "O que você quer em troca?",REMOVEPRICE,
+	     "Não obrigado.",CLOSEOUT;
+
+REMOVEPRICE:
+	show "[Velha Sábia]";
+	show "Eu preciso de 50.000 zeny, mais 25.000 zeny para cada carta removida de seus ítens. E adicionalmente, preciso de um Fragmento Estelar e uma Gema Amarela para trabalhar com a minha mágica.";
+	next;
+	menu "Tudo bem, vamos começar.",REMOVEMENU,
+	     "Não obrigado.",CLOSEOUT;
+
+REMOVEMENU:
+	show "[Velha Sábia]";
+	show "Tudo bem. Qual ítem quer que eu examine para você?";
+	next;
+	menu "Deixe-me pensar.",CLOSEOUT,
+	     getequipname(1),SLOT1,
+	     getequipname(2),SLOT2,
+	     getequipname(3),SLOT3,
+	     getequipname(4),SLOT4,
+	     getequipname(5),SLOT5,
+	     getequipname(6),SLOT6,
+	     getequipname(7),SLOT7,
+	     getequipname(8),SLOT8,
+	     getequipname(9),SLOT9,
+	     getequipname(10),SLOT10;
+
+SLOT1:
+	set @part,1;
+	goto CARDNUMCHECK;
+
+SLOT2:
+	set @part,2;
+	goto CARDNUMCHECK;
+
+SLOT3:
+	set @part,3;
+	goto CARDNUMCHECK;
+
+SLOT4:
+	set @part,4;
+	goto CARDNUMCHECK;
+
+SLOT5:
+	set @part,5;
+	goto CARDNUMCHECK;
+
+SLOT6:
+	set @part,6;
+	goto CARDNUMCHECK;
+
+SLOT7:
+	set @part,7;
+	goto CARDNUMCHECK;
+
+SLOT8:
+	set @part,8;
+	goto CARDNUMCHECK;
+
+SLOT9:
+	set @part,9;
+	goto CARDNUMCHECK;
+
+SLOT10:
+	set @part,10;
+	goto CARDNUMCHECK;
+
+CARDNUMCHECK:
+	if(getequipcardcnt(@part) == 0) goto DENYCARDCOUNT;
+	set @cardcount,getequipcardcnt(@part);
+	if(@cardcount > 1) goto CARDNUMMULTIMSG;
+	show "[Velha Sábia]";
+	show "Esse ítem tem " + @cardcount + " uma carta equipado em sí. Para melhorar minha magia, é necessário 225000 zeny, um ^0000FFFragmento Estelar^000000, e uma ^0000FFGema Amarela^000000.";
+	goto CARDNUMPOSTMSG;
+CARDNUMMULTIMSG:
+	show "[Velha Sábia]";
+	show "Esse ítem tem " + @cardcount + " cards equipado em sí. Para melhorar minha magia, é necessário " + (200000+(@cardcount * 25000)) + " zeny, um ^0000FFFragmento Estelar^000000, e uma ^0000FFGema Amarela^000000.";
+CARDNUMPOSTMSG:
+	next;
+	menu "Ok, estou pronto.",REMOVECARDWARNING,
+	     "Não, não faça isso.",CLOSEOUT;
+
+REMOVECARDWARNING:
+	show "[Velha Sábia]";
+	show "Dependendo da sua chance, você pode falhar. Se isso acontecer, as cartas serão destruídas, o ítem, tudo. Eu não aceito devolução do seu dinheiro. Tenho uma pergunta, o que é mais importante para você: As cartas, ou os itens?";
+	next;
+	menu "Quero pensar mais sobre isso.",CLOSEOUT,
+	     "O ítem.",PRIORITYITEM,
+	     "As cartas.",PRIORITYCARD;
+
+PRIORITYITEM:
+	set @failtype,1;
+	goto REMOVECARD;
+
+PRIORITYCARD:
+	set @failtype,2;
+	goto REMOVECARD;
+
+REMOVECARD:
+	show "[Velha Sábia]";
+	show "Muito bem. Vamos nessa!";
+	if((zeny < (200000+(@cardcount * 25000))) || (countitem(1000) < 1) || (countitem(715) < 1)) goto DENYMATERIAL;
+	set zeny,zeny - (50000+(@cardcount * 25000));
+	delitem 1000,1;
+	delitem 715,1;
+	set @failchance,rand(100);
+//	if(@failchance < 2) goto FAILREMOVECARD0;
+//	if((@failchance < 8) && (@failtype == 1)) goto FAILREMOVECARD1;
+//	if((@failchance < 8) && (@failtype == 2)) goto FAILREMOVECARD2;
+	if(@failchance < 10) goto FAILREMOVECARD3;
+	successremovecards @part;
+	next;
+	show "[Velha Sábia]";
+	show "O processo foi um grande sucesso. Tome suas cartas e seus ítens.";
+	close;
+
+FAILREMOVECARD0:
+	failedremovecards @part,0;
+	next;
+	show "[Velha Sábia]";
+	show "O processo foi uma falha total. Estou com muita pena, suas cartas e seus ítens foram destruídos.";
+	close;
+
+FAILREMOVECARD1:
+	failedremovecards @part,1;
+	next;
+	show "[Velha Sábia]";
+	show "Eu falhei tentando remover as cartas do seu ítem, suas cartas foram destruídas durante o processo. O ítem, está em perfeito estado.";
+	close;
+
+FAILREMOVECARD2:
+	failedremovecards @part,2;
+	next;
+	show "[Velha Sábia]";
+	show "Menos mal. Eu tive sucesso em remover as cartas, só que o ítem foi destruído no processo.";
+	close;
+
+FAILREMOVECARD3:
+	failedremovecards @part,3;
+	next;
+	show "[Velha Sábia]";
+	show "Eu falhei tentando remover as cartas. Sorte sua, os ítens e as cartas estão perfeitos.";
+	close;
+
+DENYCARDCOUNT:
+	show "[Velha Sábia]";
+	show "Meu jovem não há cartas equipadas neste ítem. Não posso trabalhar assim.";
+	close;
+
+DENYMATERIAL:
+	next;
+	show "[Velha Sábia]";
+	show "Você não tem todos os ítens necessários para a minha mágica, garoto. Volte quando conseguí-los.";
+	close;
+
+CLOSEOUT:
+	show "[Velha Sábia]";
+	show "Tudo bem. Volte quando precisar dos meus serviços.";
+	close;
+}
+
+//=======================================================//
+
+//=================//
+//====mapflag======//
+//=================//
+
+sec_in01	mapflag	nodrop
+sec_in01	mapflag	nosave
+sec_in01	mapflag	nowarp
+sec_in01	mapflag	noicewall
+sec_in01	mapflag	noteleport
+sec_in01	mapflag	nowarpto

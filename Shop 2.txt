@@ -1,0 +1,115 @@
+// Fixed some Bug. [ By Goddameit ]
+
+// Leave this alone...
+-	shop	Emistry_Shop	-1,512:15
+
+
+prontera.gat,182,174,5	script	Shop 2	411,{
+// NPC Name
+set .name$,"[^FF0000  Emistry Shop  ^000000]";
+
+mes .name$;
+mes "Each Shop Buy Item Using Different Items.";
+mes "Which shop you like to look at it";
+next;
+deletearray .ItemLists[0],getarraysize( .ItemLists );
+deletearray .ItemPrice[0],getarraysize( .ItemPrice );
+npcshopitem "Emistry_Shop",512,1;
+select("Headgears:Midgears:Lowgears:Items Box:God Items");
+callsub CaseCH,@menu;
+
+npcshopdelitem "Emistry_Shop",512;
+for(set .@i,0; .@i < getarraysize( .ItemLists ); set .@i,.@i+1)
+	npcshopadditem "Emistry_Shop",.ItemLists[.@i],.ItemPrice[.@i];
+mes "Okay...wait awhile";
+mes "This Shop use ^FF0000"+getitemname( @Currency )+"^000000 to buy the Items.";
+close2;
+callsub CaseCH,@menu;
+callshop "Emistry_Shop",1;
+npcshopattach "Emistry_Shop";
+dispbottom "You currently have "+countitem( @Currency )+" "+getitemname( @Currency )+".";
+end;
+
+OnBuyItem:
+	callsub CaseCH,@menu;
+	for(set @i,0; @i < getarraysize( @bought_nameid ); set @i,@i+1)
+		for(set @j,0; @j < getarraysize( .ItemLists ); set @j,@j+1)
+			if( .ItemLists[@j] == @bought_nameid[@i] )
+			set @TotalCost,@TotalCost + ( .ItemPrice[@j] * @bought_quantity[@i] );
+	if( countitem( @Currency ) < @TotalCost )
+	{
+		for( set @i,0; @i < getarraysize( @bought_nameid ); set @i,@i+1 )
+		{
+			mes "Item : ^0000FF"+getitemname( @bought_nameid[@i] )+"^000000";
+			mes "Quantity : ^0000FF"+@bought_quantity[@i]+"^000000";
+		}
+		mes "^00FF00____________________________^000000";
+		mes "Total Cost : ^0000FF"+@TotalCost+" x "+getitemname( @Currency )+"^000000";
+		mes "^00FF00____________________________^000000";
+		mes "[ ^FF0000X^000000 ] You do not have enough ^0000FF"+getitemname( @Currency )+"^000000 to purchase this.";
+	} else {
+		for(set @i,0; @i < getarraysize( @bought_nameid ); set @i,@i+1)
+		{
+			getitem @bought_nameid[@i],@bought_quantity[@i];
+			message strcharinfo(0),"Purchased "+getitemname( @bought_nameid[@i] );
+		}
+		delitem @Currency,@TotalCost;
+		mes "Thank you for shopping.";
+		mes "You now have "+countitem( @Currency )+" "+getitemname( @Currency )+" left.";
+	}
+	set @TotalCost,0;
+	deletearray @bought_nameid[0],getarraysize( @bought_nameid );
+	deletearray @bought_quantity[0],getarraysize( @bought_quantity );
+	close;
+
+CaseCH:
+	switch(getarg(0))
+	{
+		Case 1:
+			// Item Currency
+			set @Currency,7227;
+			// Item ID Lists
+			setarray .ItemLists[0],5137,5467,5376,5374,5518,5423,5013,5286,5277;
+			// Item Price
+			setarray .ItemPrice[0],250,250,250,250,250,250,250,250,250;
+			return;
+		Case 2:
+			// Item Currency
+			set @Currency,7227;
+			// Item ID Lists
+			setarray .ItemLists[0],5788,2202,2204,5288,5786,5358,5401,5402,5389,5421,5325,20251,20304,20252,20256,20268,20205,20227,20280,20289,20322,20323,20308,20319;
+			// Item Price
+			setarray .ItemPrice[0],200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200;
+			return;
+		Case 3:
+			// Item Currency
+			set @Currency,7227;
+			// Item ID Lists
+			setarray .ItemLists[0],5574,5361,5155,5548,5305,20238,20240,20271,20212,5377,20222,20207,20224,20228,20229,20236,20219,20265,20318;
+			// Item Price
+			setarray .ItemPrice[0],150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150;
+			return;
+		Case 4:
+			// Item Currency
+			set @Currency,7539;
+			// Item ID Lists
+			setarray .ItemLists[0],12103,14175,13581,13577,13585,13589,13595,14223,13610,13611,13716,13718,13720,13742,13745,13751,13757,13871,13872,13873,13874,13875,13876,13926,13927,13928,13929,13930,13931,13945,13946,13947,13948,13949,13950,13973,14180,13995;
+			// Item Price
+			setarray .ItemPrice[0],5,5,20,25,25,25,25,25,20,20,25,10,10,15,15,30,30,70,70,70,70,70,70,75,75,75,75,75,75,80,80,80,80,80,80,15,15,5;
+			return;
+		Case 5:
+			// Item Currency
+			set @Currency,7179;
+			// Item ID Lists
+			setarray .ItemLists[0],2629,2630,2410,1530,2541,2383,1161;
+			// Item Price
+			setarray .ItemPrice[0],500,500,500,500,500,500,500;
+			return;
+
+		// Case 4,5,6.....etc...
+
+		default:
+			mes "Wrong Selection / Configurations";
+			close;
+	}
+}

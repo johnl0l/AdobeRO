@@ -1,0 +1,195 @@
+// | ================================================================================================================== | //
+// |		\\				     BrAthena Emulador					//		| //
+// |		 \\			==========================================		       //		| //
+// |		  \\			|		Rhina Script		 |		      //		| //
+// |		   \\			==========================================		     //			| //
+// |		    __________________________________________________________________________________			| //
+// |						   \\  Sala de Suporte  //						| //
+// ----------------------------------------------------------------------------------------------------------------------------
+// = Compatível com Ea,brA.
+// --------------------------
+// = Desenvolvido: Acredito que por mim (Rhina), ainda não vi nenhum próximo ao meu. Se plagiei, desculpe-me.
+// --------------------------
+// = Comentários.
+// = Vejo que poucos servidores tem Sala de Suporte, não por necessidade, mas sim por que não tem muitos scripts 'agradaveis'.
+// Então, criei uma Sala de Suporte de fácil configuração. Você pode ajustar o level do GM mínimo que poderá dar início ao Suporte no script.
+// Sem mais comentários! Veja o Script. --'
+// ============================================================================================================================
+
+//INÍCIO DO SCRIPT.
+prontera,145,188,5	script	Sala de Suporte	475,{
+
+set .@npc$,"[^FF0000 Sala de Suporte ^000000]";	//Nome do Npc.
+set $np,30;	//Número maximo de players na sala.
+set $gm,20;	//Nível de GM para abrir a sala.
+
+	if(getgmlevel() >= $gm){
+	mes .@npc$;
+	mes "Olá Senhor(a)^0000CD "+strcharinfo(0)+"^000000!";
+	mes "o que gostaria de fazer?";
+	menu "- Abrir Sala de Suporte",case1,"- Fechar Sala de Suporte",case2,"- Entrar na Sala de Suporte",case3;
+	case1:
+	if($@switch == 1){
+		next;
+		mes .@npc$;
+		mes "A sala já estava aberta deseja mante-la assim?";
+		menu "- Sim",-,"- Não",N1;
+		next;
+		mes .@npc$;
+		mes "Certo!";
+		mes "A sala continua aberta!";
+		close;
+		N1:
+		next;
+		set $@switch,0;
+		mes .@npc$;
+		mes "A sala está fechada!";
+		close;
+		}
+		next;
+		set $@switch,1;
+		mes .@npc$;
+		mes "A sala está aberta!";
+		announce "[ Suporte Online ]: Suporte inicíado na Sala de Suporte. Abram chat's 1/2!",bc_yellow;
+		close;
+	case2:
+	if($@switch == 0){
+		next;
+		mes .@npc$;
+		mes "A sala já estava fechada deseja mante-la assim?";
+		menu "- Sim",-,"- Não",N2;
+		next;
+		mes .@npc$;
+		mes "Muito bem!";
+		mes "A sala continua fechada!";
+		close;
+		N2:
+		next;
+		set $@switch,1;
+		mes .@npc$;
+		mes "A sala está aberta!";
+		announce "[ Suporte Online ]: Suporte inicíado na Sala de Suporte. Abram chat's 1/2!",bc_yellow;
+		close;
+		}
+		next;
+		set $@switch,0;
+		mes .@npc$;
+		mes "A sala está fechada no momento!";
+		announce "[ Suporte Offline ]: Suporte Encerrado ! Bom jogo.",bc_yellow;
+		close;
+	case3:
+		warp "lhz_in01",286,232;
+		end;
+		}
+	if($@switch == 0){
+	mes .@npc$;
+	mes "^FF0000- A Sala de Suporte está fechada!^000000";
+	close;
+	}
+	mes .@npc$;
+	mes "Gostaria de ir para Sala de Suporte? ";
+	menu "- Entrar na Sala [" + getmapusers("lhz_in01") + " / "+$np+"]",Entrar,"- Cancelar",Cancel;
+
+Entrar:
+if (getmapusers("lhz_in01")>$np){
+	mes .@npc$;
+	mes "A sala agora esta lotada";
+	mes "O limite maximo é de^FF0000 "+$np;
+	mes "pessoas lá dentro!";
+	close;
+
+}
+warp "lhz_in01",286,232;
+end;
+
+Cancel:
+end;
+}
+
+lhz_in01,285,221,3	script	Retorna	475,{
+
+set .@npc$,"[^FF0000 Sala de Suporte ^000000]";	//Nome do Npc.
+set $np,30;	//Número maximo de players na sala.
+set $gm,20;	//Nível de GM para abrir a sala.
+
+	if(getgmlevel() >= $gm){
+	mes .@npc$;
+	mes "Olá Senhor(a)^0000CD "+strcharinfo(0)+"^000000!";
+	mes "o que gostaria de fazer?";
+	menu "- Abrir Sala de Suporte",case1,"- Fechar Sala de Suporte",case2,"- Sair da Sala de Suporte",case3;
+	case1:
+	if($@switch == 1){
+		next;
+		mes .@npc$;
+		mes "A sala já estava aberta deseja mante-la assim?";
+		menu "- Sim",-,"- Não",N1;
+		next;
+		mes .@npc$;
+		mes "Certo!";
+		mes "A sala continua aberta!";
+		close;
+		N1:
+		next;
+		set $@switch,0;
+		mes .@npc$;
+		mes "A sala está fechada!";
+		close;
+		}
+		next;
+		set $@switch,1;
+		mes .@npc$;
+		mes "A sala está aberta!";
+		announce "[ Suporte Online ]: Suporte inicíado na Sala de Suporte. Abram chat's 1/2!",bc_yellow;
+		close;
+	case2:
+	if($@switch == 0){
+		next;
+		mes .@npc$;
+		mes "A sala já estava fechada deseja mante-la assim?";
+		menu "- Sim",-,"- Não",N2;
+		next;
+		mes .@npc$;
+		mes "Muito bem!";
+		mes "A sala continua fechada!";
+		close;
+		N2:
+		next;
+		set $@switch,1;
+		mes .@npc$;
+		mes "A sala está aberta!";
+		announce "[ Suporte Online ]: Suporte inicíado na Sala de Suporte. Abram chat's 1/2!",bc_yellow;
+		close;
+		}
+		next;
+		set $@switch,0;
+		mes .@npc$;
+		mes "A sala está fechada no momento!";
+		announce "[ Suporte Offline ]: Suporte Encerrado ! Bom jogo.",bc_yellow;
+		close;
+	case3:
+		warp "prontera",150,150;
+		end;
+		}
+	if($@switch == 0){
+	warp "prontera",150,150;
+	close;
+	}
+	mes .@npc$;
+	mes "Gostaria de ir para Sala de Suporte? ";
+	menu "- Sair da Sala",Entrar,"- Cancelar",Cancel;
+
+Entrar:
+warp "prontera",150,150;
+end;
+
+Cancel:
+end;
+}
+
+lhz_in01	mapflag	nomemo
+lhz_in01	mapflag	nowarp
+lhz_in01	mapflag	nowarpto
+lhz_in01	mapflag	noicewall
+lhz_in01	mapflag	noreturn
+lhz_in01	mapflag	noskill
+lhz_in01	mapflag	nosave	SavePoint

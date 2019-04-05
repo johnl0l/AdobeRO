@@ -1,0 +1,328 @@
+/* Run this query before installing this script...
+CREATE TABLE IF NOT EXISTS `news` (
+  `id` bigint(20) unsigned NOT NULL auto_increment,
+  `post_name` varchar(30) NOT NULL default '',
+  `post_id` int(11) unsigned NOT NULL default '0',
+  `title` varchar(45) NOT NULL default '',
+  `message` varchar(255) NOT NULL default '',
+  `time` date NOT NULL default '0000-00-00',
+  `status` tinyint(2) NOT NULL default '0',
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM;
+*/
+
+//Skorm Version 1.1
+prontera.gat,151,184,5	script	Server News	857,{
+query_sql("SELECT * FROM `news` ORDER BY `id` DESC",.@id,.@post_name$,.@post_id,.@title$,.@message$,.@time$,.@status);
+set .@len, getarraysize(.@post_id);
+copyarray .@og_stat[0],.@status,128;
+set @menu, -1;
+
+	if(getgmlevel()>10) {
+		mes .npc$;
+		mes "Would you like to view the normal player menu?"; next;
+		if(select("No:Yes")&2) goto L_Menu;
+		
+L_GM_Menu:
+		mes .npc$;
+		mes "Hello, "+strcharinfo(0)+", what would you like to do?"; next;
+		switch(select("(^11772dAdd^000000)"+((.@len)?":(^FF0000Remove^000000):(^0000FFFeature^000000):[^8700c9Submit^000000]":""))) {
+			case 1:
+				mes .npc$;
+				mes "#Title# (45 Character Limit)";
+				input(.@title$[.@len]);
+				mes "#Message# ("+.in_len+" Character Limit)";
+				input(.@message$[.@len]); next;
+				while(getstrlen(.@message$[.@len])<.in_len) {
+					set(.@length, .in_len-getstrlen(.@message$[.@len]));
+					mes .npc$;
+					mes "Would you like to add more to the message?";
+					mes "^656565("+.@length+" Characters Left)^000000"; next;
+					if(select("Yes:No")&2) break;
+					input(.@tmp$);
+					set .@message$[.@len],.@message$[.@len]+.@tmp$;
+				}
+				set .@post_name$[.@len], strcharinfo(0);
+				set .@post_id[.@len], getcharid(0);
+				if(.rathena) set .@time$[.@len], gettimestr("%Y-%m-%d",21);
+				else { query_sql("SELECT CURDATE()",.@tym$); set .@time$[.@len],.@tym$; }
+				set .@status[.@len], 2;
+				set .@og_stat[.@len], 2;
+				set .@len, getarraysize(.@post_id);
+				set .@id[.@len-1], .@len;
+				mes .npc$;
+				mes "Added!"; next;
+				goto L_GM_Menu;
+			
+			case 2:
+				mes .npc$;
+				mes "Select a notice to remove or restore it.";
+				next;
+			Rm_Menu:
+				set .@menu$, "";
+				set .@a, -1;
+				while(set(.@a,.@a+1)<.@len)
+					if(.@status[.@a]==1) set .@menu$,.@menu$+ .@post_name$[.@a]+
+						" [^0000FF"+.@title$[.@a]+
+						"^000000] ~ ("+.@time$[.@a]+"):";
+					else if (!.@status[.@a]) set .@menu$,.@menu$+ 
+						"^C0C0C0//"+.@post_name$[.@a]+
+						" ["+.@title$[.@a]+
+						"] ~ ("+.@time$[.@a]+")^000000:";
+					else if (.@status[.@a]==2) set .@menu$,.@menu$+ 
+						"^11772d+"+.@post_name$[.@a]+
+						" ["+.@title$[.@a]+
+						"] ~ ("+.@time$[.@a]+")^000000:";
+					else if (.@status[.@a]==-1) set .@menu$,.@menu$+ 
+						"^FF0000-"+.@post_name$[.@a]+
+						" ["+.@title$[.@a]+
+						"] ~ ("+.@time$[.@a]+")^000000:";
+				set .@menu$,.@menu$+"[^8700c9Back^000000]";
+				select(.@menu$);
+				if(@menu-1>=.@len) goto L_GM_Menu;
+				set .@status[@menu-1], ((.@status[@menu-1]==-1)?
+											.@og_stat[@menu-1]:-1);
+				goto Rm_Menu;
+
+			case 3:
+				mes .npc$;
+				mes "Select a notice to enable or disable it.";
+				next;
+			Ft_Menu:
+				set .@menu$, "";
+				set .@a, -1;
+				while(set(.@a,.@a+1)<.@len)
+					if(.@status[.@a]==1) set .@menu$,.@menu$+ .@post_name$[.@a]+
+						" [^0000FF"+.@title$[.@a]+
+						"^000000] ~ ("+.@time$[.@a]+"):";
+					else if (!.@status[.@a]) set .@menu$,.@menu$+ 
+						"^C0C0C0//"+.@post_name$[.@a]+
+						" ["+.@title$[.@a]+
+						"] ~ ("+.@time$[.@a]+")^000000:";
+					else if (.@status[.@a]==2) set .@menu$,.@menu$+ 
+						"^11772d+"+.@post_name$[.@a]+
+						" ["+.@title$[.@a]+
+						"] ~ ("+.@time$[.@a]+")^000000:";
+					else if (.@status[.@a]==-1) set .@menu$,.@menu$+ 
+						"^FF0000-"+.@post_name$[.@a]+
+						" ["+.@title$[.@a]+
+						"] ~ ("+.@time$[.@a]+")^000000:";
+				set .@menu$,.@menu$+"[^8700c9Back^000000]";
+				select(.@menu$);
+				if(@menu>.@len) goto L_GM_Menu;
+				set .@status[@menu-1], ((.@status[@menu-1])?
+												0:((.@og_stat[@menu-1])?.@og_stat[@menu-1]:1));
+				goto Ft_Menu;
+			
+			case 4:
+				set .@a, -1; set .@b, 0;
+				while(set(.@a,.@a+1)<.@len) {
+					if(.@og_stat[.@a]==2&&.@status[.@a]==-1)
+						set .@b, .@b+1;
+					if(.@og_stat[.@a]==2&&.@status[.@a]!=-1)
+						query_sql("INSERT INTO `news` (`post_name`,`post_id`,`title`,`message`,`time`,`status`) "+
+							"VALUES ('"+.@post_name$[.@a]+
+							"',"+.@post_id[.@a]+
+							",'"+escape_sql(.@title$[.@a])+
+							"','"+escape_sql(.@message$[.@a])+"',"+
+							"CURDATE(),"+((.@status[.@a]>=1)?1:0)+")");
+					if(.@status[.@a]!=.@og_stat[.@a]&&.@status[.@a]!=-1)
+						query_sql("UPDATE `news`"+
+							"SET `status`="+((.@status[.@a]>=1)?1:0)+" "+
+							"WHERE `id`="+(.@id[.@a]+.@b)+";");
+					if(.@status[.@a]<0&&.@og_stat[.@a]!=2)
+						query_sql("DELETE FROM `news`"+
+							"WHERE `id`="+(.@id[.@a]+.@b)+";");
+				}
+				mes .npc$;
+				mes "Server News Updated!";
+				close;
+		}
+	}
+
+L_Menu:
+	set .@a, -1;
+	while(set(.@a,.@a+1)<.@len)
+		if(.@status[.@a]) {
+			set @menu, .@a;
+			break;
+		}
+		
+L_PC_Menu:
+	set .@a, -1;
+	set .@menu$, ""; set .@g, 0;
+	while(set(.@a,.@a+1)<.@len) {
+		if(.@status[.@a]) {
+			set .@menu$,.@menu$+ .@post_name$[.@a]+
+				" [^0000FF"+.@title$[.@a]+
+				"^000000] ~ ("+.@time$[.@a]+"):";
+			set(.@g,.@g+1);
+		} else {
+			deletearray(.@time$[.@a]);
+			deletearray(.@title$[.@a],1);
+			deletearray(.@message$[.@a],1);
+			deletearray(.@post_name$[.@a],1);
+		}
+	}
+	if(!.@g||.@menu$=="") {
+		mes .npc$;
+		mes "I'm sorry no news has been posted.";
+		close;
+	}
+	mes "[^0000FF"+.@title$[@menu]+"^000000]";
+	if(compare(.@message$[@menu],.line$)) {
+		if(.rathena) explode(@explode$,.@message$[@menu],.line$);
+		else callfunc("str_explode","@explode$[0]",.@message$[@menu],"/");
+		set .@a, -1;
+		set .@str_len, getarraysize(@explode$);
+		while(set(.@a,.@a+1)<.@str_len) {
+			if(.case&&!.rathena) {
+				callfunc "str_toarray", @explode$[.@a], "@tmp$[0]";
+				set @tmp$[0],callfunc("str_changecase", @tmp$[0], 1);
+				set @explode$[.@a],""; set .@i,0;
+				while(getstrlen(@explode$[.@a])<getarraysize(@tmp$)) {
+					set @explode$[.@a],@explode$[.@a]+@tmp$[.@i];
+					set .@i,.@i+1;
+				}
+			}
+			mes @explode$[.@a];
+		}
+	} else { mes .@message$[@menu]; }
+	mes "By: "+.@post_name$[@menu]+".";
+	mes "^656565(@ "+.@time$[@menu]+")^000000"; next;
+	set .@menu$,.@menu$+"Cancel";
+	set(@menu, select(.@menu$)-1);
+	if(@menu>=.@g) close;
+	goto L_PC_Menu;
+		
+
+end;
+OnInit:
+	set .npc$,	"[^0000FFServer News^000000]";
+	waitingroom "Server News!",0;
+	set .rathena, 1; // If you're running rAthena or not. 0=off/1=on
+	set .case, 1; // For non-rAthena only restores upper-case strings.
+	set .in_len, 210; // Max input length.
+	set .line$, "/"; // Line break used to seperate lines.
+	/* Changing the linebreak for non-rAthena clients doesn't work
+	You have to find callfunc("str_explode","@explode$[0]",.@message$[@menu],"/");
+	and change "/" to what ever you want. (Example "|").*/
+}
+
+function	script	str_explode	{
+
+	if ( getarg(2,"") == "" )
+		return callfunc("str_toarray", getarg(1), getarg(0) );
+
+	sleep2 1;
+
+	setarray .@char$, getarg(2),
+		" ", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+		"e", "i", "a", "s", "r", "n", "t", "o", "u", "l", "c",
+		"p", "m", "d", "v", "h", "g", "f", "b", "y", "q", "k",
+		"z", "x", "j", "w", "_", "-", "|", "/", ".", "'", "[",
+		"]", "(", ")", "=", "*", "&", "#", "@", "!", "+", "`",
+		"~", "%", "<", ">", "?", ",", "^", ":";
+
+	set .@charsize, getarraysize(.@char$);
+	set .@tmp$, "|~key~|";
+	set .@str$, .@tmp$ + getarg(1) ;
+	set .@len, getstrlen(getarg(1));
+	set .@parse_len, getstrlen(getarg(2));
+
+	while( .@len > .@s ) {
+		set .@i, 0 ; 
+		while( .@i < .@charsize  ) {
+			if ( ! ( set(.@l,.@l+1) % 600) )
+				sleep2 1;
+			if ( compare( .@str$ , .@tmp$ + .@char$[.@i] ) ) {
+				set .@tmp$, .@tmp$ + .@char$[.@i];
+				if ( .@i ) 
+					set .@arr$[.@p], .@arr$[.@p] + .@char$[.@i];
+				else {
+					set .@p, .@p + 1;
+					set .@s, .@s + .@parse_len-1 ;
+				}
+				break;
+			}
+			set .@i, .@i+1 ;
+		}
+		if ( .@i == .@charsize ) return 0;
+		else set .@s, .@s+1 ;
+	}
+	deletearray getd(getarg(0));
+	copyarray getd(getarg(0)), .@arr$, .@p+1;
+	return .@p+1;
+}
+
+function	script	str_changecase	{
+	sleep2 1;
+	if ( getarg(1) ) {
+		setarray .@char$[ 0 ],
+			" ", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+			"E", "I", "A", "S", "R", "N", "T", "O", "U", "L", "C",
+			"P", "M", "D", "V", "H", "G", "F", "B", "Y", "Q", "K",
+			"Z", "X", "J", "W", "_", "-", "(", ")", ";", ",", ":",
+			".", "*", "!", "?", "'";
+	}
+	else {
+		setarray .@char$[ 0 ],
+			" ", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+			"e", "i", "a", "s", "r", "n", "t", "o", "u", "l", "c",
+			"p", "m", "d", "v", "h", "g", "f", "b", "y", "q", "k",
+			"z", "x", "j", "w", "_", "-", "(", ")", ";", ",", ":",
+			".", "*", "!", "?", "'";
+	}
+	set .@charsize, getarraysize(.@char$);
+	set .@str$, "|~key~|" + getarg(0) ;
+	set .@len, getstrlen(getarg(0));
+	while( .@len>.@s ) {
+		set .@i,0;
+		while( .@i<.@charsize ) {
+			if ( ! ( set(.@l,.@l+1) % 650) )
+				sleep2 1;
+			if ( compare( .@str$ , "|~key~|" + .@tmp$ + .@char$[.@i] ) ) {
+				set .@tmp$, .@tmp$ + .@char$[.@i];
+				break;
+			}
+			set .@i, .@i+1;
+		}
+		if ( .@i == .@charsize ) return "";
+		else set .@s, .@s+1;
+	}
+	return .@tmp$;
+}
+
+function	script	str_toarray	{
+	sleep2 1;
+	if ( getstrlen( getarg(0) ) > 128 ) return 0;
+	setarray .@char$[ 0 ],
+		" ", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+		"e", "i", "a", "s", "r", "n", "t", "o", "u", "l", "c",
+		"p", "m", "d", "v", "h", "g", "f", "b", "y", "q", "k",
+		"z", "x", "j", "w", "_", "-", "(", ")", ";", ",", ":",
+		".", "*", "!", "?", "'";
+
+	set .@charsize, getarraysize(.@char$);
+	set .@tmp$, "|~key~|";
+	set .@str$, .@tmp$ + getarg(0) ;
+	set .@len, getstrlen(getarg(0));
+	while( .@len>.@s ) {
+		set .@i,0;
+		while( .@i<.@charsize ) {
+			if ( ! ( set(.@l,.@l+1) % 650) )
+				sleep2 1;
+			if ( compare( .@str$ , .@tmp$ + .@char$[.@i] ) ) {
+				set .@tmp$, .@tmp$ + .@char$[.@i];
+				set .@arr$[.@s], .@char$[.@i];
+				break;
+			}
+			set .@i, .@i+1;
+		}
+		if ( .@i == .@charsize ) return 0;
+		else set .@s, .@s+1;
+	}
+	deletearray getd(getarg(1));
+	copyarray getd(getarg(1)), .@arr$, .@len;
+	return .@len;
+}
