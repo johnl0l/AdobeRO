@@ -1,0 +1,572 @@
+//===== Hercules Script ======================================
+//	PvP Statistician
+//===== By: ==================================================
+//	tonelli		// Do not delete
+//===== Edited By: ===========================================
+//	
+//	
+//	
+//===== Current Version: =====================================
+//	1.1
+//===== Additional Comments: =================================
+//	1.0 Initial test script.
+//	1.1 attempted Fixed Cycling through all 25 ranks
+//	1.2 spelling and duplicate name fix
+//===== Description: =========================================
+//	PvP Statistician
+//============================================================
+prontera,171,223,3	script	PvP Statistician	650,{
+	mes "[PvP Statistician]";
+	mes "I keep records of all PvP Data";
+	mes "Server-Wide. If you want to know your rankings I'm your girl!";
+	mes "^0000FF[General Info]^000000";
+	if(pvppos>25) || (pvppos<=0) {
+	mes "Your ^0000FFPvP Rank^000000: ^CC6633Unranked^000000"; }
+	else { mes "Your ^0000FFPvP Rank^000000: ^CC6633"+pvppos+"^000000"; }
+	if(woepos>25) || (woepos<=0) {
+	mes "Your ^0000FFWoE Rank^000000: ^CC6633Unranked^000000"; }
+	else { mes "Your ^0000FFWoE Rank^000000: ^CC6633"+woepos+"^000000"; }
+	next;
+	mes "[PvP Statistician]";
+	mes "^0000FF[Top Ranked Players]^000000";
+	query_sql "SELECT `char_reg_num_db`.`value`,`char`.`name` FROM `char` INNER JOIN `char_reg_num_db` ON `char_reg_num_db`.`char_id`=`char`.`char_id` WHERE `char_reg_num_db`.`key`='overallkdr' ORDER BY `char_reg_num_db`.`value` DESC LIMIT 1",.@value,.@name$;
+	for (.@i=0; .@i<getarraysize(.@value); .@i++){
+	mes "^0000FFOverall KDR^000000: ^808000"+ .@name$[.@i] +"^000000 - ^CC6633"+ .@value[.@i] +":1^000000";
+	}
+	query_sql "SELECT `char_reg_num_db`.`value`,`char`.`name` FROM `char` INNER JOIN `char_reg_num_db` ON `char_reg_num_db`.`char_id`=`char`.`char_id` WHERE `char_reg_num_db`.`key`='pvpkdr' ORDER BY `char_reg_num_db`.`value` DESC LIMIT 1",.@value,.@name$;
+	for (.@i=0; .@i<getarraysize(.@value); .@i++){
+	mes "^0000FFTop PvP^000000: ^808000"+ .@name$[.@i] +"^000000 - ^CC6633"+ .@value[.@i] +":1^000000";
+	}
+	query_sql "SELECT `char_reg_num_db`.`value`,`char`.`name` FROM `char` INNER JOIN `char_reg_num_db` ON `char_reg_num_db`.`char_id`=`char`.`char_id` WHERE `char_reg_num_db`.`key`='woekdr' ORDER BY `char_reg_num_db`.`value` DESC LIMIT 1",.@value,.@name$;
+	for (.@i=0; .@i<getarraysize(.@value); .@i++){
+	mes "^0000FFTop WoE^000000: ^808000"+ .@name$[.@i] +"^000000 - ^CC6633"+ .@value[.@i] +":1^000000";
+	}
+	query_sql "SELECT `char_reg_num_db`.`value`,`char`.`name` FROM `char` INNER JOIN `char_reg_num_db` ON `char_reg_num_db`.`char_id`=`char`.`char_id` WHERE `char_reg_num_db`.`key`='xpvpspree' ORDER BY `char_reg_num_db`.`value` DESC LIMIT 1",.@value,.@name$;
+	for (.@i=0; .@i<getarraysize(.@value); .@i++){
+	if(.@value[.@i]>0) { mes "^0000FFPvP Spree^000000: ^808000"+ .@name$[.@i] +"^000000 - ^CC6633"+ .@value[.@i] +"^000000 Kill[s]"; }
+	else { mes ""; }
+	}
+	deletearray .@name$[0],10;	
+	deletearray .@value$[0],10;
+	next;
+	if(getgmlevel()>=99) goto GMMENU;
+	goto PVPMAIN;
+
+GMMENU:
+	menu "Personal Stats",PVP_SELF,"Ladder Stats",Top25gm,"WoE Stats",WOE_SELF,"^FF0000GM Menu [Ladder Resets]^000000",GMLadderMenu,"Close",CLOSESTAT;
+GMLadderMenu:
+	menu "Reset PvP Ladders",GMPvpReset,"Reset WoE Ladders",GMWoeReset,"Reset Breaker Ladder",GMBreakReset,"Reset All Ladders",GMLadderReset,"Go Back",GMMENU;
+PVPMAIN:
+	menu "Personal Stats",PVP_SELF,"Ladder Stats",Top25,"WoE Stats",WOE_SELF,"Close",CLOSESTAT;
+
+Top25gm:
+	menu "PvP Kill [Ladder]",Top25PvpKill,"PvP KDR [Ladder]",Top25PvpKDR,"WoE Kill [Ladder]",Top25WoeKill,"WoE KDR [Ladder]",Top25WoeKDR,"Top 25 Breakers [Ladder]",Top25EBreak,"Go Back",GMMENU;	
+Top25:
+	menu "PvP Kill [Ladder]",Top25PvpKill,"PvP KDR [Ladder]",Top25PvpKDR,"WoE Kill [Ladder]",Top25WoeKill,"WoE KDR [Ladder]",Top25WoeKDR,"Top 25 Breakers [Ladder]",Top25EBreak,"Go Back",PVPMAIN;
+
+PVP_SELF:
+	next;
+	mes "[^0000FFPersonal PvP Statistics^000000]";
+	mes "Personal ^0000FFPvP Kills^000000: ^CC6633"+pvpkillcount+"^000000";
+	mes "Personal ^0000FFPvP Deaths^000000: ^CC6633"+pvpdeathcount+"^000000";
+	if(pvpkillcount>0) && (pvpdeathcount>0) { mes "Personal ^0000FFPvP KDR^000000: ^CC6633"+callfunc("KDR_Calcton", pvpkillcount, pvpdeathcount)+":1^000000"; } 
+	else if(pvpkillcount>0) && (pvpdeathcount==0){ mes "Personal ^0000FFPvP KDR^000000: ^CC6633"+pvpkillcount+":0^000000"; }
+	else if(pvpkillcount==0) && (pvpdeathcount>0){ mes "Personal ^0000FFPvP KDR^000000: ^CC66330:"+pvpdeathcount+"^000000"; }
+	else { mes "Personal ^0000FFPvP KDR^000000: ^CC66330:0^000000"; }
+	mes "^0000FFBest PvP Kill Spree^000000: ^CC6633"+xpvpspree+"^000000";
+	if(pvpwoekills>0) && (pvpwoedeath>0) { mes "Overall ^0000FFKDR^000000: ^CC6633"+callfunc("KDR_Calcton", pvpwoekills, pvpwoedeath)+":1^000000"; }
+	else if(pvpwoekills>0) && (pvpwoedeath==0){ mes "Personal ^0000FFPvP KDR^000000: ^CC6633"+pvpwoekills+":0^000000"; }
+	else if(pvpwoekills==0) && (pvpwoedeath>0){ mes "Personal ^0000FFPvP KDR^000000: ^CC66330:"+pvpwoedeath+"^000000"; }
+	else { mes "Overall ^0000FFKDR^000000: ^CC66330:0^000000"; }
+	if(getgmlevel()>=99) goto GMMENU;
+	goto PVPMAIN;
+	
+WOE_SELF:
+	next;
+	mes "[^0000FFPersonal WoE Statistics^000000]";
+	mes "Personal ^0000FFWoE Kills^000000: ^CC6633"+woekillcount+"^000000";
+	mes "Personal ^0000FFWoE Deaths^000000: ^CC6633"+woedeathcount+"^000000";
+	if(woekillcount>0) && (woedeathcount>0) { mes "Personal ^0000FFWoE KDR^000000: ^CC6633"+callfunc("KDR_Calcton", woekillcount, woedeathcount)+":1^000000"; } 
+	else if(woekillcount>0) && (woedeathcount==0){ mes "Personal ^0000FFPvP KDR^000000: ^CC6633"+woekillcount+":0^000000"; }
+	else if(woekillcount==0) && (woedeathcount>0){ mes "Personal ^0000FFPvP KDR^000000: ^CC66330:"+woedeathcount+"^000000"; }
+	else { mes "Personal ^0000FFWoE KDR^000000: ^CC66330:0^000000"; }
+	mes "^0000FFBest WoE Kill Spree^000000: ^CC6633"+xwoespree+"^000000";
+	mes "^0000FFEmperiums Broken^000000: ^CC6633"+ebreaker+"^000000";
+	if(getgmlevel()>=99) goto GMMENU;
+	goto PVPMAIN;
+
+Top25PvpKill:
+	next;
+	mes "^0000FF[Top 25 Ranking PvP Kills]^000000";
+	query_sql "SELECT `char_reg_num_db`.`value`,`char`.`name` FROM `char` INNER JOIN `char_reg_num_db` ON `char_reg_num_db`.`char_id`=`char`.`char_id` WHERE `char_reg_num_db`.`key`='pvpkillcount' ORDER BY `char_reg_num_db`.`value` DESC LIMIT 25",.@value,.@name$;
+	for (.@i=0; .@i<getarraysize(.@value); .@i++){
+		mes "^0000FFRanked #"+(.@i+1)+"^000000: ^808000"+ .@name$[.@i] +"^000000 - ^CC6633"+ .@value[.@i] +"^000000 Kill[s]";
+	}
+	deletearray .@name$[0],10;	
+	deletearray .@value$[0],10;
+	if(getgmlevel()>=99) goto Top25gm;
+	goto Top25;
+
+Top25PvpKDR:
+	next;
+	mes "^0000FF[Top 25 Ranking PvP KDR]^000000";
+	query_sql "SELECT `char_reg_num_db`.`value`,`char`.`name` FROM `char` INNER JOIN `char_reg_num_db` ON `char_reg_num_db`.`char_id`=`char`.`char_id` WHERE `char_reg_num_db`.`key`='pvpkdr' ORDER BY `char_reg_num_db`.`value` DESC LIMIT 25",.@value,.@name$;
+	for (.@i=0; .@i<getarraysize(.@value); .@i++){
+		mes "^0000FFRanked #"+(.@i+1)+"^000000: ^808000"+ .@name$[.@i] +"^000000 - ^CC6633"+ .@value[.@i] +":1^000000";
+	}
+	deletearray .@name$[0],10;	
+	deletearray .@value$[0],10;
+	if(getgmlevel()>=99) goto Top25gm;
+	goto Top25;
+
+Top25WoeKill:
+	next;
+	mes "^0000FF[Top 25 Ranking WoE Kills]^000000";
+	query_sql "SELECT `char_reg_num_db`.`value`,`char`.`name` FROM `char` INNER JOIN `char_reg_num_db` ON `char_reg_num_db`.`char_id`=`char`.`char_id` WHERE `char_reg_num_db`.`key`='woekillcount' ORDER BY `char_reg_num_db`.`value` DESC LIMIT 25",.@value,.@name$;
+	for (.@i=0; .@i<getarraysize(.@value); .@i++){
+		mes "^0000FFRanked #"+(.@i+1)+"^000000: ^808000"+ .@name$[.@i] +"^000000 - ^CC6633"+ .@value[.@i] +"^000000 Kill[s]";
+	}
+	deletearray .@name$[0],10;	
+	deletearray .@value$[0],10;
+	if(getgmlevel()>=99) goto Top25gm;
+	goto Top25;
+	
+Top25WoeKDR:
+	next;
+	mes "^0000FF[Top 25 Ranking WoE KDR]^000000";
+	query_sql "SELECT `char_reg_num_db`.`value`,`char`.`name` FROM `char` INNER JOIN `char_reg_num_db` ON `char_reg_num_db`.`char_id`=`char`.`char_id` WHERE `char_reg_num_db`.`key`='woekdr' ORDER BY `char_reg_num_db`.`value` DESC LIMIT 25",.@value,.@name$;
+	for (.@i=0; .@i<getarraysize(.@value); .@i++){
+		mes "^0000FFRanked #"+(.@i+1)+"^000000: ^808000"+ .@name$[.@i] +"^000000 - ^CC6633"+ .@value[.@i] +":1^000000";
+	}
+	deletearray .@name$[0],10;	
+	deletearray .@value$[0],10;
+	if(getgmlevel()>=99) goto Top25gm;
+	goto Top25;
+
+Top25EBreak:
+	next;
+	mes "^0000FF[Top 25 Ranking Breakers]^000000";
+	query_sql "SELECT `char_reg_num_db`.`value`,`char`.`name` FROM `char` INNER JOIN `char_reg_num_db` ON `char_reg_num_db`.`char_id`=`char`.`char_id` WHERE `char_reg_num_db`.`key`='ebreaker' ORDER BY `char_reg_num_db`.`value` DESC LIMIT 25",.@value,.@name$;
+	for (.@i=0; .@i<getarraysize(.@value); .@i++){
+		mes "^0000FFRanked #"+(.@i+1)+"^000000: ^808000"+ .@name$[.@i] +"^000000 - ^CC6633"+ .@value[.@i] +"^000000 Break[s]";
+	}
+	deletearray .@name$[0],10;	
+	deletearray .@value$[0],10;
+	if(getgmlevel()>=99) goto Top25gm;
+	goto Top25;
+	
+GMPvpReset:
+if(getgmlevel()>=99) {
+	mes "[PvP Statistician]";
+	mes "This GM Command Resets:";
+	mes "^FF0000PvP Kills, PvP Deaths, PvP KDR, PvP Killing Spree, Best PvP Killing Spree & Overall KDR.^000000";
+	mes "Continue the PvP Ladder Reset?";
+	menu "Yes",-,"No",CLOSESTAT;
+	next;
+	mes "[PvP Statistician]";
+	mes "Stats have been successfully reset.";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpkillcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpdeathcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpkdr'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpkillspree'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='xpvpspree'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$pvpxrank$'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$pvpxrank'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='pvppos'";
+	announce "PvP Statistics reset, please re-login to display proper PvP stats.",bc_all;
+	close;
+	end;
+	
+GMWoeReset:
+	mes "[PvP Statistician]";
+	mes "This GM function resets:";
+	mes "^FF0000WoE Kills, WoE Deaths, WoE KDR, WoE Killing Spree, Best WoE Killing Spree & Overall KDR.^000000";
+	mes "Continue the WoE Ladder Reset?";
+	menu "Yes",-,"No",CLOSESTAT;
+	next;
+	mes "[PvP Statistician]";
+	mes "Stats have been successfully reset.";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woekillcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woedeathcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woekdr'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woekillspree'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='xwoespree'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$woexrank$'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$woexrank'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$woepos'";
+	announce "WoE Statistics reset, please re-login to display proper PvP stats.",bc_all;
+	close;
+	end;
+	
+GMBreakReset:
+	mes "[PvP Statistician]";
+	mes "This GM function resets:";
+	mes "^FF0000Emperium Breaks.^000000";
+	mes "Continue the Breaker Ladder Reset?";
+	menu "Yes",-,"No",CLOSESTAT;
+	next;
+	mes "[PvP Statistician]";
+	mes "Stats have been successfully reset.";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='ebreaker'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$breakerxrank$'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$breakerxrank'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$breakerpos'";
+	announce "Emperium Breaker Statistics reset please re-login to display proper PvP stats.",bc_all;
+	close;
+	end;
+	
+GMLadderReset:
+	mes "[PvP Statistician]";
+	mes "This GM function resets:";
+	mes "^FF0000PvP/WoE Kills, PvP/WoE Deaths, PvP/WoE KDR, PvP/WoE Killing Spree, Best PvP/WoE Killing Spree, Overall KDR, & Emperium Breaks.^000000";
+	mes "Continue the Ladder Reset?";
+	menu "Yes",-,"No",CLOSESTAT;
+	next;
+	mes "[PvP Statistician]";
+	mes "Stats have been successfully reset.";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpkillcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woekillcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpdeathcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woedeathcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpkdr'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woekdr'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpkillspree'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woekillspree'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='xpvpspree'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='xwoespree'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpwoekills'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpwoedeath'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='overallkdr'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='ebreaker'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$pvpxrank$'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$pvpxrank'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$woexrank$'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$woexrank'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$breakerxrank$'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$breakerxrank'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='pvppos'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$woepos'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$breakerpos'";
+	query_sql "UPDATE `char_reg_num_db` set `value`='0' WHERE `key`='pvpkillcount' OR `key`='woekillcount' OR `key`='pvpdeathcount' OR `key`='woedeathcount' OR `key`='pvpkdr' OR `key`='woekdr' OR `key`='pvpkillspree' OR `key`='woekillspree' OR `key`='xpvpspree' OR `key`='xwoespree' OR `key`='pvpwoekills' OR `key`='pvpwoedeath' OR `key`='overallkdr' OR `key`='ebreaker'";
+	announce "PvP, WoE & Emperium Breaker Statistics reset, please re-login to display proper PvP stats.",bc_all;
+	close;
+	end;
+
+CLOSESTAT:
+	next;
+	mes "[PvP Statistician]";
+	mes "Happy Killing!";
+	close;
+	end;
+	}
+} //=== PvP Statistician End =================================
+
+
+
+//==== Ghost's KDR Calculator ================================
+function	script	KDR_Calcton	{
+if(!getarg(1)) { debugmes "Error in KDR function, getarg(1) invalid value"; return 0; } // [Lighta]
+if(getarg(0) >= getarg(1)){
+        if(getarg(1)){
+                set .@i, getarg(0)/getarg(1);
+                if((getarg(0)%getarg(1)) == 0){ return .@i+".00"; }
+                set .@j, (getarg(0)%getarg(1))*100/getarg(1);
+                return .@i+"."+.@j;
+        } else {
+                return getarg(0)+".00";
+        }
+}
+if(getarg(0) < getarg(1)){
+        if(getarg(0)){
+                set .@i, (getarg(0)*10)/getarg(1);
+                set .@j, ((getarg(0)*10)%getarg(1))*10/getarg(1);
+        return "0."+.@i +.@j;
+        } else {
+                return "0.00";
+        }
+ }
+} //=== Ghost's KDR Calculator ===============================
+
+
+ 
+//==== On Player Login =======================================
+-	script	pvppctonlogin	-1,{
+
+OnPCLoginEvent:
+if(getgmlevel()<111){
+	set pvpwoekills, pvpwoekills = pvpkillcount+woekillcount;
+	set pvpwoedeath, pvpwoedeath = pvpdeathcount+woedeathcount;
+	if(pvpwoekills>0) && (pvpwoedeath>0) { set overallkdr, overallkdr = callfunc("KDR_Calcton", pvpwoekills, pvpwoedeath); }
+	if(pvpkillcount>0) && (pvpdeathcount>0) { set pvpkdr, pvpkdr = callfunc("KDR_Calcton", pvpkillcount, pvpdeathcount); }
+	if(woekillcount>0) && (woedeathcount>0) { set woekdr, woekdr = callfunc("KDR_Calcton", woekillcount, woedeathcount); }
+	if(pvpkillspree>xpvpspree) set xpvpspree, xpvpspree = pvpkillspree;
+	pvpkillspree = 0;
+	woekillspree = 0;
+	dispbottom "PvP & WoE Killing Spree Reset";
+	end;
+	}
+} //=== On Player Login ======================================
+
+
+
+//==== On PvP Player Kill End ================================
+-	script	pvppctonkill	-1,{
+OnInit:
+	set .MaxPlayers,25;
+	set .Options,4;
+	setarray .@maps$[0],"aldeg_cas01","aldeg_cas02","aldeg_cas03","aldeg_cas04","aldeg_cas05","gefg_cas01","gefg_cas02","gefg_cas03","gefg_cas04","gefg_cas05","payg_cas01","payg_cas02","payg_cas03","payg_cas04","payg_cas05","prtg_cas01","prtg_cas02","prtg_cas03","prtg_cas04","prtg_cas05";
+	end;
+
+OnPCKillEvent:
+if(getgmlevel()<111) && (agitcheck() || agitcheck2()) { if(.@maps$[0] == strcharinfo(3) || .@maps$[1] == strcharinfo(3) || .@maps$[2] == strcharinfo(3) || .@maps$[3] == strcharinfo(3) || .@maps$[4] == strcharinfo(3) || .@maps$[5] == strcharinfo(3) || .@maps$[6] == strcharinfo(3) || .@maps$[7] == strcharinfo(3) || .@maps$[8] == strcharinfo(3) || .@maps$[9] == strcharinfo(3) || .@maps$[10] == strcharinfo(3) || .@maps$[11] == strcharinfo(3) || .@maps$[12] == strcharinfo(3) || .@maps$[13] == strcharinfo(3) || .@maps$[14] == strcharinfo(3) || .@maps$[15] == strcharinfo(3) || .@maps$[16] == strcharinfo(3) || .@maps$[17] == strcharinfo(3) || .@maps$[18] == strcharinfo(3) || .@maps$[19] == strcharinfo(3)){ end; } }
+	else { if(getgmlevel()<111) && (!agitcheck() || !agitcheck2()) {
+	set pvpkillcount, pvpkillcount+1;
+	set pvpkillspree, pvpkillspree+1;
+	if(pvpkillcount>0) && (pvpdeathcount>0) { dispbottom "PvP Kill Count: "+pvpkillcount+", PvP Death Count: "+pvpdeathcount+", PvP KDR: "+callfunc("KDR_Calcton", pvpkillcount, pvpdeathcount)+":1"; }
+	else if(pvpkillcount>0) && (pvpdeathcount==0) { dispbottom "PvP Kill Count: "+pvpkillcount+", PvP Death Count: "+pvpdeathcount+", PvP KDR: "+pvpkillcount+":1"; }
+	else if(pvpkillcount==0) && (pvpdeathcount>0) { dispbottom "PvP Kill Count: "+pvpkillcount+", PvP Death Count: "+pvpdeathcount+", PvP KDR: 0:"+pvpdeathcount+""; }
+	else { dispbottom "PvP Kill Count: "+pvpkillcount+", PvP Death Count: "+pvpdeathcount+", PvP KDR: 0:0"; }
+	
+	}}
+} //=== On PvP Player Kill End ===============================
+
+
+
+//==== On PvP Player Death ===================================
+-	script	pvppctondie	-1,{
+OnInit:
+	setarray .@maps$[0],"aldeg_cas01","aldeg_cas02","aldeg_cas03","aldeg_cas04","aldeg_cas05","gefg_cas01","gefg_cas02","gefg_cas03","gefg_cas04","gefg_cas05","payg_cas01","payg_cas02","payg_cas03","payg_cas04","payg_cas05","prtg_cas01","prtg_cas02","prtg_cas03","prtg_cas04","prtg_cas05";
+	end;
+	
+OnPCDieEvent:
+if(getgmlevel()<111) && (agitcheck() || agitcheck2()) {
+if(.@maps$[0] == strcharinfo(3) || .@maps$[1] == strcharinfo(3) || .@maps$[2] == strcharinfo(3) || .@maps$[3] == strcharinfo(3) || .@maps$[4] == strcharinfo(3) || .@maps$[5] == strcharinfo(3) || .@maps$[6] == strcharinfo(3) || .@maps$[7] == strcharinfo(3) || .@maps$[8] == strcharinfo(3) || .@maps$[9] == strcharinfo(3) || .@maps$[10] == strcharinfo(3) || .@maps$[11] == strcharinfo(3) || .@maps$[12] == strcharinfo(3) || .@maps$[13] == strcharinfo(3) || .@maps$[14] == strcharinfo(3) || .@maps$[15] == strcharinfo(3) || .@maps$[16] == strcharinfo(3) || .@maps$[17] == strcharinfo(3) || .@maps$[18] == strcharinfo(3) || .@maps$[19] == strcharinfo(3)){ end; }
+else if ( killerrid < 100000000 ) && (getgmlevel()<111) {
+	if(rid2name(killerrid)== strcharinfo(0)) { end; }
+	announce rid2name(killerrid) + " just killed " + strcharinfo(0) + "!",bc_all;
+	message rid2name(killerrid),"You just killed " + strcharinfo(0) +"!";
+	set pvpdeathcount, pvpdeathcount+1;
+	if(pvpkillspree>xpvpspree) set xpvpspree, xpvpspree = pvpkillspree;
+	pvpkillspree = 0;
+	dispbottom "PvP Death Count is now "+pvpdeathcount+", and PvP Killing Spree Reset.";
+	end;
+	}}
+} //=== On PvP Player Death End ==============================
+
+
+
+//==== On WoE Player Kill End ================================
+-	script	woepctonkill	-1,{
+OnInit:
+	set .MaxPlayers,25;
+	set .Options,4;
+	setarray .@maps$[0],"aldeg_cas01","aldeg_cas02","aldeg_cas03","aldeg_cas04","aldeg_cas05","gefg_cas01","gefg_cas02","gefg_cas03","gefg_cas04","gefg_cas05","payg_cas01","payg_cas02","payg_cas03","payg_cas04","payg_cas05","prtg_cas01","prtg_cas02","prtg_cas03","prtg_cas04","prtg_cas05";
+	end;
+
+OnPCKillEvent:
+if(getgmlevel()<111) && (agitcheck() || agitcheck2()) {
+if(.@maps$[0] == strcharinfo(3) || .@maps$[1] == strcharinfo(3) || .@maps$[2] == strcharinfo(3) || .@maps$[3] == strcharinfo(3) || .@maps$[4] == strcharinfo(3) || .@maps$[5] == strcharinfo(3) || .@maps$[6] == strcharinfo(3) || .@maps$[7] == strcharinfo(3) || .@maps$[8] == strcharinfo(3) || .@maps$[9] == strcharinfo(3) || .@maps$[10] == strcharinfo(3) || .@maps$[11] == strcharinfo(3) || .@maps$[12] == strcharinfo(3) || .@maps$[13] == strcharinfo(3) || .@maps$[14] == strcharinfo(3) || .@maps$[15] == strcharinfo(3) || .@maps$[16] == strcharinfo(3) || .@maps$[17] == strcharinfo(3) || .@maps$[18] == strcharinfo(3) || .@maps$[19] == strcharinfo(3)){
+	set woekillcount, woekillcount+1;
+	set woekillspree, woekillspree+1;
+	if(woekillcount>0) && (woedeathcount>0) { dispbottom "WoE Kill Count: "+woekillcount+", WoE Death Count: "+woedeathcount+", WoE KDR: "+callfunc("KDR_Calcton", woekillcount, woedeathcount)+":1, Emperium Breaks: "+ebreaker+""; }
+	else if(woekillcount>0) && (woedeathcount==0) { dispbottom "WoE Kill Count: "+woekillcount+", WoE Death Count: "+woedeathcount+", WoE KDR: "+woekillcount+":0, Emperium Breaks: "+ebreaker+""; }
+	else if(woekillcount==0) && (woedeathcount>0) { dispbottom "WoE Kill Count: "+woekillcount+", WoE Death Count: "+woedeathcount+", WoE KDR: 0:"+woedeathcount+", Emperium Breaks: "+ebreaker+""; }
+	else { dispbottom "WoE Kill Count: "+woekillcount+", WoE Death Count: "+woedeathcount+", WoE KDR: 0:0, Emperium Breaks: "+ebreaker+""; }
+	
+	}}
+	end;
+
+} //=== On WoE Player Kill End ===============================
+
+
+
+//==== On WoE Player Death ===================================
+-	script	woepctondie	-1,{
+OnInit:
+	setarray .@maps$[0],"aldeg_cas01","aldeg_cas02","aldeg_cas03","aldeg_cas04","aldeg_cas05","gefg_cas01","gefg_cas02","gefg_cas03","gefg_cas04","gefg_cas05","payg_cas01","payg_cas02","payg_cas03","payg_cas04","payg_cas05","prtg_cas01","prtg_cas02","prtg_cas03","prtg_cas04","prtg_cas05";
+	end;
+	
+OnPCDieEvent:
+if ( killerrid < 100000000 ) && (getgmlevel()<111) && (agitcheck() || agitcheck2()) {
+	if(.@maps$[0] == strcharinfo(3) || .@maps$[1] == strcharinfo(3) || .@maps$[2] == strcharinfo(3) || .@maps$[3] == strcharinfo(3) || .@maps$[4] == strcharinfo(3) || .@maps$[5] == strcharinfo(3) || .@maps$[6] == strcharinfo(3) || .@maps$[7] == strcharinfo(3) || .@maps$[8] == strcharinfo(3) || .@maps$[9] == strcharinfo(3) || .@maps$[10] == strcharinfo(3) || .@maps$[11] == strcharinfo(3) || .@maps$[12] == strcharinfo(3) || .@maps$[13] == strcharinfo(3) || .@maps$[14] == strcharinfo(3) || .@maps$[15] == strcharinfo(3) || .@maps$[16] == strcharinfo(3) || .@maps$[17] == strcharinfo(3) || .@maps$[18] == strcharinfo(3) || .@maps$[19] == strcharinfo(3)){
+	if(rid2name(killerrid)== strcharinfo(0)) { end; }
+	announce rid2name(killerrid) + " just killed " + strcharinfo(0) + "!",bc_all;
+	set woedeathcount, woedeathcount+1;
+	if(woekillspree>xwoespree) set xwoespree, xwoespree = woekillspree;
+	woekillspree = 0;
+	dispbottom "WoE Death Count is now "+woedeathcount+", and WoE Killing Spree Reset.";
+	end;
+	}}
+} //=== On WoE Player Death End ==============================
+
+
+
+//==== PvP Stats @Command ====================================
+-	script	pvptoncmd	-1,{
+OnAtcommand:
+	if(pvpkillcount>0) && (pvpdeathcount>0) { dispbottom "PvP Kill Count: "+pvpkillcount+", PvP Death Count: "+pvpdeathcount+", PvP KDR: "+callfunc("KDR_Calcton", pvpkillcount, pvpdeathcount)+":1, PvP Rank^000000: ^CC6633"+pvppos+"^000000"; }
+	else if(pvpkillcount>0) && (pvpdeathcount==0) { dispbottom "PvP Kill Count: "+pvpkillcount+", PvP Death Count: "+pvpdeathcount+", PvP KDR: "+pvpkillcount+":1, PvP Rank^000000: ^CC6633"+pvppos+"^000000"; }
+	else if(pvpkillcount==0) && (pvpdeathcount>0) { dispbottom "PvP Kill Count: "+pvpkillcount+", PvP Death Count: "+pvpdeathcount+", PvP KDR: 0:"+pvpdeathcount+", PvP Rank^000000: ^CC6633"+pvppos+"^000000"; }
+	else { dispbottom "PvP Kill Count: "+pvpkillcount+", PvP Death Count: "+pvpdeathcount+", PvP KDR: 0:0, PvP Rank^000000: ^CC6633"+pvppos+"^000000"; }
+	
+OnInit:	bindatcmd "pvpstats", strnpcinfo(3)+"::OnAtcommand";
+end;
+} //=== PvP Stats @Command End ===============================
+
+
+
+//==== WoE Stats @Command ====================================
+-	script	woetoncmd	-1,{
+OnAtcommand:
+	if(woekillcount>0) && (woedeathcount>0) { dispbottom "WoE Kill Count: "+woekillcount+", WoE Death Count: "+woedeathcount+", WoE KDR: "+callfunc("KDR_Calcton", woekillcount, woedeathcount)+":1, WoE Rank^000000: ^CC6633"+pvppos+"^000000 Emperium Breaks: "+ebreaker+""; }
+	else if(woekillcount>0) && (woedeathcount==0) { dispbottom "WoE Kill Count: "+woekillcount+", WoE Death Count: "+woedeathcount+", WoE KDR: "+woekillcount+":0, WoE Rank^000000: ^CC6633"+pvppos+"^000000 Emperium Breaks: "+ebreaker+""; }
+	else if(woekillcount==0) && (woedeathcount>0) { dispbottom "WoE Kill Count: "+woekillcount+", WoE Death Count: "+woedeathcount+", WoE KDR: 0:"+woedeathcount+", WoE Rank^000000: ^CC6633"+pvppos+"^000000 Emperium Breaks: "+ebreaker+""; }
+	else { dispbottom "WoE Kill Count: "+woekillcount+", WoE Death Count: "+woedeathcount+", WoE KDR: 0:0, WoE Rank^000000: ^CC6633"+pvppos+"^000000 Emperium Breaks: "+ebreaker+""; }
+
+OnInit:	bindatcmd "woestats", strnpcinfo(3)+"::OnAtcommand";
+end;
+} // WoE Stats @Command End ==================================
+
+
+
+//==== Admin @Command ========================================
+-	script	admintoncmd	-1,{
+OnAtcommand:
+GMMENU:
+	menu "Personal Stats",PVP_SELF,"Ladder Stats",Top25gm,"WoE Stats",WOE_SELF,"^FF0000GM Menu [Ladder Resets]^000000",GMLadderMenu,"Close",CLOSESTAT;
+GMLadderMenu:
+	menu "Reset PvP Ladders",GMPvpReset,"Reset WoE Ladders",GMWoeReset,"Reset Breaker Ladder",GMBreakReset,"Reset All Ladders",GMLadderReset,"Go Back",GMMENU;
+
+GMPvpReset:
+if(getgmlevel()>=99) {
+	mes "[PvP Statistician]";
+	mes "This GM Command Resets:";
+	mes "^FF0000PvP Kills, PvP Deaths, PvP KDR, PvP Killing Spree, Best PvP Killing Spree & Overall KDR.^000000";
+	mes "Continue the PvP Ladder Reset?";
+	menu "Yes",-,"No",CLOSESTAT;
+	next;
+	mes "[PvP Statistician]";
+	mes "Stats have been successfully reset.";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpkillcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpdeathcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpkdr'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpkillspree'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='xpvpspree'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$pvpxrank$'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$pvpxrank'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='pvppos'";
+	announce "PvP Statistics reset, please re-login to display proper PvP stats.",bc_all;
+	close;
+	end;
+	
+GMWoeReset:
+	mes "[PvP Statistician]";
+	mes "This GM function resets:";
+	mes "^FF0000WoE Kills, WoE Deaths, WoE KDR, WoE Killing Spree, Best WoE Killing Spree & Overall KDR.^000000";
+	mes "Continue the WoE Ladder Reset?";
+	menu "Yes",-,"No",CLOSESTAT;
+	next;
+	mes "[PvP Statistician]";
+	mes "Stats have been successfully reset.";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woekillcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woedeathcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woekdr'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woekillspree'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='xwoespree'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$woexrank$'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$woexrank'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$woepos'";
+	announce "WoE Statistics reset, please re-login to display proper PvP stats.",bc_all;
+	close;
+	end;
+	
+GMBreakReset:
+	mes "[PvP Statistician]";
+	mes "This GM function resets:";
+	mes "^FF0000Emperium Breaks.^000000";
+	mes "Continue the Breaker Ladder Reset?";
+	menu "Yes",-,"No",CLOSESTAT;
+	next;
+	mes "[PvP Statistician]";
+	mes "Stats have been successfully reset.";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='ebreaker'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$breakerxrank$'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$breakerxrank'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$breakerpos'";
+	announce "Emperium Breaker Statistics reset please re-login to display proper PvP stats.",bc_all;
+	close;
+	end;
+	
+GMLadderReset:
+	mes "[PvP Statistician]";
+	mes "This GM function resets:";
+	mes "^FF0000PvP/WoE Kills, PvP/WoE Deaths, PvP/WoE KDR, PvP/WoE Killing Spree, Best PvP/WoE Killing Spree, Overall KDR, & Emperium Breaks.^000000";
+	mes "Continue the Ladder Reset?";
+	menu "Yes",-,"No",CLOSESTAT;
+	next;
+	mes "[PvP Statistician]";
+	mes "Stats have been successfully reset.";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpkillcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woekillcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpdeathcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woedeathcount'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpkdr'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woekdr'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpkillspree'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='woekillspree'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='xpvpspree'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='xwoespree'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpwoekills'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='pvpwoedeath'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='overallkdr'";
+	query_sql "DELETE FROM `char_reg_num_db` WHERE `key`='ebreaker'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$pvpxrank$'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$pvpxrank'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$woexrank$'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$woexrank'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$breakerxrank$'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$breakerxrank'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='pvppos'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$woepos'";
+	query_sql "DELETE FROM `mapreg` WHERE `varname`='$breakerpos'";
+	query_sql "UPDATE `char_reg_num_db` set `value`='0' WHERE `key`='pvpkillcount' OR `key`='woekillcount' OR `key`='pvpdeathcount' OR `key`='woedeathcount' OR `key`='pvpkdr' OR `key`='woekdr' OR `key`='pvpkillspree' OR `key`='woekillspree' OR `key`='xpvpspree' OR `key`='xwoespree' OR `key`='pvpwoekills' OR `key`='pvpwoedeath' OR `key`='overallkdr' OR `key`='ebreaker'";
+	announce "PvP, WoE & Emperium Breaker Statistics reset, please re-login to display proper PvP stats.",bc_all;
+	close;
+	end;
+
+CLOSESTAT:
+	next;
+	mes "[PvP Statistician]";
+	mes "Happy Killing!";
+	close;
+	end;
+	}
+else {
+	dispbottom "^00FF00@adminstats is Unknown Command.^000000";
+	end;
+	}
+	
+OnInit:	bindatcmd "adminstats", strnpcinfo(3)+"::OnAtcommand";
+end;
+} //=== Admin @Command End ===================================
+
+
+
+//==== On WoE Emperium Break =================================
+-	script	woetonbreak	-1,{
+OnInit:
+	set .MaxPlayers,25;
+	set .Options,4;
+	end;
+	
+OnNPCKillEvent:
+if(getgmlevel()<111){
+	if(killedrid==1288) && (agitcheck() || agitcheck2()) {
+	set ebreaker, ebreaker+1;
+	announce rid2name(killerrid) + " has broken the Emperium!",bc_all;
+	dispbottom "Emperiums Broken: "+ebreaker+"";
+	
+	}}
+	end;
+
+} //=== On WoE Emperium Break End ============================

@@ -1,0 +1,87 @@
+//  ________________________________________________________
+// /                                                        \
+// |       _           _   _   _                            |
+// |      | |__  _ __ / \ | |_| |__   ___ _ __   __ _       |
+// |      | '_ \| '__/ _ \| __| '_ \ / _ \ '_ \ / _` |      |
+// |      | |_) | | / ___ \ |_| | | |  __/ | | | (_| |      |
+// |      |_.__/|_|/_/   \_\__|_| |_|\___|_| |_|\__,_|      |
+// |                                                        |
+// |                     brAthena Script                    |
+// |--------------------------------------------------------|
+// | Name of Script: Rotative PVP                           |
+// |--------------------------------------------------------|
+// | Created by: Neko                                       |
+// |--------------------------------------------------------|
+// | Version rA/brA: 1.0                                    |
+// |--------------------------------------------------------|
+// | Description: PVP NPC                                   |
+// | - An NPC that alternates the current PVP map from time |
+// | to time, the chosen map for rotation are configured by |
+// | the administrator in the script. The idea is to have   |
+// | multiple pvp rooms, without having to divide the players|
+// | of your server among them, this way pvps are more crowded|
+// | and funnier.                                           |
+// |--------------------------------------------------------|
+// | Changelog:               	                            |
+// | 1.0 Script Created [Neko]                              |
+// |--------------------------------------------------------|
+// | - Note:                                                |
+// | *There is a temporary global variable named $@lista$ in|
+// | this NPC, watch out for global variables with the same |
+// | name in other NPCs of yours.                           |
+// |--------------------------------------------------------|
+// | Any problem with this NPC please report directly to me.|
+// \________________________________________________________/
+
+-	script	PvpRotative	-1,{
+
+OnInit:
+// ======================================
+// Configurations ***********************
+// ======================================
+// Which map will be on the rotation?
+   setarray .lista$[0],"pvp_y_1-1","pvp_y_1-2","pvp_y_1-3";
+// From how much time to time will the maps change? (Standard value 30 minutes/18000000)
+// WARNING, DO NOT SET VALUES HERE SMALLER THAN 60000 (1 Minute).
+   set .rotatetime, 18000000;
+// ======================================	
+
+	set $@lista$, ""+.lista$[0]+"";
+	set .count, getarraysize(.lista$);
+
+	for( set .@i,0; .@i < .count; set .@i, .@i+1 ){
+			sleep .rotatetime-60000;
+			mapannounce ""+.lista$[.@i]+"","The PVP map will change in 30 seconds.",8;
+			sleep 30000;
+			mapannounce ""+.lista$[.@i]+"","The PVP map will change in 20 seconds.",8;
+			sleep 20000;
+			mapannounce ""+.lista$[.@i]+"","The PVP map will change in 10 seconds.",8;
+			sleep 10000;
+			if(.lista$[.@i] == .lista$[.count-1]){
+				mapwarp ""+.lista$[.@i]+"",""+.lista$[0]+"",0,0;
+				set $@lista$, ""+.lista$[0]+"";
+				set .@i,-1;
+			}
+			else{
+				mapwarp ""+.lista$[.@i]+"",""+.lista$[.@i+1]+"",0,0;
+				set $@lista$, ""+.lista$[.@i+1]+"";
+			}
+		}
+}
+
+prontera,162,186,4	script	PvP Keeper	459,{
+
+	mes "[PvP Keeper]";
+	mes "Ready for a bloody";
+	mes "and glorious battle today?";
+	if (select("Enter PVP. ["+getmapusers(""+$@lista$+"") +"]:I'm out of potions today.") == 1) {
+		warp ""+$@lista$+"",0,0;
+		end;
+	}
+	next;
+	mes "[PvP Keeper]";
+	mes "Haha!~";
+	mes "It's okay to be scared!!";
+	mes "HAHAHAHAHAHA!";
+	close;
+}

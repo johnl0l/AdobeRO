@@ -1,0 +1,29 @@
+prontera.gat,164,180,3	script	PvPoring	909,{
+
+	show "Quer entrar no ^0000CDPvPoring^000000 ?";
+	if(select("- Sim:- Não") == 2) close;
+	if(rand(1,13) == 1) disguise 1002;
+	if(rand(1,13) == 2) disguise 1031;
+	if(rand(1,13) == 3) disguise 1062;
+	if(rand(1,13) == 4) disguise 1090;
+	if(rand(1,13) == 5) disguise 1096;
+	if(rand(1,13) == 6) disguise 1113;
+	if(rand(1,13) == 7) disguise 1120;
+	if(rand(1,13) == 8) disguise 1242;
+	if(rand(1,13) == 9) disguise 1388;
+	if(rand(1,13) == 10) disguise 1582;
+	if(rand(1,13) == 11) disguise 1613;
+	if(rand(1,13) == 12) disguise 1836;
+	if(rand(1,13) == 13) disguise 1894;
+	if(rand(1,14) == 14) disguise 1904;
+	warp "guild_vs1.gat",0,0; end;
+}
+
+guild_vs1.gat,0,0,0	script	Undisguise	-1,{OnPCDieEvent: undisguise; end;}
+
+guild_vs1.gat	mapflag	noteleport
+guild_vs1.gat	mapflag	noexp
+guild_vs1.gat	mapflag	nobranch
+guild_vs1.gat	mapflag	pvp
+guild_vs1.gat	mapflag	nowarp
+guild_vs1.gat	mapflag	nowarpto

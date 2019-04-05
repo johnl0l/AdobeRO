@@ -1,0 +1,102 @@
+// .----------------------------------------------------------.
+// . SoulBlaker Scripts Apresenta: .
+// .	 ___________________ .
+// .	 / _____/\______ \ .
+// .	 \_____ \ | | _/	 .
+// .	 / \ | | \	 .
+// .	 /_______ / |______ /	 .
+// .	 \/ \/	 .
+// . [ eAthena Advanced Scripts ] .
+// .	 v1.0 .
+// .----------------------------------------------------------.
+// ; http://www.eathena.ws/board/SoulBlaker-m271867.html ;
+// .----------------------------------------------------------.
+// . Script: .
+// . Removedora de Cartas .
+// .----------------------------------------------------------.
+// . Por: SoulBlaker Compativel: eAthena SVN	 versao: 1.1 .
+// .----------------------------------------------------------.
+// . Descriçao: .
+// . Remove Cartas do Personagem .
+// .----------------------------------------------------------.
+// . Changelog da Versao: .
+// . - 1.0 Iniciado o NPC. [SoulBlaker]	 .
+// *----------------------------------------------------------*
+prontera,147,175,5	script	Removedora de Cartas#c_1	750,{
+
+set .@Price, 2000000;
+set .@PriceCard, 20000;
+
+mes "^FF0000[Removedora de Cartas]^000000";
+mes "Bom dia " + strcharinfo(0) + ",";
+mes "tenho o poder de retirar cartas de equipamentos.";
+mes "Esta idéia te agrada?";
+next;
+if( select("- Sim, bastante.","- Não, nenhum pouco.") == 2 )
+{
+mes "^FF0000[Removedora de Cartas]^000000";
+mes "Muito bem, volte quando desejar remover suas cartas.";
+close;
+}
+
+mes "^FF0000[Removedora de Cartas]^000000";
+mes "Muito bem, eu preciso de " + .@Price + " Zenys, mais " + .@PriceCard + " Zenys por carta removida.";
+mes "Deseja remover uma carta de algum equipamento?";
+next;
+
+for( set .@i,1; .@i <= 10; set .@i,.@i+1 )
+{
+if( getequipisequiped(.@i) )
+set .@Choose$, .@Choose$+"- "+getequipname(.@i);
+
+set .@Choose$, .@Choose$+":";
+}
+
+set .@Choose$, .@Choose$+":- Cancelar";
+
+set .@Part, Select(.@Choose$);
+
+if( .@Part > 10 )
+{
+mes "^FF0000[Removedora de Cartas]^000000";
+mes "Muito bem, volte quando desejar remover suas cartas.";
+close;
+}
+
+if( getequipcardcnt(.@Part) == 0 )
+{
+mes "^FF0000[Removedora de Cartas]^000000";
+mes "Sinto muito, mais você não tem cartas para remover!";
+close;
+}
+
+set .@Amount, getequipcardcnt(.@Part);
+set .@ZenyCost, (.@PriceCard * .@Amount) + .@Price;
+
+mes "^FF0000[Removedora de Cartas]^000000";
+mes "Muito bem, são " + .@Price + " Zenys,";
+mes "mais o custo de " + (.@PriceCard * .@Amount ) + " por carta equipada.";
+mes "Totalizamos isto em " + .@ZenyCost + " Zenys para remover suas cartas.";
+mes "Deseja remover suas cartas?";
+next;
+if( select("- Sim.","- Não.") == 2 )
+{
+mes "^FF0000[Removedora de Cartas]^000000";
+mes "Humm... para mim é um preço bem justo!";
+close;
+}
+
+if( Zeny < .@ZenyCost )
+{
+mes "^FF0000[Removedora de Cartas]^000000";
+mes "Me desculpe, mais você não tem " + .@ZenyCost + " Zenys.";
+close;
+}
+
+set Zeny, Zeny - .@ZenyCost;
+successremovecards .@Part;
+
+mes "^FF0000[Removedora de Cartas]^000000";
+mes "Muito bem, suas cartas foi removida sem nenhum problema.";
+close;
+}

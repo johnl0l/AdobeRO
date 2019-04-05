@@ -1,0 +1,91 @@
+//#####################################################################
+//#  								      #
+//#   #####     #      ########  #    #   #####  ##    #      #       #
+//#   #        ###        ##     #    #   #      # #   #     ###      #
+//#   ####    #   #       ##     ######   ####   #  #  #    #   #     #
+//#   #      #######      ##     #    #   #      #   # #   #######    #
+//#   #####  #     #      ##     #    #   #####  #    ##   #     #    #
+//#                                                                   #
+//#####################################################################
+//
+//=========== Script for eAthena Users ====================//
+//= Refiner and Repairman made by Rikimaru on eathena .net=//
+//=========================================================//
+//======== Description ====================================//
+//== Easy made Refiner with Repairman for new eAthena =====//
+//== Users. Please do not remove theese Credits ===========//
+//== Refines the complete Equipment to +10 and repairs ====//
+//== All broken items in the Players inventory ============//
+//================= Version : =============================//
+//============= V. 1.0 Bug Fixes by Rikimaru ==============//
+//=========== Credits End =================================//
+//
+//
+//===================== Script of Smith/Repairman =========//
+lhz_in01,265,269,5	script	Smith	63,{
+mes "[Smith]";
+mes "Hi,I can Refine your";
+mes "Equipment to +10";
+mes "or Repair your";
+mes "Equipment.Also I'm able";
+mes "to Derefine your Equipment.";
+mes "What do you want from me?";
+next;
+switch(select("I want a Repair:I want a Refine:I want a Derefine:Nothing")) {
+	case 1:
+	mes "[Smith]";
+	mes "Okay I'm going to repair";
+	mes "your Equipment.";
+	next;
+	while (getbrokenid(1)) {
+	repair(1);
+	set .@i, .@i +1;
+	}
+	if (.@i) dispbottom .@i + " items repaired.";
+	mes "[Smith]";
+	mes "Congrats!Enjoy!";
+	close;
+	end;
+	case 2:
+	mes "[Smith]";
+	mes "Okay I'm going";
+	mes "to refine your Equipment";
+	mes "to +10,Thx for using my Service!";
+	next;
+	for(set @part,1;@part<11;set @part,@part+1) 
+	if(getequipisequiped(@part)) 
+	while(getequiprefinerycnt(@part) < 10) 
+	successrefitem @part;
+	mes "[Smith]";
+	mes "Congrats Enjoy it!";
+	close;
+	end;
+	case 3:
+	mes "[ Smith ]";
+	mes "Okay I'm going to Derifne your Equipment now. You need 10.000 Zeny for that.";
+	next;
+	setarray .@a[1],256,16,32,2,4,64,8,128,512,1;
+	select(getequipname(1),getequipname(2),getequipname(3),getequipname(4),getequipname(5),getequipname(6),getequipname(7),getequipname(8),getequipname(9),getequipname(10));
+		if ( !getequipisequiped(@menu) ) {
+			mes "[ Smith ]";
+			mes "There's nothing equipped there...";
+			close; }
+		if ( zeny < 10000 ) {
+			mes "[ Smith ]";
+			mes "You don't have enough zeny";
+			close; }
+		if ( getequiprefinerycnt(@menu) > 10 || getequiprefinerycnt(@menu) == 0 ) {
+			mes "[ Smith ]";
+			mes "This item cannot be de-refine.";
+			close; }
+	atcommand "@refine "+ .@a[@menu] +" -10";
+	set zeny,zeny - 10000;
+	mes "[ Smith ]";
+	mes "Your item has de-refined successfully";
+	close;
+	case 4:
+	mes "[ Smith ]";
+	mes "Okay,come back when you need me.";
+	close;
+	}
+}

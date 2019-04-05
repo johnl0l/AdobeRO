@@ -1,0 +1,93 @@
+lhz_in01,289,256,5	script	Refiner	826,{
+mes "^3355FF[%100 Refiner]^000000";
+mes "Isso permite que você refinar seu item ao máximo";
+mes " Você precisa de 10 Proof of Donation para usar o meu serviço";
+next;
+mes "Escolha o item para refinar";
+mes "Escolha sabiamente";
+mes "Não pedir refinar";
+mes "Em Game Masters";
+mes "Pense antes de refinar um item";
+next;
+menu "Upper Headgear",L0,"Middle Headgear",L1,"Lower Headgear",L2,"Armor",L3,"Left Hand",L4,"Right Hand",L5,"Garment",L6,"Shoes",L7,"Right Accesories",L8,"Left Accesories",L9,"Cancel",LEnd;
+
+L0:
+if(countitem(7179) < 10 ) goto LNotEnough;
+delitem 7179,10;
+atcommand "@refine 256 +10";
+announce "["+strcharinfo(0)+"], Obrigado por usar o meu grande serviço :)).",bc_self,0;
+close;
+
+L1:
+if(countitem(7179) < 10 ) goto LNotEnough;
+delitem 7179,10;
+atcommand "@refine 512 +10";
+announce "["+strcharinfo(0)+"], Obrigado por usar o meu grande serviço :)).",bc_self,0;
+close;
+
+L2:
+if(countitem(7179) < 10 ) goto LNotEnough;
+delitem 7179,10;
+atcommand "@refine 1 +10";
+announce "["+strcharinfo(0)+"], Obrigado por usar o meu grande serviço :)).",bc_self,0;
+close;
+
+L3:
+if(countitem(7179) < 10 ) goto LNotEnough;
+delitem 7179,10;
+atcommand "@refine 16 +10";
+announce "["+strcharinfo(0)+"], Obrigado por usar o meu grande serviço :)).",bc_self,0;
+close;
+
+L4:
+if(countitem(7179) < 10 ) goto LNotEnough;
+delitem 7179,10;
+atcommand "@refine 32 +10";
+announce "["+strcharinfo(0)+"], Obrigado por usar o meu grande serviço :)).",bc_self,0;
+close;
+
+L5:
+if(countitem(7179) < 10 ) goto LNotEnough;
+delitem 7179,10;
+atcommand "@refine 2 +10";
+announce "["+strcharinfo(0)+"], Obrigado por usar o meu grande serviço :)).",bc_self,0;
+close;
+
+L6:
+if(countitem(7179) < 10 ) goto LNotEnough;
+delitem 7179,10;
+atcommand "@refine 4 +10";
+announce "["+strcharinfo(0)+"], Obrigado por usar o meu grande serviço :)).",bc_self,0;
+close;
+
+L7:
+if(countitem(7179) < 10 ) goto LNotEnough;
+delitem 7179,10;
+atcommand "@refine 64 +10";
+announce "["+strcharinfo(0)+"], Obrigado por usar o meu grande serviço :)).",bc_self,0;
+close;
+
+L8:
+if(countitem(7179) < 10 ) goto LNotEnough;
+delitem 7179,10;
+atcommand "@refine 128 +10";
+announce "["+strcharinfo(0)+"], Obrigado por usar o meu grande serviço :)).",bc_self,0;
+close;
+
+L9:
+if(countitem(7179) < 10 ) goto LNotEnough;
+delitem 7179,10;
+atcommand "@refine 8 +10";
+announce "["+strcharinfo(0)+"], Obrigado por usar o meu grande serviço :)).",bc_self,0;
+close;
+
+LEnd:
+mes "[100% Refiner]";
+mes "Thank you for using 100% Refiner";
+close;
+
+LNotEnough:
+mes "[100% Refinado]";
+mes "Você não tem prova suficiente de Proof of Donation para fazer essa transação";
+close;
+}

@@ -1,0 +1,246 @@
+//===== rAthena Script =======================================
+//= Ragnarok Event 
+//===============  by: =============================
+//= pajodex
+//===== Current Version: =====================================
+//= 1.1
+//===== Compatible With: =====================================
+//= rAthena Project (pajodex)
+//===== Description: =========================================
+/*
+Ragnarok Event
+		
+	Battleground script that runs OnClockxxxx time on server.
+An npc will appear at prontera for registration. After some time
+RegistrationNPC will disappear. All registered players will
+be divided into 2 teams.
+
+	Players have to eliminate the enemy to gain points. Team
+with the most points accumulated wins.
+
+	A rune will be spawned at the center of the map. Runes similar
+to Dota 2.
+
+	* disclaimer * this runs like the War Over Rune but it is
+my own version. Since this is free, i did not add any special
+features. 
+
+ 
+	Enjoy!
+
+*/
+//=====******** Note ********=================================
+//= if you find bugs or problem, please do tell DM me at
+//= Discord (pajodex#1328) or rAthena (pajodex) 
+//= open for suggestions
+//===== Additional Comments: =================================
+/* 	
+	1.0 - Initial release
+	1.1 - Optimized version	
+		  Free release of v2 (Rune War) 
+		  https://github.com/pajodex/ScriptCollections/blob/master/RuneWar.txt
+*/
+//=============================================================
+
+function	script	F_ShuffleNumbers	{
+	deletearray getarg(2);
+	.@static = getarg(0);
+	.@range = getarg(1) +1 - .@static;
+	.@count = getarg(3, .@range);
+	if (.@range <= 0 || .@count <= 0)
+		return 0;
+	if (.@count > .@range)
+		.@count = .@range;
+	for (.@i = 0; .@i < .@range; ++.@i)
+		.@temparray[.@i] = .@i;
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		.@rand = rand(.@range);
+		set getelementofarray( getarg(2), .@i ), .@temparray[.@rand] + .@static;
+		.@temparray[.@rand] = .@temparray[--.@range];
+	}
+	return .@count;
+}
+
+
+prt_are01,0,0,0	script	ragnaevent#main	100,{
+OnInit:
+	// =============
+	// Game Settings
+	// =============
+	
+	// How many players to start?
+	// default = 4 (2v2)
+	.minplayers = 4;
+	
+	// How long, in mins, for players to register_time
+	// default = 3 mins
+	.register_time = 3;
+	
+	// Event duration in minutes..
+	// default : 10 mins
+	.duration = 10; 
+	
+	// Reward settings
+	setarray .rwd[0],
+		501, 10,	// win team reward
+		501, 5;		// lose team reward
+	
+	disablenpc "rwr";
+	setwall strnpcinfo(4), 210, 151, 4, 4, 0, "RWarWall#1";
+	setwall strnpcinfo(4), 89, 151, 4, 4, 0, "RWarWall#2";
+	bindatcmd "startrune",strnpcinfo(3)+"::OnAtCmd",0,60;
+	end;
+	
+// OnClock timers
+OnClock0000:
+OnClock0300:
+OnClock0600:
+OnClock0900:
+OnClock1200:
+OnClock1500:
+OnClock1800:
+OnClock2100:
+OnAtCmd:
+	if( .start == 1 ) end;
+	announce "[ Ragnarok Event ] : Registration will start in 3 mins.",0;
+	sleep 6000;
+	announce "[ Ragnarok Event ] : Registration will start in 2 mins.",0;
+	sleep 6000;
+	announce "[ Ragnarok Event ] : Registration will start in 1 min.",0;
+	sleep 6000;
+	announce "[ Ragnarok Event ] : You may now proceed to prontera if you want to join.",0;
+	enablenpc "rwr";
+	announce "[ Ragnarok Event ] : Registration ends in "+ .register_time +" mins.",0;
+	sleep .register_time * 60000;
+	if( getvariableofnpc(.size, "rwr") < .minplayers ) {
+		announce "[ Ragnarok Event ] : Too few players registered.",0;
+		sleep 5000;
+		announce "[ Ragnarok Event ] : Terminating event.",0;
+		end;
+	}
+	else
+		donpcevent "rwr::OnStart";
+	announce "[ Ragnarok Event ] : Ragnarok Event will start in a few moment.",0;
+	end;
+	
+OnStart:
+	.start = 1;
+	sleep 5000;
+	disablenpc "rwr";
+	.red = bg_create ( strnpcinfo(4), 251, 149, strnpcinfo(0)+"::OnRedQuit", strnpcinfo(0)+"::OnRedDie" );
+	.blue =  bg_create ( strnpcinfo(4), 47, 149, strnpcinfo(0)+"::OnBlueQuit", strnpcinfo(0)+"::OnBlueDie" ); 
+	callfunc "F_ShuffleNumbers", 0, getarraysize(.aid_)-1, .@r;
+	for ( .@i = 0; .@i < getarraysize(.aid_); ++.@i ) {
+		attachrid .aid_[.@r[.@i]];
+		bg_join ( .@i % 2 )? .red : .blue;
+	}
+	detachrid;
+	sleep 1000;
+	announce "Kill as much enemy as you can to earn points.", bc_npc | bc_map | bc_blue;
+	sleep 1000;
+	announce "Team who gains most points until event ends wins.", bc_npc | bc_map | bc_blue;
+	sleep 1000;
+	announce "Start battle!", bc_npc | bc_map | bc_blue;
+	bg_warp .red, strnpcinfo(4),200,150;
+	bg_warp .blue, strnpcinfo(4),100,150;
+		
+	sleep ( .duration - .runespawn ) * 60000;
+	
+	if( .redpoints > .bluepoints )
+		callsub L_reward, .red, .blue, "Red";
+	else if( .bluepoints > .redpoints )
+		callsub L_reward, .blue, .red, "Blue";
+	else if( .bluepoints = .redpoints )
+		announce "Battle ended up with a tie!", bc_npc | bc_map | bc_blue;
+	mapwarp strnpcinfo(4),"prontera",150,180,0;
+	.redpoints = .bluepoints = .start = 0;
+	bg_updatescore strnpcinfo(4), 0, 0;
+	bg_destroy .red;
+	bg_destroy .blue;
+	disablenpc "Rune#11";
+	end;
+	
+L_reward:
+	announce getarg(2) +" team has won!", bc_npc | bc_map | bc_blue;
+	bg_get_data getarg(0), 1;
+	for ( .@i = 0; .@i < $@arenamemberscount; ++.@i )
+		getitem .rwd[0],.rwd[1], $@arenamembers[.@i];
+	sleep 1;
+	bg_get_data getarg(1), 1;
+	for ( .@i = 0; .@i < $@arenamemberscount; ++.@i )
+		getitem .rwd[2],.rwd[3], $@arenamembers[.@i];
+	return;
+	
+OnRedQuit: callsub L_Quit, .red, "Red";
+OnBlueQuit: callsub L_Quit, .blue, "Blue";
+L_Quit:
+	if ( bg_get_data( getarg(0), 0 ) ) end;
+	announce "All "+ getarg(2) +" team members has Quit!", bc_npc | bc_map | bc_blue;
+	sleep 1000;
+	callsub L_reward, ( getarg(0) == .red ) ? .red : .blue, ( getarg(0) == .red ) ? .blue : .red, ( getarg(0) == .red ) ? "Red" : "Blue";
+	awake instance_npcname( strnpcinfo(0) );
+	end;
+
+OnRedDie: callsub L_die, "Red";
+OnBlueDie: callsub L_die, "Blue";
+L_die:
+	if( getcharid(4) == .red)
+		++.bluepoints;
+	else if( getcharid(4) == .blue)
+		++.redpoints;
+	bg_updatescore strnpcinfo(4), .redpoints, .bluepoints;
+	announce getarg(0) +" team member has died!", bc_npc | bc_map | bc_blue;
+	sleep2 1250;
+	percentheal 100, 100;
+	sleep2 5000;
+	warp strnpcinfo(4), ( getcharid(4) == .red ) ? 200 : 100, 150;
+	end;
+}
+prontera,150,185,0	script	Ragnarok Event Register::rwr	100,{
+	.@name$ = strcharinfo(0);
+	.@minplayer2start = getvariableofnpc(.minplayer2start, "thing#main"); 
+	.@start = getvariableofnpc(.start, "ragnaevent#main"); 
+	if(.@start == 1) {
+		mes "Sorry, event is on-going.";
+		close;
+	}
+	mes "Do you want to join the queue?";
+	next;
+	while ( .aid[.@i] != getcharid(3) && .@i < .size ) ++.@i;
+	if ( .@i < .size ) {
+		mes "You already join the queue.";
+		close;
+	}
+	select "Join";
+	mes "You have to stay to this map";
+	close2;
+	.aid[ .size++ ] = getcharid(3);
+	for ( .@i = 0; .@i < .size; ++.@i ) {
+		if ( !isloggedin( .aid[.@i] ) ) {
+			deletearray .aid[.@i], 1;
+			--.@i;
+			--.size;
+		}
+		else {
+			attachrid .aid[.@i];
+			if ( strcharinfo(3) != strnpcinfo(4) ) {
+				deletearray .aid[.@i], 1;
+				--.@i;
+				--.size;
+			}
+		}
+	}
+	detachrid;
+		announce .@name$ +" has  joined Ragnarok Event.", bc_npc | bc_area | bc_blue;
+	end;
+	
+OnStart:
+	copyarray getvariableofnpc( .aid_, "ragnaevent#main" ), .aid, .size;
+	donpcevent "ragnaevent#main::OnStart";
+	deletearray .aid;
+	.size = 0;
+	end;
+}
+
+prt_are01	mapflag	battleground	2
+

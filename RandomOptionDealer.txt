@@ -1,0 +1,197 @@
+//===== rAthena Script =======================================
+//= Random Option NPC dealer
+//===== By: ==================================================
+//= Keitenai
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Deals with a player to apply random item option
+//= for the price of zeny/cashpoint
+//============================================================
+
+sec_in02,157,153,2	script	Keitenai	700,{
+	goto NPC;
+end;
+
+OnInit:
+//==============================
+//	CURRENCY SETTING
+//	1 = Zeny
+//	0 = Cashpoints
+//==============================
+set .Currency,1;		// Moeda para comprar opção aleatória
+set .Price,1000000;	// Prize of random option
+
+//==============================
+//	RANDOM OPTION SETTING
+//==============================
+	set .OverWrite,1;	// Permite sobrescrever o encantamento da opção já existente ( 0 to disable )
+	set .FailRate,10;	// Define chance de falha
+	set .MaxOpt,192;	// Maximum item option a player can enchant ( reference: https://github.com/rathena/rathena/blob/master/db/const.txt#L1645-L1836 )
+	set .MinOpt,1;		// Minimum item option a player can enchant
+	set .MinValue,1;	// Minimum option effect value
+	set .MaxValue,10;	// Maximum option effect value
+	set .MaxIndex,4;	// Maximum option slots ( default is 0 to 4 )
+	set .Wait,10;		// Progress bar delay in seconds
+
+	// Opção aleatória que não será aplicada
+	setarray .ignore[0],
+		86,		// RDMOPT_BODY_ATTR_ALL
+		173,	// RDMOPT_HP_DRAIN
+		174,	// RDMOPT_SP_DRAIN
+		190,	// RDMOPT_MDAMAGE_SIZE_SMALL_USER
+		191,	// RDMOPT_MDAMAGE_SIZE_MIDIUM_USER
+		192,	// RDMOPT_MDAMAGE_SIZE_LARGE_USER
+		193;	// RDMOPT_ATTR_TOLERACE_ALL
+end;
+
+NPC:
+disable_items;
+	mes "[ Keitenai ]";
+	mes "Good day young fella!";
+	mes "I came from the land of";
+	mes "far far away to introduce the";
+	mes "amazing equipment ^FF0000random^000000";
+	mes "option enchantment.";
+	next;
+	mes "[ Keitenai ]";
+	mes "I can make any of your equipment";
+	mes "become more powerful";
+	mes "than its current condition...";
+	if(.Currency){
+		mes "For a prize of ^0000FF"+.Price+" Zeny^000000,";
+	} else {
+		mes "For a prize of ^0000FF"+.Price+" Cashpoints^000000,";
+	}
+	mes "I will apply a ^FF0000RANDOM^000000";
+	mes "option enchantment on your";
+	mes "equipment. (^_^)";
+	next;
+	mes "[ Keitenai ]";
+	mes "I forgot to tell you that";
+	mes "there is ^FF0000"+.FailRate+"%^000000 chance";
+	mes "that this process may ^FF0000FAIL^000000";
+	mes "and lose your equip along";
+	mes "with its card..."," ";
+	next;
+	mes "[ Keitenai ]";
+	mes "Do you still want to take";
+	mes "the risk of enchanting with";
+	mes "^FF0000"+.FailRate+"%^000000 chance to ^FF0000Fail^000000";
+	mes "and lose your equip along";
+	mes "with its card?";
+	next;
+	if(select("Nah! I don't want to...:^0000FFI'll Take the risk!  Enchant my equip!^000000")==1) goto OnCancel;
+	mes "[ Keitenai ]";
+	mes "Wonderful!";
+	mes "This process will take";
+	mes "about ^0000FF"+.Wait+"^000000 seconds...";
+	mes "Don't move a muscle while";
+	mes "i'm enchanting your equipment!";
+	close2;
+
+	setarray .@eq[1], EQI_HEAD_TOP,EQI_ARMOR,EQI_HAND_L,EQI_HAND_R,EQI_GARMENT,EQI_SHOES,EQI_ACC_L,EQI_ACC_R,EQI_HEAD_MID,EQI_HEAD_LOW;
+	for(set .@i,1; .@i<getarraysize(.@eq); set .@i,.@i+1){
+		if(getequipisequiped(.@eq[.@i])){
+			set .@menu$,.@menu$+F_getpositionname(.@eq[.@i])+" ~ [ " + getequipname(.@eq[.@i]) + " ]";
+			set .@equipped,1;
+		} set .@menu$,.@menu$+":";
+	} set .@part,.@eq[select(.@menu$)];
+
+	set .@val,rand(.MinValue,.MaxValue);
+
+IgnoreCheck:
+	set .@opt,rand(.MinOpt,.MaxOpt);
+	for(set .@f,1; .@f<getarraysize(.ignore); set .@f,.@f+1)
+		if(.@opt==.ignore[.@f])
+			goto IgnoreCheck;
+
+	set .@indx,rand(.MaxIndex);
+	if(!.OverWrite){
+		if(getequiprandomoption(.@part,4,ROA_ID,getcharid(0))) set .@x4,4;
+		if(getequiprandomoption(.@part,3,ROA_ID,getcharid(0))) set .@x3,3;
+		if(getequiprandomoption(.@part,2,ROA_ID,getcharid(0))) set .@x2,2;
+		if(getequiprandomoption(.@part,1,ROA_ID,getcharid(0))) set .@x1,1;
+		if(getequiprandomoption(.@part,0,ROA_ID,getcharid(0))) set .@x0,0;
+
+		if(.@indx == 0 && .@x0)
+			if(.@indx==.MaxIndex) goto OnMax;
+			else set .@indx,1;
+		if(.@indx == 1 && .@x1)
+			if(.@indx==.MaxIndex) goto OnMax;
+			else set .@indx,2;
+		if(.@indx == 2 && .@x2)
+			if(.@indx==.MaxIndex) goto OnMax;
+			else set .@indx,3;
+		if(.@indx == 3 && .@x3)
+			if(.@indx==.MaxIndex) goto OnMax;
+			else set .@indx,4;
+		if(.@indx == 4 && .@x4)
+			if(.@indx==.MaxIndex) goto OnMax;
+	}
+	if(.@indx == 4 && (!getequiprandomoption(.@part,3,ROA_ID,getcharid(0)))) set .@indx,3;
+	if(.@indx == 3 && (!getequiprandomoption(.@part,2,ROA_ID,getcharid(0)))) set .@indx,2;
+	if(.@indx == 2 && (!getequiprandomoption(.@part,1,ROA_ID,getcharid(0)))) set .@indx,1;
+	if(.@indx == 1 && (!getequiprandomoption(.@part,0,ROA_ID,getcharid(0)))) set .@indx,0;
+
+	progressbar "ffff00",.Wait;
+
+	if(.Currency){
+		if(Zeny < .Price)
+			goto PriceFail;
+		else
+			set Zeny,Zeny-.Price;
+	} else {
+		if(#CASHPOINTS < .Price)
+			goto PriceFail;
+		else
+			set #CASHPOINTS,#CASHPOINTS-.Price;
+	}
+
+	// Failed...
+	if(.FailRate > 100) set .FailRate,100;
+	if(rand(100) <= .FailRate) goto OnFailure;
+
+	// Success!!
+	setrandomoption(.@part,.@indx,.@opt,.@val,.@indx,getcharid(0));
+end;
+
+OnMax:
+	mes "[ Keitenai ]";
+	mes "Wow! your equip already";
+	mes "Maxed out its option";
+	mes "enchant slots!";
+	mes "Sorry but I can't add";
+	mes "any more enchantment with";
+	mes "your equipment.";
+close;
+
+OnFailure:
+specialeffect2 EF_PHARMACY_FAIL;
+	mes "[ Keitenai ]"," ";
+	mes "I'm really sorry..."," ";
+	mes "^FF0000The process have failed...";
+	mes "Your item has been destroyed.^000000";
+	delequip .@part;
+close;
+
+PriceFail:
+	mes "[ Keitenai ]";
+	mes "What's this?";
+	mes "Are you kidding me?";
+	mes "Sorry but I don't work";
+	mes "for free!";
+	mes "You can come back if you";
+	mes "Have enough to pay for";
+	mes "my service.";
+close;
+
+OnCancel:
+	mes "[ Keitenai ]";
+	mes "Suit yourself.";
+	mes "Let me know if you";
+	mes "ever changed you mind";
+close;
+}

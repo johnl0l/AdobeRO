@@ -1,0 +1,6 @@
+//Créditos: Duziinho
+prontera,163,189,5	script	Reparadora	53,{
+emotion 51;
+atcommand "@repairall";
+end;
+}

@@ -1,0 +1,97 @@
+prontera.gat,183,214,4	script	Ranking PvP	857,{
+//===Variavel===
+if ( $test == 0 ) {
+set $test,1;
+setarray
+
+$PvP_Rname$[0],"-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-","-";
+setarray $PvP_Rkills[0],0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0;}
+set $max1,10;
+set $max2,20;
+//**************************************************************************//
+
+mes "[^FF0000Ranking PvP^000000]";
+mes "Bem Vindo ao Ranking";
+mes "Em que Posso ajudar?";
+menu "Visualizar Ranking",loop1,"Ver meus Pontos",mypoint,"Sair",-;
+close;
+
+mypoint:
+next;
+mes "[^FF0000Ranking PvP^000000]";
+mes "O char "+strcharinfo(0)+" Matou ^FF0000"+PvP_Points+"^000000 Players.";
+close;
+
+
+loop1:
+set @ind,0;
+next;
+mes "[^FF0000Ranking PvP^000000]";
+mes "^0000FFOs 20 Melhores! ^000000";
+mes " ";
+
+loop:
+
+mes "=========================";
+mes "^FF0000"+(@ind+1)+"ª Posição ^000000| "+$PvP_Rname$[@ind]+" | "+$PvP_Rkills[@ind]+" |";
+set @ind,@ind + 1;
+if ( @ind != $max2 ) goto loop;
+close;
+
+
+
+}
+
+
+prontera,155,193,4	script	R_kill	-1,{
+OnPCKillEvent:
+set @max,20;
+set @ind,0;
+if(KilledRid == getcharid(3)) end;
+set firstkiller,firstkiller + 1;
+set PvP_Points,PvP_Points + 1;
+dispbottom "PvP Points : "+PvP_Points;
+if ( ( PvP_Points > $PvP_Rkills[0] ) & ( $PvP_Lider$ != strcharinfo(0) ) ) {set $PvP_Lider$,strcharinfo(0);
+Announce ""+strcharinfo(0)+" | Matou "+PvP_Points+" Player's e Agora é o novo Lider do Ranking PvP!",bc_all,0xFF7F50;
+
+
+}
+
+set sik,sik + 1;
+if ( sik == 100 ) { set sik2,sik2 + 100; set sik,0; }
+if ( PvP_Points == 10 ) Announce ""+strcharinfo(0)+" | Matou 10 Players! e a Matança Continua",bc_all,0xFF7F50;
+if ( PvP_Points == 25 ) Announce ""+strcharinfo(0)+" | Matou 25 Players! e a Matança  Continua",bc_all,0xFF7F50;
+if ( PvP_Points == 50 ) Announce ""+strcharinfo(0)+" | Matou 50 Players! e a Matança  Continua",bc_all,0xFF7F50;
+if ( PvP_Points == 75 ) Announce ""+strcharinfo(0)+" | Matou 75 Players! e a Matança  Continua",bc_all,0xFF7F50;
+if ( PvP_Points == sik2 ) Announce ""+strcharinfo(0)+" | Matou "+PvP_Points+" Players! e a Matança  Continua ",bc_all,0xFF7F50;
+
+set @ind,0;
+set @name$,strcharinfo(0);
+start:
+
+if ( PvP_Points > $PvP_Rkills[@ind] ) {
+if ( @name$ == $PvP_Rname$[@ind] ){
+set $PvP_Rkills[@ind],$PvP_Rkills[@ind] + 1;
+end;}
+set @ind2,@ind;
+set @ind3,@ind + 1;
+goto update; }
+if ( @ind == @max ) end;
+set @ind,@ind + 1;
+goto start;
+
+
+update:
+if ( $PvP_Rname$[@ind] != @name$ ) Announce ""+strcharinfo(0)+" | Subiu Para "+(@ind+1)+"ª Posição no Ranking PvP ! (PvP_Points: "+PvP_Points+")",bc_all,0x00FF00;
+set @aux$,$PvP_Rname$[@ind2];
+set @aux,$PvP_Rkills[@ind2];
+set $PvP_Rname$[@ind2],$PvP_Rname$[@ind3];
+set $PvP_Rkills[@ind2],$PvP_Rkills[@ind3];
+set $PvP_Rname$[@ind3],@aux$;
+set $PvP_Rkills[@ind3],@aux;
+set $PvP_Rname$[@ind],@name$;
+set $PvP_Rkills[@ind],PvP_Points;
+end;
+
+
+}

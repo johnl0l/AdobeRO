@@ -1,0 +1,40 @@
+// |__   __|               |  __ \ / __ \ 
+//    | | _____  ____ _ ___| |__) | |  | |
+//    | |/ _ \ \/ / _` / __|  _  /| |  | |
+//    | |  __/>  < (_| \__ \ | \ \| |__| |
+//    |_|\___/_/\_\__,_|___/_|  \_\\____/ 
+// Otimizado por PrntScrn (Gustavo Cruz)
+// Criador: HelferSales
+// skype gustavo_fmi
+sec_in01,186,95,5	script	Admin Reload	900,{
+
+if (getgroupid() < 99) goto r3;
+
+mes "^008000[Reloader]^000000";
+mes "Olá, apenas o ADM poderá dar reloads...";
+next;
+menu "Carregar Script",-,"Carregar Mob",mob,"Carregar Item Db",item;
+mes "^008000[Reloader]^000000";
+mes "Carregando Script dará um lag no momento";
+atcommand "@reloadscript";
+close;
+
+mob:
+mes "^008000[Reloader]^000000";
+mes "Mobs Carregados";
+atcommand "@reloadmobdb";
+close;
+
+item:
+mes "^008000[Reloader]^000000";
+mes " Item Db Carregados";
+atcommand "@reloaditemdb";
+close;
+
+r3:
+mes "^008000[Reloader]^000000";
+mes " Você não tem acesso a este Npc, saia Daqui";
+close;
+end;
+}
+}

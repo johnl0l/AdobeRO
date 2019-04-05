@@ -1,0 +1,347 @@
+//####################################################################################
+//##### ESte NPC foi idealizado e produzido por Mclzeszen™ / Envolvents™ ############
+//##### ©Copy Saga Brasil Ragnarok Online ############################################
+//##### Todos os direitos reservados® ################################################
+//##### Antes de qualquer modificação por favor mandar PM ############################
+//##### para mclzeszen Forum Cronus Emulator #########################################
+//##################### RELÓGIO v1.0 #################################################
+//####################################################################################
+
+
+prontera,156,178,0	script	RELOGIO	799,{
+
+///variaveis
+set .npc$,"[ EVENTOS ]";
+///Fim variaveis
+	
+if(getgmlevel() >= 90) goto L_GM;      //desative e ativar a outra função
+//if(getgroupid() >= 90) goto L_GM;    //Ative se seu emulador for atual
+	
+	
+		L_PLAYER:
+		stopnpctimer;
+		mes .npc$;
+		mes "Horários de Eventos!!!";
+		mes "^00ff00|||^000000 => Nome do Evento.";
+		mes "^ff0000|||^000000 => Horário do Evento.";
+		mes "==============================";
+		mes "^00ff00"+$Evento1$+"^000000 ^ff0000"+$HORAe1$+"^000000";
+		mes "^00ff00"+$Evento2$+"^000000 ^ff0000"+$HORAe2$+"^000000";
+		mes "^00ff00"+$Evento3$+"^000000 ^ff0000"+$HORAe3$+"^000000";
+		mes "^00ff00"+$Evento4$+"^000000 ^ff0000"+$HORAe4$+"^000000";
+		mes "^00ff00"+$Evento5$+"^000000 ^ff0000"+$HORAe5$+"^000000";
+		mes "^00ff00"+$Evento6$+"^000000 ^ff0000"+$HORAe6$+"^000000";
+		mes "^00ff00"+$Evento7$+"^000000 ^ff0000"+$HORAe7$+"^000000";
+		mes "^00ff00"+$Evento8$+"^000000 ^ff0000"+$HORAe8$+"^000000";
+		mes "^00ff00"+$Evento9$+"^000000 ^ff0000"+$HORAe9$+"^000000";
+		mes "^00ff00"+$Evento10$+"^000000 ^ff0000"+$HORAe10$+"^000000";
+		mes "^00ff00"+$Evento11$+"^000000 ^ff0000"+$HORAe11$+"^000000";
+		mes "^00ff00"+$Evento12$+"^000000 ^ff0000"+$HORAe12$+"^000000";
+		mes "^00ff00"+$Evento13$+"^000000 ^ff0000"+$HORAe13$+"^000000";
+		mes "^00ff00"+$Evento14$+"^000000 ^ff0000"+$HORAe14$+"^000000";
+		mes "^00ff00"+$Evento15$+"^000000 ^ff0000"+$HORAe15$+"^000000";
+		close2;
+		goto ANDA;
+
+
+	
+	
+	
+	
+		L_GM:
+		stopnpctimer;
+		mes .npc$;
+		mes "O que deseja fazer?";
+		next;
+		switch(select("* Cadastrar eventos","* Ver eventos","* Sair")){
+			case 1:
+				EVENTOS:
+				mes .npc$;
+				mes "Escolha o Evento para editar!";
+				next;
+				switch(select(
+				"01 "+$evento1$,
+				"02 "+$evento2$,
+				"03 "+$evento3$,
+				"04 "+$evento4$,
+				"05 "+$evento5$,
+				"06 "+$evento6$,
+				"07 "+$evento7$,
+				"08 "+$evento8$,
+				"09 "+$evento9$,
+				"10 "+$evento10$,
+				"11 "+$evento11$,
+				"12 "+$evento12$,
+				"13 "+$evento13$,
+				"14 "+$evento14$,
+				"15 "+$evento15$,
+				"[ SAIR ]")){
+					case 1:
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Digite o nome do Evento e em seguida a Hora que o mesmo começa.";
+						input $Evento1$;
+					next;
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Coloque a hora que o evento acontece";
+						input $HORAe1$;
+					goto EVENTOS;
+					
+					
+					case 2:
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Digite o nome do Evento e em seguida a Hora que o mesmo começa.";
+						input $Evento2$;
+					next;
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Coloque a hora que o evento acontece";
+						input $HORAe2$;
+					goto EVENTOS;
+					
+					
+					case 3:
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Digite o nome do Evento e em seguida a Hora que o mesmo começa.";
+						input $Evento3$;
+					next;
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Coloque a hora que o evento acontece";
+						input $HORAe3$;
+					goto EVENTOS;
+					
+					
+					case 4:
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Digite o nome do Evento e em seguida a Hora que o mesmo começa.";
+						input $Evento4$;
+					next;
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Coloque a hora que o evento acontece";
+						input $HORAe4$;
+					goto EVENTOS;
+					
+					
+					case 5:
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Digite o nome do Evento e em seguida a Hora que o mesmo começa.";
+						input $Evento5$;
+					next;
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Coloque a hora que o evento acontece";
+						input $HORAe5$;
+					goto EVENTOS;
+					
+					
+					case 6:
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Digite o nome do Evento e em seguida a Hora que o mesmo começa.";
+						input $Evento6$;
+					next;
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Coloque a hora que o evento acontece";
+						input $HORAe6$;
+					goto EVENTOS;
+					
+					
+					case 7:
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Digite o nome do Evento e em seguida a Hora que o mesmo começa.";
+						input $Evento7$;
+					next;
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Coloque a hora que o evento acontece";
+						input $HORAe7$;
+					goto EVENTOS;
+					
+					
+					case 8:
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Digite o nome do Evento e em seguida a Hora que o mesmo começa.";
+						input $Evento8$;
+					next;
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Coloque a hora que o evento acontece";
+						input $HORAe8$;
+					goto EVENTOS;
+					
+					
+					case 9:
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Digite o nome do Evento e em seguida a Hora que o mesmo começa.";
+						input $Evento9$;
+					next;
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Coloque a hora que o evento acontece";
+						input $HORAe9$;
+					goto EVENTOS;
+					
+					
+					case 10:
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Digite o nome do Evento e em seguida a Hora que o mesmo começa.";
+						input $Evento10$;
+					next;
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Coloque a hora que o evento acontece";
+						input $HORAe10$;
+					goto EVENTOS;
+					
+					
+					case 11:
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Digite o nome do Evento e em seguida a Hora que o mesmo começa.";
+						input $Evento11$;
+					next;
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Coloque a hora que o evento acontece";
+						input $HORAe11$;
+					goto EVENTOS;
+					
+					
+					case 12:
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Digite o nome do Evento e em seguida a Hora que o mesmo começa.";
+						input $Evento12$;
+					next;
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Coloque a hora que o evento acontece";
+						input $HORAe12$;
+					goto EVENTOS;
+					
+					
+					case 13:
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Digite o nome do Evento e em seguida a Hora que o mesmo começa.";
+						input $Evento13$;
+					next;
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Coloque a hora que o evento acontece";
+						input $HORAe13$;
+					goto EVENTOS;
+					
+					
+					case 14:
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Digite o nome do Evento e em seguida a Hora que o mesmo começa.";
+						input $Evento14$;
+					next;
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Coloque a hora que o evento acontece";
+						input $HORAe14$;
+					goto EVENTOS;
+					
+					
+					case 15:
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Digite o nome do Evento e em seguida a Hora que o mesmo começa.";
+						input $Evento15$;
+					next;
+					mes .npc$;
+					mes "Você pode cadastrar o nome do Evento e o Horário!";
+					mes "Coloque a hora que o evento acontece";
+						input $HORAe15$;
+					goto EVENTOS;
+					
+					case 16:
+					mes .npc$;
+					mes "Até logo";
+					close2;
+					goto ANDA;
+					
+				
+				
+				
+				}
+			
+			case 2:
+				mes .npc$;
+				mes "Você vai agora para o menu dos players!!!";
+				close2;
+				goto L_PLAYER;
+			
+			case 3:
+			close2;
+			goto ANDA;
+			
+		}
+	
+	
+	
+///Função de relogio	
+	
+	OnInit:
+	ANDA:
+	OnTimer1000:
+	getmapxy(.M$,.X,.Y,1,strnpcinfo(0));
+	npcwalkto .X+RAND(-4,4),.Y+RAND(-4,4);
+	
+	
+	delwaitingroom;
+	waitingroom $DataHora$,0;
+	initnpctimer;
+}
+
+-	script	datahora	-1,{
+
+	OnInit:
+	OnTimer1000:
+//##########################################
+	set .@h,gettime(3);
+if(.@h <= 9){
+	set .@hrs$,"0"+gettime(3);
+	}else{
+	set .@hrs$,""+gettime(3)+"";
+	}
+	
+//##########################################
+	//Define 
+	set .@m,gettime(2);
+	if(.@m <= 9){
+	set .@min$,"0"+gettime(2);
+	}else{
+	set .@min$,""+gettime(2)+"";
+	}
+	//Fim Minutos
+//##########################################	
+	//Define segundos
+	set .@s,gettime(1);
+	if(.@s <= 9){
+	set .@seg$,"0"+gettime(1);
+	}else{
+	set .@seg$,""+gettime(1)+"";
+	}
+	//Fim segundos
+	
+	set $DataHora$,"Horas: "+.@hrs$+":"+.@min$+":"+.@seg$+""; //Hora correndo.
+
+	initnpctimer;
+
+}
