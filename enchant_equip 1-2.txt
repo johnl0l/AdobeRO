@@ -1,0 +1,73 @@
+//===== rAthena Script =======================================
+//= Enchant Equipaments
+//===== By: ==================================================
+//= ZadKiel
+//===== Current Version: =====================================
+//= 1.2
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//I Take idea of players of rathena forum and enchant arms npc
+//This NPC Use Muscovite to move the npc.
+//= Enchant your equipments
+//===== Additional Comments: =================================
+//= 1.1 Release Script
+//= 1.2 Solved Problem with Shield 
+//============================================================
+prontera,149,263,5	script	Enchant Augmentation	100,{
+	disable_items;
+	mes "If Do you want to enchant your equipment ?";
+	mes "Requeriments:";
+	mes "1. Muscovite";
+	next;
+	if(countitem(7292) >= 1) goto L_ITEM_1c;
+	mes "Muscovite is dropped by Tirfing / Ogretooth";
+	mes "Tirfing / Ogretooth is spawned on:";
+	mes "Clock Tower B4";
+	mes "Geffenia Maps";
+	mes "Geffen Dungeon F2";
+	mes "Glast Heim 1F";
+	mes "Glast Heim 2F";
+	close;
+L_ITEM_1c:
+	next;
+	.@s = select( .menu$ ) -1;
+	if ( !getequipisequiped( .const_equip[.@s] )) {
+L_ITEM_3c:
+		mes "you did not equip an "+ .menu_name$[.@s] +" at the moment";
+		close;
+	}
+	if (.const_equip[.@s] == EQI_HAND_L) {
+		switch (getequipweaponlv(EQI_HAND_L)) {
+			case 0: goto L_ITEM_2c; break;
+			default: goto L_ITEM_3c; break;
+		}
+	}
+L_ITEM_2c:
+	.@id = getequipid( .const_equip[.@s] );
+	.@ref = getequiprefinerycnt( .const_equip[.@s] );
+	.@card1 = getequipcardid( .const_equip[.@s], 0 );
+	.@card2 = getequipcardid( .const_equip[.@s], 1 );
+	.@card3 = getequipcardid( .const_equip[.@s], 2 );
+	.@card4 = getequipcardid( .const_equip[.@s], 3 );
+	if ( .@card1 == 255 || .@card1 == 254 ) {
+		mes "I can't enchant a signed equipment";
+		close;
+	}
+	if ( .@card4 ) {
+		mes "this armor has already been enchanted";
+		close;
+	}
+	
+	.@rand = rand(4700,4767);
+	delitem 7292,1;
+	delitem2 .@id, 1,1, .@ref, 0, .@card1, .@card2, .@card3, 0;
+	getitem2 .@id, 1,1, .@ref, 0, .@card1, .@card2, .@card3, .@rand;
+	close;
+OnInit:
+	set .@rand,4700;
+	setarray .const_equip, EQI_ARMOR, EQI_HAND_L, EQI_GARMENT, EQI_SHOES;
+	setarray .menu_name$, "Armor", "Shield", "Garment", "Shoes";
+	.menu$ = implode( .menu_name$,":" );
+	end;
+}

@@ -1,0 +1,121 @@
+//============mapflag==================
+poring_w01	mapflag	nowarp
+poring_w01	mapflag	nosave
+poring_w01	mapflag	noicewall
+poring_w01	mapflag	noteleport
+poring_w01	mapflag	nowarpto
+poring_w01	mapflag	nostorage
+poring_w01	mapflag	noskill
+poring_w01	mapflag	pvp	on
+poring_w01	mapflag	nobranch
+poring_w01	mapflag	nomemo
+poring_w01	mapflag	noreturn
+//======================================
+
+-	script	Evento Poring#var	-1,{
+end;
+	OnInit:
+		//- ID do item do prêmio.
+		set $ipe, 12109;
+
+		//- Quantidade do item do prêmio.
+		set $qpe, 1;
+
+		//- Tirar 50% de HP quando matar
+		//- um poring falso?
+		//- [0=NÃO|1=SIM]
+		set $hpe, 1;
+	end;
+}
+//===== Script: ==============================================
+prontera,147,167,6	script	Evento Poring	909,{
+
+	if(getgmlevel() < 50)
+	{
+		if(!.poringcatch)
+		{
+			mes "Não tem evento por inquanto.";
+			close;
+		}
+		mes "Olá "+strcharinfo(0)+" o que posso fazer por você?";
+		next;
+		switch(select("Entrar no evento.:Informação."))
+		{
+			case 1:
+				mes "Divirta-se!";
+				next;
+				warp "poring_w01", 100, 100;
+				end;
+
+			case 2:
+				mes "São invocados 100 Porings.";
+				mes "Somente 1 é verdadeiro e você tem que acha-lo.";
+				mes "Caso consiga, ganhará um item.";
+				mes "Boa Sorte!.";
+				close;
+		}
+	}
+	mes "Olá "+strcharinfo(0)+" o que posso fazer por você?";
+	next;
+	menu "Ligar evento",open,"Entrar no evento",go,"Sair",fim; callsub OnEventStart;
+
+	go:
+	mes "Teletransportanto";
+	warp "poring_w01", 0, 0;
+	end;
+
+		Onclock0200: callsub OnEventStart;
+		Onclock0030: callsub OnEventStart;
+		OnClock1630: callsub OnEventStart;
+		OnClock0500: callsub OnEventStart;
+		OnClock2000: callsub OnEventStart;
+		OnClock1900: callsub OnEventStart;
+
+	open:
+		OnEventStart:
+			announce "[Evento Poring]: Gente, é hora do evento. Falem comigo para entrar.",0;
+			initnpctimer;
+			monster "poring_w01",0,0,"Poring",1002,1,strnpcinfo(0)+"::OnMobKilled";
+			monster "poring_w01",0,0,"Pouring",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "poring_w01",0,0,"Proing",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "poring_w01",0,0,"Poirng",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "poring_w01",0,0,"Poing",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "poring_w01",0,0,"Porimg",1002,5,strnpcinfo(0)+"::OnWrongKilled";
+			monster "poring_w01",0,0,"Porinq",1002,1,strnpcinfo(0)+"::OnWrongKilled";
+			monster "poring_w01",0,0,"Poring",1113,1,strnpcinfo(0)+"::OnWrongKilled";
+			monster "poring_w01",0,0,"Poring",1062,1,strnpcinfo(0)+"::OnWrongKilled";
+			monster "poring_w01",0,0,"Por|ng",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "poring_w01",0,0,"Por1ng",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "poring_w01",0,0,"Porong",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "poring_w01",0,0,"P0ring",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "poring_w01",0,0,"P@ring",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "poring_w01",0,0,"Porng",1002,1,strnpcinfo(0)+"::OnWrongKilled";
+			set .poringcatch,1; goto fim;
+			end;
+
+		OnTimer600000:
+			stopnpctimer;
+			announce "[Evento Poring]: O tempo acabou, tente na próxima vez.",0;
+			set .poringcatch,0;
+			killmonsterall "poring_w01";
+			end;
+
+		OnMobKilled:
+			stopnpctimer;
+			announce "[Evento Poring]: "+strcharinfo(0)+" encontrou o Poring premiado!.Obrigado por participarem, Esperem até o próximo evento.",0;
+			dispbottom "Parabéns, você me achou.";
+			getitem $ipe,$qpe;
+			killmonsterall "poring_w01";
+			set .poringcatch,0;
+			end;
+
+		OnWrongKilled:
+			dispbottom "Whaa, você errou feio.";
+			if($hpe) percentheal -50,0;
+			warp "prontera",150,185;
+			end;
+	fim:
+	mes "Ok, volte sempre!";
+	close;
+	end;
+}

@@ -1,0 +1,320 @@
+-	script	RFYL#disable	-1,{
+ 
+OnInit:
+disablenpc "Zombie Master";
+disablenpc "Presente";
+}
+ 
+prontera.gat,147,163,5	script	Zombie Minion	1015,{
+ 
+if (getgmlevel() >= 60) goto LMS_Admin;
+mes "[Minion]";
+mes "Olá " + strcharinfo(0) + ", Meu Chefe está ocupado.";
+mes "*sigh*";
+close;
+ 
+LMS_Admin:
+mes "[Minion]";
+mes "Olá " + strcharinfo(0) + ", Gostaria que eu chamase meu chefe?";
+mes "Ele é o unico que pode começar isso!";
+menu "Começar o Evento",RFYL,"Espectador",M_warp,"terminar o Evento",M_EndEvent,"Não Obrigado",leave;
+RFYL:
+next;
+mes "[Minion]";
+mes "Ok, eu irei chamar ele, aguarde um instante.";
+close2;
+set $@offvar,1;
+goto StartEvent;
+ 
+M_warp:
+mes "[Minion]";
+mes "muito bem, Eu irei te teleportar para o Mapa!";
+warp "quiz_01",42,369;
+close;
+ 
+leave:
+next;
+mes "[Minion]";
+mes "Ok " + strcharinfo(0) +", foi bom ter te conhecido.";
+close;
+ 
+M_EndEvent:
+mes "[Minion]";
+mes "Ok Chefinho, Eu irei parar o evento para o Senhor agora!";
+next;
+set $@offvar,1;
+disablenpc "Zombie Master";
+disablenpc "Presente";
+killmonsterall "quiz_01";
+areawarp "quiz_01",10,10,450,450,"prontera",147,181;
+stopnpctimer;
+disablenpc "Zombie Minion";
+warp "prontera",147,181;
+sleep 180000;
+enablenpc "Zombie Minion";
+ 
+ 
+StartEvent:
+OnClock1430:
+OnClock1500:
+OnClock2200:
+disablenpc "Presente";
+announce "Zombie Vs. Novice, O evento ira iniciar em 3 minutos. Corra!",0;
+killmonsterall "quiz_01";
+sleep 55000;
+announce "Zombie Vs. Novice, O evento ira iniciar em 2 minutos. Corra!",0;
+sleep 5000;
+announce "Zombie Master: Opa!! CHEGUEI !!! estou em Prontera!",0;
+enablenpc "Zombie Master";
+sleep 60000;
+announce "Zombie Vs. Novice O evento irá ter inicio em 1 minuto!",0;
+sleep 30000;
+mapannounce "quiz_01","de 30 em 30 segundos o Zumbi irá aparecer!",0;
+sleep 25000;
+announce "Zombie Vs. Novice O evento irá ter inicio em ~1~",0;
+sleep 1000;
+announce "Zombie Vs. Novice O evento irá ter inicio em ~2~",0;
+sleep 1000;
+announce "Zombie Vs. Novice O evento irá ter inicio em ~3~",0;
+sleep 1000;
+announce "Zombie Vs. Novice O evento irá ter inicio em ~14~",0;
+sleep 1000;
+announce "Zombie Vs. Novice O Evento Começou!!!",0,0x00FF00;
+disablenpc "Zombie Master";
+sleep 10000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie",1015,1;
+sleep 10000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-2",1015,1;
+sleep 10000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-3",1015,1;
+sleep 10000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+sleep 55000;
+if($evacabou==1){
+end;
+}
+mapannounce "quiz_01","Round 2!",0;
+sleep 10000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+sleep 55000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+mapannounce "quiz_01","Round 3!",0;
+sleep 10000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+sleep 55000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+mapannounce "quiz_01","Round 4!",0;
+sleep 10000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+sleep 10000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+sleep 55000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+mapannounce "quiz_01","Round 5!",0;
+sleep 10000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+sleep 55000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+mapannounce "quiz_01","Round 6!",0;
+sleep 10000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+sleep 55000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+mapannounce "quiz_01","Round 7! Final Round!",0;
+sleep 10000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+sleep 20000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+sleep 30000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+sleep 40000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1036,1;
+sleep 50000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1036,1;
+sleep 60000;
+if($evacabou==1){
+end;
+}
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+initnpctimer;
+end;
+ 
+OnTimer0500:
+if ( getmapusers("quiz_01") == 0 )
+{
+killmonsterall "quiz_01";
+announce "'Zombie Vs. Novice' O evento foi interrompido. Foram Todos Mortos.. eu bem que avisei que não era fácil ...",0;
+stopnpctimer;
+end;
+}
+else if ( getmapusers("quiz_01") > 1 )
+{
+mapannounce "quiz_01",getmapusers("quiz_01") +"estão sobrevivendo no Evento.",0,0x00FF00;;
+initnpctimer;
+end;
+}
+initnpctimer;
+end;
+ 
+OnPCDieEvent:
+getmapxy .@mapnvz$,.@xnvz,.@ynvz,0;
+if ( .@mapnvz$ == "quiz_01") {
+sleep2 1;
+warp "prontera",147,181;
+atcommand "@alive "+ strcharinfo(0);
+dispbottom "Você perdeu...";
+}
+sleep2 500;
+if ( .@mapnvz$ == "quiz_01" && getmapusers("quiz_01") == 1 ) {
+killmonsterall "quiz_01";
+set $evacabou,1;
+mapannounce "quiz_01","Você venceu, Temos um premio te esperando no NPC, por favor.",0;
+enablenpc "Presente";
+stopnpctimer;
+end;
+}
+end;
+}
+ 
+quiz_01,42,378,3	script	Presente	72,{
+ 
+mes "[Present]";
+mes "Por Favor me diga seu Nome.";
+next;
+input .@name$;
+if(.@name$ != strcharinfo(0)) {
+mes "[Presente]";
+mes "Você tem certeza que esse é seu nome?";
+close;
+}
+mes "[Present]";
+mes "Parabéns. Você é um vencedor.";
+close2;
+announce "Presente: nós temos um vencedor! "+.@name$+" venceu o evento Novice Vs. Zombie!",0;
+setarray $random[0],12100,12075,12080,12085,12090,12095;
+set @random, rand( 0,getarraysize( $random ) );
+getitem $random[@random],12;
+warp "prontera",147,181;
+disablenpc "Presente";
+set $evacabou,0;
+end;
+}
+ 
+prontera,156,179,4	script	Zombie Master	1298,{
+if (BaseLevel > 1) goto NO;
+if (class == 0) goto event;
+if (class > 0) goto NO;
+event:
+mes "[^0000FFZombie Master^000000]";
+mes "Tem certeza que deseja participar do evento Zombie Vs. Novice?";
+next;
+switch(select("Yes","No")) {
+case 1:
+sc_end SC_ALL;
+sc_start SC_DECREASEAGI,1200000,10;
+percentheal 100,100;
+sc_start SC_STRIPSHIELD,1200000,5;
+sc_start SC_STRIPWEAPON,1200000,5;
+sc_start SC_STRIPARMOR,1200000,5;
+sc_start SC_STRIPHELM,1200000,5;
+statusup2 bStr,-999;
+statusup2 bAgi,-999;
+statusup2 bVit,-999;
+statusup2 bInt,-999;
+statusup2 bDex,-999;
+statusup2 bLuk,-999;
+warp "quiz_01",42,369;
+end;
+break;
+case 2:
+mes "[^0000FFZombie Master^000000]";
+mes "Volte quando estiver pronto.";
+close;
+break;
+NO:
+mes "[^0000FFZombie Master^000000]";
+mes "Você não é um noviço level 1.";
+close;
+}
+OnInit:
+disablenpc "Zombie Master";
+disablenpc "Presente";
+end;
+}
+ 
+ 
+// ---- mapflag quiz_01
+
+quiz_01	mapflag	nowarpto
+quiz_01	mapflag	nowarp
+quiz_01	mapflag	noteleport
+quiz_01	mapflag	nomemo
+quiz_01	mapflag	nosave	SavePoint
+quiz_01	mapflag	noicewall
+quiz_01	mapflag	nopenalty
+quiz_01	mapflag	nobranch
+quiz_01	mapflag	noexp
+quiz_01	mapflag	noreturn
+quiz_01	mapflag	pvp_noparty
+quiz_01	mapflag	restricted	1
+quiz_01	mapflag	nocommand

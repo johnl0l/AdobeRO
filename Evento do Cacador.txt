@@ -1,0 +1,453 @@
+force_map3,19,99,5	script	Premio de caça	656,{
+     
+    set .@premio,IDDOPREMIO;
+    set .@qnt,QUANTIDADE DO PREMIO;
+     
+     
+        mes "[Premio de caça]";
+        mes "Parabéns, aqui está seu prêmio";
+        getitem .@premio,.@qnt;
+        close2;
+        warp "prontera",150,150;
+        end;
+    }
+     
+     
+prontera,152,157,5	script	Evento de Caça	50,{
+     
+    if(.@jatem$ == 1){
+        mes "[Caçador]";
+        mes "Me desculpe mas já tem alguem neste vento, espere ele terminar para poder utilizá-lo.";
+        close;
+    }
+        
+     
+    if(BaseLevel>=80){
+        if(#delayed >= gettimetick(2))goto Aindanao;
+        mes "[Caçador]";
+        mes "Então, você se acha um aventureiro digno de participar de um incrível caçada comigo ein?";
+        if(select("Sim, senhor, sou o melhor!.:Me desculpe, foi um engano.")==2)close;
+        next;
+        mes "[Caçador]";
+        mes "Pois Bem, vamos ver se você realmente merece ser chamado de caçador.";
+        next;
+        mes "[Caçador]";
+        mes "Você será levado a um mapa com alguns monstros, porém tome cuidado pois se você morrer, poderá fazer essa quest denovo somente daqui a 4 horas.";
+        next;
+        mes "[Caçador]";
+        mes "O jogo é contituido de 6 rodadas, se você conseguir vençer todas, ganhará o prêmio.";
+        mes "Então, vamos lá?";
+        if(select("É claro, estamos esperando o que?.:Eu fiquei comedo, quero desistir.")==2)callsub Desistiu;
+        next;
+        mes "[Caçador]";
+        mes "Você será levado agora!";
+            set .@jatem$,1;
+        announce "[Caçador]: O jogador "+strcharinfo(0)+" decidiu provar que ele é um caçador de verdade entrando no evento.",bc_all;
+        close2;
+        warp "poring_c02",137,79;
+        set #delay,gettimetick(2) + 10000000;
+        set #horas,gettime(3);
+        set #minutos,gettime(2);
+        end;
+    }else{
+        mes "[Caçador]";
+        mes "Ahhh, você não tem nível de base suficiente para tentar realizar esta caçada, somente senhores com nívl de Base maior que 80 podem falar comigo.";
+        close;
+    }
+     
+    Aindanao:
+        mes "[Caçador]";
+        mes "Me desculpe mas você só pode tentar esta caçada, 1 vez a cada 4 horas. A ultima vez que você jogou foi às ^FF0000"+#horas+"^000000 hrs e ^FF0000"+#minutos+"^000000 minutos.";
+        mes "Volte quando terminar seu prazo de espera.";
+        close;
+     
+    Desistiu:
+        next;
+        mes "[Caçador]";
+        mes "Me enganei com você, vejo que não es digno de ser chamado de caçador, saia já da minha frente!";
+        close;
+    }
+     
+     
+poring_c02,137,79,5	script	Caçada	-1,1,1,{
+     
+     
+    OnTouch:    
+    if(#iniciou != 1){
+        mes "ATENÇÃO: Nesta primeira rodada, você terá 5 minutos para encontrar um item que está escondido em um dos montros e retornar a este ponto. Caso não consiga fazer isso passados os 5 minutos, Você será enviado de volta para prontera.";
+        close2;
+        set #iniciou,1;
+        monster "poring_c02",0,0,"Caça",1002,100,"Caçada::OnErrado";
+        monster "poring_c02",0,0,"Caça",1002,3,"Caçada::OnCerto";
+        initnpctimer;    
+        end;
+    }
+    else{end;}
+     
+    OnErrado:
+        dispbottom "Este monstro não continha nada, tente outro.";
+        end;
+     
+    OnCerto:
+        killmonsterall "poring_c02";
+        set #iniciou,0;
+        stopnpctimer;
+        mes "[Caçador]";
+        mes "Parabéns, você encontrou o item da primeira fase, vamos para a próxima.";
+        close2;
+        warp "force_map1",100,13;        
+        end;
+     
+    Started:
+        dispbottom "Você ainda não encontrou o item, continue procurando.";
+        
+     
+    OnTimer300000:
+        stopnpctimer;
+        set #iniciou,0;
+        dispbottom "Me desculpe, seu tempo acabou.";
+        announce "[Caçador]: A caçada está aberta para mais um caçador, fale comigo para participar.",bc_all;
+            set .@jatem$,0;
+        warp "prontera",150,150;
+        end;
+    }
+     
+force_map1,100,13,5	script	Caçada2	-1,1,1,{
+     
+     
+    OnTouch:
+    if(#iniciou != 1){
+        mes "[Caçador]";
+        mes "Nesta segunda fase, você terá que passar por todos os portais, até os centro do mapa, sem ser morto pelos mosntros. Você terá ^FF0000"+3+"^000000 tentativas.";
+        close2;
+        set #iniciou,1;
+        set #chances,1;
+        monster "force_map1",0,0,"Caça",1098,100;
+        end;
+    }else{end;}
+     
+    OnPCDieEvent:
+        getmapxy .@map$,.@x,.@y,0;
+        if ( .@map$ == "force_map1") && (#chances < 3){
+        set #chances,#chances+1;
+        sleep2 1;
+        warp "force_map1",100,13;
+        atcommand "@alive "+ strcharinfo(0);
+        mes "[Caçador]";
+        mes "Esta é a sua ^FF0000"+#chances+"^000000 chance. Tome mais cuidado.";
+        close;
+    }else{
+    sleep2 1;
+    set #iniciou,0;
+    announce "[Caçador]: O caçada está aberta para mais um caçador, fale comigo para participar.",bc_all;
+    set .@jatem$,0;
+    dispbottom "Você perdeu...";
+    warp "prontera",150,150;
+    end;
+    }
+    }
+     
+    //== Portais da segunda rodada
+        
+force_map1,44,173,5	script	warper1	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",67,173;
+    end;
+    }
+     
+force_map1,65,173,5	script	warper2	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",42,173;
+    end;
+    }
+     
+force_map1,26,155,5	script	warper3	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",26,132;
+    end;
+    }
+     
+force_map1,26,134,5	script	warper4	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",26,157;
+    end;
+    }
+     
+force_map1,26,65,5	script	warper5	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",26,42;
+    end;
+    }
+     
+force_map1,26,44,5	script	warper6	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",26,67;
+    end;
+    }
+     
+force_map1,44,25,5	script	warper7	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",65,25;
+    end;
+    }
+     
+force_map1,63,25,5	script	warper8	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",42,25;
+    end;
+    }
+     
+force_map1,136,25,5	script	warper9	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",157,25;
+    end;
+    }
+     
+force_map1,155,25,5	script	warper10	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",134,25;
+    end;
+    }
+     
+force_map1,174,65,5	script	warper11	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",174,42;
+    end;
+    }
+     
+force_map1,174,44,5	script	warper12	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",174,67;
+    end;
+    }
+     
+force_map1,174,155,5	script	warper13	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",174,132;
+    end;
+    }
+     
+force_map1,174,134,5	script	warper14	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",174,157;
+    end;
+    }
+     
+force_map1,155,173,5	script	warper15	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",132,173;
+    end;
+    }
+     
+force_map1,134,173,5	script	warper16	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",157,173;
+    end;
+    }
+     
+force_map1,100,167,5	script	warper17	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",100,121;
+    end;
+    }
+     
+force_map1,100,123,5	script	warper18	45,1,1,{
+     
+    OnTouch:
+    warp "force_map1",100,169    ;
+    end;
+    }
+     
+force_map1,100,100,5	script	warper19	45,1,1,{
+     
+    OnTouch:
+    killmonsterall "force_map1";
+    set #iniciou,0;
+    mes "[Caçador]";
+    mes "Parabéns, você concluiu a segunda etapa com êxito, agora vamos para a terceira.";
+    close2;
+    warp "force_map2",26,130;
+    disablenpc "Perdeu";
+    }
+    //=======================
+     
+force_map2,26,130,5	script	Caçada3	-1,1,1,{
+     
+     
+    OnTouch:
+        if(#iniciou != 1){
+        set #iniciou,1;
+        mes "[Caçador]";
+        mes "Muito bem, nesta 3ª etapa de nossa caçada, você terá que ser bem ágil. Caso contrario, concerteza irá falhar.";
+        next;
+        mes "Você terá que matar os 4 ovos, em cada kina deste quadrado, em 1 minuto. Apresse-se, antes que eles começem a chocar. Heh heh!";
+        close2;
+        set #Matou,0;
+        initnpctimer;
+        monster "force_map2",18,137,"Ovo de Caça",2014,1,"Caçada3::OnMatou";
+        monster "force_map2",18,122,"Ovo de Caça",2014,1,"Caçada3::OnMatou";
+        monster "force_map2",33,122,"Ovo de Caça",2014,1,"Caçada3::OnMatou";
+        monster "force_map2",33,137,"Ovo de Caça",2014,1,"Caçada3::OnMatou";
+        end;
+    }else{end;}
+     
+     
+     
+    OnTimer55000:
+        dispbottom "Faltam 5 segundos.";
+    OnTimer60000:
+        stopnpctimer;
+        killmonsterall "force_map2";
+        enablenpc "Perdeu";
+     
+     
+    OnMatou:
+        set #Matou,#Matou+1;
+        callsub Terminou;
+        end;
+     
+    Terminou:
+        if(#Matou == 4){
+        mes "[Caçador]";
+        mes "Opa, vejo que você conseguiu terminar mais esta prova. agora vamos ver a 4ª etapa que te espera.";
+        set #Matou,0;
+        set #iniciou,0;
+        close2;
+        disablenpc "Tempoacabou";
+        warp "poring_c01",104,106;
+        end;
+    }else{end;}
+     
+    }
+     
+force_map2,26,130,5	script	Perdeu    -1,50,50,{
+    OnTouch:
+        mes "[Caçador]";
+        mes "Você não é um caçador de verdade, não conseguiu nem cumprir uma missãozinha besta como essa!!!";
+        announce "[Caçador]: A caçada está aberta para mais um caçador, fale comigo para participar.",bc_all;
+            set .@jatem$,0;
+        set #iniciou,0;
+        close2;
+        warp "prontera",150,150;
+        disablenpc "Perdeu";
+        end;
+    }
+     
+    poring_c01,104,106,5    script    Caçada4    -1,1,1,{
+    OnTouch:
+        if(#iniciou != 1){
+        mes "Está quase terminando a caçada, porém agora você terá que provar que é capaz de resisti alguma emboscada em uma caçada. Para isso, você terá que aguentar os ataques de todos os monstros por 20s. Se voçê conseguir, chegará à ultima etapa.";
+        set #iniciou,1;
+        close2;
+        monster "poring_c01",18,137,"Guente-me se puder",1163,10;
+        monster "poring_c01",18,137,"Guente-me se puder",1276,10;
+        monster "poring_c01",18,137,"Guente-me se puder",1188,10;
+        monster "poring_c01",18,137,"Guente-me se puder",1026,10;
+        monster "poring_c01",18,137,"Guente-me se puder",1149,10;
+        initnpctimer;
+        end;
+    }else{end;}
+     
+    OnPCDieEvent:
+        getmapxy .@map$,.@x,.@y,0;
+        if ( .@map$ == "poring_c01"){
+        killmonsterall "poring_c01";
+        stopnpctimer;
+        set #iniciou,0;
+        sleep2 1;
+        atcommand "@alive "+ strcharinfo(0);
+        mes "[Caçador]";
+        mes "Por pouco você não conseguiu, mais sorte na próxima.";
+        announce "[Caçador]: A caçada está aberta para mais um caçador, fale comigo para participar.",bc_all;
+            set .@jatem$,0;
+        close2;
+        warp "prontera",150,150;
+        end;
+    }else{end;}
+     
+    OnTimer20000:
+        stopnpctimer;
+        killmonsterall "poring_c01";
+        enablenpc "Tempoacabou";
+        end;
+    }
+     
+    poring_c01,104,106,5    script    Tempoacabou    -1,50,50,{
+     
+    OnTouch:
+        set #iniciou,0;
+        mes "[Caçador]";
+        mes "Assim que se faz, você conseguiu suportar os ataques. Espero que esteja pronto para a etapa final.";
+        close2;
+        warp "force_map3",19,99;
+        end;
+    }
+     
+force_map3,19,99,5	script	CaçadaFinal	-1,1,1,{
+    OnTouch:
+        if(#iniciou != 1){
+        set #iniciou,1;
+        mes "[Caçador]";
+        mes "Muiiito bem, suas habilidades de caça, são invejáveis. Agora está na hora do ultimo desafio. Apareçerão dois monstros neste mapa, um deles levará você ao premio final, e o outro o matará. Você terá que fazer uma escolha dificil entre um dos 2. Tente matar o certo, e não ser morto.";
+        close2;
+        monster "force_map3",11,99,"Escolha difícil 1",1716,1,"CaçadaFinal::OnMatou";
+        monster "force_map3",11,99,"Escolha difícil 2",1716,1,"CaçadaFinal::OnMatou";
+        end;
+    }else{end;}
+     
+    OnMatou:
+        killmonsterall "force_map3";
+        enablenpc "Conseguiu";
+     
+    OnPCDieEvent:
+        getmapxy .@map$,.@x,.@y,0;
+        if ( .@map$ == "force_map3"){
+        killmonsterall "force_map3";
+        stopnpctimer;
+        set #iniciou,0;
+        sleep2 1;
+        atcommand "@alive "+ strcharinfo(0);
+        mes "[Caçador]";
+        mes "Essa foi quase, mas infelizmente o monstro certo era o outro, mais sorte na próxima.";
+        announce "[Caçador]: A caçada está aberta para mais um caçador, fale comigo para participar.",bc_all;
+            set .@jatem$,0;
+        close2;
+        warp "prontera",150,150;
+        end;
+    }else{end;}
+    }
+     
+force_map3,19,99,5	script	Conseguiu	-1,50,50,{
+    OnTouch:
+        set #iniciou,0;
+        set #escolha,rand(1,2);
+        if(#escolha == 1){
+        mes "[Caçador]";
+        announce "[Caçador]: O jogador "+setcharinfo+" provou que é um caçador de verdade.",bc_all;
+            set .@jatem$,0;
+        mes "Parabéns, você provou que é um caçador de verdade, agora receba seu prêmio.";
+        close2;
+        enablenpc "Premio de caça";
+        end;
+    }
+        if(#escolha == 2){
+        atcommand "@kill "+strcharinfo(0);
+        end;
+    }

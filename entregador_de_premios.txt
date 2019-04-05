@@ -1,0 +1,85 @@
+//########################################################
+//####Script By Mclzeszen ################################
+//#########Todos os Direitos Reservados Cronus Emulator®##
+//############Copy© 2015 #################################
+//########################################################
+
+prontera,150,150,5	script	ENTREGADOR DE PREMIOS	120,{
+
+
+set .@NPC$,"Entregador de prêmios";
+setarray .@premio[0],601,602,603,634,605,606,607; // Coloque aqui os ids dos premios
+
+if(@sort){
+	if(.@chp[@ganhador] == getcharid(0)){
+		mes .@NPC$;
+		mes "Meus parabéns!!!";
+		mes "Já vou escolher seu prêmio surpresa.";
+		next;
+		
+		mes .@NPC$;
+		mes "Aqui está!";
+		set @pr_k,getarraysize(.@premio);
+		set @pr_k2,rand(1,@pr_k);
+		getitem .@premio[@pr_k2],1;
+		set @sort,0;
+		close;
+	}else{
+		mes .@NPC$;
+		mes "Você não é o ganhador do prêmio.";
+		mes "Saia ou eu chamo a policia!!!";
+		close;
+	
+	}
+
+
+
+
+}else{
+mes .@NPC$;
+mes "Dá o fora!!!";
+close;
+}
+
+
+}
+
+////Script abaixo relacionado ao sorteio
+-	script	sorteio	-1,{
+
+
+
+OnInit:
+	
+	OnClock1300: //13:00Hrs
+		announce "Dentro de 30 Min, nosso servidor estará realizando um sorteio de brindes apenas para os jogadores Online no Momento. Não saiam!",bc_all,0x7CD3DB;
+	end;
+	
+	OnClock1310:
+		announce "Dentro de 20 Min, nosso servidor estará realizando um sorteio de brindes apenas para os jogadores Online no Momento. Não saiam!",bc_all,0x7CD3DB;
+	end;
+	
+	OnClock1320:
+		announce "Dentro de 10 Min, Faltam apenas 10 minutos para nosso sorteio. Fiquem conectados!",bc_all,0x7CD3DB;
+	end;
+	
+	OnClock1325:
+		announce "Menos de 30 Min, para o sorteio!",bc_all,0x7CD3DB;
+	end;
+	
+	query_sql "SELECT `char_id` FROM `char` WHERE `online` = 1",.@chp;
+	set @chp_k,getarraysize(.@chp);
+	set @ganhador,rand(1,@chp_k);
+	
+	OnClock1329:
+		announce "O sorteio já está em andamento. Aguardem já vou ivulgar o ganhador!",bc_all,0x7CD3DB;
+	end;
+	
+	query_sql "SELECT `name` FROM `char` WHERE `char_id` = "+.@chp[@ganhador],.@ganhador2$;
+	
+	OnClock1330:
+		announce "E O ganhador é.... "+.@ganhador2$+"!!!!!!!! Venha buscar seu prêmio!!!"+ ,bc_all,0x7CD3DB;
+		set @sort,1;
+	end;
+	
+}

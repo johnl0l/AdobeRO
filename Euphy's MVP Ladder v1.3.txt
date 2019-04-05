@@ -1,0 +1,310 @@
+// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ *
+// * ~~~~~~~~  Euphy's MVP Ladder v1.3  ~~~~~~~~ *
+// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ *
+ 
+bro_mall,113,127,3	script	MVP Ladder	4_m_bosscat,{
+	mes "[Rank MVP]";
+	mes "Hello.";
+	mes "What are you doing here?";
+	next;
+	switch(select("Check Ranking.:My points.:Exchange Coin.:Nothing...")) {
+		case 1:
+			mes "[Rank MVP]";
+			query_sql("SELECT char_id, CAST(`value` AS SIGNED) FROM `char_reg_num` WHERE `key` = 'MVP_Rank' ORDER BY CAST(`value` AS SIGNED) DESC LIMIT 20",.@cid,.@value);
+			for(set .@i,0; .@i<getarraysize(.@cid); set .@i,.@i+1) {
+				query_sql("SELECT `name` FROM `char` WHERE char_id = "+.@cid[.@i]+";",.@j$);
+				set .@name$[.@i], .@j$;
+			}
+			if (!getarraysize(.@cid))
+				mes "The rankings are empty.";
+			else for(set .@i,0; .@i<getarraysize(.@cid); set .@i,.@i+1)
+			mes "["+(.@i+1)+"] "+.@name$[.@i]+" ~ "+.@value[.@i]+" kills";
+			close;
+			
+		case 2:
+			mes "[Rank MVP]";
+			mes "You killed "+((MVP_Rank)?"^0055FF"+MVP_Rank:"no")+"^000000 MVP"+((MVP_Rank == 1)?".":"s.");
+			close;
+		case 3:
+			goto H_menu;
+			//Item Menu ================================================
+			H_menu:
+				menu
+				"Elunium",R_elu,
+				"Oridecon",R_ori,
+				"(Costume)There is Somthing (7days)",R_rtis,
+				"(Costume)There is Somthing",R_tis,
+				"(Costume)Red Wind Hat (7days)",R_rwh,
+				"(Costume)Red Wind Hat",R_wh,
+				"(Costume)12th Anniversary Fairy Ears (7days)",R_r12,
+				"(Costume)12th Anniversary Fairy Ears",R_12,
+				"(Costume)Ninja Scroll (7days)",R_rns,
+				"(Costume)Ninja Scroll",R_ns,
+				"(Costume)Gang Scarf (7days)",R_rgs,
+				"(Costume)Gang Scarf",R_gs,
+				"(Costume)Holy Mom Love (7days)",R_rhm,
+				"(Costume)Holy Mom Love",R_hm,
+				"(Costume)Bread Bag (7days)",R_rbb,
+				"(Costume)Bread Bag",R_bb,
+				"(Costume)Diadem (7days)",R_rdia,
+				"(Costume)Diadem",R_dia,
+				"(Costume)Ascension Black Dragon (7days)",R_rasc,
+				"(Costume)Ascension Black Dragon",R_asc,
+				"(Costume)Marcher Hat (7days)",R_rmh,
+				"(Costume)Marcher Hat",R_mh,
+				"Cancel",H_cancel;
+			//Required =================================================
+			R_elu:
+				next;
+				mes "1x MVP Coin";
+				menu "Make",M_elu,"Return to Menu",H_menu;
+			R_ori:
+				next;
+				mes "1x MVP Coin";
+				menu "Make",M_ori,"Return to Menu",H_menu;
+			R_rtis:
+				next;
+				mes "15x MVP Coin";
+				menu "Make",M_rtis,"Return to Menu",H_menu;
+			R_tis:
+				next;
+				mes "60x MVP Coin";
+				menu "Make",M_tis,"Return to Menu",H_menu;
+			R_rwh:
+				next;
+				mes "5x MVP Coin";
+				menu "Make",M_rwh,"Return to Menu",H_menu;
+			R_wh:
+				next;
+				mes "30x MVP Coin";
+				menu "Make",M_wh,"Return to Menu",H_menu;
+			R_r12:
+				next;
+				mes "15x MVP Coin";
+				menu "Make",M_r12,"Return to Menu",H_menu;
+			R_12:
+				next;
+				mes "50x MVP Coin";
+				menu "Make",M_12,"Return to Menu",H_menu;
+			R_rns:
+				next;
+				mes "9x MVP Coin";
+				menu "Make",M_rns,"Return to Menu",H_menu;
+			R_ns:
+				next;
+				mes "35x MVP Coin";
+				menu "Make",M_ns,"Return to Menu",H_menu;
+			R_rgs:
+				next;
+				mes "10x MVP Coin";
+				menu "Make",M_rgs,"Return to Menu",H_menu;
+			R_gs:	
+				next;
+				mes "35x MVP Coin";
+				menu "Make",M_gs,"Return to Menu",H_menu;
+			R_rhm:	
+				next;
+				mes "5x MVP Coin";
+				menu "Make",M_rhm,"Return to Menu",H_menu;
+			R_hm:
+				next;
+				mes "30x MVP Coin";
+				menu "Make",M_hm,"Return to Menu",H_menu;
+			R_rbb:
+				next;
+				mes "5x MVP Coin";
+				menu "Make",M_rbb,"Return to Menu",H_menu;
+			R_bb:
+				next;
+				mes "30x MVP Coin";
+				menu "Make",M_bb,"Return to Menu",H_menu;
+			R_rdia:
+				next;
+				mes "5x MVP Coin";
+				menu "Make",M_rdia,"Return to Menu",H_menu;
+			R_dia:
+				next;
+				mes "30x MVP Coin";
+				menu "Make",M_dia,"Return to Menu",H_menu;
+			R_rasc:
+				next;
+				mes "5x MVP Coin";
+				menu "Make",M_rasc,"Return to Menu",H_menu;
+			R_asc:
+				next;
+				mes "30x MVP Coin";
+				menu "Make",M_asc,"Return to Menu",H_menu;
+			R_rmh:
+				next;
+				mes "5x MVP Coin";
+				menu "Make",M_rmh,"Return to Menu",H_menu;
+			R_mh:
+				next;
+				mes "30x MVP Coin";
+				menu "Make",M_mh,"Return to Menu",H_menu;
+				
+			//Make Item ================================================
+			M_elu:
+				if(countitem(7929)<1 )
+				goto M_insufficient;
+				delitem 7929,1;
+				getitem 985,1;
+			close;
+			M_ori:
+				if(countitem(7929)<1 )
+				goto M_insufficient;
+				delitem 7929,1;
+				getitem 984,1;
+			close;
+			M_rtis:
+				if(countitem(7929)<15 )
+				goto M_insufficient;
+				delitem 7929,15;
+				rentitem 20183,604800;
+			close;
+			M_tis:
+				if(countitem(7929)<60 )
+				goto M_insufficient;
+				delitem 7929,60;
+				getitem 20183,1;
+			close;
+			M_rwh:
+				if(countitem(7929)<5 )
+				goto M_insufficient;
+				delitem 7929,5;
+				rentitem 19579,604800;
+			close;
+			M_wh:
+				if(countitem(7929)<30 )
+				goto M_insufficient;
+				delitem 7929,30;
+				getitem 19579,1;
+			close;
+			M_r12:
+				if(countitem(7929)<15 )
+				goto M_insufficient;
+				delitem 7929,15;
+				rentitem 20136,604800;
+			close;
+			M_12:
+				if(countitem(7929)<50 )
+				goto M_insufficient;
+				delitem 7929,50;
+				getitem 20136,1;
+			close;
+			M_rns:
+				if(countitem(7929)<9 )
+				goto M_insufficient;
+				delitem 7929,9;
+				rentitem 19606,604800;
+			close;
+			M_ns:
+				if(countitem(7929)<35 )
+				goto M_insufficient;
+				delitem 7929,35;
+				getitem 19606,1;
+			close;
+			M_rgs:
+				if(countitem(7929)<10 )
+				goto M_insufficient;
+				delitem 7929,10;
+				rentitem 19605,604800;
+			close;
+			M_gs:
+				if(countitem(7929)<35 )
+				goto M_insufficient;
+				delitem 7929,35;
+				getitem 19605,1;
+			close;
+			M_rhm:
+				if(countitem(7929)<5 )
+				goto M_insufficient;
+				delitem 7929,5;
+				rentitem 19756,604800;
+			close;
+			M_hm:
+				if(countitem(7929)<30 )
+				goto M_insufficient;
+				delitem 7929,30;
+				getitem 19756,1;
+			close;
+			M_rbb:
+				if(countitem(7929)<5 )
+				goto M_insufficient;
+				delitem 7929,5;
+				rentitem 19725,604800;
+			close;
+			M_bb:
+				if(countitem(7929)<30 )
+				goto M_insufficient;
+				delitem 7929,30;
+				getitem 19725,1;
+			close;		
+			M_rdia:
+				if(countitem(7929)<5 )
+				goto M_insufficient;
+				delitem 7929,5;
+				rentitem 19748,604800;
+			close;
+			M_dia:
+				if(countitem(7929)<30 )
+				goto M_insufficient;
+				delitem 7929,30;
+				getitem 19748,1;
+			close;
+			M_rasc:
+				if(countitem(7929)<5 )
+				goto M_insufficient;
+				delitem 7929,5;
+				rentitem 19575,604800;
+			close;	
+			M_asc:	
+				if(countitem(7929)<30 )
+				goto M_insufficient;
+				delitem 7929,30;
+				getitem 19575,1;
+			close;
+			M_rmh:
+				if(countitem(7929)<5 )
+				goto M_insufficient;
+				delitem 7929,5;
+				rentitem 19653,604800;
+			close;
+			M_mh:	
+				if(countitem(7929)<30 )
+				goto M_insufficient;
+				delitem 7929,30;
+				getitem 19653,1;
+			close;
+				
+			//Insufficient Coin ========================================
+			M_insufficient:
+			next;
+			mes "You don't have the enough coin.";
+			mes "Please come back when you do...";
+			menu "Return to Main Menu",H_menu,"Leave",H_cancel;
+			close;
+			//Cancel ===================================================
+			H_cancel:
+			close;
+				
+		case 4:
+			close;
+	}
+ 
+OnNPCKillEvent:
+	if (getmonsterinfo(killedrid,22)) {
+		set MVP_Rank, MVP_Rank+1;
+	if (MVP_Rank == 1)
+		query_sql("INSERT INTO `char_reg_num` (`char_id`,`key`,`index`,`value`) VALUES ("+getcharid(0)+",'MVP_Rank','0',1)");
+	else
+		query_sql("UPDATE `char_reg_num` SET `value` = '"+MVP_Rank+"' WHERE char_id = "+getcharid(0)+" AND `key` ='MVP_Rank'");
+		dispbottom "~ You killed "+MVP_Rank+" MVP"+((MVP_Rank == 1)?"":"s")+". ~";
+		//dispbottom " ~ Reward: Cash +15 ~ ";
+		//set #CASHPOINTS, #CASHPOINTS + 15;
+		dispbottom " ~ Reward: BOP ~ ";
+		getitem 7929,1; //<<< THIS IS THE COIN REWARD FOR MVP ONLY<<<<<<<<<<<<
+		specialeffect2 313;
+	}
+	end;
+}
