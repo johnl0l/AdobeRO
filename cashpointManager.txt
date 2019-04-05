@@ -1,0 +1,174 @@
+// ---
+//= Cash Point Manager v1.0 [Rokimoki]
+// * Add Cash Points
+// * Delete Cash Points
+// * Watch Cash Points
+// * Notify the player if an admin has added/deleted some cash to you.
+// * If the player is online it will tell which GM did.
+// * If the player is NOT online will show a notification when logged in but will not tell the GM who did it.
+// * Logs system. Must be 'log_npc: true' in conf/map/logs.con file.
+//   -> If somebody put wrong password in whisp system.
+//   -> If add/delete cash points.
+// ---
+//= This works if you are online or not, if online don't use SQL if offline use SQL.
+// ---
+//= v2.0 [Rokimoki]
+// * Recycled this old script and adapted to Hercules database
+// * Transtaled to English
+// ---
+-	script	donations	-1,{
+OnWhisperGlobal:
+if (getgmlevel() < 90) { // If you are not admin just tell you how many cash you have.
+	dispbottom "Your have: [" + #CASHPOINTS + "] CashPoints.";
+	end;
+} // End if
+if (strcmp(@whispervar0$,"yourpassword") != 0) { // Password system, change 'yourpassword' for any password you want
+	logmes "User: " +strcharinfo(0) +" with account_id: " +getcharid(3) +" typed a wrong password, he wrote: " +@whispervar0$; // Just for watch if bruteforcing or something
+	end;
+} // End if
+deletearray .@username$[0], 128; // Debug
+deletearray .@accid[0], 128;
+set .@npcName$, "[^0000FFCashPoint Manager^000000]";
+mes .@npcName$;
+mes "Hi, I am your assistant, tell me what you need please...";
+next;
+switch (select("Add Cash Points:Delete Cash Points:Watch Cash Points:End")) {
+	case 1: // Add cash points
+		callfunc("CashPoints",1);
+		break;
+
+	case 2: // Delete cash points
+		callfunc("CashPoints",2);
+		break;
+
+	case 3: // Watch cash points
+		callfunc("CashPoints",3);
+		break;
+		
+	case 4: // Close
+		mes "Good bye...";
+		break;
+} // End switch
+close;
+
+OnPCLoginEvent: // Offline notifications
+if (#CASHPOINTS < lastCash) dispbottom "Some administrator deleted some CashPoints, current balance: [" + #CASHPOINTS +"], before: [" + lastCash + "]";
+else if (#CASHPOINTS > lastCash) dispbottom "Some administrator added some CashPoints, current balance: [" + #CASHPOINTS +"], before: [" + lastCash + "]";
+set lastCash, #CASHPOINTS;
+end;
+} // End Script
+
+function	script	CashPoints	{
+mes .@npcName$;
+mes "I need to ask you something...";
+next;
+mes .@npcName$;
+if (select("Select by character name:Select by login username") == 1) {
+	mes "Input character name: ";
+	next;
+	input .@charName$;
+	query_sql "SELECT `account_id` FROM `char` WHERE `name` = '" +escape_sql(.@charName$) +"'", .@accid[0];
+} else {
+	mes "Input login username: ";
+	next;
+	input .@loginName$;
+	query_sql "SELECT `account_id` FROM `login` WHERE `userid` = '" +escape_sql(.@loginName$) +"'", .@accid[0];
+} // End if
+if (!.@accid[0]) {
+	mes "Invalid information, error occurred: account or character not found.";
+	close;
+} // End if
+if (getarg(0) == 3) { // Watch Cash Points
+	if (isloggedin(.@accid[0])) { // If player is online
+		// Save GM information
+		set .@gm$, strcharinfo(0);
+		set .@id, getcharid(3);
+		detachrid;
+		// Attach player in this script
+		attachrid(.@accid[0]);
+		set .@cash, #CASHPOINTS; // Save Cash Points amount
+		detachrid;
+		attachrid(.@id);
+		mes .@npcName$;
+		mes "This player has: [^FF0000" +.@cash +"^000000] Cash Points.";
+	} else { // If offline
+		query_sql "SELECT `value` FROM `acc_reg_num_db` WHERE `key` = '#CASHPOINTS' AND `account_id` = " +.@accid[0], .@value[0]; // Save Cash Points amount
+		if (!.@value[0]) mes "He has [^FF00000^000000] Cash Points."; // 0 cash
+		else mes "He has [^FF0000" +.@value[0] +"^000000] Cash Points."; // if he has cash
+	} // End if
+	close;
+} // End if
+mes .@npcName$;
+mes "Input Cash Point amount, range: 1~100"; // Change here too if you want to show proper information
+next;
+input .@amount, -1000, 1000; // Debug
+if (.@amount < 1 || .@amount > 100) { // Define in this if the amount you want to limit (just the right part)
+	mes .@npcName$;
+	mes "Invalid amount, input in the proper range told.";
+	close;
+} // End if
+if (isloggedin(.@accid[0])) { // If player is online
+	// Save GM information
+	set .@gm$, strcharinfo(0);
+	set .@id, getcharid(3);
+	detachrid;
+	// Attach player
+	attachrid(.@accid[0]);
+	set .@cash, #CASHPOINTS; // Save current cash
+	if (getarg(0) == 1) { // Add cash
+		set #CASHPOINTS, #CASHPOINTS + .@amount; // Add cash
+		dispbottom "This admin: [" + .@gm$ +"] added: " +.@amount +" cash points, current balance: [" +#CASHPOINTS + "]"; // Online notification
+	} else if (getarg(0) == 2) { // Delete cash
+		if (.@cash <= 0) {
+			detachrid;
+			attachrid(.@id);
+			mes .@npcName$;
+			mes "You can not delete cash points, this player has no cash points.";
+			close;
+		} else if (.@cash - .@amount < 0) {
+			detachrid;
+			attachrid(.@id);
+			mes .@npcName$;
+			mes "You can not delete more cash than he already has, you are allowed to remove: [^FF0000" +.@cash +"^000000] cash points.";
+			close;
+		} // End if
+		set #CASHPOINTS, #CASHPOINTS - .@amount; // Delete cash
+		dispbottom "This admin [" + .@gm$ +"] deleted: " +.@amount +" cash points, current balance: " +#CASHPOINTS; // Online notification
+		set .@action, 1; // Cash deleted flag
+	} // End if
+	detachrid;
+	attachrid(.@id);
+} else { // If offline
+	query_sql "SELECT `key` FROM `acc_reg_num_db` WHERE `account_id` = " + .@accid[0], .@username$[0]; // check current cash
+	if (.@username$[0] != "#CASHPOINTS") { // If empty, never had Cash Points
+		if (getarg(0) == 1) { // add cash
+			query_sql "INSERT INTO `acc_reg_num_db`(`account_id`, `key`, `index`, `value`) VALUES ('" + .@accid[0] + "','#CASHPOINTS','0','" + .@amount + "')"; // create the data
+		} else { // delete cash
+			mes .@npcName$;
+			mes "You can not delete cash points, this player has no cash points.";
+			close;
+		} // End if
+	} else { // Player had or has Cash Points
+		if (getarg(0) == 1) { // add cash
+			query_sql "UPDATE `acc_reg_num_db` SET `value` = `value` + '" +.@amount +"' WHERE `key` = '#CASHPOINTS' and `account_id` = '" +.@accid[0] +"'"; // update cash
+		} else { // delete cash
+			query_sql "SELECT `value` FROM `acc_reg_num_db` WHERE `key` = '#CASHPOINTS' and `account_id` = " +.@accid[0], .@value[0]; // check current cash
+			mes .@npcName$;
+			if (.@value[0] <= 0) {
+				mes "You can not delete cash points, this player has no cash points.";
+				close;
+			} else if (.@value[0] - .@amount < 0) {
+				mes "You can not delete more cash than he already has, you are allowed to remove: [^FF0000" + .@value[0] + "^000000] cash points.";
+				close;
+			} // End if
+			query_sql "UPDATE `acc_reg_num_db` SET `value` = `value` - '" + .@amount + "' WHERE `key` = '#CASHPOINTS' and `account_id` = '" + .@accid[0] + "'";
+			set .@action, 1; // Cash deleted flag
+		} // End if
+	} // End if
+} // End if
+// Saving logs
+if (!.@action) logmes "User: " + strcharinfo(0) + " with account_id: " + getcharid(3) + " added " + .@amount +" Cash Points to: " + .@accid[0];
+else logmes "User: " + strcharinfo(0) + " with account_id: " + getcharid(3) + " removed " + .@amount +" Cash Points to: " + .@accid[0];
+mes "Cash Points successfully sent, when the players log in will receive a notification, thanks for using this service.";
+return;
+} // End function
