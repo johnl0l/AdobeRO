@@ -1,0 +1,125 @@
+
+/* Please make sure you run this in your SQL.
+
+	ALTER TABLE `global_reg_value` CHANGE COLUMN `value` `value` TEXT NOT NULL  ;
+*/
+
+
+prontera,155,181,5	script	Doppelganger	739,{
+function AddZero;
+
+do{
+	explode( .@Saved_Array$,SAVED$,"@" );
+	explode( .@Saved2_Array$,SAVED2$,"@" );
+	
+	explode( .@Stats_Array$,.@Saved2_Array$[0],"-" );
+	explode( .@Class_Array$,.@Saved_Array$[0],"#" );
+	explode( .@Skill_ID_Array$,.@Saved_Array$[1],"#" );
+	explode( .@Skill_LV_Array$,.@Saved_Array$[2],"#" );
+	explode( .@Skill_FLAG_Array$,.@Saved_Array$[3],"#" );
+	
+	mes "You may switch to any other previously saved Character Data.";
+	mes "^FF0000Notes : Novice cant save Data.^000000";
+	next;
+	set .@Menu$,"";
+	for( set .@i,0; .@i < .MaxSlot; set .@i,.@i + 1 )
+		set .@Menu$,.@Menu$ + (( atoi( .@Class_Array$[.@i] ) < 1 )?"^FF0000 ~ Slot "+( .@i+1 ):"^0055FF ~ "+jobname( atoi( .@Class_Array$[.@i] ) ))+"^000000:";
+	set .@Menu$,.@Menu$ + (( !Class )?"":"Create NEW Class" );
+	set .@Slot,select( .@Menu$ ) - 1;
+	if( .@Slot < .MaxSlot ){
+		explode( .@Load_Stats$,.@Saved2_Array$[.@Slot],"-" );
+		mes "[ "+(( atoi( .@Class_Array$[.@Slot] ) )?"^0055FF":"^FF0000Empty " )+"Slot : "+( .@Slot+1 )+"^000000 ] \n^0055FF"+jobname( ( atoi( .@Class_Array$[.@Slot] ) )?atoi( .@Class_Array$[.@Slot] ):Class )+" ^777777( Lv "+( atoi( .@Load_Stats$[0] )?atoi( .@Load_Stats$[0] ):BaseLevel )+" / "+( atoi( .@Load_Stats$[1] )?atoi( .@Load_Stats$[1] ):JobLevel )+" )^000000";
+		mes "^777777-------------------------------^000000";
+		mes "STR : "+AddZero( ( atoi( .@Class_Array$[.@Slot] ) )?atoi( .@Load_Stats$[4] ):readparam(13) )+"  AGI : "+AddZero( ( atoi( .@Class_Array$[.@Slot] ) )?atoi( .@Load_Stats$[5] ):readparam(14) ); 
+		mes "DEX : "+AddZero( ( atoi( .@Class_Array$[.@Slot] ) )?atoi( .@Load_Stats$[8] ):readparam(17))+"  VIT : "+AddZero( ( atoi( .@Class_Array$[.@Slot] ) )?atoi( .@Load_Stats$[7] ):readparam(15) );
+		mes "LUK : "+AddZero( ( atoi( .@Class_Array$[.@Slot] ) )?atoi( .@Load_Stats$[9] ):readparam(18) )+"  INT : "+AddZero( ( atoi( .@Class_Array$[.@Slot] ) )?atoi( .@Load_Stats$[6] ):readparam(16) );	
+		mes "^777777-------------------------------^000000";
+		mes "Status Points : ^777777"+( atoi( .@Load_Stats$[2] )?atoi( .@Load_Stats$[2] ):StatusPoint )+"^000000";
+		mes "Skill Points : ^777777"+( atoi( .@Load_Stats$[3] )?atoi( .@Load_Stats$[3] ):SkillPoint )+"^000000";
+		next;
+		set .@Option,select( ( atoi( .@Class_Array$[.@Slot] ) > 0 || !Class )?"":"^0055FF ~ Save^000000",
+							( atoi( .@Class_Array$[.@Slot] ) < 1 )?"":"^0055FF ~ LOAD^000000",
+							( atoi( .@Class_Array$[.@Slot] ) < 1 )?"":"^FF0000 ~ REMOVE^000000",
+							"Back^000000" );
+		switch( .@Option ){
+			Case 1:
+				getskilllist;
+				for( set .@i,0; .@i < @skilllist_count; set .@i,.@i + 1 )
+					if( @skilllist_id[.@i] ){
+						set .@Temp_Skill_ID$[.@i],@skilllist_id[.@i];
+						set .@Temp_Skill_LV$[.@i],@skilllist_lv[.@i];
+						set .@Temp_Skill_FLAG$[.@i],@skilllist_flag[.@i];
+					}
+				set .@Class_Array$[.@Slot],Class;
+				set .@ClassSkillID$[.@Slot],implode( .@Temp_Skill_ID$,"-" );
+				set .@ClassSkillLV$[.@Slot],implode( .@Temp_Skill_LV$,"-" );
+				set .@ClassSkillFLAG$[.@Slot],implode( .@Temp_Skill_FLAG$,"-" );
+					
+				setarray .@Temp_Stats$[0],BaseLevel,JobLevel,StatusPoint,SkillPoint,readparam(13),readparam(14),readparam(15),readparam(16),readparam(17),readparam(18);	
+				set .@ClassStats$[.@Slot],implode( .@Temp_Stats$,"-" );
+				
+				set .@Saved$[0],implode( .@Class_Array$,"#" );
+				set .@Saved$[1],implode( .@ClassSkillID$,"#" );
+				set .@Saved$[2],implode( .@ClassSkillLV$,"#" );
+				set .@Saved$[3],implode( .@ClassSkillFLAG$,"#" );
+
+				set SAVED$,implode( .@Saved$,"@" );
+				set SAVED2$,implode( .@ClassStats$,"@" );
+				message strcharinfo(0),"SAVED";
+				break;
+			Case 2:	
+				jobchange atoi( .@Class_Array$[.@Slot] );		
+				set BaseLevel,atoi( .@Load_Stats$[0] );
+				set JobLevel,atoi( .@Load_Stats$[1] );
+				set StatusPoint,atoi( .@Load_Stats$[2] );
+				set SkillPoint,atoi( .@Load_Stats$[3] );
+				for( set .@i,13; .@i <= 18; set .@i,.@i + 1 )
+					statusup2 .@i,( atoi( .@Load_Stats$[.@i-9] ) - 1 );	
+			
+				explode( .@Load_Skill_ID$,.@Skill_ID_Array$[.@Slot],"-" );
+				explode( .@Load_Skill_LV$,.@Skill_LV_Array$[.@Slot],"-" );
+				explode( .@Load_Skill_FLAG$,.@Skill_FLAG_Array$[.@Slot],"-" );
+				
+				for( set .@i,0; .@i < getarraysize( .@Load_Skill_ID$ ); set .@i,.@i + 1 )
+					if( !atoi( .@Load_Skill_FLAG$[.@i] ) && atoi( .@Load_Skill_ID$[.@i] ) )
+						skill atoi( .@Load_Skill_ID$[.@i] ),atoi( .@Load_Skill_LV$[.@i] ),0;
+				message strcharinfo(0),"LOADED";
+				break;
+			Case 3:
+				set .@Class_Array$[.@Slot],"0";
+				set .@ClassSkillID$[.@Slot],"-1";
+				set .@ClassSkillLV$[.@Slot],"-1";
+				set .@ClassSkillFLAG$[.@Slot],"-1";
+				set .@ClassStats$[.@Slot],"-1";
+				set .@ClassStats$[.@Slot],"-1";
+				
+				set .@Saved$[0],implode( .@Class_Array$,"#" );
+				set .@Saved$[1],implode( .@ClassSkillID$,"#" );
+				set .@Saved$[2],implode( .@ClassSkillLV$,"#" );
+				set .@Saved$[3],implode( .@ClassSkillFLAG$,"#" );
+				
+				set SAVED$,implode( .@Saved$,"@" );
+				set SAVED2$,implode( .@ClassStats$,"@" );
+				
+				deletearray .@Saved$[0],getarraysize( .@Saved$ );
+				message strcharinfo(0),"REMOVED";
+			default: break;				
+		}
+	}else{
+		message strcharinfo(0),"NEW CLASSES";
+		jobchange 0;
+		Resetlvl 1;
+	}
+}while( .@Slot < .MaxSlot );
+close;
+
+function	AddZero	{
+	if( getarg(0) < 10 ) return "^FFFFFF00^777777"+( getarg(0) )+"^000000";
+	else if( getarg(0) < 100 ) return "^FFFFFF0^777777"+( getarg(0) )+"^000000";
+	else return "^777777"+getarg(0)+"^000000";
+}
+
+OnInit:
+set .MaxSlot,3;
+end;
+}

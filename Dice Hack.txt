@@ -1,0 +1,17 @@
+-	script	dicehack	-1,{
+end;
+
+OnInit:
+	bindatcmd "dice",strnpcinfo(3)+"::OnAtcommand";
+	end;
+	
+OnAtcommand:
+	if (getgroupid() < 10) { end; }
+	.@dice = atoi(.@atcmd_parameters$[0]);
+	.@dice += 57; 
+	emotion .@dice,1;
+	end;
+
+}
+
+//This one's a silly one. It lets your GMs use @dice 1 to @dice 6 to cheat at dice. It's fun. :]

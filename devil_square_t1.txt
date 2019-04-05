@@ -1,0 +1,571 @@
+/*= Devil Square =*/
+/*= Coded by: IeYasuru =*/
+/*= Recoded by: Aeromesi =*/
+/*= Date: April 8, 2015 =*/
+/*= Revision: 5 =*/
+
+/*= Type 1 [Nightmare-Mode]
+	Description: 
+	In this version of Devil's Square, once the amount of players have joined, that's it. 
+	You won't be able to continue going back inside of Devil Square once you die, after entering and Devil Square starts, it will be closed. 
+	All other players won't be able to join, and it's up to all the players to either complete Devil Square or die and not be able to come back in.
+	If no players enter in the timeframe, it will cancel out the event.
+	Also counts up the Max amount of Users when they enter Devil's Square. Once the Max Users have been established, no one else can join, and then it's just up to that team of people!
+	Once all the Players have died and warped out of the event, it will announce that all the users who entered have failed Victory in Devil Square, and the event will be reset.
+
+/*= Difference in Type 2:
+	Description:
+	In this version when you die and get warped out, if you hurry up you'll be able to come back into Devil Square again. 
+	NOTE: You WILL have to REPAY the amount of Zeny to re-enter.
+	Since players can die, and repay/pay at anytime to join inside the event, there's no need to cancel out the event if no one joins.
+
+/*= External Functions:
+	None
+
+/*= New Additions to Revision 5 (For Type 1 And Type 2):
+	Created commands:
+	@disableds - Allows you to disable Devil Square whenever you want (This feature is also inside of the NPC!)
+	@repeatds - Allows you to repeat the Devil Square on the go. (This feature is also inside of the NPC!)
+	@editds -  Allows you to edit, or as I put it "Over Ride" the settings in the OnInit: inside of [DS] Organizer::DSORG
+	Changes happen in the menu whether the event is active or not. If it's active it will allow you to disable or go to the Player Menu, if it's unactive it'll ask if you want to Start Devil's Square.
+	Basically redesigned a lot of the aspects of the script, beforehand it didn't even work, and had errors upon errors.
+	Made the script to be flexible and totally configurable!
+	Future additions/ideas: Add the ability to also edit the mob data for each Round as well as the MvP list.
+	Also before hand if it was <= 5 users it would only spawn 8 Treasure Chests, otherwise it would spawn 16. Now you can choose as much as you want!
+	When a GM is editing an option inside of Devil's Square, another GM cannot edit an option until that GM is done editing an option via `@editds`.
+	During the whole 10 rounds of 
+
+	NOTE: Not every Treasure Chest is the same either!
+=*/
+
+////////////////////////////////////////
+
+/*= DS Organizer =*/
+prontera,150,143,4	script	[DS] Organizer::DSORG	4_GEFFEN_11,{
+	$npc$ = "[ ^FF0000Devil's Square^000000 ^E9AB17Organizer^000000 ]";
+	if(getgmlevel() >= $@MinGM)
+		callsub GM_Menu;
+	mes $npc$;
+	mes "Welcome to our special event!";
+	mes "For only ^0000FF"+$@ZenReq+"^000000 Zeny you can challenge this wonderful ring of trials and tribulations!";
+	next;
+	while(1)
+	{
+		mes $npc$;
+		mes "So, would you care to join and try your luck?";
+		mes "Please note: You must be at least level ^FF0000"+$@MinBaseLevel+"^000000 to enter.";
+		switch(select("Sure!:No thanks, I value my life:Um, what am I getting into?"))
+		{
+			case 1:
+				if( !$@DS_Open )
+				{
+					mes "I'm sorry, but the Devil's Square is not currently open.";
+					mes "Please try back later.";
+					close;
+				}
+				if( BaseLevel < $@MinBaseLevel || Zeny < $@ZenReq )
+				{
+					mes "I'm sorry, but you need a minimum Base Level of ^FF0000"+$@MinBaseLevel+"^000000 or you don't have ^FF0000"+$@ZenReq+"^000000 Zeny.";
+					close;
+				}
+				if(getmapusers("ordeal_1-1") >= $@MaxUsers )
+				{
+					mes "I'm sorry, but we are at capacity. Please try again next time.";
+					close;
+				}
+				Zeny-=$@ZenReq;
+				$@Entered++;
+				announce strcharinfo(0) + " has decided to take on the Devil's Square for fame and glory! Wish " + ((Sex)?"him":"her") + " luck!",8;
+				percentheal 100,100;
+				warp "ordeal_1-1",149,149;
+				sleep2 3000;
+				if ($@Entered == $@MaxUsers) {
+				announce "Devil's Square] The available slots for entry to Devil's Square is all used up. Better be faster next time!",bc_all;
+				end;
+}
+				announce "[Devil's Square] Total of ("+$@Entered+"/"+$@MaxUsers+") have entered! Hurry before the slots fill up!",bc_all;
+				end;
+			
+			case 2:
+				mes "I'm sorry to hear that. Please come back if you change your mind.";
+				close;
+			
+			case 3:
+				next;
+				mes $npc$;
+				mes "Devil's Square is a horde mode event consisting of 10 rounds.";
+				mes "The rounds start off easy but get progressively harder.";
+				mes "The final round consists of a single MVP mob.";
+				next;
+				mes $npc$;
+				mes "Once the door is opened, you have "+$@MaxMin+" minutes to enter.";
+				mes "If you do not enter in time, you miss that round.";
+				mes "If everybody participating dies, the round is cancelled.";
+				next;
+				break;
+		}
+	}
+	
+GM_Menu:
+		mes $npc$;
+		mes "Devil Square Details:";
+		mes "Minimum GM Requirement: ^0000FF"+$@MinGM+"^000000";
+		mes "Max Users: ^0000FF"+$@MaxUsers+"^000000";
+		mes "Minimum Base Level: ^0000FF"+$@MinBaseLevel+"^000000";
+		mes "Max Minutes to enter: ^0000FF"+$@MaxMin+"^000000";
+		mes "Max amount of Treasure Chests: ^0000FF"+$@MaxChests2+"^000000";
+		mes "Minimum Zeny Requirement: ^0000FF"+$@ZenReq+"^000000";
+		mes "Enable Drops: ^0000FF"+$@EnableDrops+"^000000";
+		next;
+	if ( $@DS_Active ) {
+	switch(select("Disable Devil's Square", "Player Menu")) {
+		case 1:
+		doevent ("DS_EVENT#DSMAIN")+"::OnAtDisableDS";
+		end;
+		case 2:
+			break;
+	}
+return;
+} else
+	switch(select("Start Devil's Square", "Player Menu"))
+	{
+		case 1:
+			donpcevent ("DS_EVENT#DSMAIN")+"::OnStartDS";
+		case 2: 
+			break;
+}
+	return;
+OnInit:
+
+/*NOTICE: If you never decide to edit the features for Devil's Square, it will always load the variables that are directly assigned, aka the: 99 for GM, 10000 for Zeny Requirement and so forth. 
+If you do decide to ever edit the details, even upon @reloadscript or a server-crash/maintenance, your edits will stay with the script and never reload to the default values!
+*/
+
+	$@DSMapName$ = "prontera"; // Change this where the NPC [DS]Organizer will be, so that it announces where you can go to register.
+if ( !$MinGMOverRide ) {
+	$@MinGM = 99; // This covers all of the GM features whether it be the @commands for @repeatds/@disableds and even the NPC.
+} else
+	$@MinGM = $MinGM;
+if ( !$ZenReqOverRide ) {
+	$@ZenReq = 10000; // This covers the Zeny Requirement needed to enter the Devil's Square.
+} else
+	$@ZenReq = $ZenReq;
+if ( !$MinBaseOverRide ) {
+	$@MinBaseLevel = 50; // This covers the Minimum Base Level to enter the Devil's Square.
+} else
+	$@MinBaseLevel = $MinBaseLevel;
+if ( !$MaxUserOverRide ) {
+	$@MaxUsers = 10; // The Max amount of users that can participate in Devil's Square.
+} else
+	$@MaxUsers = $MaxUsers;
+if ( !$MaxMinOverRide ) {
+	$@MaxMin = 5; // The Max Minutes the players have to enter Devil's Square.
+} else
+$@MaxMin = $MaxMin;
+if ( !$ChestsOverRide ) {
+	$@MaxChests = 2; // KEEP THIS SAME AS $@MaxChests2! So if you change this, make sure to change $@MaxChests2 to the same value!
+	$@MaxChests2 = 2; // This will be reset value DO NOT TOUCH
+} else
+	$@MaxChests = $MaxChests2;
+	$@MaxChests2 = $MaxChests2;
+if ( !$EnableDropsOverRide ) {
+	$@EnableDrops = 0; // 0 = False which is No Drops from all monsters besides MvP and the Treasure Chests. 1 = True which is Drops from all monsters including MvP & Treasure Chests.
+} else
+	$@EnableDrops = $EnableDrops;
+end;
+}
+/*= End Organizer =*/
+
+/*= Event Code =*/
+ordeal_1-1,0,0,0	script	DS_EVENT#DSMAIN	-1,{
+
+	function DS_CheckDup;
+	
+OnInit:
+	bindatcmd "repeatds",strnpcinfo(0)+"::OnAtRepeatDS";
+	bindatcmd "disableds",strnpcinfo(0)+"::OnAtDisableDS";
+	bindatcmd "editds",strnpcinfo(0)+"::OnAtEditDS";
+	$@DS_Open = 0;
+	setarray $@DS1[0],1002,1113,1005,1010,1090,1089,1089,1089,1015,1076,1015,1094,1025;
+	setarray $@DS2[0],1068,1052,1019,1077,1089,1088,1018,1028,1176,1128,1056,1169;
+	setarray $@DS3[0],1073,1057,1234,1686,1138,1212,1629,1323,1074,1016,1144,1317;
+	setarray $@DS4[0],1248,1099,1129,1880,1881,1151,1264,1108,1409,1069,1045,1271;
+	setarray $@DS5[0],1101,1061,1412,1291,1109,1699,1299,1065,1165,1180,1127;
+	setarray $@DS6[0],1302,1865,1297,1752,1753,1870,1283,1773,1773,1989,1989;
+	setarray $@DS7[0],1678,1679,1705,1704,1707,1706,1867,1867,1867,1867;
+	setarray $@DS8[0],1678,1678,1679,1117,1117,1291,1200,1291,1291,1838;
+	setarray $@DS9[0],1993,1992,1986,2016,2018,2017,1268,2017,1263,1262;
+	setarray $@DSMVP[0],1511,1039,1418,1768,1373,2022,1087,1190,1157,1623,1312,1685,1159,1147,1059,1150,1492,1251,1252,1272;
+	setarray $@DSC[0],132,137,167,159, 54,54,110,110, 26,138,95,182, 109,189,54,245, 138,204,162,273, 190,190,246,246, 208,137,273,181, 189,110,245,52, 137,90,161,26;
+	end;
+
+OnMinute00:
+	if(gettime(3) % 2)
+		end;
+OnStartDS:
+	$@DS_Active = 1;
+if ( !$@EnableDrops ) {
+	setmapflag "ordeal_1-1",mf_nomobloot;
+}
+	if ( !$ChestsOverRide ) {
+	$@MaxChests = $@MaxChests2;
+} else {
+	$@MaxChests = $MaxChests2;
+}
+	removemapflag "ordeal_1-1",mf_noskill;
+	mapwarp "ordeal_1-1","prontera",150,150;
+	killmonsterall "ordeal_1-1";
+	$@DS_Open = 1;
+	announce "[Devil's Square] The door to Devil's Square is NOW OPEN! You have "+$@MaxMin+" minutes to get in before it starts! Speak to the Ringmaster in "+$@DSMapName$ +" to join!",0;
+	for(.@i = $@MaxMin; .@i  > 0; .@i--)
+	{
+		announce "Devil Square will begin in " + .@i + " minutes!", 0;
+		sleep 6000;
+	}
+		if( getmapusers("ordeal_1-1") == 0 )
+{
+	announce "[Devil's Square] No one attempted to play Devil's Square. Stopping event.",bc_all;
+	$@DS_Active = 0;
+	$@DS_Open = 0;
+	end;
+}
+	$@DS_Open = 0;
+	$@DS_Round = 1;
+	donpcevent strnpcinfo(0)+"::OnBeginRound";
+	announce "[Devil's Square] Devil Square has BEGUN!",0;
+	end;
+
+OnBeginRound:
+	if($@DS_Round == 10)
+	{
+		mapannounce "ordeal_1-1","[Devil's Square] Please move to the center of the map for the boss round.", 0;
+		removemapflag "ordeal_1-1",mf_nomobloot;
+		while(getareausers("ordeal_1-1", 142, 142, 157, 157) < getmapusers("ordeal_1-1"))
+			sleep 25;
+		.@MVP = $@DSMVP[rand(getarraysize($@DSMVP))];
+		areamonster "ordeal_1-1", 132, 137, 167, 159, "[DS]" + getmonsterinfo(.@MVP, MOB_NAME), .@MVP, 1, "DS_EVENT#DSMAIN::OnDSMVPDead";
+		end;
+	}
+	callsub DS_GetRoundMobs;
+	for(.@i = 0; .@i < getarraysize($@RoundMobs); .@i++)
+		areamonster "ordeal_1-1",$@DSC[0 + (4 * ($@DS_Round - 1))], $@DSC[1 + (4 * ($@DS_Round - 1))], $@DSC[2 + (4 * ($@DS_Round - 1))], $@DSC[3 + (4 * ($@DS_Round - 1))], getmonsterinfo($@RoundMobs[.@i], MOB_NAME), $@RoundMobs[.@i], rand(3,5) * (((11 - $@DS_Round) / 2) + (12 - $@DS_Round)), strnpcinfo(0)+"::OnDSDead";
+	mapannounce "ordeal_1-1","Round " + $@DS_Round + " has begun!", 0;
+	deletearray $@RoundMobs[0],getarraysize($@RoundMobs);
+	end;
+
+DS_GetRoundMobs:
+	while(getarraysize($@RoundMobs) < 5)
+	{
+		.@mob = getd("$@DS" + $@DS_Round + "[" + rand(getarraysize(getd("$@DS" + $@DS_Round))) + "]");
+		if(DS_CheckDup(.@mob)) 
+			continue;
+		$@RoundMobs[getarraysize($@RoundMobs)] = .@mob;
+	}
+	return;
+
+	function	DS_CheckDup	{
+		for(.@i = 0; .@i < getarraysize($@RoundMobs); .@i++)
+		{
+			if(getarg(0) == $@RoundMobs[.@i])
+				return 1;
+		}
+		return 0;
+	}
+
+OnDSDead:
+	switch(mobcount("ordeal_1-1","DS_EVENT#DSMAIN::OnDSDead"))
+	{
+		case 200:
+		case 150:
+		case 100:
+		case 50:
+		case 25:
+		case 10:
+		case 5:
+			mapannounce "ordeal_1-1","Monsters remaining: " + mobcount("ordeal_1-1","DS_EVENT#DSMAIN::OnDSDead"),0;
+			break;
+		
+		case 0:
+			$@DS_Round++;
+			mapannounce "ordeal_1-1","All monsters in round " + ($@DS_Round - 1) + "have been defeated!",0;
+			donpcevent strnpcinfo(0)+"::OnBeginRound";
+		default:
+			if(mobcount("ordeal_1-1","DS_EVENT#DSMAIN::OnDSDead") < 5)
+			{
+			mapannounce "ordeal_1-1",mobcount("ordeal_1-1","DS_EVENT#DSMAIN::OnDSDead") + "monsters remaining.",0;
+			}
+	}
+	end;
+
+OnDSMVPDead:
+	mapannounce "ordeal_1-1", "Congratulations! You may now open your treasure boxes!", 0;
+	setmapflag "ordeal_1-1",mf_noskill;
+	for(.@i = 0; .@i  < $@MaxChests; .@i++)
+{
+		monster "ordeal_1-1",0,0, "[DS] Treasure Box",rand(1324,1356),1,"DS_EVENT#DSMAIN::OnBoxOpened";
+}
+end;
+OnBoxOpened:
+	$@MaxChests-=1;
+	if (!$@MaxChests) {
+		announce "[Devil's Square] " + strcharinfo(0) + " has opened the last Treasure Box. All players warping out. Hope you had fun!", 0;
+	if ( !$@EnableDrops ) {
+	removemapflag "ordeal_1-1",mf_nomobloot;
+}
+		sleep 3000;
+		$@DS_Active = 0;
+		$@Entered = 0;
+		mapwarp "ordeal_1-1","prontera",150,155;
+		end;
+}
+	announce "[Devil's Square] " + strcharinfo(0) + " acquired a Treasure Box at Devil Square! ("+$@MaxChests+") are left!", 0;
+end;
+OnPCDieEvent:
+	if ( !$@DS_Active ) {
+end;
+}
+	if(strcharinfo(3) == "ordeal_1-1") {
+		warp "SavePoint",0,0;
+	sleep2 3000;
+}
+		if( $@DS_Active && getmapusers("ordeal_1-1") == 0 )
+{
+	announce "[Devil's Square]  The ("+$@Entered+"/"+$@MaxUsers+") who attempted Devil Square has failed Victory. Better luck next time!",bc_all;
+	removemapflag "ordeal_1-1",mf_nomobloot;
+	$@DS_Active = 0;
+	$@Entered = 0;
+	killmonsterall "ordeal_1-1";
+	end;
+}
+end;
+OnAtRepeatDS:
+if ( getgmlevel() >= 99) {
+	if ( $@DS_Active ) {
+	dispbottom "Currently Devil Square is Activated. Try again when it is over.";
+	end;
+} else
+	if ( !$@DS_Active ) {
+	donpcevent ("DS_EVENT#DSMAIN")+"::OnStartDS";
+	end;
+	}
+} else
+end;
+OnAtDisableDS:
+	mes $npc$;
+if ( getgmlevel() >= 99) {
+	if ( !$@DS_Active ) {
+	mes "Currently Devil Square isn't Activated.";
+	close;
+} else
+	mes "Prematurely end Devil Square?";
+	switch(select("Yes","No")) {
+	case 1:
+	if ( !$@DS_Active ) {
+	mes "Currently Devil Square isn't Activated."; // Yes I know this is declared at the beginning, but it's a security measure in-case you idle inside of the menu selection when no players joined.
+	close;
+}
+	if ( !$ChestsOverRide ) {
+	$@MaxChests = $@MaxChests2;
+} else {
+	$@MaxChests = $MaxChests2;
+}
+	if ( !$@EnableDrops ) {
+	removemapflag "ordeal_1-1",mf_nomobloot;
+}
+	$@Entered = 0;
+	$@DS_Active = 0;
+	warp "ordeal_1-1",0,0;
+	sleep2 2000;
+	announce "[GM] "+strcharinfo(0)+" has prematurely ended Devil's Square. Warping all players out",bc_map;
+	killmonsterall "ordeal_1-1";
+	atcommand "@cleanmap";
+	sleep2 1000;
+	mapwarp "ordeal_1-1","prontera",150,150;
+	close;
+	case 2:
+	close;
+	}
+} else
+end;
+OnAtEditDS:
+	mes $npc$;
+	if( $@DS_Active ) {
+	mes "Currently Devil Square is active.";
+	mes "Editing the details while event is active will break the event. So please wait until it is finished or disable the event via `^FF0000@disableds^000000`. Thank you.";
+	close;
+}
+	mes "Devil Square Details:";
+	mes "Minimum GM Requirement: ^0000FF"+$@MinGM+"^000000";
+	mes "Max Users: ^0000FF"+$@MaxUsers+"^000000";
+	mes "Minimum Base Level: ^0000FF"+$@MinBaseLevel+"^000000";
+	mes "Max Minutes to enter: ^0000FF"+$@MaxMin+"^000000";
+	mes "Max amount of Treasure Chests: ^0000FF"+$@MaxChests2+"^000000";
+	mes "Minimum Zeny Requirement: ^0000FF"+$@ZenReq+"^000000";
+	mes "Enable Drops: ^0000FF"+$@EnableDrops+"^000000";
+	next;
+	switch(select("^006400[Edit]^000000 - Min GM Req","^006400[Edit]^000000 - Max Users","^006400[Edit]^000000 - Min Base Level","^006400[Edit]^000000 - Max Min to enter","^006400[Edit]^000000 - Max Treasure Chests","^006400[Edit]^000000 - Min Zeny Req","^006400[Edit]^000000 - Enable Drops"))
+	{
+		case 1:
+		mes $npc$;
+	if ( $@DSEdit ) {
+	mes "Currently another GM is editing an option in Devil's Square.";
+	mes "Please wait until the GM is done editing Devil's Square.";
+	close;
+} else
+		mes "Editing of the Minimum GM Requirement to access the NPC/@repeatds and @disableds.";
+GM_INPUT:
+		$@DSEdit = 1;
+		input $MinGM;
+		if ( $MinGM >= 0 && $MinGM <= 20 ) {
+		dispbottom "It isn't wise to give players access to the GM functions or to enter 0. Please try again with a number higher than 20 and not 0.";
+		callsub GM_INPUT;
+}
+		if ( $MinGM > 99 ) {
+		dispbottom "It isn't wise to input a value higher than the max GM level. Please try again.";
+		callsub GM_INPUT;
+}
+		$@MinGM = $MinGM;
+		$MinGMOverRide = 1;
+		
+next;
+$@DSEdit = 0;
+callsub OnAtEditDS;
+		case 2:
+		mes $npc$;
+	if ( $@DSEdit ) {
+	mes "Currently another GM is editing an option in Devil's Square.";
+	mes "Please wait until the GM is done editing Devil's Square.";
+	close;
+} else
+		mes "Editing the Max Users that are able to participate in Devil Square.";
+MAX_USERS:
+		$@DSEdit = 1;
+		input $MaxUsers;
+		if ($MaxUsers == 0 ) {
+		dispbottom "You cannot make the max users 0. Please try again.";
+		callsub MAX_USERS;
+}
+		$@MaxUsers = $MaxUsers;
+		$MaxUserOverRide = 1;
+next;
+$@DSEdit = 0;
+callsub OnAtEditDS;
+		case 3:
+		mes $npc$;
+	if ( $@DSEdit ) {
+	mes "Currently another GM is editing an option in Devil's Square.";
+	mes "Please wait until the GM is done editing Devil's Square.";
+	close;
+} else
+		mes "Editing the Minimum Base Level for Participants to enter.";
+MIN_BASE:
+		$@DSEdit = 1;
+		input $MinBaseLevel;
+		if ( $MinBaseLevel == 0 ) {
+		dispbottom "You cannot make the Minimum Base Level 0. Please try again.";
+		callsub MIN_BASE;
+}
+		$@MinBaseLevel = $MinBaseLevel;
+		$MinBaseOverRide = 1;
+next;
+$@DSEdit = 0;
+callsub OnAtEditDS;
+		case 4:
+		mes $npc$;
+	if ( $@DSEdit ) {
+	mes "Currently another GM is editing an option in Devil's Square.";
+	mes "Please wait until the GM is done editing Devil's Square.";
+	close;
+} else
+		mes "Editing the Max Minutes players have to enter until Devil Square begins.";
+MAX_MIN:
+		$@DSEdit = 1;
+		input $MaxMin;
+		if ( $MaxMin == 0 ) {
+		dispbottom "You cannot make the Maximum Minutes 0. Please try again.";
+		callsub MAX_MIN;
+}
+		$@MaxMin = $MaxMin;
+		$MaxMinOverRide = 1;
+next;
+$@DSEdit = 0;
+callsub OnAtEditDS;
+		case 5:
+		mes $npc$;
+	if ( $@DSEdit ) {
+	mes "Currently another GM is editing an option in Devil's Square.";
+	mes "Please wait until the GM is done editing Devil's Square.";
+	close;
+} else
+		mes "Editing the Maximum amount of Treasure Chests the players can find and collect.";
+MAX_CHESTS:
+		$@DSEdit = 1;
+		input $MaxChests2;
+		if ( $MaxChests2 == 0) {
+		dispbottom "You cannot make the Treasure Chests reward 0. Please try again.";
+		callsub MAX_CHESTS;
+}
+		$ChestsOverRide = 1;
+		$@MaxChests = $MaxChests2;
+		$@MaxChests2 = $MaxChests2;
+next;
+$@DSEdit = 0;
+callsub OnAtEditDS;
+		case 6:
+		mes $npc$;
+	if ( $@DSEdit ) {
+	mes "Currently another GM is editing an option in Devil's Square.";
+	mes "Please wait until the GM is done editing Devil's Square.";
+	close;
+} else
+		mes "Editing the Minimum Zeny Requirement for entry.";
+MIN_ZENY:
+		$@DSEdit = 1;
+		input $ZenReq;
+		if ( $ZenReq == 0) {
+		dispbottom "You cannot make the Zeny Requirement 0. Please try again.";
+		callsub MIN_ZENY;
+}
+		$@ZenReq = $ZenReq;
+		$ZenReqOverRide = 1;
+next;
+$@DSEdit = 0;
+callsub OnAtEditDS;
+		case 7:
+		mes $npc$;
+	if ( $@DSEdit ) {
+	mes "Currently another GM is editing an option in Devil's Square.";
+	mes "Please wait until the GM is done editing Devil's Square.";
+	close;
+} else
+		mes "1 - ^0000FFEnabling^000000 Drops will allow you to get the Monsters, MvP and Treasure Chest Drops!";
+		mes "0 - ^FF0000Disabling^000000 Drops will allow you to still get MvP and the Treasure Chest Drops!";
+EN_DROPS:
+		$@DSEdit = 1;
+		input $EnableDrops;
+		if ( $EnableDrops != 0 && $EnableDrops != 1 ) {
+		dispbottom "You may only select 0 or 1.";
+		dispbottom "NOTE: If Drops are not enabled, you will still get MvP Drop and the Treasure Chest drops!";
+		callsub EN_DROPS;
+}
+		$@EnableDrops = $EnableDrops;
+		$EnableDropsOverRide = 1;
+next;
+$@DSEdit = 0;
+callsub OnAtEditDS;
+	}
+}
+/*= End Event Code =*/
+
+////////////////////////////////////////
+
+/*= Mapflags and External Functions =*/
+ordeal_1-1	mapflag	nowarp
+ordeal_1-1	mapflag	nowarpto
+ordeal_1-1	mapflag	noteleport
+ordeal_1-1	mapflag	monster_noteleport
+ordeal_1-1	mapflag	nosave	SavePoint
+ordeal_1-1	mapflag	nomemo
+ordeal_1-1	mapflag	nobranch
+ordeal_1-1	mapflag	nopenalty
+/*= End Mapflags and Ext Funcs =*/

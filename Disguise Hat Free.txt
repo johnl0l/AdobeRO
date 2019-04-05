@@ -1,0 +1,514 @@
+//===== By: ===============================================
+//= Gerardo (Black Game)
+//===== Current Version: ======================================
+//= 0.1
+//===== Compatible With: =====================================
+//= eAthena/3CeAM/rAthena
+//===== Description: ========================================= 
+//= NPCs of disguise headgear
+//===== Additional Comments: ================================= 
+//= Simple code.
+//= Data base with 9 tables.
+//============================================================ 
+
+prontera,140,171,6	script	Disguise Hat	791,{
+	mes "[^FFA500Kafra Shop^000000]";
+	mes "Sistema de disfarce de item.";
+	switch(select("Ver lista de hat:Resetear HeadGear:Sair")){
+		next;
+		case 1:
+			mes "[^FFA500Kafra Shop^000000]";
+			mes "Escolha o tipo de HeadGear como";
+			next;
+			switch(select("Top HeadGear:Mid HeadGear:Low HeadGear:Sair")){
+			case 1:query_sql("SELECT id FROM disguise_head_1;",.@disguise_head_1[0]); goto L_disguise_head_1;
+			case 2:query_sql("SELECT id FROM disguise_mid;",.@disguise[0]); goto L_disguise_mid;
+			case 3:query_sql("SELECT id FROM disguise_low;",.@disguise[0]); goto L_disguise_low;
+			case 4:close;break;
+			}
+L_disguise_head_1:
+		mes "[^FFA500Kafra Shop^000000]";
+		mes "Selecione o Hat que quer.";
+		next;
+			set @numero1,0;
+			set @y,0;
+			set @Menu$,"";
+			set @Menu$,@Menu$ + "Next(76 - 150):";
+			for( set @i, 1; .@disguise_head_1[@y] != 0; set @i, @i + 1 ){
+					set @numero1,@y+1;
+					set @Menu$, @Menu$ + @numero1 + ". " + getitemname(.@disguise_head_1[@y]) + ":";
+					set @y,@y+1;
+					}
+	
+					set @Menu$, @Menu$ + "Terminar";
+					set @Option, 0;
+						while( @Option != @y )
+						{
+							set @Option, select(@Menu$) - 2;
+								if( @Option == -1 )
+								{//Segundo nivel de 151 a 225
+									goto L_disguise_head_2;
+								}
+							if( @Option < @y )
+							{
+								set @Equip, getiteminfo(.@disguise_head_1[@Option], 5);
+								set @View, getiteminfo(.@disguise_head_1[@Option], 11);
+			
+								if( @Equip != -1 && @View > 0 ){
+									if(@Equip==1){
+										setlook 3,0;
+											}
+									if(@Equip==256){
+										setlook 4,0;
+											}
+									if(@Equip==512){
+										setlook 5,0;
+											}
+									if(@Equip==513){
+										setlook 5,0;
+										setlook 3,0;
+											}
+									if(@Equip==768){
+										setlook 4,0;
+										setlook 5,0;
+											}
+									if(@Equip==769){
+										setlook 3,0;
+										setlook 4,0;
+										setlook 5,0;
+											}
+
+										goto L_Disguise_All;
+								}
+							}
+						}
+					next;
+					mes "[^FFA500Kafra Shop^000000]";
+					mes "Espero que você volte logo ^^.";
+					close;
+					break;
+L_disguise_head_2:
+query_sql("SELECT id FROM disguise_head_2;",.@disguise_head_2[0]);
+			set @numero1,75;
+			set @y1,0;
+			set @M1$,"";
+			set @M1$,@M1$ + "Next(151 - 225):";
+			for( set @i1, 1; .@disguise_head_2[@y1] != 0; set @i1, @i1 + 1 ){
+					set @numero1,@numero1+1;
+					set @M1$, @M1$ + @numero1 + ". " + getitemname(.@disguise_head_2[@y1]) + ":";
+					set @y1,@y1+1;
+					}
+	
+					set @M1$, @M1$ + "Terminar";
+					set @O1, 0;
+						while( @O1 != @y1 )
+						{
+							set @O1, select(@M1$) - 2;
+								if( @O1 == -1 )
+								{//tercer nivel de 266 a 300
+									goto L_disguise_head_3;
+								}
+							if( @O1 < @y1 )
+							{
+								set @Equip, getiteminfo(.@disguise_head_2[@O1], 5);
+								set @View, getiteminfo(.@disguise_head_2[@O1], 11);
+			
+								if( @Equip != -1 && @View > 0 ){
+									if(@Equip==1){
+										setlook 3,0;
+											}
+									if(@Equip==256){
+										setlook 4,0;
+											}
+									if(@Equip==512){
+										setlook 5,0;
+											}
+									if(@Equip==513){
+										setlook 5,0;
+										setlook 3,0;
+											}
+									if(@Equip==768){
+										setlook 4,0;
+										setlook 5,0;
+											}
+									if(@Equip==769){
+										setlook 3,0;
+										setlook 4,0;
+										setlook 5,0;
+											}
+
+										goto L_Disguise_All;
+								}
+							}
+						}
+					next;
+					mes "[^FFA500Kafra Shop^000000]";
+					mes "Espero que você volte logo ^^.";
+					close;
+					break;
+L_disguise_head_3:
+query_sql("SELECT id FROM disguise_head_3;",.@disguise_head_3[0]);
+			set @numero1,150;
+			set @y1,0;
+			set @M1$,"";
+			set @M1$,@M1$ + "Next(266 - 300):";
+			for( set @i1, 1; .@disguise_head_3[@y1] != 0; set @i1, @i1 + 1 ){
+					set @numero1,@numero1+1;
+					set @M1$, @M1$ + @numero1 + ". " + getitemname(.@disguise_head_3[@y1]) + ":";
+					set @y1,@y1+1;
+					}
+	
+					set @M1$, @M1$ + "Terminar";
+					set @O1, 0;
+						while( @O1 != @y1 )
+						{
+							set @O1, select(@M1$) - 2;
+								if( @O1 == -1 )
+								{//cuarto nivel de 301 a 375
+									goto L_disguise_head_4;
+								}
+							if( @O1 < @y1 )
+							{
+								set @Equip, getiteminfo(.@disguise_head_3[@O1], 5);
+								set @View, getiteminfo(.@disguise_head_3[@O1], 11);
+			
+								if( @Equip != -1 && @View > 0 ){
+									if(@Equip==1){
+										setlook 3,0;
+											}
+									if(@Equip==256){
+										setlook 4,0;
+											}
+									if(@Equip==512){
+										setlook 5,0;
+											}
+									if(@Equip==513){
+										setlook 5,0;
+										setlook 3,0;
+											}
+									if(@Equip==768){
+										setlook 4,0;
+										setlook 5,0;
+											}
+									if(@Equip==769){
+										setlook 3,0;
+										setlook 4,0;
+										setlook 5,0;
+											}
+
+										goto L_Disguise_All;
+								}
+							}
+						}
+					next;
+					mes "[^FFA500Kafra Shop^000000]";
+					mes "Espero que você volte logo ^^.";
+					close;
+					break;
+L_disguise_head_4:
+query_sql("SELECT id FROM disguise_head_4;",.@disguise_head_4[0]);
+			set @numero1,225;
+			set @y1,0;
+			set @M1$,"";
+			set @M1$,@M1$ + "Next(301 - 375):";
+			for( set @i1, 1; .@disguise_head_3[@y1] != 0; set @i1, @i1 + 1 ){
+					set @numero1,@numero1+1;
+					set @M1$, @M1$ + @numero1 + ". " + getitemname(.@disguise_head_4[@y1]) + ":";
+					set @y1,@y1+1;
+					}
+	
+					set @M1$, @M1$ + "Terminar";
+					set @O1, 0;
+						while( @O1 != @y1 )
+						{
+							set @O1, select(@M1$) - 2;
+								if( @O1 == -1 )
+								{//quinto nivel de 376 a 425
+									goto L_disguise_head_5;
+								}
+							if( @O1 < @y1 )
+							{
+								set @Equip, getiteminfo(.@disguise_head_4[@O1], 5);
+								set @View, getiteminfo(.@disguise_head_4[@O1], 11);
+			
+								if( @Equip != -1 && @View > 0 ){
+									if(@Equip==1){
+										setlook 3,0;
+											}
+									if(@Equip==256){
+										setlook 4,0;
+											}
+									if(@Equip==512){
+										setlook 5,0;
+											}
+									if(@Equip==513){
+										setlook 5,0;
+										setlook 3,0;
+											}
+									if(@Equip==768){
+										setlook 4,0;
+										setlook 5,0;
+											}
+									if(@Equip==769){
+										setlook 3,0;
+										setlook 4,0;
+										setlook 5,0;
+											}
+
+										goto L_Disguise_All;
+								}
+							}
+						}
+					next;
+					mes "[^FFA500Kafra Shop^000000]";
+					mes "Espero que você volte logo ^^.";
+					close;
+					break;
+L_disguise_head_5:
+query_sql("SELECT id FROM disguise_head_5;",.@disguise_head_5[0]);
+			set @numero1,300;
+			set @y1,0;
+			set @M1$,"";
+			set @M1$,@M1$ + "Next(376 - 425):";
+			for( set @i1, 1; .@disguise_head_5[@y1] != 0; set @i1, @i1 + 1 ){
+					set @numero1,@numero1+1;
+					set @M1$, @M1$ + @numero1 + ". " + getitemname(.@disguise_head_5[@y1]) + ":";
+					set @y1,@y1+1;
+					}
+	
+					set @M1$, @M1$ + "Terminar";
+					set @O1, 0;
+						while( @O1 != @y1 )
+						{
+							set @O1, select(@M1$) - 2;
+								if( @O1 == -1 )
+								{//sexto nivel de 451 a 466
+									goto L_disguise_head_6;
+								}
+							if( @O1 < @y1 )
+							{
+								set @Equip, getiteminfo(.@disguise_head_5[@O1], 5);
+								set @View, getiteminfo(.@disguise_head_5[@O1], 11);
+			
+								if( @Equip != -1 && @View > 0 ){
+									if(@Equip==1){
+										setlook 3,0;
+											}
+									if(@Equip==256){
+										setlook 4,0;
+											}
+									if(@Equip==512){
+										setlook 5,0;
+											}
+									if(@Equip==513){
+										setlook 5,0;
+										setlook 3,0;
+											}
+									if(@Equip==768){
+										setlook 4,0;
+										setlook 5,0;
+											}
+									if(@Equip==769){
+										setlook 3,0;
+										setlook 4,0;
+										setlook 5,0;
+											}
+
+										goto L_Disguise_All;
+								}
+							}
+						}
+					next;
+					mes "[^FFA500Kafra Shop^000000]";
+					mes "Espero que você volte logo ^^.";
+					close;
+					break;
+L_disguise_head_6:
+query_sql("SELECT id FROM disguise_head_6;",.@disguise_head_6[0]);
+			set @numero1,375;
+			set @y1,0;
+			set @M1$,"";
+			set @M1$,@M1$ + "Next(451 - 466):";
+			for( set @i1, 1; .@disguise_head_5[@y1] != 0; set @i1, @i1 + 1 ){
+					set @numero1,@numero1+1;
+					set @M1$, @M1$ + @numero1 + ". " + getitemname(.@disguise_head_6[@y1]) + ":";
+					set @y1,@y1+1;
+					}
+	
+					set @M1$, @M1$ + "Terminar";
+					set @O1, 0;
+						while( @O1 != @y1 )
+						{
+							set @O1, select(@M1$) - 2;
+								if( @O1 == -1 )
+								{//septimo nivel ultimo
+									goto L_disguise_head_7;
+								}
+							if( @O1 < @y1 )
+							{
+								set @Equip, getiteminfo(.@disguise_head_6[@O1], 5);
+								set @View, getiteminfo(.@disguise_head_6[@O1], 11);
+			
+								if( @Equip != -1 && @View > 0 ){
+									if(@Equip==1){
+										setlook 3,0;
+											}
+									if(@Equip==256){
+										setlook 4,0;
+											}
+									if(@Equip==512){
+										setlook 5,0;
+											}
+									if(@Equip==513){
+										setlook 5,0;
+										setlook 3,0;
+											}
+									if(@Equip==768){
+										setlook 4,0;
+										setlook 5,0;
+											}
+									if(@Equip==769){
+										setlook 3,0;
+										setlook 4,0;
+										setlook 5,0;
+											}
+
+										goto L_Disguise_All;
+								}
+							}
+						}
+					next;
+					mes "[^FFA500Kafra Shop^000000]";
+					mes "Espero que você volte logo ^^.";
+					close;
+					break;
+L_disguise_head_7:
+query_sql("SELECT id FROM disguise_head_7;",.@disguise_head_7[0]);
+			set @numero1,455;
+			set @Menu$,"";
+			for( set @i, 0; .@disguise_head_7[@i] != 0; set @i, @i + 1 ){
+					set @numero1,@numero1+1;
+					set @Menu$, @Menu$ + @numero1 + ". " + getitemname(.@disguise_head_7[@i]) + ":";}
+	
+					set @Menu$, @Menu$ + "Terminar";
+					set @Option, 0;
+						while( @Option != @i )
+						{
+							set @Option, select(@Menu$) - 1;
+							if( @Option < @i )
+							{
+								set @Equip, getiteminfo(.@disguise_head_7[@Option], 5);
+								set @View, getiteminfo(.@disguise_head_7[@Option], 11);
+			
+								if( @Equip != -1 && @View > 0 ){
+									if(@Equip==1){
+										setlook 3,0;
+											}
+									if(@Equip==256){
+										setlook 4,0;
+											}
+									if(@Equip==512){
+										setlook 5,0;
+											}
+									if(@Equip==513){
+										setlook 5,0;
+										setlook 3,0;
+											}
+									if(@Equip==768){
+										setlook 4,0;
+										setlook 5,0;
+											}
+									if(@Equip==769){
+										setlook 3,0;
+										setlook 4,0;
+										setlook 5,0;
+											}
+
+										goto L_Disguise_All;
+								}
+							}
+						}
+						next;
+						mes "[^FFA500Kafra Shop^000000]";
+						mes "Espero que você volte logo ^^.";
+						close;
+						break;
+L_disguise_mid:
+L_disguise_low:
+			set @numero1,0;
+			set @Menu$,"";
+			for( set @i, 0; .@disguise[@i] != 0; set @i, @i + 1 )
+					set @Menu$, @Menu$ + @i +". " + getitemname(.@disguise[@i]) + ":";
+	
+					set @Menu$, @Menu$ + "Terminar";
+					set @Option, 0;
+						while( @Option != @i )
+						{
+							mes "[^FFA500Kafra Shop^000000]";
+							mes "Selecione o Hat que quer.";
+							next;
+							set @Option, select(@Menu$) - 1;
+							if( @Option < @i )
+							{
+								set @Equip, getiteminfo(.@disguise[@Option], 5);
+								set @View, getiteminfo(.@disguise[@Option], 11);
+			
+								if( @Equip != -1 && @View > 0 ){
+									if(@Equip==1){
+										setlook 3,0;
+											}
+									if(@Equip==256){
+										setlook 4,0;
+											}
+									if(@Equip==512){
+										setlook 5,0;
+											}
+									if(@Equip==513){
+										setlook 5,0;
+										setlook 3,0;
+											}
+									if(@Equip==768){
+										setlook 4,0;
+										setlook 5,0;
+											}
+									if(@Equip==769){
+										setlook 3,0;
+										setlook 4,0;
+										setlook 5,0;
+											}
+
+										goto L_Disguise_All;
+								}
+							}
+						}
+						next;
+						mes "[^FFA500Kafra Shop^000000]";
+						mes "Selecione o Hat que quer ^^.";
+						close;
+						break;
+L_Disguise_All:
+		if( @Equip & 1 ) setlook 3,@View;
+		if( @Equip & 256 ) setlook 4,@View;
+		if( @Equip & 512 ) setlook 5,@View;
+			mes "[^FFA500Kafra Shop^000000]";
+			mes "Obrigado por usar este sistema ^^";
+			close;
+			break;
+		case 2:
+			mes "[^FFA500Kafra Shop^000000]";
+			mes "Que parte quer redefinir?";
+				switch(select("Top:Mid:Low:Todos:Sair")){
+					case 1:setlook 4,0;mes "Pronto";close;break;
+					case 2:setlook 5,0;mes "Pronto";close;break;
+					case 3:setlook 3,0;mes "Pronto";close;break;
+					case 4:setlook 3,0;setlook 5,0;setlook 4,0;mes "Pronto";close;break;
+					case 5:close;break;
+				}
+		case 3:
+			mes "[^FFA500Kafra Shop^000000]";
+			mes "Volte em breve";
+			close;
+			break;
+	}
+
+}
