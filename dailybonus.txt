@@ -1,0 +1,633 @@
+//===== eAthena Script =======================================
+//= Daily Bonus Script
+//===== By: ==================================================
+//= chan - http://teamcars1broglobal.blogspot.com
+//         http://pspcheatdb.blogspot.com
+//===== Current Version: =====================================
+//= 1.1.1a
+//===== Compatible With: =====================================
+//= Any RAthena Version
+//===== Description: =========================================
+//= Give the player a Daily Bonus
+//= so that the players will be exited to play everyday
+//===== Additional Comments: =================================
+//= you are free to edit the bonus you want to give your players
+//============================================================
+
+
+
+
+
+
+prontera,150,184,3	script	Daily Bonus	865,{
+
+
+	if($DLogin == 1) goto DR_1;
+	mes "Im glad to give you your Daily Bonus!";
+	next;
+	
+	set @dbonus,rand (1,50);
+	set @mbonus,rand (1,10);
+	if (@dbonus == 1) goto dailyb1;
+	if (@dbonus == 2) goto dailyb2;
+	if (@dbonus == 3) goto dailyb3;
+	if (@dbonus == 4) goto dailyb4;
+	if (@dbonus == 5) goto dailyb5;
+	if (@dbonus == 6) goto dailyb6;
+	if (@dbonus == 7) goto dailyb7;
+	if (@dbonus == 8) goto dailyb8;
+	if (@dbonus == 9) goto dailyb9;
+	if (@dbonus == 10) goto dailyb10;
+	if (@dbonus == 11) goto dailyb11;
+	if (@dbonus == 12) goto dailyb12;
+	if (@dbonus == 13) goto dailyb13;
+	if (@dbonus == 14) goto dailyb14;
+	if (@dbonus == 15) goto dailyb15;
+	if (@dbonus == 16) goto dailyb16;
+	if (@dbonus == 17) goto dailyb17;
+	if (@dbonus == 18) goto dailyb18;
+	if (@dbonus == 19) goto dailyb19;
+	if (@dbonus == 20) goto dailyb20;
+	if (@dbonus == 21) goto dailyb21;
+	if (@dbonus == 22) goto dailyb22;
+	if (@dbonus == 23) goto dailyb23;
+	if (@dbonus == 24) goto dailyb24;
+	if (@dbonus == 25) goto dailyb25;
+	if (@dbonus == 26) goto dailyb26;
+	if (@dbonus == 27) goto dailyb27;
+	if (@dbonus == 28) goto dailyb28;
+	if (@dbonus == 29) goto dailyb29;
+	if (@dbonus == 30) goto dailyb30;
+	if (@dbonus == 31) goto dailyb31;
+	if (@dbonus == 32) goto dailyb32;
+	if (@dbonus == 33) goto dailyb33;
+	if (@dbonus == 34) goto dailyb34;
+	if (@dbonus == 35) goto dailyb35;
+	if (@dbonus == 36) goto dailyb36;
+	if (@dbonus == 37) goto dailyb37;
+	if (@dbonus == 38) goto dailyb38;
+	if (@dbonus == 39) goto dailyb39;
+	if (@dbonus == 40) goto dailyb40;
+	if (@dbonus == 41) goto dailyb41;
+	if (@dbonus == 42) goto dailyb42;
+	if (@dbonus == 43) goto dailyb43;
+	if (@dbonus == 44) goto dailyb44;
+	if (@dbonus == 45) goto dailyb45;
+	if (@dbonus == 46) goto dailyb46;
+	if (@dbonus == 47) goto dailyb47;
+	if (@dbonus == 48) goto dailyb48;
+	if (@dbonus == 49) goto dailyb49;
+	if (@dbonus == 50) goto dailyb50;
+
+dailyb1:
+	set Zeny,zeny+(1*@mbonus);
+	set @claim,(1*@mbonus);
+	Announce "" + strcharinfo(0) + " got " + @claim + "z!",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb2:
+	set Zeny,zeny+(5*@mbonus);
+	set @claim,(5*@mbonus);
+	Announce "" + strcharinfo(0) + " got " + @claim + "z!",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb3:
+	set Zeny,zeny+(10*@mbonus);
+	set @claim,(10*@mbonus);
+	Announce "" + strcharinfo(0) + " got " + @claim + "z!",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb4:
+	set Zeny,zeny+(50*@mbonus);
+	set @claim,(50*@mbonus);
+	Announce "" + strcharinfo(0) + " got " + @claim + "z!",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb5:
+	set Zeny,zeny+(100*@mbonus);
+	set @claim,(100*@mbonus);
+	Announce "" + strcharinfo(0) + " got " + @claim + "z!",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb6:
+	set Zeny,zeny+(500*@mbonus);
+	set @claim,(500*@mbonus);
+	Announce "" + strcharinfo(0) + " got " + @claim + "z!",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb7:
+	set Zeny,zeny+(1000*@mbonus);
+	set @claim,(1000*@mbonus);
+	Announce "" + strcharinfo(0) + " got " + @claim + "z!",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb8:
+	set Zeny,zeny+(5000*@mbonus);
+	set @claim,(5000*@mbonus);
+	Announce "" + strcharinfo(0) + " got " + @claim + "z!",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb9:
+	set Zeny,zeny+(10000*@mbonus);
+	set @claim,(10000*@mbonus);
+	Announce "" + strcharinfo(0) + " got " + @claim + "z!",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+
+dailyb10:
+	set Zeny,zeny+(100000*@mbonus);
+	set @claim,(100000*@mbonus);
+	Announce "" + strcharinfo(0) + " got " + @claim + "z!",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb11: //cards bonus
+	set @claim,rand (4001,4555);
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb12: //armor enchant bonus
+	set @claim,rand (4700,4871);
+	if (getitemname(@claim) == "null") goto dailyb12;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb13: //healing items bonus
+	set @claim,rand (401,599);
+	if (getitemname(@claim) == "null") goto dailyb13;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+	
+
+dailyb14: //1 handed sword bonus
+	set @claim,rand (1101,1149);
+	if (getitemname(@claim) == "null") goto dailyb14;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb15: //2 handed sword bonus
+	set @claim,rand (1151,1199);
+	if (getitemname(@claim) == "null") goto dailyb15;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb16: //dagger bonus
+	set @claim,rand (1201,1249);
+	if (getitemname(@claim) == "null") goto dailyb16;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb17: //katar bonus
+	set @claim,rand (1250,1296);
+	if (getitemname(@claim) == "null") goto dailyb17;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb18: //1 handed axes bonus
+	set @claim,rand (1301,1317);
+	if (getitemname(@claim) == "null") goto dailyb18;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb19: //2 handed axes bonus
+	set @claim,rand (1351,1398);
+	if (getitemname(@claim) == "null") goto dailyb19;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb20: //1 handed spears bonus
+	set @claim,rand (1401,1436);
+	if (getitemname(@claim) == "null") goto dailyb20;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb21: //2 handed spears bonus
+	set @claim,rand (1451,1493);
+	if (getitemname(@claim) == "null") goto dailyb21;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb22: //maces bonus
+	set @claim,rand (1501,1549);
+	if (getitemname(@claim) == "null") goto dailyb22;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb23: //books bonus
+	set @claim,rand (1550,1588);
+	if (getitemname(@claim) == "null") goto dailyb23;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb24: //staffs bonus
+	set @claim,rand (1601,1670);
+	if (getitemname(@claim) == "null") goto dailyb24;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb25: //bows bonus
+	set @claim,rand (1701,1749);
+	if (getitemname(@claim) == "null") goto dailyb25;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb26: //knuckles bonus
+	set @claim,rand (1801,1832);
+	if (getitemname(@claim) == "null") goto dailyb26;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb27: //instruments bonus
+	set @claim,rand (1901,1931);
+	if (getitemname(@claim) == "null") goto dailyb27;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb28: //whips bonus
+	set @claim,rand (1950,1986);
+	if (getitemname(@claim) == "null") goto dailyb28;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb29: //2 hand staffs bonus
+	set @claim,rand (2000,2018);
+	if (getitemname(@claim) == "null") goto dailyb29;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb30: //shields bonus
+	set @claim,rand (2101,2176);
+	if (getitemname(@claim) == "null") goto dailyb30;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb31: //headgears bonus
+	set @claim,rand (2201,2299);
+	if (getitemname(@claim) == "null") goto dailyb31;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb32: //armors bonus
+	set @claim,rand (2301,2399);
+	if (getitemname(@claim) == "null") goto dailyb32;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	//set $DLogin,1;
+	close;
+
+dailyb33: //footgears bonus
+	set @claim,rand (2401,2495);
+	if (getitemname(@claim) == "null") goto dailyb33;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb34: //garments bonus
+	set @claim,rand (2501,2594);
+	if (getitemname(@claim) == "null") goto dailyb34;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb35: //accessories bonus
+	set @claim,rand (2601,2969);
+	if (getitemname(@claim) == "null") goto dailyb35;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb36: //more headgears bonus
+	set @claim,rand (5001,5859);
+	if (getitemname(@claim) == "null") goto dailyb36;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb37: //more weapons bonus
+	set @claim,rand (13000,13079);
+	if (getitemname(@claim) == "null") goto dailyb37;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+
+dailyb38: //revolvers bonus
+	set @claim,rand (13100,13116);
+	if (getitemname(@claim) == "null") goto dailyb38;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb39: //guns bonus
+	set @claim,rand (13150,13183);
+	if (getitemname(@claim) == "null") goto dailyb39;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb40: //more armors bonus
+	set @claim,rand (15000,15069);
+	if (getitemname(@claim) == "null") goto dailyb40;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb41: //more maces bonus
+	set @claim,rand (16000,16026);
+	if (getitemname(@claim) == "null") goto dailyb41;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb42: //more rental boxes bonus
+	set @claim,rand (16131,16261);
+	if (getitemname(@claim) == "null") goto dailyb42;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb43: //cannonballs bonus
+	set @claim,rand (18000,18004);
+	if (getitemname(@claim) == "null") goto dailyb43;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb44: //more bows bonus
+	set @claim,rand (18100,18116);
+	if (getitemname(@claim) == "null") goto dailyb44;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb45: //more headgears bonus
+	set @claim,rand (18500,18527);
+	if (getitemname(@claim) == "null") goto dailyb45;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb46: //more headgears 2 bonus
+	set @claim,rand (18539,18851);
+	if (getitemname(@claim) == "null") goto dailyb46;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb47: //costume item bonus
+	set @claim,rand (19500,20724);
+	if (getitemname(@claim) == "null") goto dailyb47;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb48: //shurikens item bonus
+	set @claim,rand (13291,13294);
+	if (getitemname(@claim) == "null") goto dailyb48;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb49: //all item bonus
+	set @claim,rand (501,21005);
+	if (getitemname(@claim) == "null") goto dailyb49;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+dailyb50: //pet egg bonus
+	set @claim,rand (9001,9062);
+	if (getitemname(@claim) == "null") goto dailyb50;
+	if (checkweight(@claim,1) == 0 ) goto D_overw;
+	getitem @claim,1;
+	Announce "" + strcharinfo(0) + " got " + getitemname(@claim) + "",8;
+	set @claim,0;
+	emotion e_thx;
+	set $DLogin,1;
+	close;
+
+	OnInit:
+	waitingroom "Daily Bonus",0;
+	OnClock0000:
+	set $DLogin,0;
+	Announce "You can now claim your Daily Bonus!",8;
+	end;
+
+
+DR_1:
+	mes "You had already received your gift today.";
+	mes "Please! come back again tomorrow.";
+	emotion e_bzz;
+	close;
+
+D_overw:
+	mes "Sorry you are overweight!";
+	emotion e_bzz;
+	close;
+
+
+}

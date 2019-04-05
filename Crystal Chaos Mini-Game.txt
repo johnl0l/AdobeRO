@@ -1,0 +1,226 @@
+//===== rAthena Script =======================================
+//= Crystal Chaos Mini-Game Script
+//===== By: ==================================================
+//= Nova http://www.novaragnarok.com
+//============================================================
+
+prontera,152,175,6	script	Crystal Chaos#summ	762,{
+
+	.@n$ = "[ ^FF0000Crystal Chaos^000000 ]";
+	mes .@n$;
+	mes "You must think you have good eyes.";
+	mes "When the shadow stops moving, select which shadow you think it stopped on.";
+	mes "Playing costs ^3355FF"+.costqty+"x "+getitemname(.costid)+"^000000. If you win, you will get ^3355FF"+.rewardqty+"x "+getitemname(.rewardid)+"^000000.";
+	next;
+	
+		switch(select("Play Crystal Chaos:Leave")){
+			case 1:
+				if(.start == 0) {
+				
+					if (@NovaCrystal > gettimetick(2)) {
+						.@t = @NovaCrystal - gettimetick(2); 
+						dispbottom "Crystal Chaos: You must wait "+.@t+" seconds before playing Crystal Chaos again."; 
+						end; 
+					}
+					
+					if(countitem(.costid) < .costqty) {
+						mes .@n$; 
+						mes "You don't have enough "+getitemname(.rewardid)+"."; 
+						end; 
+					}
+					
+				delitem .costid,.costqty;
+				@NovaCrystal = gettimetick(2) + 60;
+				.start = 1;
+				initnpctimer;
+				
+				mes .@n$;
+				mes "Press next to start the game.";
+				mes "Pay close attention to the Crystal's shadow,";
+				mes "When the shadow stops moving, select which shadow you think it stopped on.";
+				next;
+				
+				mes .@n$;
+				mes "- Round 1 -";
+				donpcevent "Crystal#summshufreal::OnRound1";
+				donpcevent "Crystal#summshufreal::OnEnable";
+				mes "Which Crystal did the shadow stop on?";
+				next;
+				
+				.@choice = .x[select("Left Crystal:Middle Crystal:Right Crystal") - 1];
+				
+				if(getvariableofnpc(.shadow, "Crystal#summshufreal") != .@choice ) {
+					showscript "You lose",.pchaos$; 
+					.start = 0; 
+					@NovaCrystal = gettimetick(2) + 60; 
+					end; 
+				}
+				
+				mes .@n$;
+				mes "Congratulations, now for round 2!";
+				showscript "Round 2",.pchaos$;
+				next;
+				
+				mes .@n$;
+				mes "- Round 2 -";
+				donpcevent "Crystal#summshufreal::OnRound2";
+				donpcevent "Crystal#summshufreal::OnEnable";
+				mes "Which Crystal did the shadow stop on?";
+				next;
+				
+				.@choice = .x[select("Left Crystal:Middle Crystal:Right Crystal") - 1];
+				
+				if(getvariableofnpc(.shadow, "Crystal#summshufreal") != .@choice ) {
+					showscript "You lose",.pchaos$; 
+					.start = 0; 
+					@NovaCrystal = gettimetick(2) + 60; 
+					end; 
+				}
+				
+				mes .@n$;
+				mes "Congratulations, now for round 3!";
+				showscript "Round 3",.pchaos$;
+				next;
+				
+				mes .@n$;
+				mes "- Round 3 -";
+				donpcevent "Crystal#summshufreal::OnRound3";
+				donpcevent "Crystal#summshufreal::OnEnable";
+				mes "Which Crystal did the shadow stop on?";
+				next;
+				
+				.@choice = .x[select("Left Crystal:Middle Crystal:Right Crystal") - 1];
+				
+					if(getvariableofnpc(.shadow, "Crystal#summshufreal") != .@choice ) {
+						showscript "You lose",.pchaos$; 
+						.start = 0; 
+						@NovaCrystal = gettimetick(2) + 60; 
+						end; 
+					}
+				
+				mes .@n$;
+				mes "Congratulations, now for the final round!";
+				showscript "Final Round!",.pchaos$;
+				next;
+				
+				mes .@n$;
+				mes "- Final Round -";
+				donpcevent "Crystal#summshufreal::OnRound4";
+				donpcevent "Crystal#summshufreal::OnEnable";
+				mes "Which Crystal did the shadow stop on?";
+				next;
+				
+				.@choice = .x[select("Left Crystal:Middle Crystal:Right Crystal") - 1];
+				
+					if(getvariableofnpc(.shadow, "Crystal#summshufreal") != .@choice ) {
+						showscript "You lose",.pchaos$; 
+						.start = 0; 
+						@NovaCrystal = gettimetick(2) + 60; 
+						end; 
+					}
+
+				showscript "You win!",.pchaos$;
+				getitem .rewardid,.rewardqty;
+				.start = 0;
+				@NovaCrystal = gettimetick(2) + 60;
+				end;
+				
+				} else {
+					mes .@n$;
+					mes "Somebody is already playing Crystal Chaos! Please wait until they finish.";
+				}
+
+				end;
+
+			case 2:
+				mes .@n$;
+				mes "Come back when you're ready to play.";
+				end;
+		}
+		
+OnTimer60000:
+	.start = 0;
+	stopnpctimer;
+	end;
+
+OnInit:
+	.start = 0;
+	.pchaos$ = getnpcid(0);
+	//Configure the cost of playing as well as the reward.
+	.costid = 6767;
+	.costqty = 2;
+	.rewardid = 6767;
+	.rewardqty = 30;
+	//Set the following array to be the X Coordinates of the 3 following NPCs
+	setarray .x,158,156,154;
+	end;
+}
+
+//Make sure these NPCs are spaced apart by 2 cells on the X axis. (104, 102, 100) 
+//The Coordinates of the last Crystal should be the same as that of the middle one.
+//If you change the Y coordinate (174) Make sure you also change it below inside Crystal#summshufreal
+
+prontera,158,174,4	script	Right Crystal#summshuf1	1914,{
+end;
+}
+
+prontera,156,174,4	script	Middle Crystal#summshuf2	1914,{
+end;
+}
+
+prontera,154,174,4	script	Left Crystal#summshuf3	1914,{
+end;
+}
+
+prontera,156,174,4	script	Crystal#summshufreal	1914,{
+end;
+
+OnInit:
+	npcspeed 20;
+	//Set the following array to be the X Coordinate of the 3 previous NPCs (Same as above)
+	setarray .x,158,156,154;
+	disablenpc "Crystal#summshufreal";
+	.y = 174; //Set to be the Y coordinate of the previous NPCs
+	end;
+
+OnEnable:
+	enablenpc "Crystal#summshufreal";
+	.r1 = rand(0,2);
+	movenpc "Crystal#summshufreal",.x[.r1],.y;
+	sleep .round;
+
+		for (.@i = 0; .@i < 15; .@i++){
+			.r2 = rand(0,2);
+			while (.r2 == .r1)
+			 .r2 = rand(0,2);
+			movenpc "Crystal#summshufreal",.x[.r2],.y;
+			sleep .round;
+			.r1 = rand(0,2);
+			while (.r1 == .r2)
+			 .r1 = rand(0,2);
+			movenpc "Crystal#summshufreal",.x[.r1],.y;
+			.shadow = .x[.r1];
+			sleep .round;
+		}
+
+	disablenpc "Crystal#summshufreal";
+	end;
+
+// Speed Configuration, change at will.
+OnRound1:
+	.round = 150;
+	end;
+
+OnRound2:
+	.round = 100;
+	end;
+
+OnRound3:
+	.round = 70;
+	end;
+
+OnRound4:
+	.round = 45;
+	end;
+
+}

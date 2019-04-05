@@ -1,0 +1,512 @@
+//===== Hercules Script ======================================
+//= Devil Square
+//===== By: ==================================================
+//= Kirlein (Tyirial Script Concept), Stillhard aka Dewa (Translation)
+//===== Current Version: =====================================
+//= 2.0
+//===== Description: =========================================
+//= Devil Square based off the mmorpg Muonline
+//===== Additional Comments: =================================
+//= ??? Completely rewrite by ~AnnieRuru~
+//= 2.0 First Version [Racaae]
+//============================================================
+
+prontera,149,160,5	script	Guardião do Portal#DS	JP_RUFAKU,{
+
+	set .DevilSquare,getvariableofnpc(.DevilSquare,"Controle#DS");
+	set .DS_MinLevel,getvariableofnpc(.DS_MinLevel,"Controle#DS");
+	set .DS_Zeny,getvariableofnpc(.DS_Zeny,"Controle#DS");
+	set .DS_PlayerMax,getvariableofnpc(.DS_PlayerMax,"Controle#DS");
+	set .DS_Treasure,getvariableofnpc(.DS_Treasure,"Controle#DS");
+	
+	
+	cutin "jpn_rfak01",2;
+	mes "[Guardião do Portal]";
+	mes "Olá aventureiro.";
+	mes "Eu sou o guardião do portal de entrada para a ^FF0000Devil Square^000000.";
+	if (getgmlevel() >= .DS_GroupId)
+		mes "^0000ff-Use @gm_ds para controlar o evento.-^000000";
+	next;
+	switch(select("Entrar na Devil Square.:Informação.:Cancelar.")) {
+	case 1:	
+		if (.DevilSquare != 1) {
+			mes "[Guardião do Portal]";
+			mes "O portal está fechado, ele se abre a cada meia hora.";
+			close2;
+			cutin "",255;
+			end;
+		}
+		else if (BaseLevel < .DS_MinLevel || Zeny < .DS_Zeny) {
+			mes "[Guardião do Portal]";
+			mes "Desculpe, o nível mínimo para entrar é " + .DS_MinLevel + " e a taxa de entrada é de " + .DS_Zeny + "z.";
+			close2;
+			cutin "",255;
+			end;
+		}
+		else if (getmapusers("ordeal_1-1") >= .DS_PlayerMax) {
+			mes "[Guardião do Portal]";
+			mes "Desculpe, mas parece que a Devil Square está cheia.";
+			mes "O número máximo de jogadores é " + .DS_PlayerMax + ".";
+			close2;
+			cutin "",255;
+			end;
+		}
+		set Zeny,Zeny - .DS_Zeny;
+		announce strcharinfo(0)+" entrou no Devil Square!",8;
+		warp "ordeal_1-1",151,130;
+		end;
+	case 2:
+		mes "[Guardião do Portal]";
+		mes "O portal para o Devil Square abre a cada quinze minutos, ele fica aberto por 3 minutos. Você deve falar comigo para entrar.";
+		next;
+		mes "[Guardião do Portal]";
+		mes "O número máximo de jogadores lá dentro é " + .DS_PlayerMax + ". Nesse caso, mesmo se o portal estiver aberto, você não poderá entrar mais.";
+		next;
+		mes "[Guardião do Portal]";
+		mes "Você e os outros terão que enfrentar várias ordas de monstros.";
+		mes "A cada orda os monstros ficarão mais fortes.";
+		next;
+		mes "[Guardião do Portal]";
+		mes "Se você conseguir vencer até o final, você terá a oportunidade que abrir " + .DS_Treasure + " Báus do Tesouro, talvez até consiga algum item valioso dentro.";
+		close2;
+		cutin "",255;
+		end;
+	case 3:
+		mes "[Guardião do Portal]";
+		mes "Até mais.";
+		close2;
+		cutin "",255;
+		end;
+	}
+
+OnEventON:
+	waitingroom "DS: Portal Aberto!!",0;
+	end;
+OnEventOFF:
+	delwaitingroom;
+	end;
+}
+
+ordeal_1-1,169,170,0	script	Controle#DS	HIDDEN_WARP_NPC,2,2,{
+OnInit:
+
+//===== Opções de configuração ===============================================
+
+	.DS_GroupId = 99;  	//Grupo necessário para acessar as configurações.
+	.DS_PlayerMax = 10;	//Número máximo de jogadores dentro do Devil Square. (0 para infinito)
+	.DS_MinLevel = 70;	//Nível mínimo para entrar na Devil Square.
+	.DS_Zeny = 10000;	//Zeny necessário para entrar na Devil Square.
+	.DS_Rounds = 10;	//Número de ordas de monstros.
+	.DS_WaitTime = 5;	//Tempo -em segundos- de espera entre ordas (0 para desativar).
+	.DS_Treasure = 10;	//Número de Baús do Tesouro invocados no final.
+	.DS_NoSkill = 1;	//Desabilitar habilidades durante a quebra de báus? (1 para sim, 0 para não)
+	
+	//IDs dos itens no báu (jogador ganha 1 item aleatório da lista).
+	setarray .DS_Item,607,608,609,610,19587,12208,12209,12210,12211,12212,12214,12622,2573,2576,2589,7621;
+	//Itens que são anunciados quando ganhos.
+	setarray .DS_RareItem,19587,12622,2573,2576,2589;
+
+//===== Fim das opções de configurações ======================================
+
+//===== Monstros =============================================================
+
+	//IDs dos monstros da 1º orda.
+	setarray .DS_MobList1,1015,1076,1028,1016,1071,1152;	//Esqueletos
+	//Quantidade dos monstros da 1º orda.
+	setarray .DS_MobQuan1,15,15,15,15,15,15;
+	//Mensagem do início da orda (OPCIONAL)
+	set .DS_Message1$,"Esqueletos por toda parte!!";
+	
+	//2º orda
+	setarray .DS_MobList2,1253,1193,1257,1191,1192,1163;	//Glast Heim
+	setarray .DS_MobQuan2,10,10,10,10,10,15;
+	//3º orda
+	setarray .DS_MobList3,1219,1198,1109,1131,1302,1272;	//Glast Heim 2
+	setarray .DS_MobQuan3,5,10,15,15,3,1;
+	//4º orda
+	setarray .DS_MobList4,2071,2068,1883,1885,2154,2156;
+	setarray .DS_MobQuan4,10,1,10,1,10,1;
+	//5º orda
+	setarray .DS_MobList5,1775,1776,1777,1778,1779;	//Caverna de Gelo
+	setarray .DS_MobQuan5,15,25,15,10,1;
+	//6º orda
+	setarray .DS_MobList6,2015,2016,2017,2018,2019,2022;	//Nidhogg
+	setarray .DS_MobQuan6,10,10,10,10,10,1;
+	//7º orda
+	setarray .DS_MobList7,2083,2084,2085,2086,2087;	//Scaraba
+	setarray .DS_MobQuan7,20,20,20,20,1;
+	//7º orda
+	setarray .DS_MobList7,2151,2152,2153,2154,2155,2156;	//Dewata
+	setarray .DS_MobQuan7,10,10,10,10,10,1;
+	//8º orda
+	setarray .DS_MobList8,2161,2162,2163,2164,2165,2166,2167,2168,2169;
+	setarray .DS_MobQuan8,10,10,10,10,1,3,3,3,3;
+	set .DS_Message8$,"Rainha Scaraba: Essa é a minha vingança!";
+	//9º orda
+	setarray .DS_MobList9,2473,2474,2475,2476;
+	setarray .DS_MobQuan9,25,25,1,1;
+	set .DS_Message9$,"Himmelmez: É dito que para me deter é necessário uma pessoa habilidosa.";
+	//10º orda
+	setarray .DS_MobList10,1917,1918,1919,1920,1921;
+	setarray .DS_MobQuan10,1,15,15,15,15;
+	set .DS_Message10$,"Imperador Morroc: Vamos acabar com isso!";
+
+//===== Fim dos Monstros ===================================================
+
+	bindatcmd "gm_ds",strnpcinfo(3)+"::OnAtcommand";
+	set .DevilSquare,0;
+	hideonnpc "Saída#DS";
+	killmonsterall "ordeal_1-1";
+	mapwarp "ordeal_1-1","prontera",156,143;
+	end;
+
+//OnMinute00:
+OnMinute15:
+//OnMinute30:
+OnMinute45:
+OnStartEvent:
+	if (.DevilSquare) end;
+	hideonnpc "Saída#DS";
+	hideoffnpc "Guia#DS";
+	mapannounce "ordeal_1-1","Imperador Morroc: Tolos mortais, eu venci! Eu sou o Imperador Morroc!!",bc_map,0xFF0000;
+	killmonsterall "ordeal_1-1";
+	mapwarp "ordeal_1-1","prontera",156,143;
+	
+	donpcevent "Guardião do Portal#DS::OnEventON";
+	announce "O portal para o Devil Square se abriu!! 3 minutos até que ele se feche!",0;
+	set .DevilSquare,1;
+	sleep 60000;
+	if (.DevilSquare != 1) end;
+	announce "O portal para a Devil Square fechará em 2 minutos!",0;
+	sleep 60000;
+	if (.DevilSquare != 1) end;
+	announce "O portal para a Devil Square fechará em 1 minuto!",0;
+	sleep 60000;
+	if (.DevilSquare != 1) end;
+	announce "O portal para a Devil Square se fechou!",0;
+	donpcevent "Controle#DS::OnBeginEvent";
+	end;
+	
+OnBeginEvent:
+	donpcevent "Guardião do Portal#DS::OnEventOFF";
+	set .DevilSquare,2;
+	hideonnpc "Guia#DS";
+	sleep 3000;
+	if (getmapusers("ordeal_1-1") == 0) {
+		announce "Nenhum jogador compareceu ao Devil Square, o mal prevaleceu...",0;
+		set .DevilSquare,0;
+		end;
+	}
+	mapannounce "ordeal_1-1","???: Vamos ver como vocês lidam com meus monstros!",bc_map,0xFF0000;
+	sleep 3000;
+	initnpctimer;
+	donpcevent "Controle#DS::OnMob";
+	end;
+
+OnMob:
+	set .@round, .DevilSquare-1;
+	
+	copyarray .@MobL, getd(".DS_MobList" + .@round),getarraysize(getd(".DS_MobList" + .@round));
+	copyarray .@MobQ, getd(".DS_MobQuan" + .@round),getarraysize(getd(".DS_MobQuan" + .@round));
+	if(getd(".DS_Message" + .@round + "$") != "") set .@Message$, getd(".DS_Message" + .@round + "$");
+
+	if (.@Message$ != "")
+		mapannounce "ordeal_1-1",.@Message$,bc_map,0xFF0000;
+	else
+		mapannounce "ordeal_1-1","A " + .@round + "º orda de monstros apareceu!",0;
+	for (set .@i3, 0; .@i3 <getarraysize(.@MobL); set .@i3, .@i3 + 1) {
+		set .DS_MobTotal, .DS_MobTotal+.@MobQ[.@i3];
+	}
+	for (set .@i1, 0; .@i1<getarraysize(.@MobL); set .@i1, .@i1 + 1) {
+		for (set .@i2, 0; .@i2 < .@MobQ[.@i1]; set .@i2, .@i2 + 1) {
+			set .@mobGID, areamonster ("ordeal_1-1",121,121,178,178,"[DS] " + strmobinfo(1,.@MobL[.@i1]),.@MobL[.@i1],1,"Controle#DS::OnMyMobDead");
+			unitemote .@mobGID, e_gg;
+		}
+	}
+	end;
+
+OnMyMobDead:
+	set .DS_MobTotal,.DS_MobTotal - 1;
+	if(.DS_MobTotal == 25) mapannounce "ordeal_1-1","Restam 25 monstros vivos!",0;
+	if(.DS_MobTotal == 5) mapannounce "ordeal_1-1","Restam apenas 5 monstros vivos!",0;
+	if(.DS_MobTotal == 1) mapannounce "ordeal_1-1","Resta apenas 1 monstro vivo!",0;
+	if(.DS_MobTotal == 0) {
+		set .DevilSquare, .DevilSquare+1;
+		if (.DevilSquare-2 == .DS_Rounds) {
+			stopnpctimer;
+			setmapflag "ordeal_1-1",mf_noloot;
+			setmapflag "ordeal_1-1",mf_nomobloot;
+			donpcevent "Controle#DS::OnBox";
+			end;
+		}
+		set .@round, .DevilSquare-1;
+		if (.DS_WaitTime != 0) {
+			mapannounce "ordeal_1-1","Todos os monstros foram derrotados! A " + .@round + "º orda de monstros aparecerá logo!",0;
+			sleep .DS_WaitTime*1000;
+		}
+		donpcevent "Controle#DS::OnMob";
+	}
+	end;
+
+OnGMClose:
+	announce "O GM fechou o portal da Devil Square!",0;
+	donpcevent "Controle#DS::OnBeginEvent";
+	end;
+	
+OnGMEnd:
+	if (.DevilSquare == 1)
+		announce "O GM fechou o portal da Devil Square!",0;
+	else
+		mapannounce "ordeal_1-1","O GM terminou o evento!",0;
+OnEnd:
+	if (.DS_NoSkill) removemapflag "ordeal_1-1",mf_noskill;
+	donpcevent "Guardião do Portal#DS::OnEventOFF";
+	stopnpctimer;
+	set .DevilSquare,0;
+	hideonnpc "Saída#DS";
+	hideoffnpc "Guia#DS";
+	killmonsterall "ordeal_1-1";
+	sleep 500;
+	mapwarp "ordeal_1-1","prontera",156,143;
+	end;
+
+OnBox:
+	set .DevilSquare, .DevilSquare+1;
+	if (.DS_NoSkill) setmapflag "ordeal_1-1",mf_noskill;
+	if (.DS_Treasure > 1)
+		mapannounce "ordeal_1-1","Parabéns!! " + .DS_Treasure + " Báus do Tesouro apareceram como recompensa do Reino de Rune-Midgard!",0;
+	else
+		mapannounce "ordeal_1-1","Parabéns!! 1 Báu do Tesouro apareceu como recompensa do Reino de Rune-Midgard!",0;
+	set .DS_MobTotal,.DS_Treasure;
+	areamonster "ordeal_1-1",121,121,178,178,"Báu do Tesouro",1324,.DS_Treasure,"Controle#DS::OnMyBoxDead";
+	end;
+
+OnMyBoxDead:
+	set @id,rand(getarraysize(.DS_Item));
+	getitem .DS_Item[@id],1;
+	set .DS_MobTotal, .DS_MobTotal - 1;
+	for (set .@i, 0; .@i <getarraysize(.DS_RareItem); set .@i, .@i + 1) {
+		if (getelementofarray(.DS_RareItem,.@i) == .DS_Item[@id]) set .@rare,1;
+	}
+	if (.@rare == 1)
+		announce "Devil Square : "+ strcharinfo(0) +" abriu um Báu do Tesouro na Devil Square e ganhou 1 incrível " + getitemname(.DS_Item[@id]) + "!!",0;
+	else
+		announce "Devil Square : "+ strcharinfo(0) +" abriu um Báu do Tesouro na Devil Square!",0;
+	if (.DS_MobTotal == 0) {
+		set .DevilSquare,100;
+		removemapflag "ordeal_1-1",mf_noloot;
+		removemapflag "ordeal_1-1",mf_nomobloot;
+		if (.DS_NoSkill) removemapflag "ordeal_1-1",mf_noskill;
+		sleep 1000;
+		mapannounce "ordeal_1-1","Com isso o Devil Square acabou, obrigado por jogar!",0;
+		hideoffnpc "Saída#DS";
+	}
+	end;
+
+OnTimer60000:
+	if(.DevilSquare < 2 || .DevilSquare-2 > .DS_Rounds) {
+		stopnpctimer;
+		end;
+	}
+	if (getmapusers("ordeal_1-1") == 0) {
+		announce "Todos os jogadores falharam em sobreviver na Devil Square!",0;
+		donpcevent "Controle#DS::OnEnd";
+		end;
+	} else {
+		if (getmapusers("ordeal_1-1") == 1)
+			announce "1 jogador ainda luta na Devil Square!",0;
+		else
+			announce getmapusers("ordeal_1-1") +" jogadores ainda lutam na Devil Square!",0;
+		initnpctimer;
+		end;
+	}
+
+OnAtcommand:
+	if(getgroupid() < .DS_GroupId) end;
+	switch(select("Iniciar Devil Square.:Terminar Devil Square.:Modificar variáveis.:Ir para o mapa.:Cancelar.")) {
+	case 1:
+		mes "[Guardião do Portal]";
+		if (.DevilSquare == 0) {
+			donpcevent "Controle#DS::OnStartEvent";
+			mes "Evento iniciado!";
+			close;
+		}
+		mes "O evento já está em andamento.";
+		close;
+	case 2:
+		mes "[Guardião do Portal]";
+		if (.DevilSquare != 0) {
+			donpcevent "Controle#DS::OnGMEnd";
+			mes "Evento terminado!";
+			close;
+		}
+		mes "O evento não foi iniciado.";
+		close;
+	case 3:
+		switch(select("Mudar número de tesouros.:Mudar número máximo de jogadores.:Mudar número de ordas.:Cancelar.")) {
+		case 1:
+			mes "[Guardião do Portal]";
+			mes "Número atual: " + .DS_Treasure;
+			mes "Digite o novo número desejado.";
+			mes "Digite 0 para cancelar.";
+			next;
+			input .@new;
+			mes "[Guardião do Portal]";
+			if (.@new < 1) {
+				mes "Ação cancelada.";
+				close;
+			}
+			mes "Número antigo: " + .DS_Treasure;
+			mes "Número novo: " + .@new;
+			if(select("Completar mudança!:Cancelar!") == 2) {
+				close;
+			}
+			set .DS_Treasure, .@new;
+			mes "Novo número de báus invocados como recompensa escolhido com sucesso!";
+			close;
+		case 2:
+			mes "[Guardião do Portal]";
+			mes "Número atual: " + .DS_PlayerMax;
+			mes "Digite o novo número desejado.";
+			mes "Digite 0 para cancelar.";
+			next;
+			input .@new;
+			mes "[Guardião do Portal]";
+			if (.@new < 1) {
+				mes "Ação cancelada.";
+				close;
+			}
+			mes "Número antigo: " + .DS_PlayerMax;
+			mes "Número novo: " + .@new;
+			if(select("Completar mudança!:Cancelar!") == 2) {
+				close;
+			}
+			set .DS_PlayerMax, .@new;
+			mes "Novo número máximo de jogadores escolhido com sucesso!";
+			close;
+		case 3:
+			mes "[Guardião do Portal]";
+			mes "Número atual: " + .DS_Rounds;
+			mes "Digite o novo número desejado.";
+			mes "Digite 0 para cancelar.";
+			next;
+			input .@new;
+			mes "[Guardião do Portal]";
+			if (.@new < 1) {
+				mes "Ação cancelada.";
+				close;
+			}
+			mes "Número antigo: " + .DS_Rounds;
+			mes "Número novo: " + .@new;
+			if(select("Completar mudança!:Cancelar!") == 2) {
+				close;
+			}
+			set .DS_Rounds, .@new;
+			mes "Novo número de ordas escolhido com sucesso!";
+			close;
+		case 4:
+			close;
+		}
+	case 4:
+		warp "ordeal_1-1",151,130;
+		end;
+	case 5:
+		close;
+	}
+
+OnTouch:
+	if (getgmlevel() >= .DS_GroupId) {
+		mes "^777777(Menu GM)^000000";
+		mes "Monstros vivos(na variável): "+.DS_MobTotal;
+		mes "Mostros vivos(na real): "+mobcount("this","all"); 
+		mes "Variável .DevilSquare: "+.DevilSquare;
+		next;
+		switch(select("Cancelar.:Ir para próxima orda.:Mostrar Guia")) {
+		case 1:
+			close;
+		case 2:
+			if (.DevilSquare-2 >= .DS_Rounds || !.DevilSquare) {
+				mes "As ordas já acabaram.";
+				close;
+			}
+			mes "OK!";
+			close2;
+			killmonsterall "ordeal_1-1";
+			set .DS_MobTotal,0;
+			set .DevilSquare, .DevilSquare+1;
+			if (.DevilSquare-2 == .DS_Rounds) {
+				stopnpctimer;
+				setmapflag "ordeal_1-1",mf_noloot;
+				setmapflag "ordeal_1-1",mf_nomobloot;
+				donpcevent "Controle#DS::OnBox";
+				end;
+			}
+			set .@round, .DevilSquare-1;
+			if (.DS_WaitTime != 0) {
+				mapannounce "ordeal_1-1","Todos os monstros foram derrotados! A " + .@round + "º orda de monstros aparecerá logo!",0;
+				sleep .DS_WaitTime*1000;
+			}
+			donpcevent "Controle#DS::OnMob";
+			end;
+		case 3:
+			hideoffnpc "Guia#DS";
+			close;
+		}
+	}
+	end;
+}
+
+//===== Guia e Saída ======================================
+ordeal_1-1,148,159,5	script	Saída#DS	JP_RUFAKU,{
+	mes "[Saída]";
+	mes "Muito obrigado pela ajuda. Entretanto, logo ele voltará e sua ajuda será necessária novamente.";
+	mes "Já quer sair daqui?";
+	next;
+	if(select("Vamos embora.:Ainda não.") == 2) close;
+	warp "SavePoint",0,0;
+	close;
+}
+
+ordeal_1-1,148,159,5	script	Guia#DS	JP_RUFAKU,{
+	set .DS_Treasure,getvariableofnpc(.DS_Treasure,"Controle#DS");
+	if (getgmlevel() >= .DS_GroupId) {
+		switch(select("Ir para menu comum.:^777777-GM-^000000Fechar portal e começar Devil Square.")) {
+		case 1:
+			break;
+		case 2:
+			mes "[Guia]";
+			mes "Farei isso imediatamente!";
+			close2;
+			donpcevent "Controle#DS::OnGMClose";
+			end;
+		}
+	}
+	mes "[Guia]";
+	mes "Serão várias ordas de monstros.";
+	mes "A cada orda os monstros ficarão mais fortes.";
+	mes "Se você conseguir vencer até o final, você terá a oportunidade que abrir " + .DS_Treasure + " Báus do Tesouro, talvez até consiga algum item valioso dentro.";
+	next;
+	mes "[Guia]";
+	mes "Boa sorte.";
+	npcskill "AL_HEAL",11,99,60;
+	close;
+}
+
+morocc,145,86,7	duplicate(Guardião do Portal#DS)	Guardião do Portal#DS2	JP_RUFAKU
+geffen,128,70,3	duplicate(Guardião do Portal#DS)	Guardião do Portal#DS3	JP_RUFAKU
+payon,165,101,5	duplicate(Guardião do Portal#DS)	Guardião do Portal#DS4	JP_RUFAKU
+alberta,37,241,3	duplicate(Guardião do Portal#DS)	Guardião do Portal#DS5	JP_RUFAKU
+izlude,104,150,5	duplicate(Guardião do Portal#DS)	Guardião do Portal#DS6	JP_RUFAKU
+aldebaran,132,108,5	duplicate(Guardião do Portal#DS)	Guardião do Portal#DS7	JP_RUFAKU
+lighthalzen,145,93,5	duplicate(Guardião do Portal#DS)	Guardião do Portal#DS8	JP_RUFAKU
+rachel,112,112,5	duplicate(Guardião do Portal#DS)	Guardião do Portal#DS9	JP_RUFAKU
+
+//===== Mapflags ======================================
+ordeal_1-1	mapflag	nowarp
+ordeal_1-1	mapflag	nowarpto
+ordeal_1-1	mapflag	noteleport
+ordeal_1-1	mapflag	monster_noteleport
+ordeal_1-1	mapflag	nosave
+ordeal_1-1	mapflag	nomemo
+ordeal_1-1	mapflag	nobranch
+ordeal_1-1	mapflag	nopenalty

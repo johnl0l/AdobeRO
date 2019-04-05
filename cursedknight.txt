@@ -1,0 +1,259 @@
+//===== rAthena Script =======================================
+//= Cursed Knight
+//===============  by: =============================
+//= pajodex
+//===== Current Version: =====================================
+//= 1.1
+//===== Compatible With: =====================================
+//= rAthena Project (pajodex)
+//===== Description: =========================================
+/*
+Cursed Knight
+		
+	My second BG release in rAthena. Here is how it works.
+	
+	Teams have to find the Cursed Knight located at the bottom
+	end of the map. To earn points, they must come close to the
+	cursed knight. 
+	
+	Every second near the cursed knight, player will earn points 
+	for the team.. however, they will also be cursed, inflict 
+	damage, and silenced near the Cursed Knight. 
+	
+	More players of a team near Cursed Knight will also earn more 
+	points. They must find a strategy to keep enemy away from
+	the cursed knight!
+
+ 
+	Enjoy!
+
+*/
+//=====******** Note ********=================================
+//= if you find bugs or problem, please do tell DM me at
+//= Discord (pajodex#1328) or rAthena (pajodex) 
+//= open for suggestions
+//===== Additional Comments: =================================
+/* 	
+	1.0 - Initial release
+	1.1 - Mapflags added
+		- Script optimization
+*/
+//=============================================================
+
+function	script	F_ShuffleNumbers	{
+	deletearray getarg(2);
+	.@static = getarg(0);
+	.@range = getarg(1) +1 - .@static;
+	.@count = getarg(3, .@range);
+	if (.@range <= 0 || .@count <= 0)
+		return 0;
+	if (.@count > .@range)
+		.@count = .@range;
+	for (.@i = 0; .@i < .@range; ++.@i)
+		.@temparray[.@i] = .@i;
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		.@rand = rand(.@range);
+		set getelementofarray( getarg(2), .@i ), .@temparray[.@rand] + .@static;
+		.@temparray[.@rand] = .@temparray[--.@range];
+	}
+	return .@count;
+}
+
+// NOTE : Remove the nightmare mapflag for this map
+pvp_n_1-4,0,0,0	script	thing#main	100,{
+OnInit:
+	// =============
+	// Game Settings
+	// =============
+	
+	// Minimum players per team to start
+	// default : 5 ( 5v5 )
+	.minplayer2start = 5;
+	
+	// Event duration in minutes..
+	// default : 5 mins
+	.duration = 5; 
+	
+	// Reward settings
+	setarray .rwd[0],
+		501, 10,	// win team reward
+		501, 5;		// lose team reward
+	
+	end;
+	
+OnStart:
+	.start = 1;
+	.red = bg_create ( strnpcinfo(4), 37, 122, strnpcinfo(0)+"::OnRedQuit", strnpcinfo(0)+"::OnRedDie" );
+	.blue =  bg_create ( strnpcinfo(4), 162, 122, strnpcinfo(0)+"::OnBlueQuit", strnpcinfo(0)+"::OnBlueDie" ); 
+	callfunc "F_ShuffleNumbers", 0, .minplayer2start *2 -1, .@r;
+	for ( .@i = 0; .@i < .minplayer2start * 2; ++.@i ) {
+		attachrid .aid_[.@r[.@i]];
+		bg_join ( .@i % 2 )? .red : .blue;
+	}
+	detachrid;
+	sleep 1000;
+	announce "Find the Cursed Knight at the bottom the map", bc_npc | bc_map | bc_blue;
+	sleep 1000;
+	announce "Anyone who comes close to it will be cursed", bc_npc | bc_map | bc_blue;
+	sleep 1000;
+	announce "And will gradually be inflicted with damage.", bc_npc | bc_map | bc_blue;
+	sleep 1000;
+	announce "But you will also earn points for your team.", bc_npc | bc_map | bc_blue;
+	sleep 1000;
+	announce "Team that earns most points win.", bc_npc | bc_map | bc_blue;
+	sleep 1000;
+	announce "Start battle!", bc_npc | bc_map | bc_blue;
+	
+	sleep .duration * 60000;
+	
+	.@redpoints = getvariableofnpc( .redpoints, "thingspot" );
+	.@bluepoints = getvariableofnpc( .bluepoints, "thingspot" );
+	
+	if( .@redpoints > .@bluepoints )
+		callsub L_reward, .red, .blue, "Red";
+	else if( .@bluepoints > .@redpoints )
+		callsub L_reward, .blue, .red, "Blue";
+	else if( .@bluepoints = .@redpoints )
+		announce "Battle ended up with a tie!", bc_npc | bc_map | bc_blue;
+	set getvariableofnpc( .redpoints, "thingspot" ), 0;
+	set getvariableofnpc( .bluepoints, "thingspot" ), 0;
+	mapwarp strnpcinfo(4),"prontera",150,180,0;
+	bg_updatescore strnpcinfo(4), 0, 0;
+	.start = 0;
+	bg_destroy .red;
+	bg_destroy .blue;
+	end;
+	
+L_reward:
+	announce getarg(2) +" team has won!", bc_npc | bc_map | bc_blue;
+	bg_get_data getarg(0), 1;
+	for ( .@i = 0; .@i < $@arenamemberscount; ++.@i )
+		getitem .rwd[0],.rwd[1], $@arenamembers[.@i];
+	sleep 1;
+	bg_get_data getarg(1), 1;
+	for ( .@i = 0; .@i < $@arenamemberscount; ++.@i )
+		getitem .rwd[2],.rwd[3], $@arenamembers[.@i];
+	return;
+	
+OnRedQuit: callsub L_Quit, .red, "Red";
+OnBlueQuit: callsub L_Quit, .blue, "Blue";
+L_Quit:
+	if ( bg_get_data( getarg(0), 0 ) ) end;
+	announce "All "+ getarg(2) +" team members has Quit!", bc_npc | bc_map | bc_blue;
+	sleep 1000;
+	callsub L_reward, ( getarg(0) == .red ) ? .red : .blue, ( getarg(0) == .red ) ? .blue : .red, ( getarg(0) == .red ) ? "Red" : "Blue";
+	awake instance_npcname( strnpcinfo(0) );
+	end;
+
+OnRedDie:
+OnBlueDie:
+	sleep2 1250;
+	percentheal 100, 100;
+	end;
+
+}
+
+prontera,150,180,0	script	Cursed Knight Register	100,{
+	.@name$ = strcharinfo(0);
+	.@minplayer2start = getvariableofnpc(.minplayer2start, "thing#main"); 
+	.@start = getvariableofnpc(.start, "thing#main"); 
+	if(.@start == 1) {
+		mes "Sorry, event is on-going.";
+		close;
+	}
+	mes "Do you want to join the queue?";
+	next;
+	while ( .aid[.@i] != getcharid(3) && .@i < .size ) ++.@i;
+	if ( .@i < .size ) {
+		mes "You already join the queue.";
+		close;
+	}
+	select "join";
+	mes "you have to stick to this map";
+	close2;
+	.aid[ .size++ ] = getcharid(3);
+	for ( .@i = 0; .@i < .size; ++.@i ) {
+		if ( !isloggedin( .aid[.@i] ) ) {
+			deletearray .aid[.@i], 1;
+			--.@i;
+			--.size;
+		}
+		else {
+			attachrid .aid[.@i];
+			if ( strcharinfo(3) != strnpcinfo(4) ) {
+				deletearray .aid[.@i], 1;
+				--.@i;
+				--.size;
+			}
+		}
+	}
+	detachrid;
+	if ( .size == .@minplayer2start * 2 ) {
+		copyarray getvariableofnpc( .aid_, "thing#main" ), .aid, .size;
+		donpcevent "thing#main::OnStart";
+		deletearray .aid;
+		.size = 0;
+	}
+	else
+		announce .@name$ +" has  joined The Cursed Knight... needs "+ .size +"/"+ .@minplayer2start * 2 +" to start.", bc_npc | bc_area;
+	end;
+
+}
+
+pvp_n_1-4,99,17,0	script	Cursed Knight::thingspot	1795,4,4,{
+end;
+
+OnTouch:
+	dispbottom "You have been cursed and will receive damage per second.",0xff0000;
+	dispbottom "A powerful aura blocks all skills from being used.",0xff0000;
+	getmapxy(.@mapname$, .@mapx, .@mapy, UNITTYPE_NPC, strnpcinfo(3));
+	setarray .@n_mapx[0], .@mapx-4, .@mapx+4;
+	setarray .@n_mapy[0], .@mapy-4, .@mapy+4;
+	
+	.@red = getvariableofnpc( .red, "thing#main" );
+	.@blue = getvariableofnpc( .blue, "thing#main" );
+	
+	@point = 1;
+	
+	while (@point){
+	if ( Hp > 1 )
+			percentheal -10, 0;
+		else
+			percentheal -100, 0;
+		specialeffect2 49;
+	if ( getcharid(4) == .@red )
+		++.redpoints;
+	else if ( getcharid(4) == .@blue )
+		++.bluepoints;
+	bg_updatescore strnpcinfo(4), .redpoints, .bluepoints;
+	sc_start SC_CURSE,30000,1;
+	sc_start SC_SILENCE,30000,1;
+	specialeffect2 49;
+	percentheal -1,0;
+	sleep2 1000;
+		getmapxy(@mapname$, @mapx, @mapy, UNITTYPE_PC);
+		if ( @mapx < .@n_mapx[0] || @mapx > .@n_mapx[1] || @mapy < .@n_mapy[0] || @mapy > .@n_mapy[1]) {
+			@point = 0;
+			sc_end SC_CURSE;
+			sc_end SC_SILENCE;
+		}
+	}
+	end;	
+}
+
+pvp_n_1-4	mapflag	battleground	2
+pvp_n_1-4	mapflag	nosave	SavePoint
+pvp_n_1-4	mapflag	nowarp
+pvp_n_1-4	mapflag	nowarpto
+pvp_n_1-4	mapflag	noteleport
+pvp_n_1-4	mapflag	nomemo
+pvp_n_1-4	mapflag	nopenalty
+pvp_n_1-4	mapflag	nobranch
+pvp_n_1-4	mapflag	noicewall
+
+
+
+
+
+
+

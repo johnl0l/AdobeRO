@@ -1,0 +1,925 @@
+//===== rAthena Script ============================================
+//= Enchantment System
+//===== By: =======================================================
+//= Kenedos
+//===== Current Version: ==========================================
+//= 1.0
+//===== Compatible With: ==========================================
+//= rAthena SQL/TXT
+//===== Description: ==============================================
+//= Uses the 2nd, 3rd and 4th slot on armors (headgears, footgears
+//= garments, shields and armors) to add extra bonus status and
+//= diverse attributes.
+//===== Topic =====================================================
+//= Unknown
+//===== Additional Comments: ======================================
+//= BE WARNED : The use of decarder NPCs, Sign your Name on items
+//= NPCs and any other kind of NPC that make use of the extra armor
+//= slots will bug this whole system. Also make sure every armor
+//= in your server only have 1 slot at max, otherwise it will also
+//= cause unexpected behaviour.
+//=
+//= If you wish to change the GM level to access the command menu,
+//= just find the command "getgmlevel()" in this script.
+//= It is located a few lines bellow the header.
+//=
+//= If you wish to change the cost for the Power Stones, look for
+//= the "MvP Power Stone Conversion Table" in the end of the script.
+//=================================================================
+
+valkyrie,49,48,3	script	Special Enchanter	709,{
+
+	mes "["+strnpcinfo(1)+"]";
+	if (Sex)
+		mes "Hello sir ^0000FF"+strcharinfo(0)+"^000000, how may I help you?";
+	else
+		mes "Hello lady ^0000FF"+strcharinfo(0)+"^000000, how may I help you?";
+	next;
+	if (getgmlevel() < 99)
+		set .@menu, select("Enchant:Information:Trade MvP Misc Items");
+	else {
+		set .@menu, select("Enchant:Information:Trade MvP Misc Items:^FF0000GM Special Enchant^000000");
+		if (.@menu == 4) {
+			set .@gmlevel, 1;
+			goto L_EnchantLoc;
+		}
+	}
+	if (.@menu == 2) {
+		mes "["+strnpcinfo(1)+"]";
+		mes "Aah so you are looking information about the ^009900New Special Enchantment System^000000? Very well, I shall answer you. What's the matter?";
+		next;
+		while (1) {
+			set .@menu, select("Prices:General:Chances:Bonuses:MvP Special Enchanting");
+			if (.@menu == 2) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "The ^009900Special Enchantment System^000000 is rather simple, first, you show me your currently equipped gear, then I will show you a list of everything I can try to enchant.";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "I can only work on ^FF0000Armors^000000, ^FF0000Footgears^000000, ^FF0000Upper Headgears^000000, ^FF0000Garments^000000 and ^FF0000Shields.^000000";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "Each refine attempt will cost you some ^0000FFZeny^000000, depending on which slot you wish to try. You can have three enchantments at total per equipment piece, one in each slot.";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "Enchantments in the ^0000FFSame Slot^000000 will ^FF0000Overplace^000000 currently existing ones, so be carefull not to choose the wrong slot!";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "Enchantments obviously, give you bonuses such as statuses, Hp, Sp, and many other bonuses depending on what type of enchantment you choose.";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "You can choose an enchantment for a specific type of class, but not necessarily that enchantment will be restricted only to that class. After choosing a class, the specific enchantment will be given randomly.";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "You can collect ^009900MvP Special Misc Items^000000 to trade them in for better enchantments, or making you able to choose one enchantment instead of giving it randomly. But be aware, those type of enchantments will be more costy!";
+				next;
+			}
+			else if (.@menu == 1) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "The prices depend on which enchanting slot you pick.";
+				mes "1st Slot - ^0000FF500,000z^000000";
+				mes "2nd Slot - ^0000FF1,000,000z^000000";
+				mes "3rd Slot - ^0000FF2,000,000z^000000";
+				mes "MvP Special Enchanting - ^0000FF10,000,000z^000000";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "Note that the MvP Special Enchanting does not depend on the slot number, it's a fixed price.";
+				mes "If an enchantment fail, I'm sorry but you won't be refunded.";
+				next;
+			}
+			else if (.@menu == 3) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "The chances depend on which enchanting slot you pick.";
+				mes "1st Slot - ^0000FF80% Success^000000";
+				mes "2nd Slot - ^0000FF70% Success^000000";
+				mes "3rd Slot - ^0000FF60% Success^000000";
+				mes "MvP Special Enchanting - ^0000FF50% Success^000000";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "^0000FFAttention^000000, when an enchantment fail, the equipment will be completely ^0000FFDestroyed^000000.";
+				mes "The MvP Special Enchanting has a fixed chance, that means, even if you attempt to do it in the first slot, the chance will always be 50%.";
+				next;
+			}
+			else if (.@menu == 4) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "Once you succeed enchanting, you will get a bonus for the slot you chose. Upon choosing a class, the chance to get each random bonus for that class is exactly the same.";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "The class type just helps you getting a good bonus for you, but you are not obligated to follow it. Every class can benefit from every class bonus. Now, Tell me a class, and i'll show you the available bonuses for it.";
+				next;
+				set .@menu2, select("Swordman:Mage:Thief:Archer:Merchant:Acolyte");
+				if (.@menu2 == 1) {
+					mes "["+strnpcinfo(1)+"]";
+					mes "^0000FFSwordman STR+1^000000";
+					mes "^0000FFSwordman STR+2^000000";
+					mes "^0000FFSwordman VIT+1^000000";
+					mes "^0000FFSwordman VIT+2^000000";
+					mes "^0000FFSwordman VIT+3^000000";
+					mes "^0000FFSwordman STR+1/VIT+1^000000";
+					mes "^0000FFSwordman STR+2/VIT+1^000000";
+					mes "^0000FFSwordman STR+1/VIT+2^000000";
+					mes "^0000FFSwordman MHp+1%^000000";
+					mes "^0000FFSwordman MHp+2%^000000";
+					mes "^0000FFSwordman ATK+5^000000";
+					mes "^0000FFSwordman ATK+10^000000";
+					mes "^0000FFSwordman ATK+15^000000";
+					mes "^0000FFSwordman PhysicalReduction+1%^000000";
+					mes "^0000FFSwordman Damage+1%^000000";
+					mes "^0000FFSwordman Damage+2%^000000";
+					mes "^0000FFSwordman DEF+1^000000";
+					mes "^0000FFSwordman DEF+2^000000";
+					next;
+				}
+				else if (.@menu2 == 2) {
+					mes "["+strnpcinfo(1)+"]";
+					mes "^0000FFMage INT+1^000000";
+					mes "^0000FFMage INT+2^000000";
+					mes "^0000FFMage INT+3^000000";
+					mes "^0000FFMage DEX+1^000000";
+					mes "^0000FFMage DEX+2^000000";
+					mes "^0000FFMage INT+1/DEX+1^000000";
+					mes "^0000FFMage INT+1/DEX+2^000000";
+					mes "^0000FFMage INT+2/DEX+1^000000";
+					mes "^0000FFMage MSp+1%^000000";
+					mes "^0000FFMage MSp+2%^000000";
+					mes "^0000FFMage MSp+3%^000000";
+					mes "^0000FFMage Matk+1%^000000";
+					mes "^0000FFMage Matk+2%^000000";
+					mes "^0000FFMage Cast-2%^000000";
+					mes "^0000FFMage Cast-4%^000000";
+					mes "^0000FFMage MdefIgnore+1%^000000";
+					mes "^0000FFMage MdefIgnore+2%^000000";
+					mes "^0000FFMage MDEF+1^000000";
+					mes "^0000FFMage MDEF+2^000000";
+					mes "^0000FFMage MDEF+3^000000";
+					next;
+				}
+				else if (.@menu2 == 3) {
+					mes "["+strnpcinfo(1)+"]";
+					mes "^0000FFThief AGI+1^000000";
+					mes "^0000FFThief AGI+2^000000";
+					mes "^0000FFThief AGI+3^000000";
+					mes "^0000FFThief LUK+1^000000";
+					mes "^0000FFThief LUK+2^000000";
+					mes "^0000FFThief AGI+1/LUK+1^000000";
+					mes "^0000FFThief AGI+1/LUK+2^000000";
+					mes "^0000FFThief AGI+2/LUK+1^000000";
+					mes "^0000FFThief CRIT+2^000000";
+					mes "^0000FFThief CRIT+4^000000";
+					mes "^0000FFThief CRIT+6^000000";
+					mes "^0000FFThief FLEE+3^000000";
+					mes "^0000FFThief FLEE+6^000000";
+					mes "^0000FFThief FLEE+9^000000";
+					mes "^0000FFThief Damage+2%/MHp-1%^000000";
+					mes "^0000FFThief Damage+4%/MHp-2%^000000";
+					mes "^0000FFThief P.Dodge+1^000000";
+					mes "^0000FFThief P.Dodge+2^000000";
+					mes "^0000FFThief ASPD+1%^000000";
+					mes "^0000FFThief ASPD+2%^000000";
+					mes "^0000FFThief ASPD+3%^000000";
+					next;
+				}
+				else if (.@menu2 == 4) {
+					mes "["+strnpcinfo(1)+"]";
+					mes "^0000FFArcher DEX+1^000000";
+					mes "^0000FFArcher DEX+2^000000";
+					mes "^0000FFArcher DEX+3^000000";
+					mes "^0000FFArcher AGI+1^000000";
+					mes "^0000FFArcher AGI+2^000000";
+					mes "^0000FFArcher AGI+3^000000";
+					mes "^0000FFArcher AGI+1/DEX+1^000000";
+					mes "^0000FFArcher AGI+1/DEX+2^000000";
+					mes "^0000FFArcher AGI+2/DEX+1^000000";
+					mes "^0000FFArcher CRIT+1^000000";
+					mes "^0000FFArcher CRIT+2^000000";
+					mes "^0000FFArcher CRIT+3^000000";
+					mes "^0000FFArcher FLEE+3^000000";
+					mes "^0000FFArcher FLEE+6^000000";
+					mes "^0000FFArcher FLEE+9^000000";
+					mes "^0000FFArcher BowDamage+2%^000000";
+					mes "^0000FFArcher BowDamage+3%^000000";
+					mes "^0000FFArcher Hit+2^000000";
+					mes "^0000FFArcher Hit+4^000000";
+					mes "^0000FFArcher Hit+6^000000";
+					mes "^0000FFArcher ASPD+1%^000000";
+					mes "^0000FFArcher ASPD+2%^000000";
+					next;
+				}
+				else if (.@menu2 == 5) {
+					mes "["+strnpcinfo(1)+"]";
+					mes "^0000FFMerchant STR+1^000000";
+					mes "^0000FFMerchant STR+2^000000";
+					mes "^0000FFMerchant STR+3^000000";
+					mes "^0000FFMerchant VIT+1^000000";
+					mes "^0000FFMerchant AGI+1^000000";
+					mes "^0000FFMerchant AGI+2^000000";
+					mes "^0000FFMerchant STR+1/AGI+1/VIT+1^000000";
+					mes "^0000FFMerchant STR+2/AGI+1/VIT+1^000000";
+					mes "^0000FFMerchant STR+1/AGI+2/VIT+1^000000";
+					mes "^0000FFMerchant MHp+1%^000000";
+					mes "^0000FFMerchant ATK+3/STR+1^000000";
+					mes "^0000FFMerchant ATK+6/STR+1^000000";
+					mes "^0000FFMerchant ATK+9/STR+2^000000";
+					mes "^0000FFMerchant Greed1^000000";
+					mes "^0000FFMerchant Greed2^000000";
+					mes "^0000FFMerchant Greed3^000000";
+					mes "^0000FFMerchant FireResist+3%^000000";
+					mes "^0000FFMerchant FireResist+6%^000000";
+					mes "^0000FFMerchant EarthResist+2%^000000";
+					mes "^0000FFMerchant EarthResist+4%^000000";
+					mes "^0000FFMerchant ASPD+1%^000000";
+					mes "^0000FFMerchant ASPD+2%^000000";
+					next;
+				}
+				else if (.@menu2 == 6) {
+					mes "["+strnpcinfo(1)+"]";
+					mes "^0000FFAcolyte INT+1^000000";
+					mes "^0000FFAcolyte INT+2^000000";
+					mes "^0000FFAcolyte VIT+1^000000";
+					mes "^0000FFAcolyte VIT+2^000000";
+					mes "^0000FFAcolyte DEX+1^000000";
+					mes "^0000FFAcolyte INT+1/DEX+1/VIT+1^000000";
+					mes "^0000FFAcolyte INT+1/DEX+1/VIT+2^000000";
+					mes "^0000FFAcolyte INT+2/DEX+1/VIT+1^000000";
+					mes "^0000FFAcolyte MHp+1%^000000";
+					mes "^0000FFAcolyte MSp+1%^000000";
+					mes "^0000FFAcolyte MSp+2%^000000";
+					mes "^0000FFAcolyte Matk+1%^000000";
+					mes "^0000FFAcolyte Heal+2%^000000";
+					mes "^0000FFAcolyte Heal+3%^000000";
+					mes "^0000FFAcolyte Heal+4%^000000";
+					mes "^0000FFAcolyte DEF+1/MDEF+1^000000";
+					mes "^0000FFAcolyte DEF+1/MDEF+2^000000";
+					mes "^0000FFAcolyte DEF+1/MDEF+3^000000";
+					mes "^0000FFAcolyte SPRegen1/INT+1^000000";
+					mes "^0000FFAcolyte SPRegen2/INT+1^000000";
+					mes "^0000FFAcolyte SPRegen3/INT+1^000000";
+					mes "^0000FFAcolyte PhysicalReduction+1%^000000";
+					mes "^0000FFAcolyte RangedReduction+1%^000000";
+					mes "^0000FFAcolyte RangedReduction+2%^000000";
+					next;
+				}
+			}
+			else if (.@menu == 5) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "So you are talking about big stuff now, eh? ^009900MvP Special Enchanting^000000 is very difficult for me, therefore ^FF0000Any^000000 MvP Special enchantments will have a fixed price of 5,000,000z and a (80% - 10% * Slot Number) chance of success.";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "That means, it doesn't matter if it's in the first, second or third slots, the chance will always be the same. As well as the price.";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "Oh and I almost forgot, obviously, you must bring me the ^009900MvP Special Misc Items^000000, so I can trade them for ^0000FFUnique Power Stones^000000.";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "Those ^0000FFUnique Power Stones^000000 are made from the extract of an MvP's power, meaning the more powerful the MvP is, the more ^0000FFUnique Power Stones^000000 it can give you.";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "Here, I'll give you a list of every ^009900MvP Special Misc Items^000000 you can get, as well as how many ^0000FFUnique Power Stones^000000 they would give you...";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "^009900U.P.S^000000 = ^0000FFUnique Power Stones^000000";
+				callfunc("c_enchant_mvplist",1);
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "So now you must be wondering what you can do with those stones, well it's simple. Each ^0000FFUnique Power Stone^000000 can be traded for one normal enchantment, but by using a power stone, you can choose the specific enchantment!";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "That means, you can choose precisely what you want, meaning if you had enough power stones, you could have all the best enchantments you could ever get!";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "But not just that, the ^0000FFUnique Power Stones^000000 magic are so strong, that if you get ^FF0000Three^000000 of them together, you can try to make a ^0000FFMvP Unique Enchantment^000000";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "The chance is (60% - 10% * Slot Number) and zeny cost for those enchantments is always 1000000z, no matter the slot. The biggest difference is that their given bonus is completely different from the rest.";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "If it succeeds, it will give you one of the following bonuses, note that the bonuses cannot be chosen specifically this time! They will be given randomly!";
+				next;
+				mes "["+strnpcinfo(1)+"]";
+				mes "^0000FFUnique MHp+4%/MSp+4%^000000";
+				mes "^0000FFUnique MHp+6%/MSp+6%^000000";
+				mes "^0000FFUnique STR+3/VIT+3/DEX+3^000000";
+				mes "^0000FFUnique STR+3/AGI+3/LUK+3^000000";
+				mes "^0000FFUnique DEX+3/VIT+3/LUK+3^000000";
+				mes "^0000FFUnique INT+3/VIT+3/DEX+3^000000";
+				mes "^0000FFUnique INT+3/STR+3/AGI+3^000000";
+				mes "^0000FFUnique DEF+4/MDEF+4^000000";
+				mes "^0000FFUnique DEF+6/MDEF+6^000000";
+				mes "^0000FFUnique Damage Reflect5%^000000";
+				mes "^0000FFUnique Damage Reflect7%^000000";
+				mes "^0000FFUnique P.Damage+5%/MATK+5%^000000";
+				mes "^0000FFUnique P.Damage+7%/MATK+7%^000000";
+				mes "^0000FFUnique Skill/Spell Delay-7%^000000";
+				mes "^0000FFUnique Skill/Spell Delay-9%^000000";
+				mes "^0000FFUnique DEF/MDEF Ignore+3%^000000";
+				mes "^0000FFUnique DEF/MDEF Ignore+6%^000000";
+				mes "^0000FFUnique ASPD+5%/Cast Time-5%^000000";
+				mes "^0000FFUnique ASPD+7%/Cast Time-7%^000000";
+				mes "^0000FFUnique Skill/Spell Sp Cost-5%^000000";
+				mes "^0000FFUnique Skill/Spell Sp Cost-7%^000000";
+				next;
+			}
+		}
+	}
+	else if (.@menu == 3) {
+		
+		callfunc("c_enchant_mvplist",0);
+		mes "["+strnpcinfo(1)+"]";
+		mes "There, I gave you all the power stones I could, please come back with more ^009900MvP Misc Items^000000 later!";
+		close;
+		
+	}
+	else if (.@menu == 1) {
+	
+		L_EnchantLoc:
+		mes "["+strnpcinfo(1)+"]";
+		mes "Select an equipment first, then I'll ask you the ^FF0000Enchantment Type^000000, ^FF0000Class Type^000000 (If necessary), ^0000FFSlot Number^000000, and give you the final ^009900Zeny Cost^000000 for my services.";
+		next;
+		setarray .@position$[1], "Headgear","Armor","Shield","Invalid","Garment","Footgear";
+		set .@menu$,"";
+		deletearray .@arr;
+		set .@j, 1;
+		for( set .@i,1; .@i <= 6; set .@i,.@i+1 )
+		{
+			if ((.@i == 3) && (getiteminfo(getequipid(3),5) == 32) && (getequipisequiped(.@i))) { // Only catch shields
+				set .@menu$, .@menu$ + .@position$[.@i] + "-" + "[" + getequipname(.@i) + "]";
+				set .@arr[.@j], .@i;
+				set .@j, .@j + 1;
+				set .@menu$, .@menu$ + ":";
+			}
+			if(getequipisequiped(.@i) && (.@i != 4) && (.@i != 3)) {
+				set .@menu$, .@menu$ + .@position$[.@i] + "-" + "[" + getequipname(.@i) + "]";
+				set .@arr[.@j], .@i;
+				set .@j, .@j + 1;
+				set .@menu$, .@menu$ + ":";
+			}
+
+			
+		}
+		
+		if (.@menu$ == "") {
+			mes "["+strnpcinfo(1)+"]";
+			mes "Errr wait. Oh Sorry but you must have armors equipped to enchant them!";
+			close;
+		}
+		
+		// Calibrating menu
+		set .@part, select(.@menu$);
+		if (.@arr[.@part] == 1)
+			set .@part, 1;
+		else if (.@arr[.@part] == 2)
+			set .@part, 2;
+		else if (.@arr[.@part] == 3)
+			set .@part, 3;
+		else if (.@arr[.@part] == 5)
+			set .@part, 5;
+		else if (.@arr[.@part] == 6)
+			set .@part, 6;
+			
+		if (.@gmlevel) goto L_SelectSlot;
+		
+		// Selecting Types
+		set .@menu, select("Normal Enchantment:MvP Special Enchantment");
+		if (.@menu == 1) {
+			set .@enchant_type, 0;
+		}
+		else {
+			set .@menu, select ("Specific Normal Enchant:Random Unique Enchant");
+			if (.@menu == 1)
+				set .@enchant_type,1;
+			else
+				set .@enchant_type,2;
+		}
+		
+		// Class Types
+		if (.@enchant_type == 0)
+			set .@class_type, select("Swordman:Mage:Thief:Archer:Merchant:Acolyte");
+		
+		
+		// Selecting Slots
+		L_SelectSlot:
+		set .@slot_num, 0;
+		set .@slot_num, select("2nd Slot:3rd Slot:4th Slot") + 1;
+		if ((.@slot_num <= 1) || (.@slot_num > 4)) {
+			mes "["+strnpcinfo(1)+"]";
+			mes "Sorry but you must select a valid slot number.";
+			close;
+		}
+		
+		// Gm Option Select
+		if (.@gmlevel) set .@enchant_type, 1;
+		
+		// Special Specific Enchant Selection
+		if (.@enchant_type == 1) {
+			L_SelectEnc:
+			mes "["+strnpcinfo(1)+"]";
+			mes "Please now select the specific enchantment. First you choose the class type, then you select the specific enchant.";
+			next;
+			set .@menu$, "";
+			set .@selected_bonus, 0;
+			if (.@gmlevel) {
+				
+				set .@menu2, select("Swordman:Mage:Thief:Archer:Merchant:Acolyte:^FF0000MvP Special Enchant^000000");
+				if (.@menu2 == 7) {
+					set .@menu$, "^0000FFUnique MHp+4%/MSp+4%^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique MHp+6%/MSp+6%^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique STR+3/VIT+3/DEX+3^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique STR+3/AGI+3/LUK+3^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique DEX+3/VIT+3/LUK+3^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique INT+3/VIT+3/DEX+3^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique INT+3/STR+3/AGI+3^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique DEF+4/MDEF+4^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique DEF+6/MDEF+6^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique Damage Reflect5%^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique Damage Reflect7%^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique P.Damage+5%/MATK+5%^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique P.Damage+7%/MATK+7%^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique Skill/Spell Delay-7%^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique Skill/Spell Delay-9%^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique DEF/MDEF Ignore+3%^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique DEF/MDEF Ignore+6%^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique ASPD+5%/Cast Time-5%^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique ASPD+7%/Cast Time-7%^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique Skill/Spell Sp Cost-5%^000000";
+					set .@menu$, .@menu$ + ":^0000FFUnique Skill/Spell Sp Cost-7%^000000";
+					set .@selected_bonus, select(.@menu$) + 25126;
+					next;
+				}
+			}
+			else {
+				set .@menu2, select("Swordman:Mage:Thief:Archer:Merchant:Acolyte");
+			}
+			if (.@menu2 == 1) {
+				set .@menu$, "^0000FFSwordman STR+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman STR+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman VIT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman VIT+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman VIT+3^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman STR+1/VIT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman STR+2/VIT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman STR+1/VIT+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman MHp+1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman MHp+2%^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman ATK+5^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman ATK+10^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman ATK+15^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman PhysicalReduction+1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman Damage+1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman Damage+2%^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman DEF+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFSwordman DEF+2^000000";
+				set .@selected_bonus, select(.@menu$) + 24999;
+				next;
+			}
+			else if (.@menu2 == 2) {
+				set .@menu$, "^0000FFMage INT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage INT+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage INT+3^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage DEX+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage DEX+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage INT+1/DEX+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage INT+1/DEX+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage INT+2/DEX+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage MSp+1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage MSp+2%^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage MSp+3%^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage Matk+1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage Matk+2%^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage Cast-2%^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage Cast-4%^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage MdefIgnore+1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage MdefIgnore+2%^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage MDEF+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage MDEF+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFMage MDEF+3^000000";
+				set .@selected_bonus, select(.@menu$) + 25017;
+				next;
+			}
+			else if (.@menu2 == 3) {
+				set .@menu$, "^0000FFThief AGI+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief AGI+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief AGI+3^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief LUK+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief LUK+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief AGI+1/LUK+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief AGI+1/LUK+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief AGI+2/LUK+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief CRIT+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief CRIT+4^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief CRIT+6^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief FLEE+3^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief FLEE+6^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief FLEE+9^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief Damage+2%/MHp-1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief Damage+4%/MHp-2%^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief P.Dodge+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief P.Dodge+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief ASPD+1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief ASPD+2%^000000";
+				set .@menu$, .@menu$ + ":^0000FFThief ASPD+3%^000000";
+				set .@selected_bonus, select(.@menu$) + 25037;
+				next;
+			}
+			else if (.@menu2 == 4) {
+				set .@menu$, "^0000FFArcher DEX+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher DEX+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher DEX+3^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher AGI+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher AGI+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher AGI+3^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher AGI+1/DEX+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher AGI+1/DEX+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher AGI+2/DEX+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher CRIT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher CRIT+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher CRIT+3^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher FLEE+3^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher FLEE+6^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher FLEE+9^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher BowDamage+2%^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher BowDamage+3%^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher Hit+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher Hit+4^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher Hit+6^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher ASPD+1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFArcher ASPD+2%^000000";
+				set .@selected_bonus, select(.@menu$) + 25058;
+				next;
+			}
+			else if (.@menu2 == 5) {
+				set .@menu$, "^0000FFMerchant STR+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant STR+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant STR+3^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant VIT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant AGI+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant AGI+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant STR+1/AGI+1/VIT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant STR+2/AGI+1/VIT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant STR+1/AGI+2/VIT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant MHp+1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant ATK+3/STR+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant ATK+6/STR+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant ATK+9/STR+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant Greed1^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant Greed2^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant Greed3^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant FireResist+3%^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant FireResist+6%^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant EarthResist+2%^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant EarthResist+4%^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant ASPD+1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFMerchant ASPD+2%^000000";
+				set .@selected_bonus, select(.@menu$) + 25080;
+				next;
+			}
+			else if (.@menu2 == 6) {
+				set .@menu$, "^0000FFAcolyte INT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte INT+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte VIT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte VIT+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte DEX+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte INT+1/DEX+1/VIT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte INT+1/DEX+1/VIT+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte INT+2/DEX+1/VIT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte MHp+1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte MSp+1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte MSp+2%^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte Matk+1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte Heal+2%^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte Heal+3%^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte Heal+4%^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte DEF+1/MDEF+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte DEF+1/MDEF+2^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte DEF+1/MDEF+3^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte SPRegen1/INT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte SPRegen2/INT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte SPRegen3/INT+1^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte PhysicalReduction+1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte RangedReduction+1%^000000";
+				set .@menu$, .@menu$ + ":^0000FFAcolyte RangedReduction+2%^000000";
+				set .@selected_bonus, select(.@menu$) + 25102;
+				next;
+			}
+			set .@selected_enchant, .@menu;
+			set .@menu, 0;
+		}
+		
+		// Giving Zeny Cost, and Chance
+		set .@equip_cardid, getequipcardid(.@part,(.@slot_num));
+		set .@itemid, getequipid(.@part);
+		if (countitem(.@itemid) > 1) {
+			mes "["+strnpcinfo(1)+"]";
+			mes "Ah, looks like you have more than one of the same item in your inventory, I'm sorry but you must store them first before proceeding.";
+			close;
+		}
+		mes "["+strnpcinfo(1)+"]";
+		if (.@equip_cardid <= 0)
+			mes "So far so good, please confirm your enchantment.";
+		else
+			mes "Please confirm your enchantment. ^FF0000Overplaced old effects will be lost^000000";
+			
+		// First Enchantment Type ------------------------------------------------------------------------------------------------
+		if (.@enchant_type == 0) {
+		
+			// Confirmation
+			// The random bonus is given before the actual success... But it's hidden, obviously.
+			if (.@class_type == 1) { set .@class_type$, "Swordman"; set .@rand_bonus, rand(25000,25017); }
+			else if (.@class_type == 2) { set .@class_type$, "Mage"; set .@rand_bonus, rand(25018,25037); }
+			else if (.@class_type == 3) { set .@class_type$, "Thief"; set .@rand_bonus, rand(25038,25058); }
+			else if (.@class_type == 4) { set .@class_type$, "Archer"; set .@rand_bonus, rand(25059,25080); }
+			else if (.@class_type == 5) { set .@class_type$, "Merchant"; set .@rand_bonus, rand(25081,25102); }
+			else if (.@class_type == 6) { set .@class_type$, "Acolyte"; set .@rand_bonus, rand(25103,25126); }
+			if (.@slot_num == 2) set .@zeny_cost, 500000;
+			else if (.@slot_num == 3) set .@zeny_cost, 1000000;
+			else if (.@slot_num == 4) set .@zeny_cost, 2000000;
+			mes "^0000FFEquip^000000 = "+getitemname(.@itemid);
+			mes "^0000FFChance^000000 = "+(90 - (10*(.@slot_num-1)))+"%";
+			mes "^0000FFSlot Number^000000 = "+( (.@slot_num == 2) ? "2nd Slot" : (.@slot_num == 3 ? "3rd Slot" : "4th Slot") );
+			mes "^0000FFZeny Cost^000000 = "+.@zeny_cost+"z";
+			mes "^0000FFClass Type^000000 = "+.@class_type$;
+			if (.@equip_cardid > 0)
+				mes "^FF0000Overplace^000000 ="+getitemname(.@equip_cardid);
+			next;
+			if (Select("Confirm:Cancel") == 2) close;
+			
+			// Check Zeny
+			if (Zeny < .@zeny_cost) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "Sorry, but you are broke.";
+				close;
+			}
+			
+			// Refine Attempt
+			progressbar "ffff00",3;
+			
+			// Double Check after progress bar
+			if (Zeny < .@zeny_cost) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "Are you trying to fool me?! You don't have zeny anymore!";
+				close;
+			}
+			
+			if (getequipid(.@part) != .@itemid) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "What do you think you are doing, your punk?! You switched your equipment! Get lost before I sue you.";
+				close;
+			}
+			
+			// Fail
+			if (rand(0,100) > (90 - (10*(.@slot_num-1)))) {
+				specialeffect2 306;
+				mes "["+strnpcinfo(1)+"]";
+				mes "Wooops! I'm sorry, but it broke. There's nothing I can do about it anymore.";
+				set Zeny, Zeny - .@zeny_cost;
+			//	delitem .@itemid,1;
+				close;
+			}
+			else {
+			// Success
+				mes "["+strnpcinfo(1)+"]";
+				mes "Ha! There you go, your brand new enchanted equipment!";
+				set .@refine, getequiprefinerycnt(.@part);
+				for (set .@i, 0; .@i < 4; set .@i, .@i + 1)
+					set .@cardid[.@i], getequipcardid(.@part,.@i);
+				delitem .@itemid,1;
+				set Zeny, Zeny - .@zeny_cost;
+				specialeffect2 305;
+				if (.@slot_num == 4)
+					getitem2 .@itemid, 1, 1, .@refine, 0, .@cardid[0], .@cardid[1], .@cardid[2], .@rand_bonus;
+				else if (.@slot_num == 3)
+					getitem2 .@itemid, 1, 1, .@refine, 0, .@cardid[0], .@cardid[1], .@rand_bonus, .@cardid[3];
+				else if (.@slot_num == 2)
+					getitem2 .@itemid, 1, 1, .@refine, 0, .@cardid[0], .@rand_bonus, .@cardid[2], .@cardid[3];
+				equip(.@itemid);
+				close;
+			}
+			
+		}
+		
+		// Second Enchantment Type ------------------------------------------------------------------------------------------------
+		if (.@enchant_type == 1) {
+		
+			// Confirmation
+			if (.@gmlevel)
+				set .@zeny_cost, 1;
+			else
+				set .@zeny_cost, 5000000;
+			if (.@gmlevel)
+				set .@chance, 100;
+			else
+				set .@chance, (80 - (10*(.@slot_num-1)));
+			mes "^0000FFEquip^000000 = "+getitemname(.@itemid);
+			mes "^0000FFChance^000000 = "+.@chance+"%";
+			mes "^0000FFSlot Number^000000 = "+( (.@slot_num == 2) ? "2nd Slot" : (.@slot_num == 3 ? "3rd Slot" : "4th Slot") );
+			mes "^0000FFZeny Cost^000000 = "+.@zeny_cost+"z";
+			if (!.@gmlevel)
+				mes "^0000FFUnique Power Stones^000000 = 1 Consumed";
+			mes "^0000FFSelected Enchantment^000000 = "+getitemname(.@selected_bonus);
+			if (.@equip_cardid > 0)
+				mes "^FF0000Overplace^000000 = "+getitemname(.@equip_cardid);
+			next;
+			if (Select("Confirm:Cancel") == 2) close;
+			
+			// Check Zeny
+			if (Zeny < .@zeny_cost) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "Sorry, but you are broke.";
+				close;
+			}
+			if ((countitem(30000) < 1) && (!.@gmlevel)) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "Hey! You can't Power Refine without Power Stones!";
+				close;
+			}
+			
+			// Refine Attempt
+			progressbar "ffff00",3;
+			
+			// Double Check after progress bar
+			if (Zeny < .@zeny_cost) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "Are you trying to fool me?! You don't have zeny anymore!";
+				close;
+			}
+			
+			if ( (countitem(30000) < 1) && (!.@gmlevel) ) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "Hey! You can't Power Refine without Power Stones!";
+				close;
+			}
+			
+			if (getequipid(.@part) != .@itemid) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "What do you think you are doing, your punk?! You switched your equipment! Get lost before I sue you.";
+				close;
+			}
+			
+			// Fail
+			if (rand(0,100) > .@chance) {
+				specialeffect2 306;
+				mes "["+strnpcinfo(1)+"]";
+				mes "Wooops! I'm sorry, but it broke. There's nothing I can do about it anymore.";
+				set Zeny, Zeny - .@zeny_cost;
+				if (!.@gmlevel)
+					delitem 30000,1;
+			//	delitem .@itemid,1;
+				close;
+			}
+			else {
+			// Success
+				set .@rand_bonus, .@selected_bonus;
+				mes "["+strnpcinfo(1)+"]";
+				mes "Ha! There you go, your brand new enchanted equipment!";
+				set .@refine, getequiprefinerycnt(.@part);
+				for (set .@i, 0; .@i < 4; set .@i, .@i + 1)
+					set .@cardid[.@i], getequipcardid(.@part,.@i);
+				delitem .@itemid,1;
+				if (!.@gmlevel)
+					delitem 30000,1;
+				set Zeny, Zeny - .@zeny_cost;
+				specialeffect2 305;
+				if (.@slot_num == 4)
+					getitem2 .@itemid, 1, 1, .@refine, 0, .@cardid[0], .@cardid[1], .@cardid[2], .@rand_bonus;
+				else if (.@slot_num == 3)
+					getitem2 .@itemid, 1, 1, .@refine, 0, .@cardid[0], .@cardid[1], .@rand_bonus, .@cardid[3];
+				else if (.@slot_num == 2)
+					getitem2 .@itemid, 1, 1, .@refine, 0, .@cardid[0], .@rand_bonus, .@cardid[2], .@cardid[3];
+				equip(.@itemid);
+				close;
+			}
+			
+		}
+		
+		// Third Enchantment Type ------------------------------------------------------------------------------------------------
+		if (.@enchant_type == 2) {
+		
+			// Confirmation
+			set .@zeny_cost, 10000000;
+			set .@chance, (60 - (10*(.@slot_num-1)));
+			mes "^0000FFEquip^000000 = "+getitemname(.@itemid);
+			mes "^0000FFChance^000000 = "+.@chance+"%";
+			mes "^0000FFSlot Number^000000 = "+( (.@slot_num == 2) ? "2nd Slot" : (.@slot_num == 3 ? "3rd Slot" : "4th Slot") );
+			mes "^0000FFZeny Cost^000000 = "+.@zeny_cost+"z";
+			mes "^0000FFUnique Power Stones^000000 = 3 Consumed";
+			mes "^009900Unique MvP Random Enchantment^000000";
+			if (.@equip_cardid > 0)
+				mes "^FF0000Overplace^000000 = "+getitemname(.@equip_cardid);
+			next;
+			if (Select("Confirm:Cancel") == 2) close;
+			
+			// Check Zeny
+			if (Zeny < .@zeny_cost) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "Sorry, but you are broke.";
+				close;
+			}
+			
+			if (countitem(30000) < 3) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "Hey! You can't Power Refine without Power Stones!";
+				close;
+			}
+			
+			// Refine Attempt
+			progressbar "ffff00",8;
+			
+			// Double Check after progress bar
+			if (Zeny < .@zeny_cost) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "Are you trying to fool me?! You don't have zeny anymore!";
+				close;
+			}
+			
+			if (countitem(30000) < 3) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "Hey! You can't Power Refine without Power Stones!";
+				close;
+			}
+			
+			if (getequipid(.@part) != .@itemid) {
+				mes "["+strnpcinfo(1)+"]";
+				mes "What do you think you are doing, your punk?! You switched your equipment! Get lost before I sue you.";
+				close;
+			}
+			
+			// Fail
+			if (rand(0,100) > .@chance) {
+				specialeffect2 306;
+				specialeffect2 183;
+				mes "["+strnpcinfo(1)+"]";
+				mes "Oh my god! The power was so intense the equipment broke into pieces! I'm sorry, but there's nothing I can do.";
+				set Zeny, Zeny - .@zeny_cost;
+				delitem 30000,3;
+			//	delitem .@itemid,1;
+				close;
+			}
+			else {
+			// Success
+				mes "["+strnpcinfo(1)+"]";
+				mes "Wow! I can't even believe I did this myself, haha! I must be better than I thought. Oh- Yeah sorry, here's your equipment.";
+				set .@refine, getequiprefinerycnt(.@part);
+				for (set .@i, 0; .@i < 4; set .@i, .@i + 1)
+					set .@cardid[.@i], getequipcardid(.@part,.@i);
+				set .@rand_bonus, rand(25127,25147);
+				delitem .@itemid,1;
+				delitem 30000,3;
+				set Zeny, Zeny - .@zeny_cost;
+				specialeffect2 305;
+				specialeffect2 113;
+				if (.@slot_num == 4)
+					getitem2 .@itemid, 1, 1, .@refine, 0, .@cardid[0], .@cardid[1], .@cardid[2], .@rand_bonus;
+				else if (.@slot_num == 3)
+					getitem2 .@itemid, 1, 1, .@refine, 0, .@cardid[0], .@cardid[1], .@rand_bonus, .@cardid[3];
+				else if (.@slot_num == 2)
+					getitem2 .@itemid, 1, 1, .@refine, 0, .@cardid[0], .@rand_bonus, .@cardid[2], .@cardid[3];
+				equip(.@itemid);
+				close;
+			}
+			
+		}
+	}
+}
+
+function	script	c_enchant_mvplist	{
+
+
+	// Table Parameters :
+	// mvp_itemid : ID of the Misc Item
+	// mvp_itemcount : Number of these Items required
+	// to exchange for only one power stone.
+
+	// = MvP Power Stone Conversion Table =====================================================================================================================================================================================================
+	//                         , Baphomet, Amon Ra, Beelzebub, Detale, Eddga, ESL, Garm, Gloom, Scaraba Q, Kiel, Ktullanux, LoD, Maya, Mistress, Nidhoggr, Orc Hero/Orc Lord, Osiris, Pharaoh, Tao Gunka, Thanatos, Valk, Tendrillion, Hardrock
+	setarray .@mvp_itemid[0]   , 750     , 7211   ,7754      ,7451   ,1029  ,7169,7036 ,7566  ,6326      ,7513 ,7562      ,7108,7020 ,7018     ,6091     ,968               ,751    ,7114    ,7300      ,7450     ,7024 ,6033        ,6022  ;
+	setarray .@mvp_itemcount[0], 5       , 5      ,   2      ,3      ,   7  ,   6,   7 ,   3  , 4        ,  4  , 3        , 4  , 2   ,2        ,2        ,7                 ,7      ,7       ,7         ,3        ,2	,6   		 ,4;
+	// ========================================================================================================================================================================================================================================
+	
+	if (getarg(0) == 1)
+		for (set .@i, 0; .@i < getarraysize(.@mvp_itemid); set .@i, .@i + 1)
+			mes .@mvp_itemcount[.@i]+" ^0000FF"+getitemname(.@mvp_itemid[.@i])+"^000000 = 1 ^009900U.P.S^000000";
+	else if (getarg(0) == 0) {
+		for (set .@i, 0; .@i < getarraysize(.@mvp_itemid); set .@i, .@i + 1) {
+			set .@j, 0;
+			if (countitem(.@mvp_itemid[.@i]) >= .@mvp_itemcount[.@i]) {
+				getitem 30000,1;
+				delitem .@mvp_itemid[.@i], .@mvp_itemcount[.@i];
+				set .@i, .@i - 1;
+				set .@j, .@j + 1;
+				if (.@j % 15) sleep2 300; // Infinity loop prevention
+			}
+		}
+	}
+
+	return;
+	
+}
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,56 @@
+prontera,161,150,4	script	Sorteio Diário	124,{
+	mes "Gostaria de Participar do Evento?";
+	mes "Ticket Vencedor desta Rodada: "+$winner+"";
+	if(#evento==0){
+		mes "Você não possui um ticket";
+	}
+	else{
+		mes "Seu Ticket: "+#evento+"";
+	}
+	next;
+	menu "Sim",SIM,"não",NAO,"Receber Recompensa",Recompensa; 
+	SIM: 
+		if(#evento<1){
+		set #evento, rand(1,10000);
+		mes "Pronto. Seu Ticket é "+#evento+".";
+		mes "Boa sorte!";
+		}
+		else{
+		mes "Você já está participando. Seu Ticket é "+#evento+".";
+		mes "Boa sorte!";
+		}
+		close;
+		end;
+	NAO: mes "Tudo bem! ^^";
+		end;
+	Recompensa:
+		if ( #evento == 0 ) {
+			mes "Você precisa retirar um ticket antes de receber uma recompensa!";
+			close;
+		}
+		if ( #evento == $winner ){
+			mes "Parabéns, você foi o ganhador de hoje!";
+			getitem 607,rand(5,10);
+			set #evento, 0;
+			close;
+		}
+		else{
+			mes "Infelizmente seu ticket não foi o vencedor.";
+			mes "O último Ticket vencedor foi "+$winner+"";
+			mes "O próximo será revelado às 20:00 horas";
+			close;
+		}
+		end;
+
+OnClock2000:
+	query_sql("select `value` from acc_reg_num where `key` = '#evento' order by `value` desc",.@winner);
+	set $winner, .@winner;
+	query_sql("UPDATE `acc_reg_num` SET `value` = '0' WHERE `key` = '#evento' and `value` != "+$winner+"");
+	if(.@winner == 0){
+	announce "Ninguém se candidatou p/ o sorteio. Se você ainda não conhece, procure o NPC "+strnpcinfo(1)+" em Prontera !",0;
+	}
+	else{
+	set $winner, .@winner;
+	announce "O Ticket vencedor de hoje é :"+$winner+"",0;
+	}
+}

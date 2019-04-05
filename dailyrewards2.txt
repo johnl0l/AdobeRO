@@ -1,0 +1,47 @@
+//======Name========================================
+// Daily Login Rewards
+//======Version=====================================
+// 1.0
+// Author: Sandbox
+//======Comments====================================
+// 
+//==================================================
+
+-	script	DailyLoginRewards	-1,{
+
+
+setarray .@D_Prize[0],501,502,503,607,608; //Set to desired item prizes
+setarray .@D_Amt[0],1,2,3,2,1; //Amount of prize to be given
+set .@Serv_Name$,"Your Server"; //Set to your server name
+
+
+OnPCLoginEvent:
+
+	if(gettimetick(2) > #ClaimDelay) {
+		if(gettimetick(2) > #StreakDelay) set #LogStreak,0;
+		
+		if(#RewardStreak == 0) {
+			dispbottom "Welcome to "+.@Serv_Name$+"! You've received "+.@D_Amt[#RewardStreak]+" "+getitemname(.@D_Prize[#RewardStreak])+" for logging in! Visit us daily to get more prize! When you've managed to play with us for 5 consecutive days, you will receive bonus prizes!";
+		}
+
+		else {
+			dispbottom "Welcome back to "+.@Serv_Name$+"! You've received "+.@D_Amt[#RewardStreak]+" "+getitemname(.@D_Prize[#RewardStreak])+" for logging in! Visit us daily to get more prize! When you've managed to play with us for 5 consecutive days, you will receive bonus prizes!";
+		}
+
+		getitem .@D_prize[#RewardStreak],.@D_Amt[#RewardStreak];
+		set #RewardStreak,#RewardStreak+1;
+		set #LogStreak,#LogStreak+1;
+		set #ClaimDelay,gettimetick(2)+86400;
+		set #StreakDelay,gettimetick(2)+172800;
+
+		if(#LogStreak >= 4) {
+			for( set .@i, 0; .@i < 4; set .@i, .@i +1 ) {
+				getitem .@D_prize[.@i],.@D_Amt[.@i];
+			}
+			dispbottom "Congratulations! You've received all the daily rewards for logging in 5 consecutive days!";
+			set #LogStreak,0;
+		}
+
+	}
+end;
+}

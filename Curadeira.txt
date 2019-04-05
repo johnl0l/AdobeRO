@@ -1,0 +1,22 @@
+prontera,100,100,5	script	Curandeira	239{ 
+OnTouch:
+
+percentheal 100,100;
+
+skilleffect 34,0;
+
+sc_start SC_BLESSING,360000,10;
+
+skilleffect 29,0;
+
+sc_start SC_INCREASEAGI,360000,10;
+
+skilleffect 8,0;
+
+sc_start SC_ENDURE,360000,10;
+
+dispbottom "Sinta o meu poder.";
+
+end;
+
+}

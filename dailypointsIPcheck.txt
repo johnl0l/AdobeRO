@@ -1,0 +1,28 @@
+-	script	dailypoints	-1,{
+	OnPCLoginEvent: {
+attachnpctimer ""+strcharinfo(0)+"";
+initnpctimer;
+end;
+
+OnTimer900000:
+		set(@now,gettimetick(2));
+		set .Hour,24;
+		query_sql("SELECT REPLACE(`last_ip`,'.','_') FROM `login` WHERE `account_id` = "+getcharid(3),@lastIP$);
+		if((getd("$G_LIP_"+@lastIP$)+(60*60*24)) <= @now && #dailytimer < gettimetick(2)) {
+			setd("$G_LIP_"+@lastIP$,@now);
+			set #dailytimer,gettimetick(2) + ( .Hour * 3600 );
+			set(#CASHPOINTS,#CASHPOINTS+5);
+			mes("Here's your Daily Attendance Points! Thanks for playing MyRO!");
+			dispbottom("[ Cash Points ] : Gained 5 Cash Points for Daily Attendance! Total Points: "+#CASHPOINTS);
+			close2();
+		}
+		end();
+	stopnpctimer;
+end;
+	}
+
+OnPCLogoutEvent:
+stopnpctimer;
+end;
+
+}

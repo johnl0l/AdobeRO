@@ -1,0 +1,885 @@
+function	script	CTF_GAMERESET	{
+for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+attachrid $@ctf_team_1[.@i];
+set @number_death,4;
+set @ctf_kill,0;
+set @x,rand(80,83);
+set @y,rand(140,159);
+warp "bat_b01",@x,@y;
+set @flag_takeback,0;
+set @flag_taken,0;
+detachrid;
+}
+for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+attachrid $@ctf_team_2[.@i];
+set @number_death,4;
+set @ctf_kill,0;
+set @x,rand(313,316);
+set @y,rand(141,158);
+warp "bat_b01",@x,@y;
+set @flag_takeback,0;
+set @flag_taken,0;
+detachrid;
+}
+setcell "bat_b01",59,121,66,121,cell_walkable,0;
+setcell "bat_b01",333,182,340,182,cell_walkable,0;
+setcell "bat_b01",94,140,94,159,cell_walkable,0;
+setcell "bat_b01",305,159,305,140,cell_walkable,0;
+movenpc "Red Flag",57,150;
+movenpc "Blue Flag",334,150;
+return;
+}
+
+function	script	CTF_RESET	{
+for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+attachrid $@ctf_team_1[.@i];
+set @ctf_kill,0;
+set @number_death,0;
+set @ctf_1,0;
+set @flag_takeback,0;
+set @flag_taken,0;
+set @ctf_member,0;
+detachrid;
+}
+for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+attachrid $@ctf_team_2[.@i];
+set @ctf_kill,0;
+set @number_death,0;
+set @ctf_2,0;
+set @flag_takeback,0;
+set @flag_taken,0;
+set @ctf_member,0;
+detachrid;
+}
+deletearray $@ctf_team_1[0],getarraysize($@ctf_team_1);
+deletearray $@ctf_team_2[0],getarraysize($@ctf_team_2);
+set $@ctf_closed,0;
+set $@ctf_rnd2,0;
+donpcevent "ctf_game::OnInit";
+movenpc "Red Flag",57,150;
+movenpc "Blue Flag",332,150;
+setcell "bat_b01",59,121,66,121,cell_walkable,1;
+setcell "bat_b01",333,182,340,182,cell_walkable,1;
+setcell "bat_b01",94,140,94,159,cell_walkable,1;
+setcell "bat_b01",305,159,305,140,cell_walkable,1;
+return;
+}
+
+-	script	ctf_game	-1,{
+
+OnNewRound:
+if(.team[1] == .ctf_rnd || .team[2] == .ctf_rnd) goto L_GameOver;
+for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+attachrid $@ctf_team_1[.@i];
+dispbottom "************************************************************";
+dispbottom "Score Board:";
+dispbottom "Red Team - "+.team[1]+" round "+(.team[1] > 1?"wins":"win");
+dispbottom "Blue -Team - "+.team[2]+" round "+(.team[2] > 1?"wins":"win");
+dispbottom "************************************************************";
+detachrid;
+}
+for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+attachrid $@ctf_team_2[.@i];
+dispbottom "************************************************************";
+dispbottom "Score Board:";
+dispbottom "Red Team - "+.team[1]+" round "+(.team[1] > 1?"wins":"win");
+dispbottom "Blue -Team - "+.team[2]+" round "+(.team[2] > 1?"wins":"win");
+dispbottom "************************************************************";
+detachrid;
+}
+set .ctf_blood,0;
+sleep 10000;
+soundeffectall "NewRound.wav",0,"bat_b01";
+mapannounce "bat_b01","[Round "+($@ctf_rnd2+1)+"] Starting in...",0;
+sleep 1500;
+soundeffectall "5.wav",0,"bat_b01";
+mapannounce "bat_b01","5...",0;
+sleep 1000;
+soundeffectall "4.wav",0,"bat_b01";
+mapannounce "bat_b01","4...",0;
+sleep 1000;
+soundeffectall "3.wav",0,"bat_b01";
+mapannounce "bat_b01","3...",0;
+sleep 1000;
+soundeffectall "2.wav",0,"bat_b01";
+mapannounce "bat_b01","2...",0;
+sleep 1000;
+soundeffectall "1.wav",0,"bat_b01";
+mapannounce "bat_b01","1...",0;
+sleep 1000;
+soundeffectall "Play.wav",0,"bat_b01";
+mapannounce "bat_b01","Play!",0;
+for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+attachrid $@ctf_team_1[.@i];
+dispbottom "Objective: Steal the opposing team's flag back to your base and protect your own flag.";
+detachrid;
+}
+for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+attachrid $@ctf_team_2[.@i];
+dispbottom "Objective: Steal the opposing team's flag back to your base and protect your own flag.";
+detachrid;
+}
+setcell "bat_b01",59,121,66,121,cell_walkable,1;
+setcell "bat_b01",333,182,340,182,cell_walkable,1;
+setcell "bat_b01",94,140,94,159,cell_walkable,1;
+setcell "bat_b01",305,159,305,140,cell_walkable,1;
+end;
+
+OnRedScore:
+set $@ctf_rnd2,$@ctf_rnd2+1;
+sleep 3000;
+if(.team[1] == .team[2])
+	soundeffectall "RedTeamTakesTheLead.wav",0,"bat_b01";
+else if(.team[1] > .team[2])
+	soundeffectall "RedTeamIncreases.wav",0,"bat_b01";
+else
+	soundeffectall "RedTeamScores.wav",0,"bat_b01";
+
+mapannounce "bat_b01","Red Team has won Round "+$@ctf_rnd2+"!",0;
+set .team[1],.team[1]+1;
+goto OnNewRound;
+
+OnBlueScore:
+set $@ctf_rnd2,$@ctf_rnd2+1;
+sleep 3000;
+if(.team[1] == .team[2])
+	soundeffectall "BlueTeamLead.wav",0,"bat_b01";
+else if(.team[1] < .team[2])
+	soundeffectall "BlueTeamIncreases.wav",0,"bat_b01";
+else
+	soundeffectall "BlueTeamScores.wav",0,"bat_b01";
+
+mapannounce "bat_b01","Blue Team has won Round "+$@ctf_rnd2+"!",bc_map,0xFFFF00;
+set .team[2],.team[2]+1;
+goto OnNewRound;
+
+L_GameOver:
+sleep 3000;
+for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+attachrid $@ctf_team_1[.@i];
+dispbottom "************************************************************";
+dispbottom "Score Board:";
+dispbottom "Red Team - "+.team[1]+" round "+(.team[1] > 1?"wins":"win");
+dispbottom "Blue -Team - "+.team[2]+" round "+(.team[2] > 1?"wins":"win");
+dispbottom "************************************************************";
+detachrid;
+}
+for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+attachrid $@ctf_team_2[.@i];
+dispbottom "************************************************************";
+dispbottom "Score Board:";
+dispbottom "Red Team - "+.team[1]+" round "+(.team[1] > 1?"wins":"win");
+dispbottom "Blue -Team - "+.team[2]+" round "+(.team[2] > 1?"wins":"win");
+dispbottom "************************************************************";
+detachrid;
+}
+if(.team[1] > .team[2]) {
+	soundeffectall "RedTeamIsTheWinner.wav",0,"bat_b01";
+	for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+	attachrid $@ctf_team_1[.@i];
+	set ctf_win,ctf_win+1;
+	detachrid;
+	}
+}
+else if(.team[1] < .team[2]) {
+	soundeffectall "BlueTeamIsTheWinner.wav",0,"bat_b01";
+	for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+	attachrid $@ctf_team_2[.@i];
+	set ctf_win,ctf_win+1;
+	detachrid;
+	}
+}
+mapannounce "bat_b01","Game Match! "+(.team[1] > .team[2]?"Red":"Blue")+" Team has conquered over the "+(.team[1] > .team[2]?"Blue":"Red")+" Team!",0;
+sleep 7000;
+for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+attachrid $@ctf_team_1[.@i];
+warp "prontera",120,90;
+detachrid;
+}
+for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+attachrid $@ctf_team_2[.@i];
+warp "prontera",120,90;
+detachrid;
+}
+callfunc "CTF_RESET";
+end;
+
+OnPCKillEvent:
+getmapxy(@map$,@x,@y,0);
+if(@map$ != "bat_b01") end;
+if(!$@ctf_closed) warp "prontera",120,90;
+if(!.ctf_blood) {
+	set .ctf_blood,1;
+	mapannounce "bat_b01",strcharinfo(0)+" drew the first blood !!",0;
+	soundeffectall "FirstBlood.wav",0,"bat_b01";
+}
+switch(@ctf_kill) {
+case 0:
+	break;
+case 1:
+	announce "Double kill !!",bc_self;
+	soundeffect "DoubleKill.wav",0;
+	break;
+case 2:
+	announce "Triple kill !!",bc_self;
+	soundeffect "TripleKill.wav",0;
+	break;
+case 3:
+	announce "Multi kill !!",bc_self;
+	soundeffect "MultiKill.wav",0;
+	break;
+case 4:
+	announce "M-m-m-monster kill !!",bc_self;
+	soundeffect "MonsterKill.wav",0;
+	break;
+case 5:
+	announce "Unstoppable !!",bc_self;
+	soundeffect "Unstoppable.wav",0;
+	break;
+case 6:
+default:
+	announce "Godlike !!",bc_self;
+	soundeffect "Godlike.wav",0;
+}
+if(@ctf_kill > 2) dispbottom "You are on a "+@ctf_kill+" kill streak !!";
+set @ctf_kill,@ctf_kill+1;
+end;
+
+OnPCDieEvent:
+getmapxy(@map$,@x,@y,0);
+if(@map$ != "bat_b01") end;
+if(!$@ctf_closed) warp "prontera",120,90;
+set @ctf_kill,0;
+if(@ctf_1) {
+	if(@flag_taken) {
+		mapannounce "bat_b01","Blue Flag has been dropped!",bc_map,0xFFFF00;
+		soundeffectall "BlueFlagDropped.wav",0,"bat_b01";
+		set @flag_taken,0;
+		movenpc "Blue Flag",@x,@y;
+	}
+	else if(@flag_takeback) {
+		mapannounce "bat_b01","Red Flag has been dropped!",0;
+		soundeffectall "RedFlagDropped.wav",0,"bat_b01";
+		set @flag_takeback,0;
+		movenpc "Red Flag",@x,@y;
+	}
+}
+else if(@ctf_2) {
+	if(@flag_taken) {
+		mapannounce "bat_b01","Red Flag has been dropped!",0;
+		soundeffectall "RedFlagDropped.wav",0,"bat_b01";
+		set @flag_taken,0;
+		movenpc "Red Flag",@x,@y;
+	}
+	else if(@flag_takeback) {
+		mapannounce "bat_b01","Blue Flag has been dropped!",bc_map,0xFFFF00;
+		soundeffectall "BlueFlagDropped.wav",0,"bat_b01";
+		set @flag_takeback,0;
+		movenpc "Blue Flag",@x,@y;
+	}
+}
+dispbottom "You will be resurrected in "+@number_death+" seconds...";
+set @loop,0;
+while(!getmapxy(@map$,@x,@y,0)) {
+if(Hp == 0) {
+	if(@loop == @number_death) break;
+	if(@map$ != "bat_b01") {
+		set @ctf_kill,0;
+		set @number_death,0;
+		set @flag_takeback,0;
+		set @flag_taken,0;
+		set @ctf_member,0;
+		for(set @i,0; @i < getarraysize($@ctf_team_1); set @i,@i+1) {
+		if($@ctf_team_1[@i] == playerattached()) {
+		deletearray $@ctf_team_1[@i],1;
+		set @ctf_1,0;
+		break;
+		}
+		}
+		for(set @i,0; @i < getarraysize($@ctf_team_2); set @i,@i+1) {
+		if($@ctf_team_2[@i] == playerattached()) {
+		deletearray $@ctf_team_2[@i],1;
+		set @ctf_2,0;
+		break;
+		}
+		}
+	}
+}
+if(@loop >= @number_death) end;
+sleep2 1000;
+set @loop,@loop+1;
+}
+if(@ctf_1)
+	warp "bat_b01",63,135;
+else if(@ctf_2)
+	warp "bat_b01",336,161;
+
+set @number_death,@number_death+1;
+atcommand "@alive";
+end;
+
+OnPCLogoutEvent:
+getmapxy(@map$,@x,@y,0);
+if(@map$ != "bat_b01") end;
+if(@ctf_1) {
+	if(@flag_taken) {
+		mapannounce "bat_b01","Blue Flag has been dropped!",bc_map,0xFFFF00;
+		soundeffectall "BlueFlagDropped.wav",0,"bat_b01";
+		set @flag_taken,0;
+		movenpc "Blue Flag",@x,@y;
+	}
+	else if(@flag_takeback) {
+		mapannounce "bat_b01","Red Flag has been dropped!",0;
+		soundeffectall "RedFlagDropped.wav",0,"bat_b01";
+		set @flag_takeback,0;
+		movenpc "Red Flag",@x,@y;
+	}
+}
+else if(@ctf_2) {
+	if(@flag_taken) {
+		mapannounce "bat_b01","Red Flag has been dropped!",0;
+		soundeffectall "RedFlagDropped.wav",0,"bat_b01";
+		set @flag_taken,0;
+		movenpc "Red Flag",@x,@y;
+	}
+	else if(@flag_takeback) {
+		mapannounce "bat_b01","Blue Flag has been dropped!",bc_map,0xFFFF00;
+		soundeffectall "BlueFlagDropped.wav",0,"bat_b01";
+		set @flag_takeback,0;
+		movenpc "Blue Flag",@x,@y;
+	}
+}
+
+if(@ctf_1) {
+	for(set @i,0; @i < getarraysize($@ctf_team_1); set @i,@i+1) {
+	if($@ctf_team_1[@i] == playerattached()) {
+	deletearray $@ctf_team_1[@i],1;
+	break;
+	}
+	}
+}
+else if(@ctf_2) {
+	for(set @i,0; @i < getarraysize($@ctf_team_2); set @i,@i+1) {
+	if($@ctf_team_2[@i] == playerattached()) {
+	deletearray $@ctf_team_2[@i],1;
+	break;
+	}
+	}
+}
+end;
+
+OnInit:
+// Amount of rounds needed to win \
+set .ctf_rnd,3;
+
+set .team[1],0;
+set .team[2],0;
+set .ctf_blood,0;
+}
+
+bat_b01,57,150,6	script	Red Flag	722,{
+
+if(!$@ctf_closed) warp "prontera",120,90;
+getmapxy(.@map$,.@x,.@y,1);
+getmapxy(.@map2$,.@x2,.@y2,0);
+if(distance(.@x,.@y,.@x2,.@y2) > 2) end;
+if(checkoption(0x6)) end;
+if(@ctf_2) {
+	if(.@x == 334 && .@y == 138) end;
+	if(@flag_takeback) {
+		dispbottom "You can only carry one flag at a time.";
+	}
+	else {
+		set @flag_taken,1;
+		mapannounce "bat_b01","Red Flag has been stolen!",0;
+		soundeffectall "RedFlagTaken.wav",0,"bat_b01";
+		dispbottom "You've stolen the Red Team's flag. Take it back to your base!";
+		movenpc "Red Flag",390,11;
+		set .@taken,playerattached();
+		while(!getmapxy(.@map$,.@x,.@y,0)) {
+			if(!@flag_taken) break;
+			for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+			attachrid $@ctf_team_1[.@i];
+			viewpoint 2,.@x,.@y,1,0xFF0000;
+			viewpoint 1,.@x,.@y,1,0xFF0000;
+			detachrid;
+			}
+			for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+			attachrid $@ctf_team_2[.@i];
+			viewpoint 2,.@x,.@y,1,0xFF0000;
+			viewpoint 1,.@x,.@y,1,0xFF0000;
+			detachrid;
+			}
+		sleep2 10;
+		if(!isloggedin(.@taken)) break;
+		attachrid .@taken;
+		}
+	for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+	attachrid $@ctf_team_1[.@i];
+	viewpoint 2,.@x,.@y,1,0xFF0000;
+	detachrid;
+	}
+	for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+	attachrid $@ctf_team_2[.@i];
+	viewpoint 2,.@x,.@y,1,0xFF0000;
+	detachrid;
+	}
+	}
+	end;
+}
+else if(@ctf_1) {
+	if(.@x == 57 && .@y == 150) end;
+	if(@flag_taken) {
+		dispbottom "You can only carry one flag at a time.";
+	}
+	else {
+		set @flag_takeback,1;
+		dispbottom "Return the flag to your base before anyone tries to steal it!";
+		movenpc "Red Flag",390,11;
+		set .@taken,playerattached();
+		while(!getmapxy(.@map$,.@x,.@y,0)) {
+			if(!@flag_takeback) break;
+			for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+			attachrid $@ctf_team_1[.@i];
+			viewpoint 2,.@x,.@y,3,0xFF0000;
+			viewpoint 1,.@x,.@y,3,0xFF0000;
+			detachrid;
+			}
+			for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+			attachrid $@ctf_team_2[.@i];
+			viewpoint 2,.@x,.@y,3,0xFF0000;
+			viewpoint 1,.@x,.@y,3,0xFF0000;
+			detachrid;
+			}
+		sleep2 10;
+		if(!isloggedin(.@taken)) break;
+		attachrid .@taken;
+		}
+	for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+	attachrid $@ctf_team_1[.@i];
+	viewpoint 2,.@x,.@y,3,0xFF0000;
+	detachrid;
+	}
+	for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+	attachrid $@ctf_team_2[.@i];
+	viewpoint 2,.@x,.@y,3,0xFF0000;
+	detachrid;
+	}
+	}
+}
+end;
+}
+
+bat_b01,62,149,0	script	redbase#1	-1,4,4,{
+
+OnTouch:
+if(@ctf_2) end;
+if(@flag_takeback) {
+	soundeffectall "RedFlagReturned.wav",0,"bat_b01";
+	mapannounce "bat_b01","Red Flag has been returned!",0;
+	set @flag_takeback,0;
+	movenpc "Red Flag",57,150;
+	getmapxy(.@map$,.@x,.@y,1,"Red Flag");
+	getmapxy(.@map2$,.@x2,.@y2,1,"Blue Flag");
+	if(.@x == 57 && .@y == 150 && .@x2 == 62 && .@y2 == 162) {
+		callfunc "CTF_GAMERESET";
+		donpcevent "ctf_game::OnRedScore";
+	}
+}
+end;
+}
+
+-	script	redbasewin	-1,{
+
+OnTouch:
+if(@ctf_2) end;
+if(@flag_taken) {
+	set @flag_taken,0;
+	movenpc "Blue Flag",62,162;
+	getmapxy(.@map$,.@x,.@y,1,"Red Flag");
+	getmapxy(.@map2$,.@x2,.@y2,1,"Blue Flag");
+	if(.@x == 57 && .@y == 150 && .@x2 == 62 && .@y2 == 162) {
+		callfunc "CTF_GAMERESET";
+		donpcevent "ctf_game::OnRedScore";
+	}
+}
+}
+
+bat_b01,61,140,0	duplicate(redbasewin)	redbase#2	-1,9,0
+bat_b01,70,149,0	duplicate(redbasewin)	redbase#3	-1,0,10
+bat_b01,61,159,0	duplicate(redbasewin)	redbase#4	-1,9,0
+
+bat_b01,334,150,2	script	Blue Flag	722,{
+
+if(!$@ctf_closed) warp "prontera",120,90;
+getmapxy(.@map$,.@x,.@y,1);
+getmapxy(.@map2$,.@x2,.@y2,0);
+if(distance(.@x,.@y,.@x2,.@y2) > 2) end;
+if(checkoption(0x6)) end;
+if(@ctf_1) {
+	if(.@x == 62 && .@y == 162) end;
+	if(@flag_takeback) {
+		dispbottom "You can only carry one flag at a time.";
+	}
+	else {
+		set @flag_taken,1;
+		mapannounce "bat_b01","Blue Flag has been stolen!",bc_map,0xFFFF00;
+		soundeffectall "BlueFlagTaken.wav",0,"bat_b01";
+		dispbottom "You've stolen the Blue Team's flag. Take it back to your base!";
+		movenpc "Blue Flag",391,11;
+		set .@taken,playerattached();
+		while(!getmapxy(.@map$,.@x,.@y,0)) {
+			if(!@flag_taken) break;
+			for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+			attachrid $@ctf_team_1[.@i];
+			viewpoint 2,.@x,.@y,2,0x0000FF;
+			viewpoint 1,.@x,.@y,2,0x0000FF;
+			detachrid;
+			}
+			for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+			attachrid $@ctf_team_2[.@i];
+			viewpoint 2,.@x,.@y,2,0x0000FF;
+			viewpoint 1,.@x,.@y,2,0x0000FF;
+			detachrid;
+			}
+		sleep2 10;
+		if(!isloggedin(.@taken)) break;
+		attachrid .@taken;
+		}
+	for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+	attachrid $@ctf_team_1[.@i];
+	viewpoint 2,.@x,.@y,2,0x0000FF;
+	detachrid;
+	}
+	for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+	attachrid $@ctf_team_2[.@i];
+	viewpoint 2,.@x,.@y,2,0x0000FF;
+	detachrid;
+	}
+	}
+	end;
+}
+else if(@ctf_2) {
+	if(.@x == 334 && .@y == 150) end;
+	if(@flag_taken) {
+		dispbottom "You can only carry one flag at a time.";
+	}
+	else {
+		set @flag_takeback,1;
+		dispbottom "Return the flag to your base before anyone tries to steal it!";
+		movenpc "Blue Flag",391,11;
+		set .@taken,playerattached();
+		while(!getmapxy(.@map$,.@x,.@y,0)) {
+			if(!@flag_takeback) break;
+			for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+			attachrid $@ctf_team_1[.@i];
+			viewpoint 2,.@x,.@y,4,0x0000FF;
+			viewpoint 1,.@x,.@y,4,0x0000FF;
+			detachrid;
+			}
+			for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+			attachrid $@ctf_team_2[.@i];
+			viewpoint 2,.@x,.@y,4,0x0000FF;
+			viewpoint 1,.@x,.@y,4,0x0000FF;
+			detachrid;
+			}
+		sleep2 10;
+		if(!isloggedin(.@taken)) break;
+		attachrid .@taken;
+		}
+	for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+	attachrid $@ctf_team_1[.@i];
+	viewpoint 2,.@x,.@y,4,0x0000FF;
+	detachrid;
+	}
+	for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+	attachrid $@ctf_team_2[.@i];
+	viewpoint 2,.@x,.@y,4,0x0000FF;
+	detachrid;
+	}
+	}
+}
+end;
+}
+
+bat_b01,327,150,0	script	bluebase#1	-1,4,4,{
+
+OnTouch:
+if(@ctf_1) end;
+if(@flag_takeback) {
+	soundeffectall "BlueFlagReturned.wav",0,"bat_b01";
+	set @flag_takeback,0;
+	movenpc "Blue Flag",334,150;
+	getmapxy(.@map$,.@x,.@y,1,"Red Flag");
+	getmapxy(.@map2$,.@x2,.@y2,1,"Blue Flag");
+	if(.@x == 334 && .@y == 138 && .@x2 == 334 && .@y2 == 150) {
+		callfunc "CTF_GAMERESET";
+		donpcevent "ctf_game::OnBlueScore";
+	}
+}
+end;
+}
+
+bat_b01,322,150,0	script	bluebasewin	-1,1,27,{
+
+OnTouch:
+if(@ctf_1) end;
+if(@flag_taken) {
+	set @flag_taken,0;
+	movenpc "Red Flag",334,138;
+	getmapxy(.@map$,.@x,.@y,1,"Red Flag");
+	getmapxy(.@map2$,.@x2,.@y2,1,"Blue Flag");
+	if(.@x == 334 && .@y == 138 && .@x2 == 334 && .@y2 == 150) {
+		callfunc "CTF_GAMERESET";
+		donpcevent "ctf_game::OnBlueScore";
+	}
+}
+}
+
+bat_b01,331,157,0	duplicate(bluebasewin)	bluebase#2	-1,11,0
+bat_b01,320,150,0	duplicate(bluebasewin)	bluebase#3	-1,0,8
+bat_b01,331,142,0	duplicate(bluebasewin)	bluebase#4	-1,11,0
+
+-	script	ctf_npc	-1,{
+
+mes "Current teams:";
+mes "^FF0000Red Team^000000 [ "+getarraysize($@ctf_team_1)+" / "+.ctf_min_req+" ]";
+mes "^0000FFBlue Team^000000 [ "+getarraysize($@ctf_team_2)+" / "+.ctf_min_req+" ]";
+mes "   ";
+mes (@ctf_1?"You are currently registered as ^FF0000Red Team^000000.":"");
+mes (@ctf_2?"You are currently registered as ^0000FFBlue Team^000000.":"");
+next;
+switch(select(($@ctf_closed?"Join Current Game":(!@ctf_member?"Register":"Unregister")),"View Team Members","Information","Cancel")) {
+case 1:
+	if(Zeny < .ctf_fee) {
+		mes "You must pay a fee of "+.ctf_fee+"z in order to participate.";
+		close;
+	}
+	if(!@ctf_member) {
+		if(getarraysize($@ctf_team_1) >= .ctf_min_req && getarraysize($@ctf_team_2) >= .ctf_min_req) {
+			mes "I'm sorry, registration is full at the moment.";
+			mes "Please try again later.";
+			close;
+		}
+		else if(getarraysize($@ctf_team_1) > getarraysize($@ctf_team_2)) {
+			setarray $@ctf_team_2[getarraysize($@ctf_team_2)],playerattached();
+			set @ctf_2,1;
+		}
+		else {
+			setarray $@ctf_team_1[getarraysize($@ctf_team_1)],playerattached();
+			set @ctf_1,1;
+		}
+		set @ctf_member,1;
+		mes "You are registered as "+(@ctf_1?"^FF0000Red":"^0000FFBlue")+" Team^000000.";
+		mes "   ";
+		mes "   ";
+		mes "Notice: When registration is completed, you will have paid the "+.ctf_fee+"z fee.";
+		close2;
+		if($@ctf_closed) {
+			if(@ctf_1) {
+				sc_end SC_ALL;
+				warp "bat_b01",63,135;
+				set @number_death,.ctf_num_die;
+			}
+			else if(@ctf_2) {
+				sc_end SC_ALL;
+				warp "bat_b01",336,161;
+				set @number_death,.ctf_num_die;
+			}
+			set Zeny,Zeny-5000;
+			end;
+		}
+		else if(getarraysize($@ctf_team_1) >= .ctf_min_req && getarraysize($@ctf_team_1) == getarraysize($@ctf_team_2)) {
+			for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+			attachrid $@ctf_team_1[.@i];
+			if(Zeny < .ctf_fee) {
+				set .@ctf_pay_fail,.@ctf_pay_fail+1;
+				set @ctf_1,0;
+				set @ctf_member,0;
+				deletearray $@ctf_team_1[.@i],1;
+				dispbottom "CTF_ERROR: You have failed to pay registration fee.";
+			}
+			}
+			for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+			attachrid $@ctf_team_2[.@i];
+			if(Zeny < .ctf_fee) {
+				set .@ctf_pay_fail,.@ctf_pay_fail+1;
+				set @ctf_2,0;
+				set @ctf_member,0;
+				deletearray $@ctf_team_2[.@i],1;
+				dispbottom "CTF_ERROR: You must pay a fee of"+.ctf_fee+"z in order to participate.";
+			}
+			}
+			if(.@ctf_pay_fail) {
+				mapannounce "prontera","Capture the Flag is delayed due to a "+(.@ctf_pay_fail > 1?"few members":"member")+" unable to pay the registration fee.",0;
+				end;
+			}
+			else {
+				set $@ctf_closed,1;
+				announce "Capture the Flag is now in session.",0;
+				for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+				attachrid $@ctf_team_1[.@i];
+				set Zeny,Zeny-.ctf_fee;
+				sc_end SC_ALL;
+				set @number_death,.ctf_num_die;
+				detachrid;
+				}
+				for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+				attachrid $@ctf_team_2[.@i];
+				set Zeny,Zeny-.ctf_fee;
+				sc_end SC_ALL;
+				set @number_death,.ctf_num_die;
+				detachrid;
+				}
+				callfunc "CTF_GAMERESET";
+				sleep 10000;
+				soundeffectall "NewRound.wav",0,"bat_b01";
+				mapannounce "bat_b01","[Round "+($@ctf_rnd2+1)+"] Starting in...",0;
+				sleep 1500;
+				soundeffectall "5.wav",0,"bat_b01";
+				mapannounce "bat_b01","5...",0;
+				sleep 1000;
+				soundeffectall "4.wav",0,"bat_b01";
+				mapannounce "bat_b01","4...",0;
+				sleep 1000;
+				soundeffectall "3.wav",0,"bat_b01";
+				mapannounce "bat_b01","3...",0;
+				sleep 1000;
+				soundeffectall "2.wav",0,"bat_b01";
+				mapannounce "bat_b01","2...",0;
+				sleep 1000;
+				soundeffectall "1.wav",0,"bat_b01";
+				mapannounce "bat_b01","1...",0;
+				sleep 1000;
+				soundeffectall "Play.wav",0,"bat_b01";
+				mapannounce "bat_b01","Play!",0;
+				setcell "bat_b01",59,121,66,121,cell_walkable,1;
+				setcell "bat_b01",333,182,340,182,cell_walkable,1;
+				setcell "bat_b01",94,140,94,159,cell_walkable,1;
+				setcell "bat_b01",305,159,305,140,cell_walkable,1;
+				for(set .@i,0; .@i < getarraysize($@ctf_team_1); set .@i,.@i+1) {
+				attachrid $@ctf_team_1[.@i];
+				dispbottom "Objective: Steal the opposing team's flag back to your base and protect your own flag.";
+				detachrid;
+				}
+				for(set .@i,0; .@i < getarraysize($@ctf_team_2); set .@i,.@i+1) {
+				attachrid $@ctf_team_2[.@i];
+				dispbottom "Objective: Steal the opposing team's flag back to your base and protect your own flag.";
+				detachrid;
+				}
+			}
+		}
+		end;
+	}
+	else {
+		if(@ctf_1) {
+			for(set @i,0; @i < getarraysize($@ctf_team_1); set @i,@i+1) {
+			if($@ctf_team_1[@i] == playerattached()) {
+			deletearray $@ctf_team_1[@i],1;
+			set @ctf_1,0;
+			break;
+			}
+			}
+		}
+		else if(@ctf_2) {
+			for(set @i,0; @i < getarraysize($@ctf_team_2); set @i,@i+1) {
+			if($@ctf_team_2[@i] == playerattached()) {
+			deletearray $@ctf_team_2[@i],1;
+			set @ctf_2,0;
+			break;
+			}
+			}
+		}
+		set @ctf_member,0;
+		mes "You are now unregistered for Capture the Flag.";
+	}
+	close;
+case 2:
+	mes "^FF0000Red Team^000000:";
+	for(set @i,0; @i < getarraysize($@ctf_team_1); set @i,@i+1) {
+	mes rid2name($@ctf_team_1[@i]);
+	}
+	if(!@i) mes "No members currently registered for ^FF0000Red Team^000000.";
+	next;
+	mes "^0000FFBlue Team^000000:";
+	for(set @i,0; @i < getarraysize($@ctf_team_2); set @i,@i+1) {
+	mes rid2name($@ctf_team_2[@i]);
+	}
+	if(!@i) mes "No members currently registered for ^0000FFBlue Team^000000.";
+	close;
+case 3:
+	mes "The main objective is to steal the opposing team's flag. You may register as ^FF0000Red^000000 or ^0000FFBlue^000000 Team.";
+	next;
+	mes "The winning team will be decided with the most wins. When you die, you will be ressurected back to your base.";
+	next;
+	mes "You must pay a fee of "+.ctf_fee+"z in order to participate in Capture the Flag.";
+	next;
+	mes "This is definitely not a one-man mission. You must work together with your team to win!";
+case 4:
+default:
+	close;
+}
+
+OnPCLogOutEvent:
+if(!$@ctf_closed) {
+	if(@ctf_1) {
+		for(set @i,0; @i < getarraysize($@ctf_team_1); set @i,@i+1) {
+		if($@ctf_team_1[@i] == playerattached()) {
+		deletearray $@ctf_team_1[@i],1;
+		break;
+		}
+		}
+	}
+	else if(@ctf_2) {
+		for(set @i,0; @i < getarraysize($@ctf_team_2); set @i,@i+1) {
+		if($@ctf_team_2[@i] == playerattached()) {
+		deletearray $@ctf_team_2[@i],1;
+		break;
+		}
+		}
+	}
+}
+end;
+
+OnInit:
+callfunc "CTF_RESET";
+
+// Required amount of team members on each team to start \
+set .ctf_min_req,5;
+
+// Ressurection time (Will increase by one second each death per round) \
+set .ctf_num_die,4;
+
+// Registration fee \
+set .ctf_fee,0;
+}
+
+prontera,152,232,5	duplicate(ctf_npc)	CTF Soldier#1	825
+
+prontera,159,232,5	script	CTF Prize NPC	103,{
+
+if(!ctf_win) {
+	mes .name$;
+	mes "Win a game of Capture the Flag to earn prizes from me.";
+}
+else {
+	mes .name$;
+	mes "Would you like to claim your "+(ctf_win > 1?"prizes":"prize")+"?";
+	next;
+	if(select("Yes:No") == 2) close;
+		while(ctf_win) {
+		set .@item,rand(getarraysize(.prize_id));
+		getitem .prize_id[.@item],.prize_count[.@item];
+		set ctf_win,ctf_win-1;
+		}
+		mes .name$;
+		mes "Here are you prizes. Have a nice day.";
+}
+close;
+
+OnInit:
+set .name$,"[CTF Prize NPC]";
+
+// Prizes
+
+}

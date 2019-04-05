@@ -1,0 +1,57 @@
+//        //=====//     /==/     /==/          /==/      
+//       //     //     /==/     /==/  /=/     /==/         
+//      //=====//              /==/  /=/             /==============/     /========/   /==//===/    /==/     /==/
+//     //=//////    /==/      /==//=/       /==/    /==/==/==/==/==/     /     /  /   /==/         /==/     /==/
+//    // ==        /==/      /==//=/       /==/    /==/  /==/  /==/     ======/  /   /==/         /==/     /==/
+//   //   ==      /==/      /==/  /=/     /==/    /==/  /==/  /==/     / /===/  /   /==/         /==/     /==/
+//  //     ==    /==/      /==/   /=/    /==/    /==/  /==/  /==/     / /===/  /   /==/         /==/=====/==/
+// //       ==  /==/      /==/    /=/   /==/    /==/  /==/  /==/     /========/   /==/         /==///////==/
+// ================ rAthena Script ====================================================================
+//=== Made by Rikimaru
+//==================== Information ====================================================================
+//==== Daily Reward Script
+//================= Version : =========================================================================
+//=== V 1.1   Fixed a typo in the Script [ Rikimaru ]
+//=== V 1.0   Finished Scripting the Daily Reward Script [ Rikimaru ]
+//============== Credits : ============================================================================
+//=== Credits to Rikimaru for the Daily Reward Script
+//=== rAthena Profile Link : http://rathena.org/board/user/434-rikimaru/
+//=====================================================================================================
+//*************************************************************************
+prontera,140,163,5	script	Recompensa Diário	911,{
+//=========================== Settings ================================================================
+set .@rewname$,"^0000FF[ Daily Reward ]^000000";// YOU MAY CHANGE THE NAME OF THE NPC
+set .rewardid,7227;// CHANGE THE XXXXX TO THE ITEM ID,WHICH THE PLAYER SHOULD GET
+set @rewardamount,1;// CHANGE THE XX TO THE AMOUNT OF THE ITEM WHICH YOU WANT THE PLAYER TO GET
+//======================= Settings End ================================================================
+//*****************************************************************************************************
+if(gettimetick(2) - lastTimeTalked > (60 * 60 * 24)) {
+mes .@rewname$;
+mes "Olá "+strcharinfo(0)+",eu";
+mes "estou aqui para dar-lhe uma Recompensa";
+mes "Diária. Você quer tê-lo?";
+next;
+switch(select("-Sim, com certeza!:-Não, bye!:-Cancelar")) {
+	case 1:
+	mes .@rewname$;
+	mes "Ok vou dar-lhe o item!";
+	next;
+	mes .@rewname$;
+	getitem .rewardid,@rewardamount;
+	mes "Ok se divertir com eles!";
+	set lastTimeTalked,gettimetick(2);
+	close;
+	case 2:
+	mes .@rewname$;
+	mes "Ok adeus!";
+	close;
+	case 3:
+	close;
+	}
+	}
+	mes .@rewname$;
+	mes "Desculpe, mas você não pode obter a";
+	mes "Recompensa novamente depois ";
+	mes "De 24 horas tem mais!";
+	close;
+}
