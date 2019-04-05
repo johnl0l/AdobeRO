@@ -1,0 +1,58 @@
+// CoinsTrader v1.0 por Rafael Perrella
+// =====================================
+prontera.gat,167,177,3	script	Funcionário - banco	793,{
+
+// ==== Configurações ===========
+Set .@Name$, "[^FF0000Funcionário - banco^000000]";
+Set .@GIName$, "Sacola";
+
+SetArray .Itens,
+	670, 500000000,
+	676, 200000000,
+	672, 50000000;
+// ==============================
+
+function	addDelimiter	{
+	Set .@value, GetArg (0);
+	Set .@delimiter$, GetArg (1, ".");
+
+	While (.@value > 999) {
+		Set .@temp$, .@value % 1000;
+		Set .@value, .@value / 1000;
+		While (GetStrLen (.@temp$) < 3)
+			Set .@temp$, "0" + .@temp$;
+		Set .@value$, .@delimiter$ + .@temp$ + .@value$;
+	}
+	Return .@value + .@value$;
+}
+
+Mes .@Name$;
+Mes "Olá ^FF8000"+ StrCharInfo (0) +"^000000!";
+Mes "Veio em busca de meus serviços?";
+Mes "O que deseja?";
+If (Select ("Trocar "+ .@GIName$ +"s por Zenys", "Trocar Zenys por "+ .@GIName$ +"s", "Por enquanto, nada...") == 3)
+	Close;
+Set .@Choose, @menu - 1;
+Mes "Escolha o item:";
+For (; .Itens[.@i]; Set .@i, .@i + 2) {
+	Set .@max, .@Choose ? (Zeny / .Itens[.@i + 1]) : CountItem (.Itens[.@i]);
+	Set .@menu$, .@menu$ + "- ^"+ (.@max ? "008000" : "FF0000") + .@GIName$ +" de "+ addDelimiter (.Itens[.@i + 1]) +"Z^000000 (máximo "+ .@max +"):";
+}
+If (Select (.@menu$ + "Cancelar transação.") == .@i / 2 + 1)
+	Close;
+Set .@index, (@menu - 1) * 2;
+Next;
+Mes .@Name$;
+Mes "Digite o número de "+ .@GIName$ +"s:";
+If (.@Choose) {
+	Input .@i, 0, Zeny / .Itens[.@index + 1];
+	Set Zeny, Zeny - .Itens[.@index + 1] * .@i;
+	GetItem .Itens[.@index], .@i;
+} Else {
+	Input .@i, 0, (CountItem (.Itens[.@index]) < (1000000000 - Zeny) / .Itens[.@index + 1]) ? CountItem (.Itens[.@index]) : ((1000000000 - Zeny) / .Itens[.@index + 1]);
+	Set Zeny, Zeny + .Itens[.@index + 1] * .@i;
+	DelItem .Itens[.@index], .@i;
+}
+Close;
+
+}

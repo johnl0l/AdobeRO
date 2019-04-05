@@ -1,0 +1,96 @@
+///////////////////////////////////////////////\\
+//        _____  _____     _  ___  __   _	\\
+// 	 |  __ \| ____|   | |/ _ \|  \ | |	\\
+//	 | |  \ \ |_| \  /  | | | |   \| |	\\
+//	 | |   | |___| \/   | | | | |\   |	\\
+//	 | |   | || | \  /| | | | | | \  |	\\
+//	 | |__/ / |_|_|\/ | | |_| | |  | |	\\
+//	 |_____/|_____|   |_|\___/|_|  |_|	\\
+//						\\
+//////////////////////////////////////////////////
+//NPC: Cirurgião de Sexo	//////////////////
+//////////////////////////////////////////////////
+//Descrição: Muda seu sexo, mas 	//////////
+// Restringe a mudança das classes	//////////
+// Bardo/Odalisca - Menestrel/Cigana	//////////
+//////////////////////////////////////////////////
+////////////Feito em 22/09/09 ////////////////////
+//////////////////////////////////////////////////
+//Changelog:	//////////////////////////////////
+// V1.0 - Script Terminado - Ideia de	//////////
+// [Golen Maker]			//////////
+// v1.1 - Bardos e Odaliscas podem	//////////
+// recuperar os seus pontos de job	//////////
+// retornando a falar com o npc.	//////////
+//////////////////////////////////////////////////
+ 
+ 
+prontera,164,164,2	script	Cirurgião	402,{
+ 
+if (#cirurgia == 1) {
+if(Class == 19 || Class == 20 || Class == 4020 || Class == 4021) {
+ 
+	mes "[Cirurgião]";
+	mes "Você deve ter vindo aqui para recuperar suas habilidades...";
+	mes "quer recuperar suas habilidades?";
+	menu "Sim",-,"Não",queronao;
+ 
+	mes "[Cirurgião]";
+	mes "Pronto todas as suas habilidades estão de volta.";
+	set #cirurgia,0;
+	atcommand "@allskills";
+	close;
+ 
+	queronao:
+	mes "[Cirurgião]";
+	mes "Esta bem então.";
+	close;
+}
+ 
+}
+	mes "[Cirurgião]";
+	mes "Olá, "+StrCharInfo(0);
+	mes "Tento conseguir alegrar mais as pessoas que estão infelizes com seu corpo...";
+	mes "Estou aqui para ser voluntário a fazer cirurgias pra mudança de sexo das pessoas.";
+	mes "Com isso possa ser que elas fiquem mais felizes...";
+	next;
+	mes "[Cirurgião]";
+	mes "Bom o que você me diz...";
+	mes "quer fazer a sirurgia?";
+	menu "Sim",-,"Não",naoquero;
+ 
+if(Class == 19 || Class == 20 || Class == 4020 || Class == 4021) {
+ 
+	mes "[Cirurgião]";
+	mes "Desculpe-me, mas não posso fazer uma Cirurgia em você.";
+	close;
+ 
+}
+ 
+	mes "[Cirurgião]";
+	mes "Então vamos começar...";
+	mes "Lembre-se se você tiver um Bardo/Menestrel ou Cigana/Odalisca...";
+	mes "volte a falar comigo para recuperar seus pontos de job.";
+	next;
+	mes "[Cirurgião]";
+	mes "Então vamos lá...";
+	next;
+	mes "[Cirurgião]";
+	mes "Agulha... Bisturi...";
+	next;
+	mes "Algumas horas depois...";
+	next;
+	mes "[Cirurgião]";
+	mes "Pronto, sua cirurgia foi um sucesso.";
+	mes "sempre que precisarem de mim estarei aqui.";
+	next;
+	set #cirurgia,1;
+	atcommand "@changesex";
+	close;
+ 
+	naoquero:
+	mes "[Cirurgião]";
+	mes "Ta ok, se mudar de ideia estarei a disposição.";
+	close;
+ 
+}

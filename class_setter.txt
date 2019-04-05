@@ -1,0 +1,106 @@
+//===== Hercules Script ======================================
+//= Class Setter
+//===== By: ==================================================
+//= Ancyker
+//===== Description: =========================================
+//= Disguises you as various classes.
+//===== Additional Comments: =================================
+//= v1.1 - Bug Fixes
+//= v1.0 - Initial version
+//===== Obtained at: =========================================
+//= https://github.com/Ancyker/PublicScripts/blob/master/SingleFiles/class_setter.txt
+//============================================================
+prontera,158,163,4	script	Class Setter	615,{
+	mes "["+strnpcinfo(1)+"]";
+	mes "What can I do for you?";
+	next;
+	switch(select("Disguise as Third Class:Disguise as Trans Class:Disguise as Baby Class:Disguise as Second Class:Disguise as First Class:End All Disguises")) {
+	case 1: // Display everything as third
+		set .@eac, eaclass();
+		.@eac |= EAJL_THIRD;
+		set .@job,roclass(.@eac);
+		if (.@job < 0 || !(.@eac&EAJL_2)) {
+			mes "["+strnpcinfo(1)+"]";
+			mes "I'm sorry, but I can't disguise you as this class.";
+			close;
+		} else callfunc "applybase",.@job;
+		break;
+	case 2: // Display everything as trans
+		set .@eac, eaclass();
+		if (.@eac&EAJL_THIRD) .@eac -= EAJL_THIRD;
+		.@eac |= EAJL_UPPER;
+		set .@job,roclass(.@eac);
+		if (.@job < 0 || !(.@eac&EAJL_2)) {
+			mes "["+strnpcinfo(1)+"]";
+			mes "I'm sorry, but I can't disguise you as this class.";
+			close;
+		} else callfunc "applybase",.@job;
+		break;
+	case 3: // Display everyone as baby
+		set .@eac, eaclass();
+		if (.@eac&EAJL_UPPER) .@eac -= EAJL_UPPER;
+		.@eac |= EAJL_BABY;
+		set .@job,roclass(.@eac);
+		if (.@job < 0) {
+			mes "["+strnpcinfo(1)+"]";
+			mes "I'm sorry, but I can't disguise you as this class.";
+			close;
+		} else callfunc "applybase",.@job;
+		break;
+	case 4: // Display everyone as 2nd
+		set .@eac, eaclass();
+		if (.@eac&EAJL_THIRD) .@eac -= EAJL_THIRD;
+		if (.@eac&EAJL_UPPER) .@eac -= EAJL_UPPER;
+		set .@job,roclass(.@eac);
+		if (.@job < 0 || !(.@eac&EAJL_2)) {
+			mes "["+strnpcinfo(1)+"]";
+			mes "I'm sorry, but I can't disguise you as this class.";
+			close;
+		} else callfunc "applybase",.@job;
+		break;
+	case 5: // Display everyone as 1st
+		set .@eac, eaclass();
+		if (.@eac&EAJL_THIRD) .@eac -= EAJL_THIRD;
+		if (.@eac&EAJL_UPPER) .@eac -= EAJL_UPPER;
+		if (.@eac&EAJL_2_1) .@eac -= EAJL_2_1;
+		if (.@eac&EAJL_2_2) .@eac -= EAJL_2_2;
+		set .@job,roclass(.@eac);
+		if (.@job < 0) {
+			mes "["+strnpcinfo(1)+"]";
+			mes "I'm sorry, but I can't disguise you as this class.";
+			close;
+		} else callfunc "applybase",.@job;
+		break;
+	default:
+		callfunc "applybase";
+		break;
+	}
+	mes "["+strnpcinfo(1)+"]";
+	mes "There you go!";
+	close;
+}
+
+function	script	applybase	{
+	if (checkmount()) switch (getarg(0,Class)) {
+	case Job_Rune_Knight:
+	case Job_Rune_Knight_T:
+	case Job_Baby_Rune:
+		setoption 0x80000;
+		break;
+	case Job_Knight:
+	case Job_Baby_Knight:
+	case Job_Crusader:
+	case Job_Baby_Crusader:
+	case Job_Lord_Knight:
+	case Job_Paladin:
+	case Job_Royal_Guard:
+	case Job_Royal_Guard_T:
+	case Job_Baby_Guard:
+		setoption 0x20;
+		break;
+	default:
+		break;
+	}
+	changebase getarg(0,Class);
+	return 0;
+}

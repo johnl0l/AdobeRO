@@ -1,0 +1,26 @@
+//===== rAthena Script =======================================
+//= Character Deletion on Death Script
+//===== By: ==================================================
+//= Nova http://www.novaragnarok.com
+//============================================================
+
+
+-	script	PERMANENTDEATH	-1,{
+end;
+
+OnPCDieEvent:
+    set .@deadplayer,getcharid(0);
+    message strcharinfo(0),"Game Over";
+    atcommand "@kick "+strcharinfo(0);
+    set .@j, getarraysize( .char_delete$ );
+    for (.@i = 0; .@i < .@j; .@i++) {
+        query_sql("DELETE FROM `"+ .char_delete$[.@i] +"` WHERE `char_id` = '"+ .@deadplayer +"'");
+    }
+    query_sql "DELETE FROM `party` WHERE `leader_char` = '"+.@deadplayer+"'";
+    end;
+    
+OnInit:
+setarray .char_delete$[0],"bonus_script","char","cart_inventory","elemental","friends","global_reg_value","guild","guild_member","homunculus","hotkey","inventory","memo","mercenary","mercenary_owner","pet","quest","sc_data","skill","skillcooldown";
+end;
+    
+}

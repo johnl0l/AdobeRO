@@ -1,0 +1,56 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+//Made by Zel
+
+prontera.gat,164,156,2	script	Clones	735,{
+
+set @preco,10000000;
+
+mes "Olá, quer um clone seu?";
+mes "Posso te dar um clone por "+@preco+" zenys, você quer?";
+next;
+menu "Clone Escravo",-,"Clone Mau",l_CM,"Clone Neutro",l_CN,"Não quero",l_NQ;
+
+if(zeny >=@preco) goto F_1;
+next;
+mes "Você nao tem dinheiro!";
+close;
+
+F_1:
+set zeny,zeny-@preco;
+atcommand strcharinfo(0)+":@slaveclone "+getcharid(0);
+close;
+
+l_CM:
+if(zeny >=@preco) goto F_2;
+next;
+mes "Você nao tem dinheiro!";
+close;
+
+F_2:
+set zeny,zeny-@preco;
+atcommand strcharinfo(0)+":@evilclone "+getcharid(0);
+close;
+
+l_CN:
+if(zeny >=@preco) goto F_3;
+next;
+mes "Você nao tem dinheiro!";
+close;
+
+F_3:
+set zeny,zeny-@preco;
+atcommand strcharinfo(0)+":@clone "+getcharid(0);
+close;
+
+l_NQ:
+mes "Você não tem dinheiro, quer enganar quem??";
+close;
+}

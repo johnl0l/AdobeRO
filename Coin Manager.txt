@@ -1,0 +1,60 @@
+prontera,155,181,5	script	Coin Manager	439,{
+// Your Server Max Zeny Amount
+set .MaxZeny,1000000000;		
+
+// Coins Item ID and each Coins Costs
+setarray .Coins[1],675,671,674;
+setarray .Zeny[1],1000000,10000000,100000000;
+
+set @Menu$,"";
+for( set .@a,1; .@a < getarraysize( .Coins ); set .@a,.@a+1 ){
+	set @Menu$,@Menu$ + getitemname( .Coins[.@a] )+":";
+	}
+while( 1 ){
+	mes "What do you want to do today?";
+	next;
+	switch( select( "Coin to Zeny:Zeny to Coin" ) ){
+	Case 1:
+			mes "Very well. Here is the list on how much each coin is worth:";
+			for( set .@a,1; .@a < getarraysize( .Coins ); set .@a,.@a+1 ){
+				mes "^0000FF"+getitemname( .Coins[.@a] )+" ^FF0000"+.Zeny[.@a]+"^000000 Zeny.";
+				}
+			next;
+			set .@a,select( @Menu$ );
+			mes "Select the Amount of Coins you want to trade into Zeny.";
+			mes "You have "+countitem( .Coins[.@a] )+" "+getitemname( .Coins[.@a] )+".";
+			input @Amount,0,countitem( .Coins[.@a] );
+			if( @Amount < 1 ){
+			mes "You cancelled.";
+			}else if( ( Zeny + ( @Amount * .Zeny[.@a] ) ) > .MaxZeny ){
+			mes "You can hold this amount of Zeny.";
+			}else{
+			set Zeny,Zeny + ( @Amount * .Zeny[.@a] );
+			delitem .Coins[.@a],@Amount;
+			mes "Done, you have traded "+@Amount+" of "+getitemname(.Coins[.@a])+" into "+( @Amount * .Zeny[.@a] )+" Zeny.";
+			}
+			next;
+			break;
+	Case 2:
+			mes "Very well. Here is the list on how much each coin is worth:";
+			for( set .@a,1; .@a < getarraysize( .Coins ); set .@a,.@a+1 ){
+				mes "^0000FF"+getitemname( .Coins[.@a] )+" ^FF0000"+.Zeny[.@a]+"^000000 Zeny.";
+				}
+			next;
+			set .@a,select( @Menu$ );
+			mes "Select the Amount of Zeny you want to trade into "+getitemname( .Coins[.@a] )+".";
+			mes "You can get maximum of "+Zeny/.Zeny[.@a]+" "+getitemname( .Coins[.@a] )+".";
+			input @Amount,0,Zeny/.Zeny[.@a];
+			if( @Amount < 1 ){
+			mes "You cancelled.";
+			}else{
+			set Zeny,Zeny - ( @Amount * .Zeny[.@a] );
+			getitem .Coins[.@a],@Amount;
+			mes "Done, you have traded "+( @Amount * .Zeny[.@a] )+" Zeny into "+@Amount+" of "+getitemname(.Coins[.@a])+" .";
+			}
+			next;
+			break;
+		}
+	}
+close;
+}

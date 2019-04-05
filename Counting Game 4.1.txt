@@ -1,0 +1,146 @@
+
+
+prontera,156,157,5	script	Counting Game	437,{
+mes "This is a Monsters Counting Game";
+mes "I will summon some Monsters here, and you have to count the Correct Amount of Monsters i summoned.";
+mes "^FF0000Only Count for the Monsters i mentioned^000000";
+next;
+switch( select( "Information",
+				( getgmlevel() < .GMLevel || .Event )?"":"^FF0000[GM]^000000 Start Game",
+				( getgmlevel() < .GMLevel || !.Event )?"":"^FF0000[GM]^000000 End Game" )){
+				
+Case 1:
+	mes "When the Event Start, i will summon some Monsters at a small area, and players have to count the amount of the flowers.";
+	mes "Whoever tell me the correct amount of Monsters i mentioned, he/she win the game.";
+	break;
+	
+Case 2:
+	mes "Event will begin right now.";
+	close2;
+	donpcevent strnpcinfo(0)+"::OnStartGame";
+	end;
+
+Case 3:
+	set .Event,0;
+	set .Round,0;
+	deletepset 1;
+	delwaitingroom;
+	set .Winner[0],0;
+	set .Winner[1],0;
+	npctalk "Counting Game Cancelled.";
+	killmonster .Map$,"All";
+	mes "Game Cancelled.";
+	break;
+}
+close;
+
+OnSpammed:
+	set @Spam,0;
+	end;
+	
+iSpam:
+	if( getgmlevel() > 90 ) end;
+	set @Spam,@Spam + 1;
+	if( @Spam >= .Spam ){	// 3 Continuos Answer will trigger...
+		set @SpamDelay,gettimetick(2) + .Spam;
+		dispbottom "SPAM Detected, your answer within next "+.Spam+" Seconds will be Ignored.";
+	}
+	deltimer strnpcinfo(0)+"::OnSpammed";
+	addtimer ( .Spam * 1000 ),strnpcinfo(0)+"::OnSpammed";
+	end;
+	
+iRight:
+set @Spam,0;
+deltimer strnpcinfo(0)+"::OnSpammed";
+if( !.Event ){
+	message strcharinfo(0),"Sorry, there is no Event right now.";
+}else if( @SpamDelay > gettimetick(2) ){
+	message strcharinfo(0),"SPAM Protection : Remain "+( @SpamDelay - gettimetick(2) )+" seconds.";
+}else if( getcharid(0) == .Winner[0] && gettimetick(2) < .Winner[1] ){
+	message strcharinfo(0),"Sorry, Winner Time Penalty : Remain "+( .Winner[1] - gettimetick(2) )+" seconds.";
+}else{
+	delwaitingroom;
+	set .Event,0;
+	set .Round,.Round - 1;
+	set .Winner[0],getcharid(0);
+	set .Winner[1],gettimetick(2) + .Delay;
+	npctalk "[ "+strcharinfo(0)+" ] , You're Correct.";
+	killmonster .Map$,"All";
+	deletepset 1;
+	if( getarraysize( .Reward$ ) > 1 )
+		for( set .@i,0; .@i < getarraysize( .Reward$ ) - 1; set .@i,.@i + 2 )
+			if( getitemname( atoi( .Reward$[.@i] ) ) == "null" ){
+				set getd( .Reward$[.@i] ),getd( .Reward$[.@i] ) + atoi( .Reward$[.@i+1] );
+				dispbottom "Reward : "+.Reward$[.@i]+" + "+.Reward$[.@i+1];
+			}else{
+				getitem atoi( .Reward$[.@i] ),atoi( .Reward$[.@i+1] );
+				dispbottom "Reward : "+getitemname( atoi( .Reward$[.@i] ) )+" x "+.Reward$[.@i+1];
+			}
+if( .Round ) donpcevent strnpcinfo(0)+"::OnStartGame";
+}
+end;
+
+
+OnInit:
+//	Min. GM Level to access GM Panel
+set .GMLevel,80;
+//	Game Location
+set .Map$,"prontera";
+//	Monster ID Lists
+setarray .MonsterList[0],1084,1085;
+//	Winners Answer Delay ( Not advised for High Value )
+set .Delay,10;
+//	Spam Prevention ( Not advised for High Value )
+set .Spam,3;
+//	How many rounds
+set .MaxRound,10;
+//	Area Coordination	<x1>,<y1>,<x2>,<y2>;
+setarray .Coordinate,153,146,159,153;
+//	Rewards ...
+setarray .Reward$[0],
+		//	"#CASHPOINTS","100",
+			"Zeny","10000",
+			"7227","1",
+		//	"CustomVariable","100000",
+		//	"#CustomVariable","100000",
+			"7539","5";
+end;
+
+
+OnMinute30:
+for( set .@i,60; .@i > 0; set .@i,.@i - 10 ){
+	announce "Flower Counting Game : start within "+.@i+" Seconds in "+.Map$,0;
+	sleep 10000;
+}	
+
+OnStartGame:
+	if( !.Round ) set .Round,.MaxRound;
+	announce "Counting Game has started in "+.Map$,0;
+	deletearray .MobCount[0],getarraysize( .MobCount );
+	for( set .@x,.Coordinate[0]; .@x <= .Coordinate[2]; set .@x,.@x + 1 )
+		for( set .@y,.Coordinate[1]; .@y <= .Coordinate[3]; set .@y,.@y + 1 ){
+			set .@Summon,rand( getarraysize( .MonsterList ) );
+			monster .Map$,.@x,.@y,"Count Me",.MonsterList[.@Summon],1,strnpcinfo(0)+"::OnKilled";
+			set .MobCount[.@Summon],.MobCount[.@Summon] + 1;
+			sleep2 1;
+		}
+	set .@Target,rand( getarraysize( .MonsterList ) );
+	deletepset 1;
+	defpattern 1, "([^:]+): (\\|\\d{2})?"+.MobCount[.@Target]+ ".$", "iRight";
+	// defpattern 1,"([^:]+): "+.MobCount[.@Target], "iRight";
+	defpattern 1,"([^:]+):.*.*", "iSpam";
+	activatepset 1;
+	delwaitingroom;
+	waitingroom getmonsterinfo( .MonsterList[.@Target],0 ),0;
+	npctalk "Count for the Targeted Monster's Amount to Win the Game.";
+	set .Event,1;
+	end;
+	
+OnKilled:
+	mes "You will be punished upon killing these Monsters and interupt the Game.";
+	set @Spam,30;
+	close2;
+	npctalk "Round Restarted due to interruption.";
+	donpcevent strnpcinfo(0)+"::OnStartGame";
+	end;
+}

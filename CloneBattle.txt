@@ -1,0 +1,149 @@
+//By Skorm
+prontera,154,198,4	script	Clone Battles	734,{
+set .npc$, "[Gregory]";
+//set @price,50;
+//getmapxy(.@map$,.@x,.@y,0);
+mes "(^000077Curret Top Rank Holder is "+$MaxName$+" at Round "+$MaxRound+"^000000)";
+mes .npc$;
+mes "Hello, Do you want to beat your self up?";
+if(getmapusers("force_3-1")!=0) { mes "Room Status: [^FF0000Occupied^000000]"; close; } else
+mes "Room Status: [^0000FFOpen^000000]";
+setcell "force_3-1",20,40,31,44,cell_walkable,0;
+setcell "force_3-1",62,6,193,55,cell_walkable,0;
+setcell "force_3-1",6,64,193,193,cell_walkable,0;
+	switch(select("Sure.","Nah.")) {
+
+	
+	case 1:
+		next;
+		mes .npc$;
+		mes "Ok the rules are quite simple Kill your clones before they kill you. ";
+		mes "each round more clones will appear. ";
+		mes "If you die your out.";
+		next;
+		set Round,1;
+		set Rotation,0;
+		warp "force_3-1",25,7;
+		callfunc "Clone-Count";
+	case 2:
+		close;
+	}
+OnNPCKillEvent:
+	getmapxy(@map$,.@x,.@y,0);
+	if((getmonsterinfo(killedrid,0)=="null") && (@map$ == "force_3-1")) {
+		if(Anoun!=0) { end; } else
+		atcommand "@effect 15";
+		set Rotation,Rotation-1;
+		if(Rotation==0) {
+			set Round,Round+1;
+			callfunc "Clone-Count";
+		} else {
+			end;
+		}
+	} else {
+		end;
+	}
+}
+
+-	script	OnDeathWarp	-1,{
+OnPCDieEvent:
+	getmapxy(@map$,.@x,.@y,0);
+	if(@map$ == "force_3-1") {	sleep2 1; warp "prontera",156,191; dispbottom "You have lost..."; } else { end; }
+}
+
+function	script	Clone-Count	{
+	setArray .ClonesR[1],
+		1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+		11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+		1, 2, 4, 8, 16, 16, 17, 18, 19, 20,
+		20, 20, 20, 20, 20, 20, 20, 20, 20, 40;
+	setArray .Cevent[1],
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+	if(Rotation==.ClonesR[Round]) {
+		end;
+	} else {
+		CallYes:
+		if(Rotation==0) {
+			set Anoun,1;
+			set Rotation,Rotation+1;
+			warp "force_3-1",25,7;
+			killmonsterall "force_3-1";
+			setcell "force_3-1",14,39,20,41,cell_walkable,0;
+			setcell "force_3-1",14,41,15,44,cell_walkable,0;
+			setcell "force_3-1",20,41,21,44,cell_walkable,0;
+			setcell "force_3-1",29,7,28,11,cell_walkable,0;
+			setcell "force_3-1",28,10,23,11,cell_walkable,0;
+			setcell "force_3-1",23,7,22,11,cell_walkable,0;
+			atcommand "@localbroadcast Round "+Round+""+@localbroadcast$;
+			mapannounce "force_3-1","Round " + Round + "",bc_map | bc_blue;
+		//Buffing System
+			if(Round<=19) {atcommand "@effect 6"; sleep2 2000; percentheal 100,100; skilleffect 28,32000; sc_start SC_INCREASEAGI,500000,10; atcommand "@effect 43"+@effect$; sc_start SC_BLESSING,500000,10; skilleffect 34,32000; } else
+			if(Round>=20) {atcommand "@effect 6"; atcommand "@effect 9"; sleep2 2000; percentheal 75,100; skilleffect 28,32000; sc_start SC_INCREASEAGI,500000,10; atcommand "@effect 43"+@effect$; sc_start SC_BLESSING,500000,10; skilleffect 34,32000; } else
+			if(Round>=30 && Round<29) {atcommand "@effect 6"; atcommand "@effect 23"; atcommand "@effect 9"; sleep2 2000; percentheal 75,100; skilleffect 28,32000; } else
+			if(Round>=40 && Round<39) {atcommand "@effect 6"; atcommand "@effect 23"; atcommand "@effect 60"; atcommand "@effect 9"; sleep2 2000; percentheal 50,100; skilleffect 28,32000; } else
+			dispbottom "You have 7 seconds to buff.";
+			atcommand "@effect 63";
+			sleep2 3000;
+			sleep2 1000;
+			atcommand "@effect 63";
+			sleep2 1000;
+			dispbottom "4";
+			sleep2 1000;
+			dispbottom "3";
+			sleep2 1000;
+			dispbottom "2";
+			sleep2 1000;
+			dispbottom "1";
+			sleep2 1000;
+			dispbottom "GO!!";
+			dispbottom "round " + Round + "";
+			dispbottom "rotation " + Rotation + "";
+			if(Round>$MaxRound) { set $MaxRound,Round; set $MaxName$,""+strcharinfo(0)+""; } else
+//			if(Round==10) { announce ""+strcharinfo(0)+" has made it to round 10",bc_blue; } else
+//			if(Round==12) { announce ""+strcharinfo(0)+" has made it to round 12",bc,0xD20000; } else
+//			if(Round==14) { announce ""+strcharinfo(0)+" has made it to round 14",bc,0x99CC00; } else
+//			if(Round==16) { announce ""+strcharinfo(0)+" has made it to round 16",bc,0x99CC00; } else
+//			if(Round==18) { announce ""+strcharinfo(0)+" has made it to round 18",bc,0xBAB9B9; } else
+//			if(Round==20) { announce ""+strcharinfo(0)+" has made it to round 20",bc,0xCC00FF; } else
+			if(Round==20) { atcommand "@kamib Clone Battles: "+strcharinfo(0)+" has made it to Round "+Round+""+@kamib$; } else
+			if(Round==25) { atcommand "@kamib Clone Battles: "+strcharinfo(0)+" has made it to Round "+Round+" How far can he go."+@kamib$; } else
+			if(Round==30) { atcommand "@kamib Clone Battles: OMG "+strcharinfo(0)+" has made it to Round "+Round+" This person truly knows how to hurt them self. "+@kamib$; } else
+			if(Round==35) { atcommand "@kamib Clone Battles: "+strcharinfo(0)+" has made it to Round "+Round+" There is no way you can ever beat me!!!! now DIE!! "+@kamib$; } else
+			if(Round==40) { atcommand "@kamib Clone Battles: Nooo!! "+strcharinfo(0)+" has made it to Round "+Round+" and proven that he/she is a real Clone Battle Champion. "+@kamib$; } else
+			setcell "force_3-1",14,39,20,41,cell_walkable,1;
+			setcell "force_3-1",14,41,15,44,cell_walkable,1;
+			setcell "force_3-1",20,41,21,44,cell_walkable,1;
+			setcell "force_3-1",29,7,28,11,cell_walkable,1;
+			setcell "force_3-1",28,10,23,11,cell_walkable,1;
+			setcell "force_3-1",23,7,22,11,cell_walkable,1;
+			goto CallYes;
+		} else {
+			set Rotation,Rotation+1;
+			if(Anoun==1) {
+				set Rotation,1;
+				goto Skip;
+			}
+			Skip:
+			if(Round>20) {
+				set Anoun,0;
+//				atcommand "@effect 16";
+				set Rxcord,rand(9,42);
+				set Rycord,rand(9,42);
+				getmapxy(.@map$,.@x,.@y,0);
+				clone "" + .@map$ + "",Rxcord,Rycord,"",getcharid(0),null,14261,0,0;
+				if(Rotation!=.ClonesR[Round]) { callfunc "Clone-Count"; } else { end; }
+			} else {
+				set Anoun,0;
+//				atcommand "@effect 16";
+				getmapxy(.@map$,.@x,.@y,0);
+				clone "" + .@map$ + "",17,44,"",getcharid(0),null,14261,0,0;
+				if(Rotation!=.ClonesR[Round]) { callfunc "Clone-Count"; } else { end; }
+			}
+		}
+	}
+}
+
+
+force_3-1	mapflag	nowarp
+force_3-1	mapflag	pvp

@@ -1,0 +1,75 @@
+
+// NPC Name must have a Number behind it.  ex Name#1 , Name#2,...
+
+prontera,136,163,5	script	Chained Quest#1	757,{
+function	ChainedQuest;
+mes "I am a Chained Quest NPC, you can only redo the previous Quest after you have finished all of my Quests.";
+next;
+
+// Quest Setup : 
+// ChainedQuest( Reward,Amount , Required Zeny, {Item1,Amount1,Item2,Amount2,...} );
+switch( getd( "Quest"+strnpcinfo(2) ) ){
+	Case 0: ChainedQuest( 5001,1, 10000, 607,10 );
+	Case 1: ChainedQuest( 5002,1, 15000, 607,20, 608,20 );
+	Case 2: ChainedQuest( 5003,1, 20000, 607,30, 608,30, 7539,30 );
+	Case 3: ChainedQuest( 5004,1, 25000, 607,40, 608,30, 7539,40 ,501,10 );
+	Case 4: ChainedQuest( 5005,1, 30000, 607,50, 608,30, 7539,50 ,501,10 ,502,10 );
+//	Case 5: ChainedQuest(....);
+//	Case 6: ChainedQuest(....);
+default:
+	mes "Congratulation ,You have finished all the Quest i gave you, you may Re-Do if you want.";
+	set getd( "Quest"+strnpcinfo(2) ),0;
+	close;
+}
+
+OnPCLoadMapEvent:
+	showevent 1,0;
+	end;
+
+function	ChainedQuest	{
+	for( set .@i,3; getarg( .@i,0 ) != 0 ; set .@i,.@i + 2 ){
+		if( countitem( getarg( .@i ) ) < ( getarg( .@i + 1 )) ){
+			mes "[ ^FF0000Part "+( getd( "Quest"+strnpcinfo(2) ) + 1 )+"^000000 ]";
+			mes "^00FF00_______________________________^000000";
+			mes "^FF0000Reward^000000 : "+getarg(1)+" x ^0000FF"+getitemname( getarg(0) )+"^000000";
+			mes "^00FF00_______________________________^000000";
+			mes "then bring me those items :";
+			mes "^00FF00_______________________________^000000";
+			mes ( Zeny < getarg(2) ? "^FF0000":"^0000FF" )+getarg(2)+" Zeny^000000";
+			for( set .@a,3; getarg( .@a,0 ) != 0 ; set .@a,.@a + 2 ){
+				mes (( countitem(getarg( .@a )) < ( getarg(.@a + 1 )) )? "^FF0000[ "+countitem(getarg(.@a))+" / "+(getarg(.@a+1)):"^0000FF[ "+getd( "Quest"+strnpcinfo(2) ) )+" ] "+getitemname(getarg(.@a))+"^000000 ";
+				}
+			close;
+			}
+		}
+	if( Zeny < getarg( 2 ) ){
+		mes "You required "+getarg( 2 )+" Zeny.";
+		close;
+		}
+	mes "[ ^FF0000Part "+( getd( "Quest"+strnpcinfo(2) ) + 1 )+"^000000 ]";
+	mes "Look's like you have collected all";
+	mes "^FF0000_______________________________^000000";
+	mes ( Zeny < getarg(2) ? "^FF0000":"^0000FF" )+getarg(2)+" Zeny^000000";
+	for( set .@i,3; getarg( .@i,0 ) != 0 ; set .@i,.@i + 2 ){
+		mes "^FF0000"+getarg( .@i+1 )+" x ^0000FF "+getitemname( getarg( .@i ) )+"^000000";
+		}
+	next;
+	if( select("^0000FFContinue^000000:Cancel") == 2 ){
+		mes "Okay..as you wish ~ come back again when you do continue it.";
+		close;
+		}
+	for( set .@i,3; getarg( .@i,0 ) != 0 ; set .@i,.@i + 2 ){
+		delitem getarg( .@i ),getarg( .@i + 1 );
+		}
+	set Zeny,Zeny - getarg( 2 );
+	set getd( "Quest"+strnpcinfo(2) ),getd( "Quest"+strnpcinfo(2) ) + 1;
+	mes "You will be rewarded with ";
+	mes "^0000FF_______________________________^000000";
+	mes "^FF0000"+getarg(1)+"^000000 x ^0000FF"+getitemname( getarg(0) )+"^000000";
+	mes "^0000FF_______________________________^000000";
+	getitem getarg(0),getarg(1);
+	close;
+	}
+}
+
+prontera	mapflag	loadevent

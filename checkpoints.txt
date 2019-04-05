@@ -1,0 +1,14 @@
+// @checkpoints
+-	script	Sample	-1,{
+    OnInit:
+        bindatcmd("checkpoints", strnpcinfo(3)+ "::OnCheck");
+        end;
+    OnPCLoginEvent:
+        dispbottom "You currently have " +#CASHPOINTS+ " cash points";
+        dispbottom "You currently have " +#KAFRAPOINTS+ " kafra points";
+        end;
+    OnCheck:
+        dispbottom "You currently have " +#CASHPOINTS+ " cash points";
+        dispbottom "You currently have " +#KAFRAPOINTS+ " kafra points";
+        end;
+}
