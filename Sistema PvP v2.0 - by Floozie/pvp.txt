@@ -1,0 +1,236 @@
+//  ______________________________________________________________________
+// /                                                                      \
+// |            _           _   _   _                                      |
+// |           | |__  _ __ / \ | |_| |__   ___ _ __   __ _                 |
+// |           | '_ \| '__/ _ \| __| '_ \ / _ \ '_ \ / _` |                |
+// |           | |_) | | / ___ \ |_| | | |  __/ | | | (_| |                |
+// |           |_.__/|_|/_/   \_\__|_| |_|\___|_| |_|\__,_|                |
+// |                                                                       |
+// |                         brAthena Script                               |
+// |-----------------------------------------------------------------------|
+// | Nome do Script: Sistema PvP 1.6 [SQL]                                 |
+// |-----------------------------------------------------------------------|
+// | Criado por: eA/brA Dev. Team                                          |
+// |-----------------------------------------------------------------------|
+// | Versão brA: 1.6                                                       |
+// |-----------------------------------------------------------------------|
+// | Descrição:                                                            |
+// | Um sistema PvP com várias arenas                                      |
+// |-----------------------------------------------------------------------|
+// | Changelog:                                                            |
+// | [brA]Floozie [Criador]                                                |
+// \_______________________________________________________________________/
+//============================================================
+-	script	PvP_InitFunc	-1,{
+OnInit:
+//= Mapas ====================================================
+set $@map$[1],"guild_vs3";
+set $@map$[2],"pvp_n_5-5";
+set $@map$[3],"pvp_n_5-3";
+set $@map$[4],"guild_vs1";
+set $@map$[5],"guild_vs2-1";
+//= Ativar Sons do PvP (0 = desativado, 1 = ativado) =========
+set $@activesound, 1;
+//= SoundList ================================================
+set $@Sounds$[1], "First Blood";
+set $@Sounds$[2], "Double Kill";
+set $@Sounds$[3], "Triple Kill";
+set $@Sounds$[4], "Monster Kill";
+//============================================================
+}
+prontera,150,177,5	script	Porteiro PvP	734,{
+
+set .@n$, "[ ^cc0000Porteiro PvP^000000 ]";
+INICIO:
+mes .@n$;
+mes "Olá "+strcharinfo(0)+" !";
+mes "O que você gostaria de fazer ?";
+next;
+switch(select("Escolher Arena:Visualizar Ranking:Ver Minha Posição:Sair")){
+	case 1:
+		mes "Escolha a Arena que gostaria de entrar";
+		mes "Arena 01 : ^0000FFYgg Ativada^000000";
+		mes "Arena 02 : ^FF0000Ygg Desativada^000000";
+		mes "Arena 03 : ^33CCFFPurista^000000";
+		mes "Arena 04 : ^999999Donate desativado^000000";
+		mes "Arena 05 : ^FF99FFSomente babys^000000";
+		next;
+		switch(select("- Arena 01 ("+getmapusers($@map$[1])+"):- Arena 02 ("+getmapusers($@map$[2])+"):- Arena 03 ("+getmapusers($@map$[3])+"):- Arena 04 ("+getmapusers($@map$[4])+"):- Arena 05 ("+getmapusers($@map$[5])+"):- Nenhuma")){
+
+			case 1:
+				warp $@map$[1],0,0;
+				end;
+
+			case 2:
+				if(countitem(607) >= 1 || countitem(608) >= 1 || countitem(610) >= 1){
+					mes .@n$;
+					mes "Você não pode entrar com Ygg !";
+					close;
+				}
+				warp $@map$[2],0,0;
+				end;
+
+			case 3:
+				mes .@n$;
+				mes "Saiba que nessa arena não se pode usar ^FF0000Itens de Cura^000000";
+				close2;
+				warp $@map$[3],0,0;
+				end;
+
+			case 4:
+				getinventorylist;
+				for(set .@i,0; .@i < @inventorylist_count; set .@i,.@i+1){
+					if(iscustomitem(@inventorylist_id[.@i]) && @inventorylist_equip[.@i]){
+						mes .@n$;
+						mes "Você não pode entrar nessa Arena com Custom Itens !";
+						mes "Retire-os e você poderá entrar.";
+						close;
+					}
+				}
+				warp $@map$[4],0,0;
+				end;
+
+			case 5:
+				if(Class < 4023 || Class > 4045){
+					mes .@n$;
+					mes "Só babys podem entrar nesse PvP !";
+					close;
+				}
+				warp $@map$[5],128,114;
+				end;
+
+			case 6:
+				close;
+		}
+
+	case 2:
+		mes .@n$;
+		mes "[TOP 10 Arena]";
+		mes "Qual Rank Você gostaria de ver ?";
+		next;
+		switch(select("- Arena 01:- Arena 02:- Arena 03:- Arena 04:- Arena 05:- Voltar")){
+
+			case 1: callfunc("PvPS_Func","Ranking_Arena",1);close;
+			case 2: callfunc("PvPS_Func","Ranking_Arena",2);close;
+			case 3: callfunc("PvPS_Func","Ranking_Arena",3);close;
+			case 4: callfunc("PvPS_Func","Ranking_Arena",4);close;
+			case 5: callfunc("PvPS_Func","Ranking_Arena",5);close;
+			case 6: goto INICIO;end;
+		
+		}
+
+	case 3:
+		mes .@n$;
+		mes "Escolha a arena que você";
+		mes "deseja ver suas informações :";
+		next;
+		switch(select("- Arena 01:- Arena 02:- Arena 03:- Arena 04:- Arena 05:- Voltar")){
+
+			case 1: callfunc("PvPS_Func","MeuRanking",1);close;
+			case 2: callfunc("PvPS_Func","MeuRanking",2);close;
+			case 3: callfunc("PvPS_Func","MeuRanking",3);close;
+			case 4: callfunc("PvPS_Func","MeuRanking",4);close;
+			case 5: callfunc("PvPS_Func","MeuRanking",5);close;
+			case 6: goto INICIO;end;
+
+		}
+	
+	case 4:
+		close;
+}
+
+}
+
+-	script	ArenaPvP#Events	-1,{
+
+OnPCKillEvent:
+	getmapxy(@mapa$,@x,@y,0);
+	for(set @i,1;( @i <= getarraysize($@map$)-1);set @i,@i+1){
+		if($@map$[@i] == @mapa$) callfunc("PvPS_Func","KillEvent",@i);
+	}
+
+OnPCDieEvent:
+	getmapxy(@mapa$,@x,@y,0);
+	for(set @i,1;@i < getarraysize($@map$);set @i,@i+1){
+		if($@map$[@i] == @mapa$) callfunc("PvPS_Func","DieEvent",@i);
+	}
+}
+
+function	script	PvPS_Func	{
+
+if(getarg(0) == "Ranking_Arena"){
+	query_sql "SELECT `nome`, `matou`, `morreu`, `pontos` FROM `pvp_arenas` WHERE `id`="+getarg(1)+" ORDER BY `pontos` DESC LIMIT 10",@nome$,@matou,@morreu,@pontos;
+	mes "Nome -> Matou -> Morreu -> Pontos";
+	for(set @i,0;@i <= 9;set @i,@i+1){
+		mes "["+(@i+1)+"] -> "+@nome$[@i]+" -> "+@matou[@i]+" -> "+@morreu[@i]+" -> ^FF0000"+@pontos[@i]+"^000000";
+	}
+	return;
+}
+
+if(getarg(0) == "MeuRanking"){
+	query_sql "SELECT `nome`, `matou`, `morreu`, `pontos` FROM `pvp_arenas` WHERE `id`="+getarg(1)+" AND `nome` = '"+strcharinfo(0)+"'",@nome$,@matou,@morreu,@pontos;
+	if(@nome$ == ""){
+		mes .@n$;
+		mes "Você nunca participou dessa arena !";
+		close;
+	}
+	mes .@n$;
+	mes "Matou: "+@matou;
+	mes "Morreu: "+@morreu;
+	mes "Total de Pontos: "+@pontos;
+	return;
+}
+
+if(getarg(0) == "KillEvent"){
+	set @nome$,"";
+	set @PvPPoints,0;
+	query_sql "SELECT `nome`,`matou` FROM `pvp_arenas` WHERE `id` = "+getarg(1)+" AND `nome` = '"+strcharinfo(0)+"'",@nome$,@PvPPoints;
+	if(@nome$ == "") query_sql "INSERT INTO `pvp_arenas` (`id`, `nome`, `matou`, `pontos`) VALUES ("+getarg(1)+",'"+strcharinfo(0)+"',1,1)";
+	else query_sql "UPDATE `pvp_arenas` SET `matou` = `matou`+1, `pontos` = `pontos`+1 WHERE `id`="+getarg(1)+" AND `nome` = '"+strcharinfo(0)+"'";
+	set @PvPPoints, @PvPPoints+1;
+	dispbottom "Pontos: "+@PvPPoints;
+	set @soundKills,@soundKills+1;
+	if(@soundKills >= getarraysize($@Sounds$)) set @soundKills,@soundKills-1;
+	announce "O Jogador [ "+strcharinfo(0)+" ] matou [ "+rid2name(killedrid)+" ] e está em "+$@Sounds$[@soundKills]+" !",bc_map;
+	if($@activesound) soundeffectall $@Sounds$[@soundKills]+".wav",0,@mapa$;
+	end;
+}
+
+if(getarg(0) == "DieEvent"){
+	set @soundKills,0;
+	set @nome$,"";
+	query_sql "SELECT `nome` FROM `pvp_arenas` WHERE `id`="+getarg(1)+" AND `nome` = '"+strcharinfo(0)+"'",@nome$;
+	if(@nome$ == "") query_sql "INSERT INTO `pvp_arenas` (`id`, `nome`, `morreu`, `pontos`) VALUES ("+getarg(1)+",'"+strcharinfo(0)+"',1,-1)";
+	else query_sql "UPDATE `pvp_arenas` SET `morreu` = `morreu`+1, `pontos` = `pontos`-1 WHERE `id`="+getarg(1)+" AND `nome` = '"+strcharinfo(0)+"'";
+	end;
+}
+}
+
+//=== MapFlags - Arenas =================================
+// Não mude isso caso não saiba o que está fazendo !
+-	script	PvPSystem#mapflags	-1,{
+
+OnInit:
+for(set .@i,1; .@i < getarraysize($@map$); set .@i,.@i+1){
+	setmapflag($@map$[.@i],mf_nowarp);
+	setmapflag($@map$[.@i],mf_noteleport);
+	setmapflag($@map$[.@i],mf_nowarpto);
+	setmapflag($@map$[.@i],mf_nobranch);
+	setmapflag($@map$[.@i],mf_nomemo);
+	setmapflag($@map$[.@i],mf_nopenalty);
+	setmapflag($@map$[.@i],mf_pvp);
+	setmapflag($@map$[.@i],mf_nobaseexp);
+	setmapflag($@map$[.@i],mf_nojobexp);
+	setmapflagnosave($@map$[.@i],"prontera",156,191);
+}
+end;
+}
+
+//- Arena 01 --------------------------------------------
+guild_vs3	mapflag	gvg	off
+//- Arena 02 --------------------------------------------
+pvp_n_5-5	mapflag	restricted	6
+//- Arena 03 --------------------------------------------
+pvp_n_5-3	mapflag	restricted	5
+//- Arena 04 --------------------------------------------
+guild_vs1	mapflag	nocustomitem

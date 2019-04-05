@@ -1,0 +1,169 @@
+Index: src/map/itemdb.c
+===================================================================
+--- src/map/itemdb.c	(revision 894)
++++ src/map/itemdb.c	(working copy)
+@@ -394,6 +394,14 @@
+   }
+ }
+ 
++/*==========================================
++ * Return if given item's flag is customitem
++ *------------------------------------------*/
++int itemdb_iscustomitem(struct item_data *data)
++{
++	nullpo_ret(data);
++	return (data && data->flag.customitem);
++}
+ 
+ /*==========================================
+  * Trade Restriction functions [Skotlex]
+@@ -824,6 +832,8 @@
+ 		id->equip_script = parse_script(str[20], source, line, scriptopt);
+ 	if (*str[21])
+ 		id->unequip_script = parse_script(str[21], source, line, scriptopt);
++	
++	id->flag.customitem = atoi(str[22]);
+ 
+ 	return true;
+ }
+@@ -923,6 +933,8 @@
+ 				continue;
+ 			}
+ 			str[21] = p;
++			
++			str[22] = (filename[fi] == "item_db2.txt") ? "1" : "0";
+ 
+ 
+ 			if (!itemdb_parse_dbrow(str, path, lines, 0))
+Index: src/map/itemdb.h
+===================================================================
+--- src/map/itemdb.h	(revision 894)
++++ src/map/itemdb.h	(working copy)
+@@ -92,6 +92,7 @@
+ 		unsigned trade_restriction : 7;	//Item restrictions mask [Skotlex]
+ 		unsigned autoequip: 1;
+ 		unsigned buyingstore : 1;
++		unsigned customitem : 1;
+ 	} flag;
+ 	short gm_lv_trade_override;	//GM-level to override trade_restriction
+ };
+@@ -183,6 +184,7 @@
+ int itemdb_isidentified(int);
+ int itemdb_isstackable(int);
+ int itemdb_isstackable2(struct item_data *);
++int itemdb_iscustomitem(struct item_data *);
+ 
+ void itemdb_reload(void);
+ 
+Index: src/map/map.h
+===================================================================
+--- src/map/map.h	(revision 894)
++++ src/map/map.h	(working copy)
+@@ -547,6 +547,7 @@
+ 		unsigned guildlock :1;
+ 		unsigned src4instance : 1; // To flag this map when it's used as a src map for instances
+ 		unsigned reset :1; // [Daegaladh]
++		unsigned nocustomitem : 1; // [Floozie]
+ 	} flag;
+ 	struct point save;
+ 	struct npc_data *npc[MAX_NPC_PER_MAP];
+Index: src/map/npc.c
+===================================================================
+--- src/map/npc.c	(revision 894)
++++ src/map/npc.c	(working copy)
+@@ -3117,6 +3117,8 @@
+ 		map[m].flag.guildlock=state;
+ 	else if (!strcmpi(w3,"reset"))
+ 		map[m].flag.reset=state;
++	else if (!strcmpi(w3,"nocustomitem"))
++		map[m].flag.nocustomitem=state; // [Floozie]
+ 	else
+ 		ShowError("npc_parse_mapflag: mapflag nao reconhecido '%s' (arquivo '%s', linha '%d').\n", w3, filepath, strline(buffer,start-buffer));
+ 
+Index: src/map/pc.c
+===================================================================
+--- src/map/pc.c	(revision 894)
++++ src/map/pc.c	(working copy)
+@@ -926,6 +926,8 @@
+ 		if (item->flag.no_equip&flag || !pc_isAllowedCardOn(sd,item->slot,n,flag))
+ 			return 0;
+ 	}
++	if(map[sd->bl.m].flag.nocustomitem && (item->flag.customitem))
++		return 0;
+ 
+ 	if (sd->sc.count) {
+ 
+Index: src/map/script.c
+===================================================================
+--- src/map/script.c	(revision 894)
++++ src/map/script.c	(working copy)
+@@ -357,7 +357,8 @@
+ 	MF_MONSTER_NOTELEPORT,
+ 	MF_PVP_NOCALCRANK,	//50
+ 	MF_BATTLEGROUND,
+-	MF_RESET
++	MF_RESET,
++	MF_NOCUSTOMITEM
+ };
+ 
+ const char* script_op2name(int op)
+@@ -9677,7 +9678,8 @@
+ 			case MF_MONSTER_NOTELEPORT:	script_pushint(st,map[m].flag.monster_noteleport); break;
+ 			case MF_PVP_NOCALCRANK:		script_pushint(st,map[m].flag.pvp_nocalcrank); break;
+ 			case MF_BATTLEGROUND:		script_pushint(st,map[m].flag.battleground); break;
+-			case MF_RESET:			script_pushint(st,map[m].flag.reset); break;
++			case MF_RESET:				script_pushint(st,map[m].flag.reset); break;
++			case MF_NOCUSTOMITEM:		script_pushint(st,map[m].flag.nocustomitem); break;
+ 		}
+ 	}
+ 
+@@ -9747,7 +9749,8 @@
+ 			case MF_MONSTER_NOTELEPORT:	map[m].flag.monster_noteleport=1; break;
+ 			case MF_PVP_NOCALCRANK:		map[m].flag.pvp_nocalcrank=1; break;
+ 			case MF_BATTLEGROUND:		map[m].flag.battleground = (!val || atoi(val) < 0 || atoi(val) > 2) ? 1 : atoi(val); break;
+-			case MF_RESET:			map[m].flag.reset=1; break;
++			case MF_RESET:				map[m].flag.reset=1; break;
++			case MF_NOCUSTOMITEM:		map[m].flag.nocustomitem=1; break;
+ 		}
+ 	}
+ 
+@@ -9815,6 +9818,7 @@
+ 			case MF_PVP_NOCALCRANK:		map[m].flag.pvp_nocalcrank=0; break;
+ 			case MF_BATTLEGROUND:		map[m].flag.battleground=0; break;
+ 			case MF_RESET:				map[m].flag.reset=0; break;
++			case MF_NOCUSTOMITEM:		map[m].flag.nocustomitem=0; break;
+ 		}
+ 	}
+ 
+@@ -14999,6 +15003,24 @@
+ 	return 0;
+ }
+ 
++/*===================================================
++ * Verifica se o item informado é um custom [Floozie]
++ * uso: iscustomitem(<item id>);
++ *--------------------------------------------------*/
++BUILDIN_FUNC(iscustomitem)
++{
++	int itemid = script_getnum(st,2);
++	struct item_data *item = itemdb_exists(itemid);
++
++	if(item == NULL){
++		ShowError("buildin_iscustomitem: itemid (%d) inexistente", itemid);
++		return -1;
++	}
++
++	script_pushint(st,item->flag.customitem);
++	return 0;
++}
++
+ // declarations that were supposed to be exported from npc_chat.c
+ #ifdef PCRE_SUPPORT
+ BUILDIN_FUNC(defpattern);
+@@ -15407,5 +15429,6 @@
+     //brAthena Modificações
+ 	BUILDIN_DEF(sc_check,"i"),
+ 	BUILDIN_DEF(makerune,"i"),
++	BUILDIN_DEF(iscustomitem,"i"),
+ 	{NULL,NULL,NULL},
+ };
