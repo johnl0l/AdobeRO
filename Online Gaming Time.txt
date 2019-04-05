@@ -1,0 +1,43 @@
+/*
+DROP TABLE IF EXISTS `onlinetime`;
+CREATE TABLE IF NOT EXISTS `onlinetime` (
+  `account_id` INT(11) NOT NULL DEFAULT '0',
+  `start_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `total_sec` INT(11) NOT NULL DEFAULT '0'
+) ENGINE=MyISAM;
+*/
+
+//
+//
+//      Author          Goddameit
+//      Version         2015/01/20
+//      Web             http://goo.gl/0vY9GV
+//
+//      http://hercules.ws/board/topic/8277-online-gaming-time/
+//
+prontera,150,180,4      script  OnlineGamingTime        100,{
+        .@tick = 0;
+        query_sql "UPDATE `onlinetime` SET `total_sec` = `total_sec` + TIMESTAMPDIFF(SECOND, `start_time`,  NOW()), `start_time` = NOW() WHERE `account_id` = "+getcharid(3);
+        query_sql "SELECT `total_sec` FROM `onlinetime` WHERE `account_id` = "+getcharid(3), .@tick;
+        mes "Your online time is:";
+        mes "[ "+callfunc("Time2Str", gettimetick(2)+.@tick)+" ]";
+        close;
+OnPCLoginEvent:
+        .@bool = 0;
+        query_sql "SELECT `account_id` FROM `onlinetime` WHERE `account_id` = "+getcharid(3), .@bool;
+        if( .@bool )
+                query_sql "UPDATE `onlinetime` SET `start_time` = NOW() WHERE `account_id` = "+getcharid(3);
+        else
+                query_sql "INSERT INTO `onlinetime` VALUES("+getcharid(3)+", NOW(), 0)";
+        end;
+OnPCLogoutEvent:
+        query_sql "UPDATE `onlinetime` SET `total_sec` = `total_sec` + TIMESTAMPDIFF(SECOND, `start_time`,  NOW()), `start_time` = NOW() WHERE `account_id` = "+getcharid(3);
+        end;
+OnInit:
+OnTimer60000:
+        debugmes "[OnlineTime]: Auto-Backup player date.";
+        query_sql "INSERT INTO `onlinetime` SELECT `account_id`, NOW(), 0 FROM `char` WHERE `online` = 1 AND `account_id` NOT IN (SELECT `account_id` FROM `onlinetime`)";
+        query_sql "UPDATE `onlinetime` SET `total_sec` = `total_sec` + TIMESTAMPDIFF(SECOND, `start_time`,  NOW()), `start_time` = NOW() WHERE `account_id` IN (SELECT `account_id` FROM `char` WHERE `online` = 1)";
+        initnpctimer;
+        end;
+}
