@@ -1,0 +1,28 @@
+/*
+	Random bonus stats on level 255 script with announce. (C) Oxxy, 2015, v1.1.1
+	
+	v1.0 Initial release
+	v1.1 Added setting, where you can set if the bonus will be random value or the set value.
+	v1.1.1 Added array holding the status points values.
+	
+*/
+-	script	CompletedLeveling	-1,{
+	OnPCBaseLvUpEvent:
+	if(BaseLevel == MAX_LEVEL) {
+		if(BonusPoints) end;
+		if(getgroupid() > 0) end;
+		if(.randBonus) BonusPoints = rand(.bonusValues[1],.bonusValues[2]); else BonusPoints = .bonusValues[0];
+		StatusPoint = StatusPoint + BonusPoints;
+		dispbottom "You've got "+BonusPoints+" bonus stat points!";
+		if(.announce) announce "Player ["+strcharinfo(0)+"] got maximum level! He got "+BonusPoints+" bonus status points!",bc_all;
+		end;
+	} else end;
+	
+	OnInit:
+	.announce = 1;			// Announce that player got max level and his bonus points?
+	.randBonus = 1;			// Should the bonus be random? Or a set value? 1 = random, 0 = set value
+	setarray .bonusValues[0], 1000, 1000, 4000; // Array holding the status points that will be given to player.
+												// .bonusValues[0] contains the value that'll given if .randBonus is set to 0
+												// .bonusValues[1] and .bonusValues[2] are the min and max values that are given in rand.
+	end;
+}

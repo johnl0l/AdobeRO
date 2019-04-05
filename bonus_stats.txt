@@ -1,0 +1,23 @@
+/*
+	Random bonus stats on level 255 script with announce. (C) Oxxy, 2015, v1.0
+	
+	v1.0 Initial release
+	
+*/
+-	script	CompletedLeveling	-1,{
+	OnPCBaseLvUpEvent:
+	if(BaseLevel == .serverMaxLevel) {
+		if(randBonusPoints) end;
+		if(getgroupid() > 0) end;
+		randBonusPoints = rand(1000,4000);
+		StatusPoint = StatusPoint + randBonusPoints;
+		dispbottom "You've got "+randBonusPoints+" bonus stat points!";
+		if(.announce) announce "Player ["+strcharinfo(0)+"] got maximum level! He got "+randBonusPoints+" bonus status points!",bc_all;
+		end;
+	} else end;
+	
+	OnInit:
+	.serverMaxLevel = 99;	// Server's max level.
+	.announce = 1;			// Announce that player got max level and his bonus points?
+	end;
+}

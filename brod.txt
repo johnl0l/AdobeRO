@@ -1,0 +1,51 @@
+prontera,147,175,5	script	Broadcaster	935,{
+
+	//what's the npc name to show in messages?
+		set @npcname$, "Broadcaster";
+	//NPC Headers Name:
+		set @header$,"[^0000ff" + @npcname$ + "^000000]";
+	//NPC COST PER Broadcast:
+		set @broadcastfee, 1000000;
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		mes @header$;
+		mes "Hi, I'm the Broadcaster";
+		mes "I can Broadcast a message for you";
+		next;
+		mes @header$;
+		mes "It costs ^ff0000"+ @broadcastfee +"^000000 zeny ";
+	next;
+	mes @header$;
+	mes "Would you like to Broadcast?";
+	switch (select("-Yes","-No")){
+		case 1:
+				if(@Broadcast> gettimetick(2)) {
+				next;
+				mes @header$;
+				mes "Sorry you have to wait for 30sec.";
+				close;
+				}
+			next;
+			mes @header$;
+			if(Zeny<1000000) goto $nozenybc;
+			set Zeny,zeny - @broadcastfee;
+			mes "Please input your message.";
+			next;
+			input @broadcast$;
+			announce ""+strcharinfo(0)+": "+@broadcast$+"",0,0xB1FB17;
+			close2;
+			set @Broadcast, gettimetick(2)+30;
+			dispbottom "Broadcaster: Please wait for 30sec until next broadcast to avoid flooding.";
+			end;
+		case 2:
+			mes "Suit yourself";
+			close;
+	}
+$nozenybc:
+	mes "I have to check that you have";
+	mes "enough money";
+	next;
+	mes @header$;
+	mes "Im sorry but you dont have ^ff0000"+@broadcastfee+"^000000 zeny";
+	mes "Go get it if you want to Broadcast";
+	close;
+}

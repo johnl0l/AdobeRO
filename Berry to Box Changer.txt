@@ -1,0 +1,31 @@
+prontera,155,181,5      script  Sample  757,{
+
+set .@ItemID,607;
+
+set .@BoxID,13517;
+
+ 
+
+mes "Exhchange 100 "+getitemname( .@ItemID )+" into "+getitemname( .@BoxID );
+
+if( countitem( .@ItemID ) >= 100 ){
+
+        mes "How many will be traded into "+getitemname( .@BoxID )+"?";
+
+        input .@Count,0,countitem( .@ItemID );
+
+        if( .@Count < 100 ) close;
+
+        set .@Amount,( .@Count / 100 );
+
+        delitem .@ItemID,( .@Amount * 100 );
+
+        getitem .@BoxID,.@Amount;
+
+        mes "Done.";
+
+}
+
+close;
+
+}

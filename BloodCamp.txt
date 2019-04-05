@@ -1,0 +1,461 @@
+/*________________________________________________________
+ / 		         ____                                 	  \
+ | 		        |  __|     								  |
+ |		        | |_ _  _  __ _ _ __  _  __      		  |
+ |		        |  _| || |/ _` | '_ \| |/ _ \     		  |
+ | 		        | |__ \/ | (_| | | | | | (_) |     		  |
+ | 		        |____|__/ \__,_|_| |_|_|\___/     		  |
+ |                                                        |
+ |                                      				  |
+ |--------------------------------------------------------|
+ | Nome do Script: Blood Camp                		      |
+ |--------------------------------------------------------|
+ | Criado por: Evanio (Arkwright)                         |
+ |--------------------------------------------------------|
+ | Versão 1.8                             				  |
+ |--------------------------------------------------------|
+ | Descrição: Evento parecido com o Blood Castle do Mu.   |
+ | O jogador terá que recuperar o Cristal do Guaridão,    |
+ | e entregar de volta a ele. Evento de Invasão.	      |
+ |--------------------------------------------------------|
+ | Changelog:               	                          |
+ | 1.0 Script Criado (26/09/2009) [Evanio]                |
+ | 1.1 Adicionado PvP (09/10/2009) [Evanio]               |
+ | 1.2 Corrigido Bug no PVP (15/10/2009) [Evanio]         |
+ | 1.3 NPC Otimizado (29/12/2010) [Evanio]                |
+ | 1.4 Adicionada novas funções (17/01/2014) [Evanio]	  |
+ |      - Nivel mínimo e máximo de entrada		          |
+ |      - Proibição de itens				              |
+ |      - Teleportar ao morrer (Configurável)		      |              
+ | 1.5 Configurações no inicio (16/02/2014) [Evanio]	  |
+ | 1.6 Adicionado cmd (03/02/2015) [Evanio]	              |
+ | 1.7 Atualizado comando (07/04/2015) [Evanio]	          |
+ | 1.8 Reformulado Evento (08/03/2016) [Evanio]	          |
+ \________________________________________________________/
+*/
+-	script	BloodConfs	-1,{
+ 
+// Configurações
+OnInit:
+	setarray $@PremioBC[0],674,7549;              // Premiações para quem destruiu o Cristal. Irá sortear um único ID [ID1,ID2,ID3,...]
+	setarray $@QtdBc[0],1,2;         	          // Quantidade referente a premiação à cima. [quantidade1,quantidade2,quantidade3,...]
+	setarray $@PremioBC2[0],674,7549;             // Premiações para o restante dos participantes. Irá sortear um único ID [ID1,ID2,ID3,...]
+	setarray $@QtdBc2[0],1,2;         	          // Quantidade referente a premiação à cima. [quantidade1,quantidade2,quantidade3,...]
+	setarray $@TimerBC[0],8,38,10,15,15,50;	      // Configuração dos horários de incio do evento. Exemplo: "hora1,minutos1,hora2,minutos2,hora3,minutos3..."
+	$@DificultBC = 10;			     			  // Dificuldade do Evento [0 = Fácil, 10 = Normal, 25 = Dificil]
+	$@EntradaBC = 1;                              // Anuncia para o servidor que o jogador entrou no Blood Camp [0 = Não, 1 = Sim]
+	$@PlayersBC = 1;                              // Mostra quantidade de jogadores no Blood Camp [0 = Não, 1 = Sim] ---------------------------------
+	$@DieTeleport = 0;                            // Quando o jogador morre ele é ou não teleportado para seu ponto salvo automaticamente? [0 = Não, 1 = Sim]
+	$@CmdAct = 1;								  // Ativa o uso do comando @bloodcamp [0 = Não, 1 = Sim]
+	$@LevelEnterBC = 1;                           // Ativa a limitação de level para entrada [0 = Não, 1 = Sim]
+	setarray $@LevelEnterBCList[0],50,150;        // Limite de level (Min e Max) [LvLMin,LvLMax]
+	$@MapFlagsBC = 1;                             // Ativa a função de colocar o mapflag X,Y,Z... [0 = Não, 1 = Sim] *********************************
+	setarray $@FlagLBC$[0],mf_noteleport,mf_nobranch,mf_nopenalty,mf_monster_noteleport,mf_nosave,mf_nowarpto,mf_nomemo,mf_nowarp; // Os Mapflags da função anterior [mf_mapflag,mf_mapflag2,...] Exemplo: "mf_clouds","mf_nowarp","mf_nosave";
+	$@BlockItensBC = 0;                           // Ativa Proibição de Itens [0 = Não, 1 = Sim]
+	setarray $@ListBlockItemBC[0],607,678;        // ID dos itens proibidos [ID,ID,ID,...]
+	$@ChatOnBC = 1;                               // Mostra a sala de espera em cima do npc [0 = Não, 1 = Sim]
+	setarray $@ChatMsgsBC$[0],"O Blood Camp está aberto!","Venha e nos ajude em nossa batalha!","Precisamos de sua ajuda!";  // Mensagens que aparecerão no chat ["msg","msg2",...]
+}
+
+prontera,165,171,5	script	Guardiã Branca#BC	4_F_KHALITZBURG,{
+
+OnStart:
+	if(countitem(6027) >= 1) {
+		mes "[Guardiã Branca]";
+		mes "Você não entregou o cristal do Guardião...";
+		mes "Sem ele, será impossível recuperar o equilibrio no Portal Sagrado.";
+		delitem 6027,1;
+		close; 
+	}
+	mes "[Guardiã Branca]";
+	mes "Lutar é a melhor forma de alcançar a vitória!";
+	if($BCStarted!=1) {
+		mes "O Cristal Sagrado ainda não está com todo o seu poder. Aguarde";
+		mes "retornar sua potência máxima, para que possa batalhar nos Campos Sagrados.";
+		next;
+		set @MyMenu$,"Informações:Sair:"+((getgroupid()>$@GMLvL)?"Acesso ADM":"");
+		switch(select(@MyMenu$)){
+
+			case 1: 
+				Info:
+				mes "[Guardiã Branca]";
+				mes "Durante várias gerações, os Guardiões do Portal Sagrado tem lutado freneticamente para protege-lo. O Guardião da geração XVII foi um grande lutador, mas pereceu durante batalha.";
+				next;
+				mes "[Guardiã Branca]";
+				mes "Um inimigo jamais visto antes surgiu. Vários guerreiros tentaram derrota-lo, mas sem sucesso. Ele apareceu perante o Guardião XVII e o derrotou somente com um golpe.";
+				next;
+				mes "[Guardiã Branca]";
+				mes "Após essa conquista, o monstro tenta freneticamente utilizar o poder do Portal Sagrado para destruir todas as dimensões possíveis. Devemos detê-lo!";
+				next;
+				mes "[Guardiã Branca]";
+				mes "O Rei Sanguinário, como é chamado, é sedento por matar. Enquanto ele sobreviver o Campo ao redor do Portal Sagrado irá permanecer aos rios de sangue.";
+				close;
+
+			case 2:
+				Cancel:			
+				mes "[Guardiã Branca]";
+				mes "Estarei lhe esperando para nos juntar a batalha.";
+				close; 
+	
+			case 3:
+				ADM:
+				mes "Escolha uma das opções:";
+				next;
+				switch(select("Iniciar Evento:Terminar Evento:Sair")) {
+
+					case 1:
+						if($BCStarted) {
+							if(getmapusers("ordeal_3-2")!=0) {
+								mes "O Evento está em andamento, não posso inicia-lo.";
+								close;
+							}
+						}
+								mes "Evento iniciado."; close2; initnpctimer "HiddenNpca"; end;
+								
+					case 2:
+						if($BCStarted) { 
+							killmonsterall "ordeal_3-2";
+							stopnpctimer "Camp";
+							mapannounce "ordeal_3-2","O Administrador encerrou o evento.",8;
+							sleep2 5000;
+							mapwarp "ordeal_3-2","prontera",145,168;
+						}
+							mes "O Evento não foi iniciado, portanto não poderás termina-lo."; close;
+							
+					case 3: close;
+				}
+		}
+	}
+		mes "Devemos derrotar esse ser malígno.";
+		mes "Gostaria de juntar forças no Campo Sagrado?";
+		next;
+		switch(select("Claro! - Jogadores"+(($@PlayersBC)?"[ ^FF0000"+getmapusers("ordeal_3-2")+"^000000 ]":"")+":Informações:Não, obrigado.")) {
+
+			case 1:
+				mes "[Guardiã Branca]";
+				if($@BlockItensBC) callfunc "CheckItemBC",0;
+				if($@LevelEnterBC) callfunc "CheckLevelBC",0;
+				mes "Que os deuses te proteja.";
+				close2;
+				if($@EntradaBC) announce (Sex?"O":"A")+" Jogador"+ (Sex?" ":"a")+" [ "+strcharinfo(0)+" ] juntou-se a Armada de Luz!",8;
+				percentheal 100,100;
+				getmapxy @map$,@x,@y,0;
+						map$ = @map$; x = @x; y = @y;
+						warp "ordeal_3-2",153,134;
+						end;
+
+			case 2: goto Info;
+			case 3: goto Cancel;
+		}
+
+OnInit:
+	if($@ChatOnBC==1 && $BCStarted==1) {
+		if(getarraysize($@ChatMsgsBC$)<2)
+			{ waitingroom $@ChatMsgsBC$[.ChatC],8,strnpcinfo(3)+"::InicioBC",8; end;}
+		else
+			set .ChatC,0;
+			waitingroom $@ChatMsgsBC$[.ChatC],8,strnpcinfo(3)+"::InicioBC",8;
+				
+		}
+OnTimer4000:
+	if($@ChatOnBC==1 && $BCStarted==1){
+		delwaitingroom;
+			if(.ChatC==(getarraysize($@ChatMsgsBC$)-1)) set .ChatC,0;
+		else
+			set .ChatC,.ChatC+1;
+   			waitingroom $@ChatMsgsBC$[.ChatC],8,strnpcinfo(3)+"::InicioBC",8;	
+	}
+	if($BCStarted!=1)delwaitingroom;
+	initnpctimer;
+}
+
+ordeal_3-2,144,139,5	script	Guardião Branco	4_WHITEKNIGHT,{
+
+	if(countitem(6027)>=1) {
+		mes "[Guardião Branco]";
+		mes "Obrigado "+strcharinfo(0)+", por ter recuperado o Cristal!";
+		mes "Eu preciso dele para renovar as forças do Cristal Sagrado e continuar com a batalha.";
+		mes "Vou lhe retribuir com uma recompensa.";
+		next;
+		delitem 6027,1;
+		set .@r,rand(getarraysize($@PremioBC));
+		getitem $@PremioBC[.@r],$@QtdBc[.@r];
+		mes "[Guardião Branco]";
+		soundeffectall "complete.wav",0,"ordeal_3-2",21,226,285,22;
+		mapannounce "ordeal_3-2",(Sex?"O":"A")+" Jogador"+(Sex?" ":"a ")+"[ "+strcharinfo(0)+" ] conseguiu entregar o Cristal ao Guardião Branco!",8;
+		mes "Aqui está, isso é por lutado bravamente!";
+		close2;
+			warp map$,x,y;
+			killmonsterall "ordeal_3-2";
+			stopnpctimer "Camp";
+			initnpctimer "Guardião Branco";
+			sleep2 5000;
+			mapannounce "ordeal_3-2","Você tem 2 minutos para recorrer à sua recompensa com o Guardião Branco.",8;
+			end;
+	}
+
+	if($@PremioOk==1) {
+		mes "[Guardião Branco]";
+		mes "Obrigado "+strcharinfo(0)+" por ter lutado bravamente!";
+		mes "Vou lhe retribuir com uma recompensa.";
+		next;
+		.@r = rand(getarraysize($@PremioBC2));
+		getitem $@PremioBC2[.@r],$@QtdBc2[.@r];
+		mes "[Guardião Branco]";
+		mes "Aqui está.";
+		close2;
+		warp map$,x,y;
+		end;
+	}
+
+	mes "[Guardião Branco]";
+	mes "O Cristal Sagrado não irá aguentar muito tempo!";
+	mes "Precisamos procurar uma fonte de energia para ele";
+	mes "Derrote o Rei e descubra a sua fonte de poder.";
+	close;
+
+OnTimer120000:
+	mapannounce "ordeal_3-2","Tempo esgotado. Teleportando todos os jogadores no mapa.",8;
+	sleep2 5000;
+	$@PremioOk = 0;
+	mapwarp "ordeal_3-2","prontera",145,168;
+}
+
+-	script	Camp	-1,{
+
+OnTimer30000:
+	if(getmapusers("ordeal_3-2") == 0) {
+		announce "Ninguém sobreviveu ao Blood Camp.",8;
+		killmonsterall "ordeal_3-2";
+		end;
+	}
+		initnpctimer;
+}
+
+-	script	LoopBC	-1,{
+
+OnInit:			
+OnTimer1000:
+	for(.@i = 0;.@i<getarraysize($@TimerBC);.@i++){
+		if(gettime(3)==$@TimerBC[.@i] && gettime(2)==$@TimerBC[.@i+1]) {
+			initnpctimer "HiddenNpca";
+			end; 
+		}
+	}
+	initnpctimer;
+}
+
+-	script	HiddenNpca	-1,{
+
+OnTimer1000:
+	announce "O portal para o Blood Camp está aberto, e em 5 minutos ele começará!",8;
+	$BCStarted = 1;
+	setmapflag "ordeal_3-2",mf_noskill;
+	killmonsterall "ordeal_3-2";
+	end;
+
+OnTimer60000:
+	announce "4 minutos para o Blood Camp iniciar!",8;
+	end;
+
+OnTimer120000:
+	announce "3 minutos para o Blood Camp iniciar!",8;
+	end;
+
+OnTimer180000:
+	announce "2 minutos para o Blood Camp iniciar!",8;
+	end;
+
+OnTimer240000:
+	announce "1 minuto para o Blood Camp iniciar!",8;
+	soundeffectall "charge.wav",0,"ordeal_3-2",21,226,285,22;
+	end;
+
+OnTimer300000:
+	announce "O Blood Camp começou. Vamos a Luta!",8;
+	soundeffectall "detale_die1.wav",0,"ordeal_3-2",21,226,285,22;
+	sleep2 1000;
+	npctalk "Eles voltaram!!! Vamos a batalha!","Guardião Branco";
+	deletearray $@nmobBC;
+	removemapflag "ordeal_3-2",mf_noskill;
+	initnpctimer "Camp";
+	$BCStarted = 0;
+	setarray $@nmobBC[0],2+$@DificultBC,4+$@DificultBC,6+$@DificultBC,8+$@DificultBC,10+$@DificultBC;
+
+			areamonster "ordeal_3-2",21,226,115,30,"Gárgula",1253,$@nmobBC[4],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",192,290,285,22,"Alarme",1193,$@nmobBC[4],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",21,226,115,30,"Injustiçado",1257,$@nmobBC[4],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",192,290,285,22,"Mímico",1191,$@nmobBC[4],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",21,226,115,30,"Alma Penada",1192,$@nmobBC[4],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",192,290,285,22,"Egnigem Cenia",1652,$@nmobBC[1],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",21,226,115,30,"Wickebine Tres",1653,$@nmobBC[1],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",192,290,285,22,"Armeyer Dinze",1654,$@nmobBC[1],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",21,226,115,30,"Errende Ebecee",1655,$@nmobBC[1],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",192,290,285,22,"Kavach Icarus",1656,$@nmobBC[1],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",21,226,115,30,"Laurell Weinder",1657,$@nmobBC[1],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",192,290,285,22,"Dama de Guarda",1700,$@nmobBC[1],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",21,226,115,30,"Senhora do Abrigo",1701,$@nmobBC[1],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",192,290,285,22,"Baronesa da Retribuição",1702,$@nmobBC[1],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",21,226,115,30,"Yeti",1775,$@nmobBC[3],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",192,290,285,22,"Siroma",1776,$@nmobBC[3],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",21,226,115,30,"Titã de Gelo",1777,$@nmobBC[3],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",192,290,285,22,"Gazeti",1778,$@nmobBC[3],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",21,226,115,30,"Filhote de Hatii",1515,$@nmobBC[3],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",192,290,285,22,"Bebê Hatii",1606,$@nmobBC[3],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",21,226,115,30,"Hatii",1252,$@nmobBC[0],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",192,290,285,22,"Filhote de Hatii",1515,$@nmobBC[3],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",21,226,115,30,"Espadachim Guardião",1829,$@nmobBC[2],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",192,290,285,22,"Arqueiro Guardião",1830,$@nmobBC[2],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",21,226,115,30,"Salamandra",1831,$@nmobBC[2],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",192,290,285,22,"Kasa",1833,$@nmobBC[2],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",21,226,115,30,"Imp",1837,$@nmobBC[2],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",192,290,285,22,"Sombra da Inveja",1918,$@nmobBC[2],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",21,226,115,30,"Sombra da Gula",1919,$@nmobBC[2],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",192,290,285,22,"Sombra da Vaidade",1920,$@nmobBC[2],"HiddenNpca::OnCampdead";
+			areamonster "ordeal_3-2",21,226,115,30,"Sombra da Ira",1921,$@nmobBC[2],"HiddenNpca::OnCampdead";
+			monster "ordeal_3-2",273,33,"Imperador Morroc",1916,1,"HiddenNpca::OnCampdead";
+			monster "ordeal_3-2",33,33,"Detardeurus",1719,1,"HiddenNpca::OnCampdead";
+			.@r = rand(1,2);
+				if(.@r == 1) { areamonster "ordeal_3-2",21,226,115,30,"Rei Demônio",1956,1,"HiddenNpca::OnCampdead1";
+				} else { areamonster "ordeal_3-2",192,290,285,22,"Rei Demônio",1956,1,"HiddenNpca::OnCampdead1"; }
+			if($@DificultBC==10) {
+				areamonster "ordeal_3-2",21,226,115,30,"Seyren Windsor",1640,$@nmobBC[1],"HiddenNpca::OnCampdead";
+				areamonster "ordeal_3-2",192,290,285,22,"Eremes Guile",1641,$@nmobBC[1],"HiddenNpca::OnCampdead";
+				areamonster "ordeal_3-2",21,226,115,30,"Howard Alt-Eisen",1642,$@nmobBC[1],"HiddenNpca::OnCampdead";
+				areamonster "ordeal_3-2",192,290,285,22,"Margaretha Sorin",1643,$@nmobBC[1],"HiddenNpca::OnCampdead";
+				areamonster "ordeal_3-2",21,226,115,30,"Cecil Damon",1644,$@nmobBC[1],"HiddenNpca::OnCampdead";
+				areamonster "ordeal_3-2",192,290,285,22,"Odium",1704,$@nmobBC[1],"HiddenNpca::OnCampdead";
+				areamonster "ordeal_3-2",21,226,115,30,"Despero",1705,$@nmobBC[1],"HiddenNpca::OnCampdead";
+				areamonster "ordeal_3-2",192,290,285,22,"Maero",1706,$@nmobBC[1],"HiddenNpca::OnCampdead";
+				areamonster "ordeal_3-2",21,226,115,30,"Pesar",1707,$@nmobBC[1],"HiddenNpca::OnCampdead";
+				monster "ordeal_3-2",34,105,"Memória de Thanatos",1708,1,"HiddenNpca::OnCampdead";
+				monster "ordeal_3-2",34,270,"Ktullanux",1779,1,"HiddenNpca::OnCampdead";
+				monster "ordeal_3-2",274,271,"Ifrit",1832,1,"HiddenNpca::OnCampdead";
+			}
+			if($@DificultBC==25) {
+				monster "ordeal_3-2",154,33,"Belzebu",1873,1,"HiddenNpca::OnCampdead";
+				monster "ordeal_3-2",97,281,"Arquimaga Kathryne",1651,1,"HiddenNpca::OnCampdead";
+			}
+OnCampdead:
+			end;
+OnCampdead1:
+	mapannounce "ordeal_3-2",(Sex?"O":"A")+" Jogador"+(Sex?" ":"a ")+"["+strcharinfo(0)+"] derrotou o Rei Demônio!",8;
+	getitem 6027,1;
+	$@PremioOk = 1;
+}
+
+-	script	BloodCtrl	-1,{
+
+OnPCDieEvent:
+	getmapxy @map$,@x,@y,0;
+		if(@map$=="ordeal_3-2") {
+			if($@DieTeleport) sleep2 1000; warp "SavePoint",0,0;
+	}	
+	end;
+
+OnInit:
+	if($@BlockItensBC)
+		for(.@i = 0;.@i<getarraysize($@ListBlockItemBC);.@i++) {
+			if(!getmapflag("ordeal_3-2",42)) {
+				setmapflag "ordeal_3-2",42;
+			}
+		}
+ 
+	if($@MapFlagsBC) {
+		if(getarraysize(.FlagLBC$)<1) end;
+			for(.@i2 = 0;.@i2<getarraysize(.FlagLBC$);.@i2++){
+				removemapflag "ordeal_3-2",$@FlagLBC$[.@i2];
+				setmapflag "ordeal_3-2",$@FlagLBC$[.@i2];
+			}
+	}
+}
+
+-	script	ADMBC	-1,{
+
+OnInit:	
+	sleep2 5000;
+	if($@CmdAct) { bindatcmd "bloodcamp",strnpcinfo(3)+"::OnAtcommand"; }
+	end;
+
+OnAtcommand:
+	if(getgroupid()>=$@GMLvLBC) { addtimer 1000, "Guerreiro Arcanjo#BC::OnADM"; end; }
+	 addtimer 1000, "Guerreiro Arcanjo#BC::OnStart";
+}
+
+ function	script	CheckLevelBC	{
+ 
+	if(BaseLevel < $@LevelEnterBCList[0] || BaseLevel> $@LevelEnterBCList[1]) {
+		mes "Me desculpe, mas existe uma restrição de level mínimo para entrar no Blood Camp.";
+		mes "As restrições são as seguintes:";
+		mes " ";
+		mes "Lével Mínimo: "+$@LevelEnterBCList[0];
+		mes "Lével Máximo: "+$@LevelEnterBCList[1];
+		mes " ";
+		mes "Portanto, não tenho permissão para sua entrada.";
+		close;
+	}
+	return;
+}
+
+ function	script	CheckItemBC	{
+ 
+	for(.@i = 0;.@i<getarraysize($@ListBlockItemBC);.@i++) {
+		if(countitem($@ListBlockItemBC[.@i])) {
+			mes "Me desculpe, mas alguns itens estão proibidos no Blood Camp. Itens Como:";
+			mes " ";
+			for(.@i2 = 0;@i2<getarraysize($@ListBlockItemBC);.@i2++) {
+				mes "^FF0000"+getitemname($@ListBlockItemBC[.@i2])+"^000000"; 
+			}	
+			mes " ";
+			mes "Portanto, não poderei lhe Teleportar.";
+			close;
+		}		
+	}
+	return;	
+}
+ordeal_3-2,167,154,3	script	Guardião Branco#1	4_M_BARMUND,{ end; }
+ordeal_3-2,141,154,6	script	Guardião Branco#2	4_M_HEINRICH,{ end; }
+ordeal_3-2,153,167,4	script	Guardiã Branca#3	4_F_KHALITZBURG,{ end; }
+ordeal_3-2,153,140,0	script	Guardiã Branca#4	4_F_HIMEL2,{ end; }
+ordeal_3-2,153,153,0	script	Cristal Sagrado	OBJ_A2,{ end; }
+ 
+-	script	Effects	-1,{
+
+OnInit:
+	setwall "ordeal_3-2",148,144,12,6,0,"parede campo1";
+	setwall "ordeal_3-2",148,163,12,6,0,"parede campo2";
+	setwall "ordeal_3-2",144,159,12,4,0,"parede campo3";
+	setwall "ordeal_3-2",163,159,12,4,0,"parede campo4";
+OnEffect:
+	specialeffect 55,AREA,"Guardiã Branca#4";
+	sleep2 500;
+	specialeffect 216,AREA,"Guardiã Branca#4";
+	sleep2 2000;
+	specialeffect 225,AREA,"Cristal Sagrado";
+	specialeffect 62,AREA,"Cristal Sagrado";
+	sleep2 10000;
+	specialeffect 40,AREA,"Guardião Branco#2";
+	sleep2 2000;
+	specialeffect 247,AREA,"Cristal Sagrado";
+	sleep2 10000;
+	specialeffect 12,AREA,"Guardiã Branca#3";
+	sleep2 1000;
+	specialeffect 266,AREA,"Cristal Sagrado";
+	sleep2 10000;
+	specialeffect 54,AREA,"Guardião Branco#1";
+	sleep2 500;
+	specialeffect 217,AREA,"Guardião Branco#1";
+	sleep2 2000;
+	specialeffect 236,AREA,"Cristal Sagrado";
+	sleep2 10000;
+	goto OnEffect;
+}
+
+ordeal_3-2,105,153,0	warp	bcord1-1	1,1,ordeal_3-2,140,168
+ordeal_3-2,129,193,0	warp	bcord1-2	1,1,ordeal_3-2,153,164
+ordeal_3-2,66,25,0	warp	bcord1-3	1,1,ordeal_3-2,167,167
+ordeal_3-2,289,130,0	warp	bcord1-4	1,1,ordeal_3-2,173,154
+ordeal_3-2,241,282,0	warp	bcord1-5	1,1,ordeal_3-2,168,138
+ordeal_3-2,177,193,0	warp	bcord1-6	1,1,ordeal_3-2,153,133
+ordeal_3-2,202,130,0	warp	bcord1-7	1,1,ordeal_3-2,139,140
+ordeal_3-2,73,265,0	warp	bcord1-8	1,1,ordeal_3-2,133,154

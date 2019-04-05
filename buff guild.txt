@@ -1,0 +1,56 @@
+/*
+Autor: Dark Eyes
+Função do NPC: Buffar jogadores no clã que possui castelo
+Versão: 1.0
+Emulador: BrAthena / Eathena / Cronus
+------------Atualizações------------------
+v1.0 - Iniciado o script
+*/
+
+prontera,158,179,4	script	Buffer Kriemhild	91,{
+
+//-------------------------Menu de configuração--------------------------------//
+
+set .castle$,"prtg_cas01"; //MAPA DO CASTELO
+set .npc$,"Buffer Kriemhild"; //NOME DO NPC
+
+//Buffs editaveis (PADRAO: AGI E BENÇÃO)
+set .comidas,1; //DAR STATUS DE COMIDA +5? 1 = sim / 2 = não
+set .especial,1; //DAR MAGNIFICANT + GLORIA + IMPOSITIO? 1 = sim / 2 = não
+
+//-------------------------Menu de configuração--------------------------------//
+
+set @guild, getcastledata(.castle$,1);
+
+mes .npc$;
+if( @guild == 0 ) {
+	mes "^FF0000Nenhuma guild tem castelo no momento.^000000"; close;
+}
+mes "Para usufruir desse NPC você tem que estar em uma guild com castelo.";
+mes "No momento é a guild ^FF0000"+getguildname(@guild)+"^000000 do ^0000FF"+getguildmaster(@guild)+"^000000 que tem acesso ao NPC.";
+next;
+mes .npc$;
+if( getcharid(2) == 0 ){
+	mes "^FF0000Você não tem clã!^000000"; close;
+}
+if( getcharid(2) != @guild ){
+	mes "^FF0000Seu clã não tem castelo!^000000"; close;
+}
+mes "PARABÉNS você é do clã ^0000FF"+getguildname(@guild)+"^000000!";
+sc_start 32,  99000000, 10;
+sc_start 30,  99000000, 10;
+if(.comidas==1){
+	sc_start SC_STRFood,99000000,5;
+	sc_start SC_AGIFood,99000000,5;
+	sc_start SC_VITFood,99000000,5;
+	sc_start SC_INTFood,99000000,5;
+	sc_start SC_DEXFood,99000000,5;
+	sc_start SC_LUKFood,99000000,5;
+}
+if(.especial==1){
+	skilleffect 74,0; sc_start SC_MAGNIFICAT,99000000,5;
+	skilleffect 75,0; sc_start SC_GLORIA,99000000,5;
+	skilleffect 66,0; sc_start SC_IMPOSITIO,99000000,5;
+}
+close;
+}

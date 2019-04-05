@@ -1,0 +1,45 @@
+// Ariane & Venus
+// EternityRO
+// A mirage ...
+itemmall,174,57,5	script	Bloody Branch	497,{
+		mes "[Bloody Branch]"; 
+		mes "I can create for you"; 
+		mes "^61B031Bloody Branch ^000000!"; 
+		next; 
+		menu "What should I give?",L_Bl2, "Make Bloody Branch",-,"Cancel",L_Cancel2;
+
+		mes "[Bloody Branch]";
+		mes "Then let's see..."; 
+		next;
+		if(countitem(604)<100) goto L_NoMake2;
+		delitem 604,100;
+		mes "[Bloody Branch]";
+		mes "Leave me a second.....";
+		next;
+		getitem 12103,1;
+		mes "[Bloody Branch]";
+		mes "Here it is !!!";
+		close;
+
+	L_NoMake2:
+		mes "[Bloody Branch]";
+		mes "You do not have the required items.";
+		mes "Come back when you have !...";
+		close;
+
+	L_Bl2: 
+		mes "[Bloody Branch]";
+		mes "For a Bloody Branch you must bring me :"; 
+		mes "^362ED6 100 Dead Branch ^000000";
+		close;
+
+	L_Leave2:
+		mes "[Bloody Branch]";
+		mes "See you soon !";
+		close;
+
+	L_Cancel2:
+		mes "[Bloody Branch]";
+		mes "Too bad for you...";
+		close;
+	}
