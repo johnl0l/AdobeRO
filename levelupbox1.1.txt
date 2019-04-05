@@ -1,0 +1,149 @@
+// ============== Credit =====================
+// Scripted by WhiteEagle
+// =============== For =======================
+// Delphin Project
+// ===========================================
+
+-	script	Levelupbox	-1,{
+
+OnPCBaseLvUpEvent:
+set .@item$,501;	// Level 1 with Item "Red Potion";
+set .@item2$,501;	// Level 2 with Item "Red Potion";
+set .@item3$,501;	// Level 3 with Item "Red Potion";
+set .@item4$,501;	// Level 4 with Item "Red Potion";
+set .@item5$,501;	// Level 5 with Item "Red Potion";
+set .@item6$,501;	// Level 6 with Item "Red Potion";
+set .@item7$,501;	// Level 7 with Item "Red Potion";
+set .@item8$,501;	// Level 8 with Item "Red Potion";
+set .@item9$,501;	// Level 9 with Item "Red Potion";
+set .@item10$,501;	// Level 10 with Item "Red Potion";
+set .@item11$,501;	// Level 11 with Item "Red Potion";
+set .@item12$,501;	// Level 12 with Item "Red Potion";
+set .@item13$,501;	// Level 13 with Item "Red Potion";
+set .@item14$,501;	// Level 14 with Item "Red Potion";
+set .@item15$,501;	// Level 15 with Item "Red Potion";
+set .@effect$,71;	// Specialeffect Spiral White balls
+set .@effect2$,72;	// Specialeffect Bigger Spiral White balls
+set .@effect3$,73;	// Specialeffect Blue/White Small Aura
+
+if(BaseLevel == 10) {
+specialeffect2 .@effect$;
+specialeffect2 .@effect2$;
+specialeffect2 .@effect3;
+getitem .@item$,1;
+dispbottom "Congratulation "+strcharinfo(0)+" to level 10!";
+end;
+}
+if(BaseLevel == 20) {
+specialeffect2 .@effect$;
+specialeffect2 .@effect2$;
+specialeffect2 .@effect3;
+getitem .@item2$,1;
+dispbottom "Congratulation "+strcharinfo(0)+" to level 20!";
+end;
+}
+if(BaseLevel == 30) {
+specialeffect2 .@effect$;
+specialeffect2 .@effect2$;
+specialeffect2 .@effect3;
+getitem .@item3$,1;
+dispbottom "Congratulation "+strcharinfo(0)+" to level 30!";
+end;
+}
+if(BaseLevel == 40) {
+specialeffect2 .@effect$;
+specialeffect2 .@effect2$;
+specialeffect2 .@effect3;
+getitem .@item4$,1;
+dispbottom "Congratulation "+strcharinfo(0)+" to level 40!";
+end;
+}
+if(BaseLevel == 50) {
+specialeffect2 .@effect$;
+specialeffect2 .@effect2$;
+specialeffect2 .@effect3;
+getitem .@item5$,1;
+dispbottom "Congratulation "+strcharinfo(0)+" to level 50!";
+end;
+}
+if(BaseLevel == 60) {
+specialeffect2 .@effect$;
+specialeffect2 .@effect2$;
+specialeffect2 .@effect3;
+getitem .@item6$,1;
+dispbottom "Congratulation "+strcharinfo(0)+" to level 60!";
+end;
+}
+if(BaseLevel == 70) {
+specialeffect2 .@effect$;
+specialeffect2 .@effect2$;
+specialeffect2 .@effect3;
+getitem .@item7$,1;
+dispbottom "Congratulation "+strcharinfo(0)+" to level 70!";
+end;
+}
+if(BaseLevel == 80) {
+specialeffect2 .@effect$;
+specialeffect2 .@effect2$;
+specialeffect2 .@effect3;
+getitem .@item8$,1;
+dispbottom "Congratulation "+strcharinfo(0)+" to level 80!";
+end;
+}
+if(BaseLevel == 90) {
+specialeffect2 .@effect$;
+specialeffect2 .@effect2$;
+specialeffect2 .@effect3;
+getitem .@item9$,1;
+dispbottom "Congratulation "+strcharinfo(0)+" to level 90!";
+end;
+}
+if(BaseLevel == 100) {
+specialeffect2 .@effect$;
+specialeffect2 .@effect2$;
+specialeffect2 .@effect3;
+getitem .@item10$,1;
+dispbottom "Congratulation "+strcharinfo(0)+" to level 100!";
+end;
+}
+if(BaseLevel == 110) {
+specialeffect2 .@effect$;
+specialeffect2 .@effect2$;
+specialeffect2 .@effect3;
+getitem .@item11$,1;
+dispbottom "Congratulation "+strcharinfo(0)+" to level 110!";
+end;
+}
+if(BaseLevel == 120) {
+specialeffect2 .@effect$;
+specialeffect2 .@effect2$;
+specialeffect2 .@effect3;
+getitem .@item12$,1;
+dispbottom "Congratulation "+strcharinfo(0)+" to level 120!";
+end;
+}
+if(BaseLevel == 130) {
+specialeffect2 .@effect$;
+specialeffect2 .@effect2$;
+specialeffect2 .@effect3;
+getitem .@item13$,1;
+dispbottom "Congratulation "+strcharinfo(0)+" to level 130!";
+end;
+}
+if(BaseLevel == 140) {
+specialeffect2 .@effect$;
+specialeffect2 .@effect2$;
+specialeffect2 .@effect3;
+getitem .@item14$,1;
+dispbottom "Congratulation "+strcharinfo(0)+" to level 140!";
+end;
+}
+if(BaseLevel == 150) {
+specialeffect2 .@effect$;
+specialeffect2 .@effect2$;
+specialeffect2 .@effect3;
+getitem .@item15$,1;
+dispbottom "Congratulation "+strcharinfo(0)+" to level 150!";
+end;
+}
+}

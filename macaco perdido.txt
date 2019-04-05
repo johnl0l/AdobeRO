@@ -1,0 +1,75 @@
+-	script	Evento#var	-1,{
+end;
+OnInit:
+set $premio, 607;
+set $quantidade, 150;
+end;
+}
+prontera,154,174,5	script	[GM]Gutter	871,{
+if(getgmlevel() < 60)
+{
+if(!.caper)
+{
+mes "^FF0000["+strnpcinfo(1)+"]^000000";
+mes "Olá ^FF0000"+strcharinfo(0)+"^000000, me chamo Gutter e gosto muito de macacos.";
+close;
+end;
+}
+mes "^FF0000["+strnpcinfo(1)+"]^000000";
+mes "Me ajude a preocurar meu macaquinho eu imploro!!!";
+close;
+}
+mes "^FF0000["+strnpcinfo(1)+"]^000000";
+mes "Olá ^FF0000"+strcharinfo(0)+"^000000, me chamo Gutter e gosto muito de macacos.";
+next;
+mes "Quer Ligar o evento?";
+next;
+switch(select("[^339966+^000000]Sim.:[^FF0000-^000000]Não."))
+{
+case 1:
+callsub OnEventStart;
+end;
+case 2:
+mes "^FF0000["+strnpcinfo(1)+"]^000000";
+mes "Volte quando quizer!";
+close;
+}
+Onclock0900: callsub OnEventStart;
+Onclock1500: callsub OnEventStart;
+
+OnEventStart:
+disablenpc "Macaco";
+announce "[Gm Gutter]: Oh não! Meu macaco fugiu.",0;
+announce "[Gm Gutter]: Ajudem me a preocura-lo, ele foi em direção a morocc.",0;
+initnpctimer;
+set .caper,1;
+monster "morocc",0,0,"Macaquinho",1057,1,"[GM]Gutter::Onmatar";
+monster "morocc",0,0,"Macaquinho",1214,100,"[GM]Gutter::Onmatarer";
+close;
+return;
+OnTimer600000:
+enablenpc "Macaco";
+stopnpctimer;
+announce "[Gm Gutter]: Achei meu Macaquinho, obrigado por tentarem me ajudar.",0;
+set .caper,0;
+killmonsterall "morocc";
+end;
+
+Onmatar:
+enablenpc "Macaco";
+stopnpctimer;
+announce "[Gm Gutter]: "+strcharinfo(0)+" encontrou meu macacquinho. Vou lhe recompensar por isso!",0;
+dispbottom "Parabéns.";
+getitem $premio,$quantidade;
+killmonsterall "morocc";
+set .caper,0;
+end;
+
+Onmatarer:
+dispbottom "Você matou um macaco selvagem";
+end;
+}
+prontera,152,174,5	script	Macaco	1057,{
+mes "ronc! ronc!";
+close;
+}

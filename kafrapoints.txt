@@ -1,0 +1,41 @@
+//RevelationRO Custom Script by Zeshan.
+
+prontera,147,157,0	script	Kafra points	861,{
+    mes .NPC$;
+    mes "Do you want to exchange your Kafra points to " + getitemname(.ID) + "?";
+	mes "The conversion rate is " + .NP + " for 1 " + getitemname(.ID) + ".";
+    next;
+    if (select("Yes:No") - 1) close;
+	mes .NPC$;
+    mes "How many " + getitemname(.ID) + " do you want?";
+    next;
+    input .@amount;
+    if (.@amount == 0) {
+        mes .NPC$;
+        mes "Umm, you want 0" + getitemname(.ID) + "?...";
+        close;
+    }
+	.@amount2 = (.@amount * .NP); 
+	.@points = (#KAFRAPOINTS);
+	if (.@amount2 > .@points) {
+		mes .NPC$;
+		mes "You do not have enough points!";
+		close;
+	}
+	if (#KAFRAPOINTS == 0) {
+		mes .NPC$;
+		mes "You have 0 kafra points!";
+		close;
+	}
+	mes .NPC$;
+    mes "Here you go!";
+    set #KAFRAPOINTS,#KAFRAPOINTS - .@amount2;
+    getitem .ID,.@amount;
+    close;
+	
+    OnInit:
+        set .NPC$,"[ " +strnpcinfo(1)+ " ]"; // NPC Name
+        set .ID,7227; // Item to give
+		set .NP,50; // Amount of points needed for one of the item
+        end;
+}

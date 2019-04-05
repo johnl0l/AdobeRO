@@ -1,0 +1,177 @@
+//====== Cronus ========================================================
+//=Madrugada de Terror
+//===== Por: ===========================================================
+//=Douglas
+//===== Versão Atual: ==================================================
+//=1.5
+//===== Descrição: =====================================================
+//=Evento que ocorre nas madrugadas, libera vários monstros em algumas cidades
+//===== Changelog: =====================================================
+//=Criação do Script 1.0 [Douglas]
+//=Adicionando anuncios 1.1 [Sayros]
+//=Adicinonando mais monstros 1.2 [Sayros]
+//=Summonando os monstros nas principais mapas 1.3 [Sayros]
+//=Adicionando Sistema de contagem de pontos 1.4 [Sayros]
+//=Adcionando Sistema de anuncios de nome de players que mataram os monstros 1.5 [Sayros].
+//======================================================================
+
+prontera,156,285,5	script	Chefe de Segurança	419,{
+
+set .@npc$,"[^ff0000 Chefe de Segurança ^000000]";
+mes .@npc$;
+mes "Prepare-se, pois a madrugada do terror começa meia-noite...";
+mes "Ao matar os monstros da madrugada você recebe ^0000FF Pontos de Coragem! ^000000 que podem ser trocados por ^0000FFPoring Coin^000000.";
+next;
+mes .@npc$;
+mes "Quando você obtem 1000 ou mais ^0000FF Pontos de Coragem ^000000 você pode trocar por ^0000FFPoring Coin^000000.";
+if(pointmt == 0){
+mes "No momento você não possui ^0000FF Pontos de Coragem! ^000000";
+close;}
+mes "Você possui "+pointmt+" ^0000FF Pontos de Coragem! ^000000";
+if (pointmt >= 1000){
+next;
+mes .@npc$;
+mes "Você ja pode trocar 1000 pontos!";
+mes "Você já quer trocar seus pontos?";
+menu "Sim",tps,"Não",-;
+close;
+tps:
+close2;
+set pointmt, pointmt - 1000;
+getitem 7539,10;
+emotion 21;
+sc_start 49, 99999999,10;
+npctalk "Prontinho! agora você, "+strcharinfo(0)+" trocou 1000 Pontos de coragem por Dez ^0000FFPoring Coin^000000, Parabéns!";
+end;
+}
+close;
+}
+
+-	script	event_summon	-1,{
+
+OnHour18:
+announce "O Sol adormece junto da segurança dos abitantes deste mundo...", bc_all,0;
+hideonnpc "Chefe de Segurança";
+end;
+OnHour19: announce "Todos temem com a chegada da madrugada em Midgard!", bc_all,0;
+OnHour22: announce "O mundo esta quase deserto, pois niguém quer estar nas ruas durante esta madrugada...", bc_all,0;
+OnHour23: announce "Preparem-se! Esta noite será terrivel. A Madrugada do Terror se aproxima!", bc_all,0;
+end;
+
+OnHour00:
+announce "A Madrugada de Terror Começa Agora! Salve-se quem poder!", bc_all,0;
+monster "prontera",0,0,"Deviruchi",1109,150,"event_summon::OnPointCC";
+monster "payon",0,0,"Deviruchi",1109,100,"event_summon::OnPointCC";
+monster "morocc",0,0,"Deviruchi",1109,100,"event_summon::OnPointCC";
+monster "izlude",0,0,"Deviruchi",1109,100,"event_summon::OnPointCC";
+monster "alberta",0,0,"Deviruchi",1109,100,"event_summon::OnPointCC";
+monster "prontera",0,0,"Deviling",1582,1,"event_summon::OnPointCC";
+monster "payon",0,0,"Dracula",1389,10,"event_summon::OnPointCC";
+monster "morocc",0,0,"Dracula",1389,10,"event_summon::OnPointCC";
+monster "izlude",0,0,"Dracula",1389,10,"event_summon::OnPointCC";
+monster "alberta",0,0,"Dracula",1389,10,"event_summon::OnPointCC";
+end;
+
+OnHour01:
+announce "Nossa! Fantasmas manisfestam-se nas cidades! É realmente uma madrugada de terror!", bc_all,0;
+monster "prontera",0,0,"Ghostring",1120,2,"event_summon::OnPointCC";
+monster "payon",0,0,"Amon-Ra",1511,2,"event_summon::OnPointCC";
+monster "morocc",0,0,"Amon-Ra",1511,2,"event_summon::OnPointCC";
+monster "izlude",0,0,"Amon-Ra",1511,2,"event_summon::OnPointCC";
+monster "alberta",0,0,"Amon-Ra",1511,2,"event_summon::OnPointCC";
+monster "prontera",0,0,"Amon-Ra",1511,2,"event_summon::OnPointCC";
+monster "payon",0,0,"Amon-Ra",1511,2,"event_summon::OnPointCC";
+monster "morocc",0,0,"Amon-Ra",1511,2,"event_summon::OnPointCC";
+monster "izlude",0,0,"Amon-Ra",1511,2,"event_summon::OnPointCC";
+monster "alberta",0,0,"Pesar Noturno",1768,1,"event_summon::OnPointCC";
+end;
+
+OnHour02:
+announce "Rune Midgard está se afogando em sangue! que madrugada violenta!", bc_all,0;
+monster "prontera",0,0,"Deviruchi",1109,100,"event_summon::OnPointCC";
+monster "payon",0,0,"Deviruchi",1109,100,"event_summon::OnPointCC";
+monster "morocc",0,0,"Deviruchi",1109,100,"event_summon::OnPointCC";
+monster "izlude",0,0,"Deviruchi",1109,100,"event_summon::OnPointCC";
+monster "alberta",0,0,"Deviruchi",1109,100,"event_summon::OnPointCC";
+monster "prontera",0,0,"Deviling",1582,1,"event_summon::OnPointCC";
+monster "payon",0,0,"Dracula",1389,10,"event_summon::OnPointCC";
+monster "morocc",0,0,"Dracula",1389,10,"event_summon::OnPointCC";
+monster "izlude",0,0,"Dracula",1389,10,"event_summon::OnPointCC";
+monster "alberta",0,0,"Dracula",1389,10,"event_summon::OnPointCC";
+end;
+
+OnHour03:
+announce "Vamos lá guerreiros salvem este mundo!", bc_all,0;
+monster "prontera",0,0,"Sombra da Ira",1925,100,"event_summon::OnPointCC";
+monster "payon",0,0,"Sombra da Ira",1925,100,"event_summon::OnPointCC";
+monster "morocc",0,0,"Sombra da Ira",1925,100,"event_summon::OnPointCC";
+monster "izlude",0,0,"Sombra da Ira",1925,100,"event_summon::OnPointCC";
+monster "alberta",0,0,"Sombra da Ira",1925,100,"event_summon::OnPointCC";
+monster "prontera",0,0,"Serpente Suprema",1418,5,"event_summon::OnPointCC";
+monster "payon",0,0,"Serpente Suprema",1418,5,"event_summon::OnPointCC";
+monster "morocc",0,0,"Serpente Suprema",1418,5,"event_summon::OnPointCC";
+monster "izlude",0,0,"Serpente Suprema",1418,5,"event_summon::OnPointCC";
+monster "alberta",0,0,"Serpente Suprema",1418,5,"event_summon::OnPointCC";
+end;
+
+OnHour04:
+announce "Os monstros estão dominando as cidades e os moradores reagem!", bc_all,0;
+monster "prontera",0,0,"Crânio Flamejante",1869,100,"event_summon::OnPointCC";
+monster "payon",0,0,"Crânio Flamejante",1869,100,"event_summon::OnPointCC";
+monster "morocc",0,0,"Crânio Flamejante",1869,100,"event_summon::OnPointCC";
+monster "izlude",0,0,"Crânio Flamejante",1869,100,"event_summon::OnPointCC";
+monster "alberta",0,0,"Crânio Flamejante",1869,100,"event_summon::OnPointCC";
+monster "prontera",0,0,"Beelzebub",1874,1,"event_summon::OnPointCC";
+monster "payon",0,0,"Beelzebub",1874,1,"event_summon::OnPointCC";
+monster "morocc",0,0,"Beelzebub",1874,1,"event_summon::OnPointCC";
+monster "izlude",0,0,"Beelzebub",1874,1,"event_summon::OnPointCC";
+monster "alberta",0,0,"Beelzebub",1874,1,"event_summon::OnPointCC";
+end;
+
+OnHour05:
+announce "As maiores vitímas são os mercadores que ficaram vendendo pelas cidades! Pobres pessoas!", bc_all,0;
+monster "prontera",0,0,"Marionete",1143,100,"event_summon::OnPointCC";
+monster "payon",0,0,"Marionete",1143,100,"event_summon::OnPointCC";
+monster "morocc",0,0,"Marionete",1143,100,"event_summon::OnPointCC";
+monster "izlude",0,0,"Marionete",1143,100,"event_summon::OnPointCC";
+monster "alberta",0,0,"Marionete",1143,100,"event_summon::OnPointCC";
+monster "prontera",0,0,"Ifrit",1832,1,"event_summon::OnPointCC";
+monster "payon",0,0,"Ifrit",1832,1,"event_summon::OnPointCC";
+monster "morocc",0,0,"Ifrit",1832,1,"event_summon::OnPointCC";
+monster "izlude",0,0,"Ifrit",1832,1,"event_summon::OnPointCC";
+monster "alberta",0,0,"Ifrit",1832,1,"event_summon::OnPointCC";
+end;
+
+OnHour0530:
+announce "Agora os guardiões do mal estão nas cidades! tenham cuidado!",0;
+monster "prontera",0,0,"Ox",2010,100,"event_summon::OnPointCCC";
+monster "payon",0,0,"Pesadelo",1061,25,"event_summon::OnPointCCC";
+monster "morocc",0,0,"Woomawang",2008,25,"event_summon::OnPointCCC";
+monster "izlude",0,0,"Naght Sieger",1956,1,"event_summon::OnPointCCC";
+monster "alberta",0,0,"Woomawang",2009,25,"event_summon::OnPointCCC";
+end;
+
+OnHour06:
+announce "Olhem! Está chegando o dia! A luz divina do Sol Espanta os Monstros!",0;
+killmonsterall "prontera";
+killmonsterall "payon";
+killmonsterall "morocc";
+killmonsterall "izlude";
+killmonsterall "alberta";
+hideoffnpc "Chefe de Segurança";
+end;
+
+OnPointCC:
+set pointmt,pointmt+7;
+announce "O jogador "+strcharinfo(0)+" está matando todos os monstros em seu caminho!",bc,0x99CC00;
+dispbottom "Você recebeu +07 Pontos de Coragem, continue matando os monstros para receber mais pontos!";
+dispbottom "Você tem "+pointmt+" pontos";
+end;
+
+OnPointCCC:
+set pointmt,pointmt+17;
+announce "O jogador "+strcharinfo(0)+" está matando matando os guardiões do mal! cuidado ele é valente!!",bc,0x99CC00;
+dispbottom "Você recebeu +17 Pontos de Coragem, continue matando os monstros para receber mais pontos!";
+dispbottom "Você tem "+pointmt+" pontos";
+end;
+}

@@ -1,0 +1,37 @@
+//-- Kageou/Oboro Quest
+prontera,157,198,4	script	Ninja Job Changer	997,{
+
+if (class == 25) goto L_change;
+
+mes "[ ^C8BBBETemporary Job Changer^000000 ]";
+mes "You Aren't A Ninja";
+close;
+
+L_change:
+if ((BaseLevel != 99) && (JobLevel != 70)) goto L_level;
+mes "[ ^C8BBBETemporary Job Changer^000000 ]";
+mes "Do you want to become Kagerou or Oboro?.";
+mes "Im the temporary job changer of a Ninja to advance their job.";
+mes "Kagerou is only for Boy Ninja.";
+mes "Oboro is only for Girl Ninja.";
+menu "Kagerou",L_boy,"Oboro",L_girl;
+close;
+
+L_boy:
+next;
+jobchange 4211;
+mes "Have a nice day~.";
+close;
+
+L_girl:
+next;
+jobchange 4212;
+mes "Have a nice day~.";
+close;
+
+L_level:
+mes "Sorry, but make soure that you're";
+mes "Base Lvl. 99 / Job Lvl. 70 and set all your Skillpoints.";
+close;
+
+}

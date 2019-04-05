@@ -1,0 +1,20 @@
+//					//
+//		sadera992		//
+//					//
+-	script	level up	-1,{
+OnPCBaseLvUpEvent:
+if(BaseLevel == 99) {
+setarray .News$[0], "Congratulations "+strcharinfo(0)+" Has become a level 99";
+{
+	announce .News$[ rand( getarraysize( .News$ ) ) ],0;
+	}
+}
+if(BaseLevel == 150) {
+setarray .News$[0], "Congratulations "+strcharinfo(0)+" Has become a level 150";
+{
+	announce .News$[ rand( getarraysize( .News$ ) ) ],0;
+	}
+}
+
+end;
+}

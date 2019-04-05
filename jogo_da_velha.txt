@@ -1,0 +1,1137 @@
+//=  __  __ _    _                  _   ___    _ _ _
+//= |  \/  (_)__| |__ _ __ _ _ _ __| | | __|__| (_) |_ ___ _ _
+//= | |\/| | / _` / _` / _` | '_/ _` | | _|/ _` | |  _/ _ \ '_|
+//= |_|  |_|_\__,_\__, \__,_|_| \__,_| |___\__,_|_|\__\___/_|
+//=               |___/
+//= http://
+//===== Por: =================================================
+//= Programação: Mortify (m41l50n@hotmail.com)
+//===== Script ===============================================
+//= Jogo da Velha
+//===== Versão Atual: ========================================
+//= 1.3
+//===== Criado Por: ==========================================
+//= Mortify (Mailson Lamim Matos)
+//===== Emulador: ============================================
+//= eAthena
+//===== Comentários ==========================================
+//= Tabuleiro
+//= 11-12-13
+//= 21-22-23
+//= 31-32-33
+//= Pedras
+//= X (1): Marin
+//= O (2): Poporing
+//============================================================
+
+prontera,235,61,5	script	Velha::VelhaA	771,{
+
+   If ((getitemname($VelhaPremioID) == "null") || ($VelhaPremioQtd == 0) || ($VelhaValorMaxZ == 0)){
+      DoNpcEvent "ResetarV::OnInit";
+      If (getgmlevel()>90){
+         mes "^FF0000[Velha]^000000";
+         mes "Olá "+StrCharInfo(0)+",";
+         mes "Você precisa configurar o premio, o valor máximo a ser apostado e o level dos VIPs do seu servidor!";
+         mes "Deseja fazer isso agora??";
+         Next;
+         Menu "Sim.",ConfigS,"Não.",ConfigN;
+      }else{
+         mes "^FF0000[Velha]^000000";
+         mes "Olá "+StrCharInfo(0)+",";
+         mes "Eu não estou me sentindo muito bem!";
+         mes "Volte mais tarde e jogaremos!! Ok??";
+         Close;
+      }
+   }Else{ Goto Inicio; }
+
+ConfigS:
+   mes "^FF0000[Velha]^000000";
+   If (getitemname($VelhaPremioID) == "null"){
+      mes "Digite o ID do Item a ser dado na Quest quando o player me derrotar:";
+      Next;
+      input  $VelhaPremioID;
+   }
+   If ($VelhaPremioQtd == 0){
+      mes "^FF0000[Velha]^000000";
+      mes "Digite a Quantidade desse item a ser dada:";
+      Next;
+      input  $VelhaPremioQtd;
+   }
+   If ($VelhaValorMaxZ == 0){
+      mes "^FF0000[Velha]^000000";
+      mes "Digite o valor máximo de Zenys a ser nogociado:";
+      Next;
+      input  $VelhaValorMaxZ;
+   }
+   If ($VelhaLvlVIP == 0){
+      mes "^FF0000[Velha]^000000";
+      mes "Digite o level dos VIPs do seu servidor:";
+      Next;
+      input  $VelhaLvlVIP;
+   }
+   mes "^FF0000[Velha]^000000";
+   mes "Os valores escolhidos foram:";
+   mes "Item: ^FF0000"+getitemname($VelhaPremioID)+"^000000";
+   mes "Qtd: ^FF0000"+$VelhaPremioQtd+"^000000";
+   mes "Valor Máximo: ^FF0000"+$VelhaValorMaxZ+"^000000";
+   mes "O Level atual é: ^FF0000"+$VelhaLvlVIP+"^000000";
+   Next;
+   Menu "Esta tudo certo.",-,"Desejo alterar os valores",ConfigS;
+   Close;
+
+ConfigN:
+   mes "^FF0000[Velha]^000000";
+   mes "A Queste so será liberada após a configuração desses dados.";
+   Close;
+
+Inicio:
+   mes "^FF0000[Velha]^000000";
+
+//Verificar horário de descanço
+   If ($VelhaDescansar == 1){ Goto VelhaD; }
+//Verificar se ta usando carta MM
+   If ((Getequipcardid (1,0) == 4198) || (Getequipcardid (1,1) == 4198) || (Getequipcardid (1,2) == 4198) || (Getequipcardid (1,3) == 4198)){ Set @MJVEquipMM$, getitemname(getequipid(1)); Goto MJVTirarMM; }
+   If ((Getequipcardid (9,0) == 4198) || (Getequipcardid (9,1) == 4198) || (Getequipcardid (9,2) == 4198) || (Getequipcardid (9,3) == 4198)){ Set @MJVEquipMM$, getitemname(getequipid(9)); Goto MJVTirarMM; }
+   If ((Getequipcardid (10,0) == 4198) || (Getequipcardid (10,1) == 4198) || (Getequipcardid (10,2) == 4198) || (Getequipcardid (10,3) == 4198)){ Set @MJVEquipMM$, getitemname(getequipid(10)); Goto MJVTirarMM; }
+//Fim
+   If (((StrCharInfo(0) == $Player$[0]) && ($IndVelha[0] == 1)) || ((StrCharInfo(0) == $Player$[1]) && ($IndVelha[1] == 1)) || ((StrCharInfo(0) == $Player$[2]) && ($IndVelha[2] == 1)) || ((StrCharInfo(0) == $Player$[3]) && ($IndVelha[3] == 1)) || ((StrCharInfo(0) == $Player$[4]) && ($IndVelha[4] == 1)) || ((StrCharInfo(0) == $Player$[5]) && ($IndVelha[5] == 1)) || ((StrCharInfo(0) == $Player$[6]) && ($IndVelha[6] == 1)) || ((StrCharInfo(0) == $Player$[7]) && ($IndVelha[7] == 1)) || ((StrCharInfo(0) == $Player$[8]) && ($IndVelha[8] == 1)) || ((StrCharInfo(0) == $Player$[9]) && ($IndVelha[9] == 1))){ Goto PegaPremio01; }
+   If (((StrCharInfo(0) == $Player1$[0]) && ($IndVelha1[0] == 1)) || ((StrCharInfo(0) == $Player1$[1]) && ($IndVelha1[1] == 1)) || ((StrCharInfo(0) == $Player1$[2]) && ($IndVelha1[2] == 1)) || ((StrCharInfo(0) == $Player1$[3]) && ($IndVelha1[3] == 1)) || ((StrCharInfo(0) == $Player1$[4]) && ($IndVelha1[4] == 1)) || ((StrCharInfo(0) == $Player1$[5]) && ($IndVelha1[5] == 1)) || ((StrCharInfo(0) == $Player1$[6]) && ($IndVelha1[6] == 1)) || ((StrCharInfo(0) == $Player1$[7]) && ($IndVelha1[7] == 1)) || ((StrCharInfo(0) == $Player1$[8]) && ($IndVelha1[8] == 1)) || ((StrCharInfo(0) == $Player1$[9]) && ($IndVelha1[9] == 1))){ Goto PegaPremio02; }
+   If ($ConviteVelha == 1) Goto VerificaParcero;
+   If (getgmlevel()>90){
+      mes "Olá "+StrCharInfo(0)+",";
+      If ($Quest == 1){
+         If ($ConviteVelha == 1){
+            mes "Atualmente o evento esta sendo utilizado por: ^D57352"+$VNome1$+"^000000 & ^D57352"+$VNome2$+"^000000";
+         }Else{
+            mes "Atualmente o evento esta sendo utilizado por: ^D57352"+$VNome1$+"^000000";
+         }
+      }
+      mes "O que você deseja fazer?";
+      Next;
+      Menu "^D57352Player.^000000",MenuADM2,"^D57352Administração.^000000",MenuADM1;
+   }else{
+      If ($Quest == 1) Goto QuestD;
+
+      If ((getgmlevel()<$VelhaLvlVIP) && ($VelhaLvlVIP != 0)){
+         mes "Olá, ^333399"+strcharinfo(0)+"^000000 seu nome não consta na lista de ^D57352VIPs^000000";
+         mes "Infelizmente não posso fazer nada por você.";
+         Close;
+      }
+
+      mes "Olá "+StrCharInfo(0)+",";
+      mes "Você já deve ter ouvido falar no meu jogo favorito.";
+      mes "Se kiser eu posso te ensinar a jogar!";
+      Next;
+      Goto MenuADM2;
+   }
+   
+MenuADM1:
+   Menu "^D57352Resetar^000000",QuestR,"^D57352Resetar TOP10^000000",ResetarTOP10,"^D57352Desejo alterar os valores.^000000",AlteraValor;
+
+MenuADM2:
+   Menu "Posso jogar agora?",QuestI,"Fale-me mais sobre esse jogo.",QuestM,"Quem te derrotou recentemente?",VListaVenc,"Nada!",QuestS;
+
+VelhaD:
+   mes "Olá "+StrCharInfo(0)+", no momento estou descançando.";
+   mes "Volte em 5 minutos.";
+   Close;
+
+MJVTirarMM:
+   mes "Olá "+StrCharInfo(0)+", você poderia por favor desequipar o seu/sua: ^FF0000"+@MJVEquipMM$+"^000000.";
+   Close;
+
+AlteraValor:
+   mes "^FF0000[Velha]^000000";
+   mes "Os valores atuais são:";
+   mes "Item: ^FF0000("+$VelhaPremioID+") "+getitemname($VelhaPremioID)+"^000000";
+   mes "Qtd: ^FF0000"+$VelhaPremioQtd+"^000000";
+   mes "Valor Máximo: ^FF0000"+$VelhaValorMaxZ+"^000000";
+   mes "O Level atual é: ^FF0000"+$VelhaLvlVIP+"^000000";
+   mes "Valor de que você deseja alterar?";
+   Next;
+   Switch (select("ID do Item","Quantidade","Valor Maximo da Aposta","Level do VIP","Voltar para o Menu")){
+      case 1:
+         mes "^FF0000[Velha]^000000";
+         mes "Digite o ID do Item a ser dado na Quest quando o player me derrotar:";
+         If (getitemname($VelhaPremioID) != "null"){ mes "Item Atual: ^FF0000("+$VelhaPremioID+") "+getitemname($VelhaPremioID)+"^000000"; }
+         Next;
+         input $VelhaPremioID;
+         Goto AlteraValor;
+      case 2:
+         mes "^FF0000[Velha]^000000";
+         mes "Digite a Quantidade do item a ser dada:";
+         If ($VelhaPremioQtd != 0){ mes "A Quantidade Atual é: ^FF0000"+$VelhaPremioQtd+"^000000"; }
+         Next;
+         input $VelhaPremioQtd;
+         Goto AlteraValor;
+      case 3:
+         mes "^FF0000[Velha]^000000";
+         mes "Digite o valor máximo de Zenys a ser apostado:";
+         If ($VelhaValorMaxZ != 0){ mes "A Quantidade Atual é: ^FF0000"+$VelhaValorMaxZ+"z^000000"; }
+         Next;
+         input $VelhaValorMaxZ;
+         Goto AlteraValor;
+      case 4:
+         mes "^FF0000[Velha]^000000";
+         mes "Digite o level dos VIPs do seu servidor:";
+         mes "O Level atual é: ^FF0000"+$VelhaLvlVIP+"^000000";
+         Next;
+         input $VelhaLvlVIP;
+         Goto AlteraValor;
+      case 5:
+         Goto Inicio;
+   }
+
+QuestI:
+   mes "^FF0000[Velha]^000000";
+   If ($Quest == 1) Goto QuestD;
+   mes "Ok! Vamos ver se você é bom!";
+   mes "Contra quem você deseja jogar?";
+   Next;
+   Menu "Contra Você.",Quest1,"Contra um Amigo.",Quest2;
+
+Quest1:
+   mes "^FF0000[Velha]^000000";
+   If ($Quest == 1) Goto QuestD;
+   set $Quest, 1;
+   mes "Nossa! Você esta me desafiando??";
+   mes "Tenhu pena de você. Com certeza eu vou vencer!";
+   If (getitemname($VelhaPremioID) != "null"){
+      mes "Se você me vencer lhe darei:";
+      mes "^FF0000"+$VelhaPremioQtd+" "+getitemname($VelhaPremioID)+"^000000";
+   }
+   Set $VNome1$, StrCharInfo(0);
+   Set $VNome2$, "";
+   Set $JogoV, 0;
+   Close2;
+   MapAnnounce "prontera.gat","Velha: "+$VNome1$+" Me desafiou para um duelo!",1,0xD57352;
+   Sleep 2000;
+   MapAnnounce "prontera.gat","Velha: "+$VNome1$+", Você pode começar!",1,0xD57352;
+   Set $Vez, 0;
+   enablenpc "P11"; enablenpc "P12"; enablenpc "P13"; enablenpc "P21"; enablenpc "P22"; enablenpc "P23"; enablenpc "P31"; enablenpc "P32"; enablenpc "P33";
+   callfunc "Verificador";
+   End;
+
+Quest2:
+   mes "^FF0000[Velha]^000000";
+   If ($Quest == 1) Goto QuestD;
+   set $Quest, 1;
+   mes "Qual o Nome do seu amigo??";
+   Next;
+   input $VNome2$;
+   Set $VNome1$, StrCharInfo(0);
+   If ($VNome1$ == $VNome2$){
+      mes "^FF0000[Velha]^000000";
+      mes "Você não pode se convidar para um duelo!";
+      set $Quest, 0;
+      Next;
+      Goto Quest2;
+   }
+
+   mes "^FF0000[Velha]^000000";
+   mes "Qual será o valor da aposta (em zenys)??";
+   mes "Você pode apostar até ^FF0000"+$VelhaValorMaxZ+"^000000";
+   Next;
+   input $VZeny;
+   While ($VZeny > $VelhaValorMaxZ){
+      mes "^FF0000[Velha]^000000";
+      mes "Este valor é muito alto!";
+      mes "Você pode apostar até ^FF0000"+$VelhaValorMaxZ+"^000000";
+      Next;
+      input $VZeny;
+   }
+   If (Zeny<$VZeny) GOTO SemZeny;
+
+   mes "^FF0000[Velha]^000000";
+   mes "Agora nois temos que aguardar o seu amigo aceitar a sua proposta.";
+   mes "Se ele não aceitar eu não devolverei seus Zenys!";
+   Set Zeny, Zeny-$VZeny;
+   Close2;
+   Set $JogoV, 1;
+   Set $ConviteVelha, 1;
+   Announce "Velha: "+$VNome2$+", "+$VNome1$+" Te desafiou no jogo da velha.",0,0xD57352;
+   Sleep 2000;
+   Announce "Velha: Você tem 5 minutos para aceitar o Duelo!",0,0xD57352;
+   Set $MJVRecusarConvite, 0;
+   Sleep 300000;
+   If (($ConviteVelha == 1) && ($MJVRecusarConvite == 0)){ MapAnnounce "prontera.gat","Velha: "+$VNome2$+" não aceitou o convite de "+$VNome1$+" para o Duelo!",1,0xD57352; DoNpcEvent "ResetarV::OnInit"; }
+   End;
+
+QuestR:
+   mes "^FF0000[Velha]^000000";
+   mes "Resetado com Sucesso!";
+   Close2;
+   DoNpcEvent "ResetarV::OnInit";
+   Close;
+
+QuestM:
+   mes "^FF0000[Velha]^000000";
+   If ($Quest == 1) Goto QuestD;
+   mes "Para jogar é preciso ter 2 participantes. Um ficará com os Marins(X) e o outro com os Poporings(O). Cada jogador em sua vez dirá em que posição o seu Monstro ficará. Vence quem conseguir colocar 3 monstros seguidos em qualquer direção. Vale em todas as direções, desde que a fileira não faça esquina! Cada jogador terá 30 segundos para fazer sua jogada.";
+   Close;
+
+QuestS:
+   mes "^FF0000[Velha]^000000";
+   mes "Volte quando estiver enteressado!";
+   mes "Juizo em!!!";
+   Close;
+
+QuestD:
+   mes "No momento eu não posso jogar com você, estou jogando com:";
+   If ($ConviteVelha == 1){ mes "^D57352"+$VNome1$+"^000000 & ^D57352"+$VNome2$+"^000000"; }Else{ mes "^D57352"+$VNome1$+"^000000"; }
+   mes "Aguerde alguns minutos e volte a falar comigo novamente!";
+   Close;
+
+VerificaParcero:
+   If ($VNome1$ == "") && ($VNome2$ == ""){
+      mes "Olá, "+StrCharInfo(0)+",";
+      mes "No momneto não há nenhum convite para duelo!";
+      Close;
+   }Else{
+      If ($VNome2$ == StrCharInfo(0)){
+         mes "Olá, "+$VNome2$+",";
+         mes "Você foi desafiado por "+$VNome1$+" para um duelo.";
+         mes "O Valor da Aposta é de: ^FF0000"+$VZeny+"z^000000";
+         mes "Você aceita??";
+         Next;
+         Menu "Sim.",VP_S,"Não.",VP_N;
+      }else{
+         If ($VNome1$ == StrCharInfo(0)){ Goto DevolverZeny; }
+         mes "Acho que não foi você que ^D57352"+$VNome1$+"^000000 convidou para o duelo.";
+         mes "Ele convidou: ^D57352"+$VNome2$+"^000000";
+         Close;
+      }
+   }
+
+VP_S:
+   If (Zeny<$VZeny) GOTO SemZeny;
+
+   mes "^FF0000[Velha]^000000";
+   mes "Boa Sorte e vamos ao que interessa!";
+   Set Zeny, Zeny-$VZeny;
+   Set $ConviteVelha, 2;
+   Close2;
+   MapAnnounce "prontera.gat","Velha: "+$VNome2$+" aceitou o convite de "+$VNome1$+" para o Duelo!",1,0xD57352;
+   Sleep 2000;
+   Set $Vez, 0;
+   MapAnnounce "prontera.gat","Velha: Quem vai iniciar o jogo é: "+$VNome1$,1,0xD57352;
+   enablenpc "P11"; enablenpc "P12"; enablenpc "P13"; enablenpc "P21"; enablenpc "P22"; enablenpc "P23"; enablenpc "P31"; enablenpc "P32"; enablenpc "P33";
+   callfunc "Verificador";
+   End;
+
+VP_N:
+   mes "^FF0000[Velha]^000000";
+   mes "Ok! em alguns minutos irei anunciar a sua decisão!";
+
+   MapAnnounce "prontera.gat","Velha: "+$VNome2$+" não aceitou o convite de "+$VNome1$+" para o Duelo!",1,0xD57352;
+   DoNpcEvent "ResetarV::OnInit";
+   Close;
+
+DevolverZeny:
+   mes "Olá, "+StrCharInfo(0)+"  você desistiu do duelo??";
+   Next;
+   Switch (select("Não. Claro que não!","Desisti Sim.")){
+      case 1:
+         GoTo QuestS;
+      case 2:
+         Set Zeny,Zeny+$VZeny; 
+         MapAnnounce "prontera.gat","Velha: "+$VNome1$+" desistiu do duelo contra "+$VNome2$+"!",1,0xD57352;
+         DoNpcEvent "ResetarV::OnInit";
+         GoTo QuestS;
+   }
+   Close;
+
+VListaVenc:
+   mes "^FF0000[Velha]^000000";
+   mes "Os 10 últimos jogadores que me derrotaram:";
+   If ($Player$[0] != ""){ If ($IndVelha[0] == 1){ mes "^FF0000"+$Player$[0]+"^000000"; }Else{ mes "^D57352"+$Player$[0]+"^000000"; } }
+   If ($Player$[1] != ""){ If ($IndVelha[1] == 1){ mes "^FF0000"+$Player$[1]+"^000000"; }Else{ mes "^D57352"+$Player$[1]+"^000000"; } }
+   If ($Player$[2] != ""){ If ($IndVelha[2] == 1){ mes "^FF0000"+$Player$[2]+"^000000"; }Else{ mes "^D57352"+$Player$[2]+"^000000"; } }
+   If ($Player$[3] != ""){ If ($IndVelha[3] == 1){ mes "^FF0000"+$Player$[3]+"^000000"; }Else{ mes "^D57352"+$Player$[3]+"^000000"; } }
+   If ($Player$[4] != ""){ If ($IndVelha[4] == 1){ mes "^FF0000"+$Player$[4]+"^000000"; }Else{ mes "^D57352"+$Player$[4]+"^000000"; } }
+   If ($Player$[5] != ""){ If ($IndVelha[5] == 1){ mes "^FF0000"+$Player$[5]+"^000000"; }Else{ mes "^D57352"+$Player$[5]+"^000000"; } }
+   If ($Player$[6] != ""){ If ($IndVelha[6] == 1){ mes "^FF0000"+$Player$[6]+"^000000"; }Else{ mes "^D57352"+$Player$[6]+"^000000"; } }
+   If ($Player$[7] != ""){ If ($IndVelha[7] == 1){ mes "^FF0000"+$Player$[7]+"^000000"; }Else{ mes "^D57352"+$Player$[7]+"^000000"; } }
+   If ($Player$[8] != ""){ If ($IndVelha[8] == 1){ mes "^FF0000"+$Player$[8]+"^000000"; }Else{ mes "^D57352"+$Player$[8]+"^000000"; } }
+   If ($Player$[9] != ""){ If ($IndVelha[9] == 1){ mes "^FF0000"+$Player$[9]+"^000000"; }Else{ mes "^D57352"+$Player$[9]+"^000000"; } }
+   Close;
+
+ResetarTOP10:
+   Set $VitoriaVsPlayer, 0;
+   Set $Player$[0], "";
+   Set $Player$[1], "";
+   Set $Player$[2], "";
+   Set $Player$[3], "";
+   Set $Player$[4], "";
+   Set $Player$[5], "";
+   Set $Player$[6], "";
+   Set $Player$[7], "";
+   Set $Player$[8], "";
+   Set $Player$[9], "";
+   Set $IndVelha[0], 0;
+   Set $IndVelha[1], 0;
+   Set $IndVelha[2], 0;
+   Set $IndVelha[3], 0;
+   Set $IndVelha[4], 0;
+   Set $IndVelha[5], 0;
+   Set $IndVelha[6], 0;
+   Set $IndVelha[7], 0;
+   Set $IndVelha[8], 0;
+   Set $IndVelha[9], 0;
+
+   mes "^FF0000[Velha]^000000";
+   mes "Resetado com Sucesso!";
+   Close;
+
+SemZeny:
+   mes "^FF0000[Velha]^000000";
+   mes "Me parece que você não tem Zenys suficientes! Volte quando conseguir.";
+   If ($VNome1$ == StrCharInfo(0)){ DoNpcEvent "ResetarV::OnInit"; }
+   Close;
+
+PegaPremio01:
+   mes "Deseja pegar seu prêmio agora?";
+   If (getitemname($VelhaPremioID) != "null"){
+      mes "Se você jogar novamente contra mim e vencer você so receberá:";
+      mes "^FF0000"+$VelhaPremioQtd+" "+getitemname($VelhaPremioID)+"^000000";
+   }
+   Next;
+   Menu "Quero pegar meu prêmio!",-,"Quero jogar novamente.",QuestI,"Quem te derrotou recentemente?",VListaVenc,"Depois eu volto!",QuestS;
+
+   mes "^FF0000[Velha]^000000";
+   mes "Aqui esta seu prêmio.";
+   If (StrCharInfo(0) == $Player$[0]){ Set $IndVelha[0], 0; getitem $VelhaPremioID,$VelhaPremioQtd; }
+   If (StrCharInfo(0) == $Player$[1]){ Set $IndVelha[1], 0; getitem $VelhaPremioID,$VelhaPremioQtd; }
+   If (StrCharInfo(0) == $Player$[2]){ Set $IndVelha[2], 0; getitem $VelhaPremioID,$VelhaPremioQtd; }
+   If (StrCharInfo(0) == $Player$[3]){ Set $IndVelha[3], 0; getitem $VelhaPremioID,$VelhaPremioQtd; }
+   If (StrCharInfo(0) == $Player$[4]){ Set $IndVelha[4], 0; getitem $VelhaPremioID,$VelhaPremioQtd; }
+   If (StrCharInfo(0) == $Player$[5]){ Set $IndVelha[5], 0; getitem $VelhaPremioID,$VelhaPremioQtd; }
+   If (StrCharInfo(0) == $Player$[6]){ Set $IndVelha[6], 0; getitem $VelhaPremioID,$VelhaPremioQtd; }
+   If (StrCharInfo(0) == $Player$[7]){ Set $IndVelha[7], 0; getitem $VelhaPremioID,$VelhaPremioQtd; }
+   If (StrCharInfo(0) == $Player$[8]){ Set $IndVelha[8], 0; getitem $VelhaPremioID,$VelhaPremioQtd; }
+   If (StrCharInfo(0) == $Player$[9]){ Set $IndVelha[9], 0; getitem $VelhaPremioID,$VelhaPremioQtd; }
+   Close;
+
+PegaPremio02:
+   mes "Vejo que você venceu um duelo contra um amigo não é!?";
+   mes "Deseja pegar seu prêmio agora?";
+   mes "Se você jogar novamente contra um amigo e vencer você so receberá o valor da nova vitória se não pegar seu prêmio agora.";
+
+   Next;
+   Menu "Quero pegar meu prêmio!",-,"Quero jogar novamente.",QuestI,"Quem te derrotou recentemente?",VListaVenc,"Depois eu volto!",QuestS;
+
+   mes "^FF0000[Velha]^000000";
+   mes "Aqui esta seu prêmio.";
+   If (StrCharInfo(0) == $Player1$[0]){ Set $IndVelha1[0], 0; Set Zeny,Zeny+$ZenyVelha1[0]; }
+   If (StrCharInfo(0) == $Player1$[1]){ Set $IndVelha1[1], 0; Set Zeny,Zeny+$ZenyVelha1[1]; }
+   If (StrCharInfo(0) == $Player1$[2]){ Set $IndVelha1[2], 0; Set Zeny,Zeny+$ZenyVelha1[2]; }
+   If (StrCharInfo(0) == $Player1$[3]){ Set $IndVelha1[3], 0; Set Zeny,Zeny+$ZenyVelha1[3]; }
+   If (StrCharInfo(0) == $Player1$[4]){ Set $IndVelha1[4], 0; Set Zeny,Zeny+$ZenyVelha1[4]; }
+   If (StrCharInfo(0) == $Player1$[5]){ Set $IndVelha1[5], 0; Set Zeny,Zeny+$ZenyVelha1[5]; }
+   If (StrCharInfo(0) == $Player1$[6]){ Set $IndVelha1[6], 0; Set Zeny,Zeny+$ZenyVelha1[6]; }
+   If (StrCharInfo(0) == $Player1$[7]){ Set $IndVelha1[7], 0; Set Zeny,Zeny+$ZenyVelha1[7]; }
+   If (StrCharInfo(0) == $Player1$[8]){ Set $IndVelha1[8], 0; Set Zeny,Zeny+$ZenyVelha1[8]; }
+   If (StrCharInfo(0) == $Player1$[9]){ Set $IndVelha1[9], 0; Set Zeny,Zeny+$ZenyVelha1[9]; }
+   Close;
+
+OnStart:
+//Contra a Velha
+   If ($JogoV == 0){
+      If ($VNome1$ == $Player$[0]){ Set $Player$[0], ""; }
+      If ($VNome1$ == $Player$[1]){ Set $Player$[1], ""; }
+      If ($VNome1$ == $Player$[2]){ Set $Player$[2], ""; }
+      If ($VNome1$ == $Player$[3]){ Set $Player$[3], ""; }
+      If ($VNome1$ == $Player$[4]){ Set $Player$[4], ""; }
+      If ($VNome1$ == $Player$[5]){ Set $Player$[5], ""; }
+      If ($VNome1$ == $Player$[6]){ Set $Player$[6], ""; }
+      If ($VNome1$ == $Player$[7]){ Set $Player$[7], ""; }
+      If ($VNome1$ == $Player$[8]){ Set $Player$[8], ""; }
+      If ($VNome1$ == $Player$[9]){ Set $Player$[9], ""; }
+
+      If ($Player$[0] == ""){
+         Set $IndVelha[0], 1;
+         Set $Player$[0], $VNome1$;
+      }Else{
+         Set $Player$[9], $Player$[8];
+         Set $Player$[8], $Player$[7];
+         Set $Player$[7], $Player$[6];
+         Set $Player$[6], $Player$[5];
+         Set $Player$[5], $Player$[4];
+         Set $Player$[4], $Player$[3];
+         Set $Player$[3], $Player$[2];
+         Set $Player$[2], $Player$[1];
+         Set $Player$[1], $Player$[0];
+         Set $Player$[0], $VNome1$;
+         Set $IndVelha[9], $IndVelha[8];
+         Set $IndVelha[8], $IndVelha[7];
+         Set $IndVelha[7], $IndVelha[6];
+         Set $IndVelha[6], $IndVelha[5];
+         Set $IndVelha[5], $IndVelha[4];
+         Set $IndVelha[4], $IndVelha[3];
+         Set $IndVelha[3], $IndVelha[2];
+         Set $IndVelha[2], $IndVelha[1];
+         Set $IndVelha[1], $IndVelha[0];
+         Set $IndVelha[0], 1;
+      }
+   }Else{
+//Contra um Amigo
+      If ($VitoriaVsPlayer == 2){ Set $VNome1$,$VNome2$; }
+
+      If ($VNome1$ == $Player1$[0]){ Set $Player1$[0], ""; }
+      If ($VNome1$ == $Player1$[1]){ Set $Player1$[1], ""; }
+      If ($VNome1$ == $Player1$[2]){ Set $Player1$[2], ""; }
+      If ($VNome1$ == $Player1$[3]){ Set $Player1$[3], ""; }
+      If ($VNome1$ == $Player1$[4]){ Set $Player1$[4], ""; }
+      If ($VNome1$ == $Player1$[5]){ Set $Player1$[5], ""; }
+      If ($VNome1$ == $Player1$[6]){ Set $Player1$[6], ""; }
+      If ($VNome1$ == $Player1$[7]){ Set $Player1$[7], ""; }
+      If ($VNome1$ == $Player1$[8]){ Set $Player1$[8], ""; }
+      If ($VNome1$ == $Player1$[9]){ Set $Player1$[9], ""; }
+
+      Set $ZenyVelha1[9], $ZenyVelha1[8];
+      Set $ZenyVelha1[8], $ZenyVelha1[7];
+      Set $ZenyVelha1[7], $ZenyVelha1[6];
+      Set $ZenyVelha1[6], $ZenyVelha1[5];
+      Set $ZenyVelha1[5], $ZenyVelha1[4];
+      Set $ZenyVelha1[4], $ZenyVelha1[3];
+      Set $ZenyVelha1[3], $ZenyVelha1[2];
+      Set $ZenyVelha1[2], $ZenyVelha1[1];
+      Set $ZenyVelha1[1], $ZenyVelha1[0];
+      Set $ZenyVelha1[0], $VZeny*2;
+
+      Set $Player1$[9], $Player1$[8];
+      Set $Player1$[8], $Player1$[7];
+      Set $Player1$[7], $Player1$[6];
+      Set $Player1$[6], $Player1$[5];
+      Set $Player1$[5], $Player1$[4];
+      Set $Player1$[4], $Player1$[3];
+      Set $Player1$[3], $Player1$[2];
+      Set $Player1$[2], $Player1$[1];
+      Set $Player1$[1], $Player1$[0];
+      Set $Player1$[0], $VNome1$;
+      Set $IndVelha1[9], $IndVelha1[8];
+      Set $IndVelha1[8], $IndVelha1[7];
+      Set $IndVelha1[7], $IndVelha1[6];
+      Set $IndVelha1[6], $IndVelha1[5];
+      Set $IndVelha1[5], $IndVelha1[4];
+      Set $IndVelha1[4], $IndVelha1[3];
+      Set $IndVelha1[3], $IndVelha1[2];
+      Set $IndVelha1[2], $IndVelha1[1];
+      Set $IndVelha1[1], $IndVelha1[0];
+      Set $IndVelha1[0], 1;
+   }
+   Sleep 2000;
+   DoNpcEvent "ResetarV::OnInit";
+End;
+
+//Reinicia o NPC para evitar ou solucionar BUGs.
+OnClock2355:
+   If ($Quest == 1){
+      MapAnnounce "prontera.gat","Velha: Infelizmente não vou pode terminar o duelo!",1,0xD57352;
+      Sleep 2000;
+      MapAnnounce "prontera.gat","Velha: Agora eu preciso descansar um pouco! Volte em 5 minutos.",1,0xD57352;
+   }
+   DoNpcEvent "ResetarV::OnInit";
+   Set $VelhaDescansar, 1;
+End;
+
+OnClock0000:
+   DoNpcEvent "ResetarV::OnInit";
+   Set $VelhaDescansar, 0;
+   MapAnnounce "prontera.gat","Velha: Alguem ai esta afim de jogar??",1,0xD57352;
+End;
+
+OnClock0555:
+   If ($Quest == 1){
+      MapAnnounce "prontera.gat","Velha: Infelizmente não vou pode terminar o duelo!",1,0xD57352;
+      Sleep 2000;
+      MapAnnounce "prontera.gat","Velha: Agora eu preciso descansar um pouco! Volte em 5 minutos.",1,0xD57352;
+   }
+   DoNpcEvent "ResetarV::OnInit";
+   Set $VelhaDescansar, 1;
+End;
+
+OnClock0600:
+   DoNpcEvent "ResetarV::OnInit";
+   Set $VelhaDescansar, 0;
+   MapAnnounce "prontera.gat","Velha: Alguem ai esta afim de jogar??",1,0xD57352;
+End;
+
+OnClock1155:
+   If ($Quest == 1){
+      MapAnnounce "prontera.gat","Velha: Infelizmente não vou pode terminar o duelo!",1,0xD57352;
+      Sleep 2000;
+      MapAnnounce "prontera.gat","Velha: Agora eu preciso descansar um pouco! Volte em 5 minutos.",1,0xD57352;
+   }
+   DoNpcEvent "ResetarV::OnInit";
+   Set $VelhaDescansar, 1;
+End;
+
+OnClock1200:
+   DoNpcEvent "ResetarV::OnInit";
+   Set $VelhaDescansar, 0;
+   MapAnnounce "prontera.gat","Velha: Alguem ai esta afim de jogar??",1,0xD57352;
+End;
+
+OnClock1755:
+   If ($Quest == 1){
+      MapAnnounce "prontera.gat","Velha: Infelizmente não vou pode terminar o duelo!",1,0xD57352;
+      Sleep 2000;
+      MapAnnounce "prontera.gat","Velha: Agora eu preciso descansar um pouco! Volte em 5 minutos.",1,0xD57352;
+   }
+   DoNpcEvent "ResetarV::OnInit";
+   Set $VelhaDescansar, 1;
+End;
+
+OnClock1800:
+   DoNpcEvent "ResetarV::OnInit";
+   Set $VelhaDescansar, 0;
+   MapAnnounce "prontera.gat","Velha: Alguem ai esta afim de jogar??",1,0xD57352;
+End;
+
+}
+
+//= Limpa Tela ==========================================================================================
+
+prontera.gat,238,59,5	script	Velha::VelhaC	139,5,5,{
+   If ($JogoV != 2){
+      If ($JogoV == 0){
+         If ($VNome1$ != StrCharInfo(0)){ warp "prontera",231,61; }
+      }Else{
+         If (($VNome1$ != StrCharInfo(0)) && ($VNome2$ != StrCharInfo(0))){ warp "prontera",231,61; }
+      }
+   }
+}
+
+//= Netinha =============================================================================================
+
+prontera,149,177,5	script	Netinha::JogoVelhaB	877,{
+   mes "^FF0000[Netinha]^000000";
+   mes "Olá "+StrCharInfo(0)+",";
+   mes "Estou com tanta saudade da minha vózinha...";
+   mes "Eu me lembro como se fosse hoje o último dia em que eu joguei com ela!";
+   Next;
+   mes "^FF0000[Netinha]^000000";
+   mes "Eu queria visita-la, mas sozinha minha mãe não deixa.";
+   mes "Você poderia me levar até ela??";
+   Next;
+   Menu "Claro! vamos lá.",NetinhaGoVelha,"Depois eu te levo.",NetinhaDepois;
+
+NetinhaGoVelha:
+   mes "^FF0000[Netinha]^000000";
+   mes "Obrigada!!!";
+   mes "Você não tem noção de quanto issu me faz feliz!";
+   Close2;
+   warp "prontera",231,61;
+   Close;
+
+NetinhaDepois:
+   mes "^FF0000[Netinha]^000000";
+   mes "Ahh.. Larga de ser mal!";
+   mes "Vamos lá comigu??";
+   mes "Então depois você me leva né?";
+   Close;
+}
+
+prontera.gat,230,63,5	script	Netinha::JogoVelhaC	877,{
+   mes "^FF0000[Netinha]^000000";
+   mes StrCharInfo(0)+" esta ficando tarde né?!";
+   mes "Acho melhor nos voltarmos...";
+   Next;
+   Menu "Claro! vamos lá.",NetinhaVoltar,"Agora não, vamos depois.",NetinhaNao;
+
+NetinhaVoltar:
+   mes "^FF0000[Netinha]^000000";
+   mes "Outro dia você me traz denovo?";
+   Close2;
+   warp "prontera",156,181;
+   Close;
+
+NetinhaNao:
+   mes "^FF0000[Netinha]^000000";
+   mes "Ok!";
+   mes "Acho que minha mãe não vai ligar se ficarmos mais um pouco.";
+   Close;
+}
+
+//= Resetar =============================================================================================
+
+-	script	VelharReset::ResetarV	,{
+OnInit:
+   If ($JogoNVelha == 1){ Sleep 2000; }
+   disablenpc "P11"; disablenpc "P12"; disablenpc "P13"; disablenpc "P21"; disablenpc "P22"; disablenpc "P23"; disablenpc "P31"; disablenpc "P32"; disablenpc "P33";
+   disablenpc "X11"; disablenpc "X12"; disablenpc "X13"; disablenpc "X21"; disablenpc "X22"; disablenpc "X23"; disablenpc "X31"; disablenpc "X32"; disablenpc "X33";
+   disablenpc "O11"; disablenpc "O12"; disablenpc "O13"; disablenpc "O21"; disablenpc "O22"; disablenpc "O23"; disablenpc "O31"; disablenpc "O32"; disablenpc "O33";
+   Set $JogoV, 2;
+   Set $P11, 0; Set $P12, 0; Set $P13, 0; Set $P21, 0; Set $P22, 0; Set $P23, 0; Set $P31, 0; Set $P32, 0; Set $P33, 0;
+   set $Quest, 0;
+   Set $VNome1$, ""; Set $VNome2$, "";
+   Set $ConviteVelha, 0; Set $Vez, 0; Set $JogoNVelha, 0;
+   Set $VitoriaVsPlayer, 0;
+   Set $MJVRecusarConvite, 1;
+   Set $VelhaDescansar, 0;
+   End;
+}
+
+//= Pensador ============================================================================================
+
+function	script	Pensador	{
+//Ganhar
+   If (($Vez == 1) && ($P11 == 2) && ($P12 == 0) && ($P13 == 2)){ Set $P12, 2; Set $Vez, 0; enablenpc "O12"; disablenpc "P12"; }
+   If (($Vez == 1) && ($P11 == 0) && ($P12 == 2) && ($P13 == 2)){ Set $P11, 2; Set $Vez, 0; enablenpc "O11"; disablenpc "P11"; }
+   If (($Vez == 1) && ($P11 == 2) && ($P12 == 2) && ($P13 == 0)){ Set $P13, 2; Set $Vez, 0; enablenpc "O13"; disablenpc "P13"; }
+   If (($Vez == 1) && ($P21 == 2) && ($P22 == 0) && ($P23 == 2)){ Set $P22, 2; Set $Vez, 0; enablenpc "O22"; disablenpc "P22"; }
+   If (($Vez == 1) && ($P21 == 0) && ($P22 == 2) && ($P23 == 2)){ Set $P21, 2; Set $Vez, 0; enablenpc "O21"; disablenpc "P21"; }
+   If (($Vez == 1) && ($P21 == 2) && ($P22 == 2) && ($P23 == 0)){ Set $P23, 2; Set $Vez, 0; enablenpc "O23"; disablenpc "P23"; }
+   If (($Vez == 1) && ($P31 == 2) && ($P32 == 0) && ($P33 == 2)){ Set $P32, 2; Set $Vez, 0; enablenpc "O32"; disablenpc "P32"; }
+   If (($Vez == 1) && ($P31 == 0) && ($P32 == 2) && ($P33 == 2)){ Set $P31, 2; Set $Vez, 0; enablenpc "O31"; disablenpc "P31"; }
+   If (($Vez == 1) && ($P31 == 2) && ($P32 == 2) && ($P33 == 0)){ Set $P33, 2; Set $Vez, 0; enablenpc "O33"; disablenpc "P33"; }
+   If (($Vez == 1) && ($P11 == 0) && ($P21 == 2) && ($P31 == 2)){ Set $P11, 2; Set $Vez, 0; enablenpc "O11"; disablenpc "P11"; }
+   If (($Vez == 1) && ($P11 == 2) && ($P21 == 0) && ($P31 == 2)){ Set $P21, 2; Set $Vez, 0; enablenpc "O21"; disablenpc "P21"; }
+   If (($Vez == 1) && ($P11 == 2) && ($P21 == 2) && ($P31 == 0)){ Set $P31, 2; Set $Vez, 0; enablenpc "O31"; disablenpc "P31"; }
+   If (($Vez == 1) && ($P12 == 0) && ($P22 == 2) && ($P32 == 2)){ Set $P12, 2; Set $Vez, 0; enablenpc "O12"; disablenpc "P12"; }
+   If (($Vez == 1) && ($P12 == 2) && ($P22 == 0) && ($P32 == 2)){ Set $P22, 2; Set $Vez, 0; enablenpc "O22"; disablenpc "P22"; }
+   If (($Vez == 1) && ($P12 == 2) && ($P22 == 2) && ($P32 == 0)){ Set $P32, 2; Set $Vez, 0; enablenpc "O32"; disablenpc "P32"; }
+   If (($Vez == 1) && ($P13 == 0) && ($P23 == 2) && ($P33 == 2)){ Set $P13, 2; Set $Vez, 0; enablenpc "O13"; disablenpc "P13"; }
+   If (($Vez == 1) && ($P13 == 2) && ($P23 == 0) && ($P33 == 2)){ Set $P23, 2; Set $Vez, 0; enablenpc "O23"; disablenpc "P23"; }
+   If (($Vez == 1) && ($P13 == 2) && ($P23 == 2) && ($P33 == 0)){ Set $P33, 2; Set $Vez, 0; enablenpc "O33"; disablenpc "P33"; }
+   If (($Vez == 1) && ($P11 == 0) && ($P22 == 2) && ($P33 == 2)){ Set $P11, 2; Set $Vez, 0; enablenpc "O11"; disablenpc "P11"; }
+   If (($Vez == 1) && ($P11 == 2) && ($P22 == 0) && ($P33 == 2)){ Set $P22, 2; Set $Vez, 0; enablenpc "O22"; disablenpc "P22"; }
+   If (($Vez == 1) && ($P11 == 2) && ($P22 == 2) && ($P33 == 0)){ Set $P33, 2; Set $Vez, 0; enablenpc "O33"; disablenpc "P33"; }
+   If (($Vez == 1) && ($P13 == 0) && ($P22 == 2) && ($P31 == 2)){ Set $P13, 2; Set $Vez, 0; enablenpc "O13"; disablenpc "P13"; }
+   If (($Vez == 1) && ($P13 == 2) && ($P22 == 0) && ($P31 == 2)){ Set $P22, 2; Set $Vez, 0; enablenpc "O22"; disablenpc "P22"; }
+   If (($Vez == 1) && ($P13 == 2) && ($P22 == 2) && ($P31 == 0)){ Set $P31, 2; Set $Vez, 0; enablenpc "O31"; disablenpc "P31"; }
+//Proteger
+   If (($Vez == 1) && ($P11 == 1) && ($P12 == 0) && ($P13 == 1)){ Set $P12, 2; Set $Vez, 0; enablenpc "O12"; disablenpc "P12"; }
+   If (($Vez == 1) && ($P11 == 0) && ($P12 == 1) && ($P13 == 1)){ Set $P11, 2; Set $Vez, 0; enablenpc "O11"; disablenpc "P11"; }
+   If (($Vez == 1) && ($P11 == 1) && ($P12 == 1) && ($P13 == 0)){ Set $P13, 2; Set $Vez, 0; enablenpc "O13"; disablenpc "P13"; }
+   If (($Vez == 1) && ($P21 == 1) && ($P22 == 0) && ($P23 == 1)){ Set $P22, 2; Set $Vez, 0; enablenpc "O22"; disablenpc "P22"; }
+   If (($Vez == 1) && ($P21 == 0) && ($P22 == 1) && ($P23 == 1)){ Set $P21, 2; Set $Vez, 0; enablenpc "O21"; disablenpc "P21"; }
+   If (($Vez == 1) && ($P21 == 1) && ($P22 == 1) && ($P23 == 0)){ Set $P23, 2; Set $Vez, 0; enablenpc "O23"; disablenpc "P23"; }
+   If (($Vez == 1) && ($P31 == 1) && ($P32 == 0) && ($P33 == 1)){ Set $P32, 2; Set $Vez, 0; enablenpc "O32"; disablenpc "P32"; }
+   If (($Vez == 1) && ($P31 == 0) && ($P32 == 1) && ($P33 == 1)){ Set $P31, 2; Set $Vez, 0; enablenpc "O31"; disablenpc "P31"; }
+   If (($Vez == 1) && ($P31 == 1) && ($P32 == 1) && ($P33 == 0)){ Set $P33, 2; Set $Vez, 0; enablenpc "O33"; disablenpc "P33"; }
+   If (($Vez == 1) && ($P11 == 0) && ($P21 == 1) && ($P31 == 1)){ Set $P11, 2; Set $Vez, 0; enablenpc "O11"; disablenpc "P11"; }
+   If (($Vez == 1) && ($P11 == 1) && ($P21 == 0) && ($P31 == 1)){ Set $P21, 2; Set $Vez, 0; enablenpc "O21"; disablenpc "P21"; }
+   If (($Vez == 1) && ($P11 == 1) && ($P21 == 1) && ($P31 == 0)){ Set $P31, 2; Set $Vez, 0; enablenpc "O31"; disablenpc "P31"; }
+   If (($Vez == 1) && ($P12 == 0) && ($P22 == 1) && ($P32 == 1)){ Set $P12, 2; Set $Vez, 0; enablenpc "O12"; disablenpc "P12"; }
+   If (($Vez == 1) && ($P12 == 1) && ($P22 == 0) && ($P32 == 1)){ Set $P22, 2; Set $Vez, 0; enablenpc "O22"; disablenpc "P22"; }
+   If (($Vez == 1) && ($P12 == 1) && ($P22 == 1) && ($P32 == 0)){ Set $P32, 2; Set $Vez, 0; enablenpc "O32"; disablenpc "P32"; }
+   If (($Vez == 1) && ($P13 == 0) && ($P23 == 1) && ($P33 == 1)){ Set $P13, 2; Set $Vez, 0; enablenpc "O13"; disablenpc "P13"; }
+   If (($Vez == 1) && ($P13 == 1) && ($P23 == 0) && ($P33 == 1)){ Set $P23, 2; Set $Vez, 0; enablenpc "O23"; disablenpc "P23"; }
+   If (($Vez == 1) && ($P13 == 1) && ($P23 == 1) && ($P33 == 0)){ Set $P33, 2; Set $Vez, 0; enablenpc "O33"; disablenpc "P33"; }
+   If (($Vez == 1) && ($P11 == 0) && ($P22 == 1) && ($P33 == 1)){ Set $P11, 2; Set $Vez, 0; enablenpc "O11"; disablenpc "P11"; }
+   If (($Vez == 1) && ($P11 == 1) && ($P22 == 0) && ($P33 == 1)){ Set $P22, 2; Set $Vez, 0; enablenpc "O22"; disablenpc "P22"; }
+   If (($Vez == 1) && ($P11 == 1) && ($P22 == 1) && ($P33 == 0)){ Set $P33, 2; Set $Vez, 0; enablenpc "O33"; disablenpc "P33"; }
+   If (($Vez == 1) && ($P13 == 0) && ($P22 == 1) && ($P31 == 1)){ Set $P13, 2; Set $Vez, 0; enablenpc "O13"; disablenpc "P13"; }
+   If (($Vez == 1) && ($P13 == 1) && ($P22 == 0) && ($P31 == 1)){ Set $P22, 2; Set $Vez, 0; enablenpc "O22"; disablenpc "P22"; }
+   If (($Vez == 1) && ($P13 == 1) && ($P22 == 1) && ($P31 == 0)){ Set $P31, 2; Set $Vez, 0; enablenpc "O31"; disablenpc "P31"; }
+//Rand
+   If (($P11 == 0) || ($P12 == 0) || ($P13 == 0) || ($P21 == 0) || ($P22 == 0) || ($P23 == 0) || ($P31 == 0) || ($P32 == 0) || ($P33 == 0)){
+      While ($Vez == 1){
+         Set @ValorVelha, Rand(0,8);
+         If (@ValorVelha == 0){ If (($Vez == 1) && ($P11 == 0)){ Set $P11, 2; Set $Vez, 0; enablenpc "O11"; disablenpc "P11"; } }
+         If (@ValorVelha == 1){ If (($Vez == 1) && ($P12 == 0)){ Set $P12, 2; Set $Vez, 0; enablenpc "O12"; disablenpc "P12"; } }
+         If (@ValorVelha == 2){ If (($Vez == 1) && ($P13 == 0)){ Set $P13, 2; Set $Vez, 0; enablenpc "O13"; disablenpc "P13"; } }
+         If (@ValorVelha == 3){ If (($Vez == 1) && ($P21 == 0)){ Set $P21, 2; Set $Vez, 0; enablenpc "O21"; disablenpc "P21"; } }
+         If (@ValorVelha == 4){ If (($Vez == 1) && ($P22 == 0)){ Set $P22, 2; Set $Vez, 0; enablenpc "O22"; disablenpc "P22"; } }
+         If (@ValorVelha == 5){ If (($Vez == 1) && ($P23 == 0)){ Set $P23, 2; Set $Vez, 0; enablenpc "O23"; disablenpc "P23"; } }
+         If (@ValorVelha == 6){ If (($Vez == 1) && ($P31 == 0)){ Set $P31, 2; Set $Vez, 0; enablenpc "O31"; disablenpc "P31"; } }
+         If (@ValorVelha == 7){ If (($Vez == 1) && ($P32 == 0)){ Set $P32, 2; Set $Vez, 0; enablenpc "O32"; disablenpc "P32"; } }
+         If (@ValorVelha == 8){ If (($Vez == 1) && ($P33 == 0)){ Set $P33, 2; Set $Vez, 0; enablenpc "O33"; disablenpc "P33"; } }
+      }
+   }
+   Return;
+}
+
+//= Verificador =========================================================================================
+
+function	script	Verificador	{
+   Set $JogoNVelha, 0;
+   If (($P11 == 1) && ($P12 == 1) && ($P13 == 1)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" conseguiu me ganhar!!!",1,0xD57352; DoNpcEvent "VelhaA::OnStart"; End; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" venceu o duelo contra "+$VNome2$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,1; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+   If (($P21 == 1) && ($P22 == 1) && ($P23 == 1)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" conseguiu me ganhar!!!",1,0xD57352; DoNpcEvent "VelhaA::OnStart"; End; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" venceu o duelo contra "+$VNome2$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,1; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+   If (($P31 == 1) && ($P32 == 1) && ($P33 == 1)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" conseguiu me ganhar!!!",1,0xD57352; DoNpcEvent "VelhaA::OnStart"; End; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" venceu o duelo contra "+$VNome2$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,1; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+   If (($P11 == 1) && ($P21 == 1) && ($P31 == 1)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" conseguiu me ganhar!!!",1,0xD57352; DoNpcEvent "VelhaA::OnStart"; End; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" venceu o duelo contra "+$VNome2$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,1; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+   If (($P12 == 1) && ($P22 == 1) && ($P32 == 1)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" conseguiu me ganhar!!!",1,0xD57352; DoNpcEvent "VelhaA::OnStart"; End; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" venceu o duelo contra "+$VNome2$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,1; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+   If (($P13 == 1) && ($P23 == 1) && ($P33 == 1)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" conseguiu me ganhar!!!",1,0xD57352; DoNpcEvent "VelhaA::OnStart"; End; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" venceu o duelo contra "+$VNome2$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,1; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+   If (($P11 == 1) && ($P22 == 1) && ($P33 == 1)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" conseguiu me ganhar!!!",1,0xD57352; DoNpcEvent "VelhaA::OnStart"; End; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" venceu o duelo contra "+$VNome2$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,1; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+   If (($P13 == 1) && ($P22 == 1) && ($P31 == 1)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" conseguiu me ganhar!!!",1,0xD57352; DoNpcEvent "VelhaA::OnStart"; End; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome1$+" venceu o duelo contra "+$VNome2$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,1; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+
+   If (($P11 == 2) && ($P12 == 2) && ($P13 == 2)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: Eu sabia que você ia perder "+$VNome1$+"!!!",1,0xD57352; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome2$+" venceu o duelo contra "+$VNome1$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,2; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+   If (($P21 == 2) && ($P22 == 2) && ($P23 == 2)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: Eu sabia que você ia perder "+$VNome1$+"!!!",1,0xD57352; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome2$+" venceu o duelo contra "+$VNome1$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,2; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+   If (($P31 == 2) && ($P32 == 2) && ($P33 == 2)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: Eu sabia que você ia perder "+$VNome1$+"!!!",1,0xD57352; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome2$+" venceu o duelo contra "+$VNome1$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,2; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+   If (($P11 == 2) && ($P21 == 2) && ($P31 == 2)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: Eu sabia que você ia perder "+$VNome1$+"!!!",1,0xD57352; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome2$+" venceu o duelo contra "+$VNome1$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,2; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+   If (($P12 == 2) && ($P22 == 2) && ($P32 == 2)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: Eu sabia que você ia perder "+$VNome1$+"!!!",1,0xD57352; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome2$+" venceu o duelo contra "+$VNome1$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,2; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+   If (($P13 == 2) && ($P23 == 2) && ($P33 == 2)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: Eu sabia que você ia perder "+$VNome1$+"!!!",1,0xD57352; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome2$+" venceu o duelo contra "+$VNome1$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,2; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+   If (($P11 == 2) && ($P22 == 2) && ($P33 == 2)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: Eu sabia que você ia perder "+$VNome1$+"!!!",1,0xD57352; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome2$+" venceu o duelo contra "+$VNome1$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,2; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+   If (($P13 == 2) && ($P22 == 2) && ($P31 == 2)){ If ($JogoV == 0){ MapAnnounce "prontera.gat","Velha: Eu sabia que você ia perder "+$VNome1$+"!!!",1,0xD57352; }else{ MapAnnounce "prontera.gat","Velha: "+$VNome2$+" venceu o duelo contra "+$VNome1$+"!!!",1,0xD57352; Set $VitoriaVsPlayer,2; DoNpcEvent "VelhaA::OnStart"; End; } Set $JogoNVelha, 1; Set $JogoV, 2; }
+
+   If (($JogoNVelha == 0) && ($P11 != 0) && ($P12 != 0) && ($P13 != 0) && ($P21 != 0) && ($P22 != 0) && ($P23 != 0) && ($P31 != 0) && ($P32 != 0) && ($P33 != 0)){ MapAnnounce "prontera.gat","Velha: Ninguem venceu!!!",1,0xD57352; Set $JogoNVelha, 1; }
+   If ($JogoNVelha == 1){ DoNpcEvent "ResetarV::OnInit"; }
+
+   Set $TimerSleep, 60000;
+   DoNPCEvent "VelharTimer::OnStart";
+
+   If ($JogoNVelha != 1){ Return; }
+}
+
+//= Timer ===============================================================================================
+
+-	script	Timer::VelharTimer	-1,{
+OnStart:
+   StopNpcTimer;
+   InitNpcTimer;
+End;
+
+OnTimer60000:
+   If ($JogoV != 2){ MapAnnounce "prontera.gat","Velha: Tempo esgotado! Você demorou demais para fazer sua jogada.",1,0xD57352; }
+   DoNpcEvent "ResetarV::OnInit";
+End;
+}
+
+//= Pedras ==============================================================================================
+
+prontera,237,60,4	script	Selecionar#0::P11	1002,{
+   If ($JogoV == 2){
+      mes "^FF0000[Velha]^000000";
+      mes "Nossa você esta tentando trapacear??";
+      mes "Eu até anunciei o ganhador!";
+      mes "O que você esta querendo aqui??";
+      close;
+   }
+   If (($VNome1$ == StrCharInfo(0)) || ($VNome2$ == StrCharInfo(0))){
+      If ($P11 == 0){
+         disablenpc "P11";
+         If ($Vez == 0){
+            If ($VNome1$ == StrCharInfo(0)){ Set $P11, 1; enablenpc "X11"; callfunc "Verificador"; }Else{ enablenpc "P11"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }Else{
+            If ($VNome2$ == StrCharInfo(0)){ Set $P11, 2; enablenpc "O11"; callfunc "Verificador"; }Else{ enablenpc "P11"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }
+         If (($JogoV == 1) && ($Vez == 0)){ Set $Vez, 1; }Else{ Set $Vez, 0; }
+
+         If ($JogoV == 0){ Set $Vez, 1; callfunc "Pensador"; callfunc "Verificador"; }
+      }else{
+         mes "^FF0000[Velha]^000000";
+         mes "Nossa você esta tentando trapacear!";
+         mes "Que coisa feia...";
+         Close;
+      }
+   }else{
+      mes "^FF0000[Velha]^000000";
+      mes "Quem é você???";
+      mes "Pelo que estou vendo, você esta tentando atrapalhar o seu amigo.";
+      mes "Como punição vou te atordoar por 1 minuto.";
+      sc_start SC_Stun,60000,0;
+      close2;
+      warp "prontera",231,61;
+      close;
+   }
+}
+prontera,238,60,4	script	Selecionar#1::P12	1002,{
+   If ($JogoV == 2){
+      mes "^FF0000[Velha]^000000";
+      mes "Nossa você esta tentando trapacear??";
+      mes "Eu até anunciei o ganhador!";
+      mes "O que você esta querendo aqui??";
+      close;
+   }
+   If (($VNome1$ == StrCharInfo(0)) || ($VNome2$ == StrCharInfo(0))){
+      If ($P12 == 0){
+         disablenpc "P12";
+         If ($Vez == 0){
+            If ($VNome1$ == StrCharInfo(0)){ Set $P12, 1; enablenpc "X12"; callfunc "Verificador"; }Else{ enablenpc "P12"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }Else{
+            If ($VNome2$ == StrCharInfo(0)){ Set $P12, 2; enablenpc "O12"; callfunc "Verificador"; }Else{ enablenpc "P12"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }
+         If (($JogoV == 1) && ($Vez == 0)){ Set $Vez, 1; }Else{ Set $Vez, 0; }
+
+         If ($JogoV == 0){ Set $Vez, 1; callfunc "Pensador"; callfunc "Verificador"; }
+      }else{
+         mes "^FF0000[Velha]^000000";
+         mes "Nossa você esta tentando trapacear!";
+         mes "Que coisa feia...";
+         Close;
+      }
+   }else{
+      mes "^FF0000[Velha]^000000";
+      mes "Quem é você???";
+      mes "Pelo que estou vendo, você esta tentando atrapalhar o seu amigo.";
+      mes "Como punição vou te atordoar por 1 minuto.";
+      sc_start SC_Stun,60000,0;
+      close2;
+      warp "prontera",231,61;
+      close;
+   }
+}
+prontera,239,60,4	script	Selecionar#2::P13	1002,{
+   If ($JogoV == 2){
+      mes "^FF0000[Velha]^000000";
+      mes "Nossa você esta tentando trapacear??";
+      mes "Eu até anunciei o ganhador!";
+      mes "O que você esta querendo aqui??";
+      close;
+   }
+   If (($VNome1$ == StrCharInfo(0)) || ($VNome2$ == StrCharInfo(0))){
+      If ($P13 == 0){
+         disablenpc "P13";
+         If ($Vez == 0){
+            If ($VNome1$ == StrCharInfo(0)){ Set $P13, 1; enablenpc "X13"; callfunc "Verificador"; }Else{ enablenpc "P13"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }Else{
+            If ($VNome2$ == StrCharInfo(0)){ Set $P13, 2; enablenpc "O13"; callfunc "Verificador"; }Else{ enablenpc "P13"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }
+         If (($JogoV == 1) && ($Vez == 0)){ Set $Vez, 1; }Else{ Set $Vez, 0; }
+
+         If ($JogoV == 0){ Set $Vez, 1; callfunc "Pensador"; callfunc "Verificador"; }
+      }else{
+         mes "^FF0000[Velha]^000000";
+         mes "Nossa você esta tentando trapacear!";
+         mes "Que coisa feia...";
+         Close;
+      }
+   }else{
+      mes "^FF0000[Velha]^000000";
+      mes "Quem é você???";
+      mes "Pelo que estou vendo, você esta tentando atrapalhar o seu amigo.";
+      mes "Como punição vou te atordoar por 1 minuto.";
+      sc_start SC_Stun,60000,0;
+      close2;
+      warp "prontera",231,61;
+      close;
+   }
+}
+prontera,237,59,4	script	Selecionar#3::P21	1002,{
+   If ($JogoV == 2){
+      mes "^FF0000[Velha]^000000";
+      mes "Nossa você esta tentando trapacear??";
+      mes "Eu até anunciei o ganhador!";
+      mes "O que você esta querendo aqui??";
+      close;
+   }
+   If (($VNome1$ == StrCharInfo(0)) || ($VNome2$ == StrCharInfo(0))){
+      If ($P21 == 0){
+         disablenpc "P21";
+         If ($Vez == 0){
+            If ($VNome1$ == StrCharInfo(0)){ Set $P21, 1; enablenpc "X21"; callfunc "Verificador"; }Else{ enablenpc "P21"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }Else{
+            If ($VNome2$ == StrCharInfo(0)){ Set $P21, 2; enablenpc "O21"; callfunc "Verificador"; }Else{ enablenpc "P21"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }
+         If (($JogoV == 1) && ($Vez == 0)){ Set $Vez, 1; }Else{ Set $Vez, 0; }
+
+         If ($JogoV == 0){ Set $Vez, 1; callfunc "Pensador"; callfunc "Verificador"; }
+      }else{
+         mes "^FF0000[Velha]^000000";
+         mes "Nossa você esta tentando trapacear!";
+         mes "Que coisa feia...";
+         Close;
+      }
+   }else{
+      mes "^FF0000[Velha]^000000";
+      mes "Quem é você???";
+      mes "Pelo que estou vendo, você esta tentando atrapalhar o seu amigo.";
+      mes "Como punição vou te atordoar por 1 minuto.";
+      sc_start SC_Stun,60000,0;
+      close2;
+      warp "prontera",231,61;
+      close;
+   }
+}
+prontera,238,59,4	script	Selecionar#4::P22	1002,{
+   If ($JogoV == 2){
+      mes "^FF0000[Velha]^000000";
+      mes "Nossa você esta tentando trapacear??";
+      mes "Eu até anunciei o ganhador!";
+      mes "O que você esta querendo aqui??";
+      close;
+   }
+   If (($VNome1$ == StrCharInfo(0)) || ($VNome2$ == StrCharInfo(0))){
+      If ($P22 == 0){
+         disablenpc "P22";
+         If ($Vez == 0){
+            If ($VNome1$ == StrCharInfo(0)){ Set $P22, 1; enablenpc "X22"; callfunc "Verificador"; }Else{ enablenpc "P22"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }Else{
+            If ($VNome2$ == StrCharInfo(0)){ Set $P22, 2; enablenpc "O22"; callfunc "Verificador"; }Else{ enablenpc "P22"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }
+         If (($JogoV == 1) && ($Vez == 0)){ Set $Vez, 1; }Else{ Set $Vez, 0; }
+
+         If ($JogoV == 0){ Set $Vez, 1; callfunc "Pensador"; callfunc "Verificador"; }
+      }else{
+         mes "^FF0000[Velha]^000000";
+         mes "Nossa você esta tentando trapacear!";
+         mes "Que coisa feia...";
+         Close;
+      }
+   }else{
+      mes "^FF0000[Velha]^000000";
+      mes "Quem é você???";
+      mes "Pelo que estou vendo, você esta tentando atrapalhar o seu amigo.";
+      mes "Como punição vou te atordoar por 1 minuto.";
+      sc_start SC_Stun,60000,0;
+      close2;
+      warp "prontera",231,61;
+      close;
+   }
+}
+prontera,239,59,4	script	Selecionar#5::P23	1002,{
+   If ($JogoV == 2){
+      mes "^FF0000[Velha]^000000";
+      mes "Nossa você esta tentando trapacear??";
+      mes "Eu até anunciei o ganhador!";
+      mes "O que você esta querendo aqui??";
+      close;
+   }
+   If (($VNome1$ == StrCharInfo(0)) || ($VNome2$ == StrCharInfo(0))){
+      If ($P23 == 0){
+         disablenpc "P23";
+         If ($Vez == 0){
+            If ($VNome1$ == StrCharInfo(0)){ Set $P23, 1; enablenpc "X23"; callfunc "Verificador"; }Else{ enablenpc "P23"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }Else{
+            If ($VNome2$ == StrCharInfo(0)){ Set $P23, 2; enablenpc "O23"; callfunc "Verificador"; }Else{ enablenpc "P23"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }
+         If (($JogoV == 1) && ($Vez == 0)){ Set $Vez, 1; }Else{ Set $Vez, 0; }
+
+         If ($JogoV == 0){ Set $Vez, 1; callfunc "Pensador"; callfunc "Verificador"; }
+      }else{
+         mes "^FF0000[Velha]^000000";
+         mes "Nossa você esta tentando trapacear!";
+         mes "Que coisa feia...";
+         Close;
+      }
+   }else{
+      mes "^FF0000[Velha]^000000";
+      mes "Quem é você???";
+      mes "Pelo que estou vendo, você esta tentando atrapalhar o seu amigo.";
+      mes "Como punição vou te atordoar por 1 minuto.";
+      sc_start SC_Stun,60000,0;
+      close2;
+      warp "prontera",231,61;
+      close;
+   }
+}
+prontera,237,58,4	script	Selecionar#6::P31	1002,{
+   If ($JogoV == 2){
+      mes "^FF0000[Velha]^000000";
+      mes "Nossa você esta tentando trapacear??";
+      mes "Eu até anunciei o ganhador!";
+      mes "O que você esta querendo aqui??";
+      close;
+   }
+   If (($VNome1$ == StrCharInfo(0)) || ($VNome2$ == StrCharInfo(0))){
+      If ($P31 == 0){
+         disablenpc "P31";
+         If ($Vez == 0){
+            If ($VNome1$ == StrCharInfo(0)){ Set $P31, 1; enablenpc "X31"; callfunc "Verificador"; }Else{ enablenpc "P31"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }Else{
+            If ($VNome2$ == StrCharInfo(0)){ Set $P31, 2; enablenpc "O31"; callfunc "Verificador"; }Else{ enablenpc "P31"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }
+         If (($JogoV == 1) && ($Vez == 0)){ Set $Vez, 1; }Else{ Set $Vez, 0; }
+
+         If ($JogoV == 0){ Set $Vez, 1; callfunc "Pensador"; callfunc "Verificador"; }
+      }else{
+         mes "^FF0000[Velha]^000000";
+         mes "Nossa você esta tentando trapacear!";
+         mes "Que coisa feia...";
+         Close;
+      }
+   }else{
+      mes "^FF0000[Velha]^000000";
+      mes "Quem é você???";
+      mes "Pelo que estou vendo, você esta tentando atrapalhar o seu amigo.";
+      mes "Como punição vou te atordoar por 1 minuto.";
+      sc_start SC_Stun,60000,0;
+      close2;
+      warp "prontera",231,61;
+      close;
+   }
+}
+prontera,238,58,4	script	Selecionar#7::P32	1002,{
+   If ($JogoV == 2){
+      mes "^FF0000[Velha]^000000";
+      mes "Nossa você esta tentando trapacear??";
+      mes "Eu até anunciei o ganhador!";
+      mes "O que você esta querendo aqui??";
+      close;
+   }
+   If (($VNome1$ == StrCharInfo(0)) || ($VNome2$ == StrCharInfo(0))){
+      If ($P32 == 0){
+         disablenpc "P32";
+         If ($Vez == 0){
+            If ($VNome1$ == StrCharInfo(0)){ Set $P32, 1; enablenpc "X32"; callfunc "Verificador"; }Else{ enablenpc "P32"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }Else{
+            If ($VNome2$ == StrCharInfo(0)){ Set $P32, 2; enablenpc "O32"; callfunc "Verificador"; }Else{ enablenpc "P32"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }
+         If (($JogoV == 1) && ($Vez == 0)){ Set $Vez, 1; }Else{ Set $Vez, 0; }
+
+         If ($JogoV == 0){ Set $Vez, 1; callfunc "Pensador"; callfunc "Verificador"; }
+      }else{
+         mes "^FF0000[Velha]^000000";
+         mes "Nossa você esta tentando trapacear!";
+         mes "Que coisa feia...";
+         Close;
+      }
+   }else{
+      mes "^FF0000[Velha]^000000";
+      mes "Quem é você???";
+      mes "Pelo que estou vendo, você esta tentando atrapalhar o seu amigo.";
+      mes "Como punição vou te atordoar por 1 minuto.";
+      sc_start SC_Stun,60000,0;
+      close2;
+      warp "prontera",231,61;
+      close;
+   }
+}
+prontera,239,58,4	script	Selecionar#8::P33	1002,{
+   If ($JogoV == 2){
+      mes "^FF0000[Velha]^000000";
+      mes "Nossa você esta tentando trapacear??";
+      mes "Eu até anunciei o ganhador!";
+      mes "O que você esta querendo aqui??";
+      close;
+   }
+   If (($VNome1$ == StrCharInfo(0)) || ($VNome2$ == StrCharInfo(0))){
+      If ($P33 == 0){
+         disablenpc "P33";
+         If ($Vez == 0){
+            If ($VNome1$ == StrCharInfo(0)){ Set $P33, 1; enablenpc "X33"; callfunc "Verificador"; }Else{ enablenpc "P33"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }Else{
+            If ($VNome2$ == StrCharInfo(0)){ Set $P33, 2; enablenpc "O33"; callfunc "Verificador"; }Else{ enablenpc "P33"; mes "^FF0000[Velha]^000000"; mes "Não é a sua vez! Estou de olho em você"; Close; }
+         }
+         If (($JogoV == 1) && ($Vez == 0)){ Set $Vez, 1; }Else{ Set $Vez, 0; }
+
+         If ($JogoV == 0){ Set $Vez, 1; callfunc "Pensador"; callfunc "Verificador"; }
+      }else{
+         mes "^FF0000[Velha]^000000";
+         mes "Nossa você esta tentando trapacear!";
+         mes "Que coisa feia...";
+         Close;
+      }
+   }else{
+      mes "^FF0000[Velha]^000000";
+      mes "Quem é você???";
+      mes "Pelo que estou vendo, você esta tentando atrapalhar o seu amigo.";
+      mes "Como punição vou te atordoar por 1 minuto.";
+      sc_start SC_Stun,60000,0;
+      close2;
+      warp "prontera",231,61;
+      close;
+   }
+}
+
+prontera,237,60,4	script	O#0::O11	1031,{ emotion 24; }
+prontera,238,60,4	script	O#1::O12	1031,{ emotion 24; }
+prontera,239,60,4	script	O#2::O13	1031,{ emotion 24; }
+prontera,237,59,4	script	O#3::O21	1031,{ emotion 24; }
+prontera,238,59,4	script	O#4::O22	1031,{ emotion 24; }
+prontera,239,59,4	script	O#5::O23	1031,{ emotion 24; }
+prontera,237,58,4	script	O#6::O31	1031,{ emotion 24; }
+prontera,238,58,4	script	O#7::O32	1031,{ emotion 24; }
+prontera,239,58,4	script	O#8::O33	1031,{ emotion 24; }
+
+prontera,237,60,4	script	X#0::X11	1242,{ emotion 25; }
+prontera,238,60,4	script	X#1::X12	1242,{ emotion 25; }
+prontera,239,60,4	script	X#2::X13	1242,{ emotion 25; }
+prontera,237,59,4	script	X#3::X21	1242,{ emotion 25; }
+prontera,238,59,4	script	X#4::X22	1242,{ emotion 25; }
+prontera,239,59,4	script	X#5::X23	1242,{ emotion 25; }
+prontera,237,58,4	script	X#6::X31	1242,{ emotion 25; }
+prontera,238,58,4	script	X#7::X32	1242,{ emotion 25; }
+prontera,239,58,4	script	X#8::X33	1242,{ emotion 25; }

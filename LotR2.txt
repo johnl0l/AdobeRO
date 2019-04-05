@@ -1,0 +1,136 @@
+// --- Start : --- //
+-	script	LotRspawn	-1,{
+OnMinute15:
+
+for(set .m,0; .m <= getarraysize($MobIDs); set .m,.m + 1)
+{
+		for(set .n,0; .n <= getarraysize($MobCount); set .n,.n + 1)
+		{
+						if($MobIDs[.m] != 0 && $MobCount[.n] != 0)
+						{
+								announce "[Aragorn] : Orc's attack the location "+$MapLotR$+"",bc_all;
+								monster ""+$MapLotR$+"",162,129,"Orc","+$MobIDs[.m]+","+$MobCount[.n]+","MonstersLotR::OnKillMonster";
+						}
+		}
+}
+				set $orc, $MobCount;
+				setcell "ordeal_1-1",153,153,153,146,cell_walkable,0;
+				setcell "ordeal_1-1",153,146,146,146,cell_walkable,0;
+				setcell "ordeal_1-1",146,146,146,153,cell_walkable,0;
+				setcell "ordeal_1-1",146,153,153,153,cell_walkable,0;
+				sleep 7000;
+				announce "[Aragorn] : We need a lot of warriors for kill the Ork's",bc_all;
+				enablenpc "Aragorn";
+				
+				sleep 7000;
+				
+				set $LotR_$, "";
+				set $LotR_Team$, "";
+				
+				// --- Включаем :
+				if(!$LotR) set $LotR, 1;
+						if(getmapusers($MapLotR$) > 0)
+						{
+								mapwarp ""+$MapLotR$+"","prontera",150,150;
+						}
+						
+						monster ""+$MapLotR$+"",150,150,"Lord of the Ring",1951,1,"LotRemperium::OnMobKill";
+				
+end;
+
+OnStopCell:
+setcell "ordeal_1-1",153,153,153,146,cell_walkable,0;
+setcell "ordeal_1-1",153,146,146,146,cell_walkable,0;
+setcell "ordeal_1-1",146,146,146,153,cell_walkable,0;
+setcell "ordeal_1-1",146,153,153,153,cell_walkable,0;	
+end;
+
+OnInit:	
+set $MapLotR$, "ordeal_1-1";
+setarray $MobIDs[0], 2013;
+setarray $MobCount[0], 50;
+set $LotR, 0;
+end;
+}
+// --- end --- //
+
+-	script	MonstersLotR	-1,{
+OnMonsterKill:
+set $orc,$orc - 1;
+if($orc == 0)
+{
+		monster ""+$MapLotR$+"",162,129,"Orc","+$MobIDs+","+$MobCount+","MonstersLotR::OnKillMonster";
+}
+end;
+}
+prontera,150,155,6	script	Aragorn	992,{
+if(!$LotR_$ && $LotR > 0)
+{
+		set .pID, getcharid(1);
+		set .gID, getcharid(2);
+		if(.pID > 0 && .gID > 0)
+		{
+				mes "[Aragon]";
+				mes "Are you want to help me with enemies?";
+				next;
+				if(select("Yes!:No")==2)
+				{
+						close;
+				}
+				mes "[Aragon]";
+				if(BaseLevel > 119)
+				{
+						getpartymember(.pID);
+						set .@partymembercount,$@partymembercount;
+						copyarray .@partymembername$[0],$@partymembername$[0],.@partymembercount;
+						if(.@partymembercount > 0)
+						{
+								set $LotR_$, strcharinfo(2);
+								warpparty "ordeal_1-1",150,150,$LotR_$;
+								set $LotR, 0;
+								end;
+						}
+				}
+				
+				mes $BaseLevelIsLow$;
+				close;
+		}
+		mes $NoPartyOrGuild$;
+		close;
+}
+mes $EventIsOffline$;
+close;
+}
+
+// --- Emp break : --- //
+-	script	LotRemperium	-1,{
+OnMobKill:
+set $LotR_$, strcharinfo(2);
+sleep 3000;
+		mapannounce ""+strcharinfo(3)+"","[Lord of the Ring] : Humans got the Crystal!",bc_map;
+		set lotr_emp, 1;
+		monster ""+strcharinfo(3)+"",150,150,"Lord of the Ring",1951,1,"LotRemperium::OnKillEmperium";
+		donpcevent "LotRguardians::OnSpawn";
+		end;
+}
+// --- End  break --- //
+
+				-	script	LotRguardians	-1,{
+				OnSpawn:
+				monster ""+$MapLotR$+"",150,146,"Lord of the Ring",1905,1,"LotRguardians::OnBreakGuard";
+				monster ""+$MapLotR$+"",146,149,"Lord of the Ring",1905,1,"LotRguardians::OnBreakGuard";
+				monster ""+$MapLotR$+"",150,153,"Lord of the Ring",1905,1,"LotRguardians::OnBreakGuard";
+				monster ""+$MapLotR$+"",153,150,"Lord of the Ring",1905,1,"LotRguardians::OnBreakGuard";
+				set $g,4;
+				end;
+				
+				OnBreakGuard:
+				set $g,$g - 1;
+				if($g == 0)
+				{
+						donpcevent "LotRspawn::OnStopCell";
+				}
+				end;
+				}
+						
+						
