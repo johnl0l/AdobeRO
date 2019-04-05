@@ -1,0 +1,50 @@
+//=================================
+​//= Created by -SkittleNugget-
+//= Email : Marky360@live.ie
+//=================================
+//= Hourly Points Script.
+//=================================
+//= Version 1.2
+//=================================
+//= Notes:
+//= 1.0 - Initial Working Script.
+//- 1.1 - Removed messages.
+//- 1.2 - Added Easy Changeable Options as Requested by "Lil Troll~" (rAthena)
+//=================================
+-	script	Hour_Reward_Points	-1,{
+
+OnInit:
+	set .TimeInMinutes,5; //Check at 5 Minutes
+	set .WhatRewardHour,1; //Reward at 1 Hour
+	set .ItemIDReward,5012; //Reward ID, 5012
+	set .ItemRewardAmount,1; //Reward Amount
+end;
+	
+
+OnPCLoginEvent: 
+	dispbottom "Hourly Rewards have been started for this character.";
+	
+while(1) //Must Leave it run constantly.
+	{
+		sleep2 60000*.TimeInMinutes; //5 Minutes == Will Check Players activity after this time in milliseconds.
+		if ( checkidle() > 300) //Check if player has been active or not.
+		{
+			if ( checkvending() == 2 ) end; //Check if Auto Vending.
+			while ( checkidle() > 1 ) //Pause count while player is inactive, also checks for activity.
+				sleep2 1000;
+		}
+			else 
+		{
+			set .@ActiveTime, .@ActiveTime + .TimeInMinutes; //Count Total Time Active Within the hour.
+			if ( .@ActiveTime == .WhatRewardHour ) //Player has been active for .WhatRewardHour throughout the login time.
+			{
+				mes "You have been awarded an Apple for your activity.";
+				close2;
+				getitem .ItemIDReward,.ItemRewardAmount; //When Player has been active for One Hour
+				set .@ActiveTime,0; //Reset Time Active.
+			}
+		}
+	}
+OnPCLogoutEvent:	
+	end;
+}

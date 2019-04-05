@@ -1,0 +1,189 @@
+//===== rAthena/Hercules Script ==============================
+
+//= Hourly Bonus Script
+
+//===== By: ==================================================
+
+//= chan - http://teamcars1broglobal.blogspot.com
+
+//= Themon - http://pspcheatdb.blogspot.com
+
+//===== Current Version: =====================================
+
+//= 1.2a 
+
+//===== Compatible With: =====================================
+
+//= Any RAthena/Hercules Version
+
+//===== Description: =========================================
+
+//= Give the player a Hourly Bonus
+
+//= so that the players will be exited to play everyday
+
+//===== Additional Comments: =================================
+
+//= you are free to edit the bonus you want to give your players
+
+//= Thanks to Stolao who help me for finishing this
+
+//============================================================
+
+ 
+
+prontera,150,184,3      script  Hourly Bonus    865,{
+
+ 
+
+ 
+
+if ($DLogin == 0)goto GnId;
+
+if (#DLogin == $DLogin) goto L_RHLbonus;
+
+mes "Im glad to give you your Hourly Bonus!";
+
+        next;
+
+        
+
+        switch(rand(2)){ // 1/rand will be items, rest will be zeny
+
+                case 0: //Items
+
+                        //              Card,   Enchant,        Healing,        All items
+
+                        setarray .@Plow, 4001,  4700,           401,            501,    6228;
+
+                        setarray .@Phigh,4610,  4871,           599,            21005,  6235;
+
+                        set .@x, rand(getarraysize(.@Plow));
+
+                        set .@p, rand(.@Plow[.@x],.@Phigh[.@x]);
+
+                        while(getitemname(.@p) == "null"){
+
+                            set .@p, rand(.@Plow[.@x],.@Phigh[.@x]);
+
+                        }
+
+                        if (checkweight(.@p,1) == 0 ){
+
+                            mes "Sorry you are overweight!";
+
+                            emotion e_bzz;
+
+                            close;
+
+                        }
+
+                        getitem .@p,1;
+
+                        set #DLogin,$DLogin;
+
+                        announce "" + strcharinfo(0) + " got " + getitemname(.@p) + "",8;       
+
+                break;
+
+                default: //Zeny
+
+                        setarray .@x,1,2,3,4,5,6,7,8,9,10;
+
+                        set .@p, .@x[rand(getarraysize(.@x))] * rand(1,100);
+
+                        set Zeny,Zeny + .@p;
+
+                        set #DLogin,$DLogin;
+
+                        announce "" + strcharinfo(0) + " got " + .@p + "z!",8;
+
+                break;
+
+        }
+
+ 
+
+ 
+
+L_RHLbonus:
+
+        mes "You had already received your gift";
+
+        mes "Please! come back again after an hour.";
+
+        emotion e_bzz;
+
+        close;
+
+ 
+
+GnId:
+
+        set $DLogin,rand (100000,999999);
+
+        end;
+
+ 
+
+OnInit:
+
+ 
+
+        OnClock0000:
+
+        OnClock0100:
+
+        OnClock0200:
+
+        OnClock0300:
+
+        OnClock0400:
+
+        OnClock0500:
+
+        OnClock0600:
+
+        OnClock0700:
+
+        OnClock0800:
+
+        OnClock0900:
+
+        OnClock1000:
+
+        OnClock1100:
+
+        OnClock1200:
+
+        OnClock1300:
+
+        OnClock1400:
+
+        OnClock1500:
+
+        OnClock1600:
+
+        OnClock1700:
+
+        OnClock1800:
+
+        OnClock1900:
+
+        OnClock2000:
+
+        OnClock2100:
+
+        OnClock2200:
+
+        OnClock2300:
+
+        announce "You can now claim your Hourly Bonus!",8;
+
+set $DLogin,rand (100000,999999);
+
+end;
+
+ 
+
+}

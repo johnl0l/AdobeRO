@@ -1,0 +1,150 @@
+/*=========================================================
+Evolução de Homúnculos S
+===========================================================
+Descrição:
+Permite que os jogadores evoluam seus homúnculos em troca
+de uma Pedra do Sábio e Zenys. Se o jogador tiver uma
+evolução completa do homúnculo, aparece uma opção para
+evoluir em homúnculo S.
+
+Veja as configurações abaixo do 'OnInit'
+NÃO modifique as configurações de Homúnculos a menos que
+você tenha homúnculos/IDs personalizados.
+===========================================================
+Changelog:
+v1.0 por Mumbles - NPC criado. 
+v2.0 por XluklukX - NPC completamente modificado, otimizado e traduzido. 
+=========================================================*/
+prontera,150,175,3	script	Geneticista	4_M_MUT1,{
+	function checkrequirements {
+		// verifica os requisitos da evolução
+		if (gethominfo(6) < .hom_level || gethominfo(3) < (.hom_friendly)) {
+			// Display required levels
+			mes .npc_name$;
+			mes "Desculpe, mas seu homúnculo não cumpre os requisitos necessários para evoluir. Seu homúnculo precisa de estar no nível "+.hom_level+" e ter "+(.hom_friendly)+" de intimidade.";
+			next;
+			
+			// Display current levels
+			mes .npc_name$;
+			mes "Atualmente seu homúnculo está nível "+gethominfo(6)+" com "+gethominfo(3)+" de intimidade.";
+			close;
+		}
+		
+		return;
+	}
+
+	mes .npc_name$;
+	mes "Olá "+strcharinfo(0)+", em que posso ajudá-l"+(Sex?"o":"a")+"?";
+	next;
+	if (!gethominfo(0))
+	{
+		mes .npc_name$;
+		mes "Eii, espera aí. Parece que você não tem nenhum homúnculo com você! Certifique-se de ter chamado seu homúnculo antes de evoluí-lo.";
+		close;
+		end;
+	}
+	goto LMenu;
+	
+	LMenu:
+		mes .npc_name$;
+		mes "Eu posso evoluir seu homúnculo.";
+		next;
+		menu "Quero evoluir meu humúnculo.",Evoluir,"Evolução?",Explicar,"Sair.",Tchau;
+		
+	Evoluir:
+		checkrequirements;
+		.@tier = 0;
+		for (.@i = 0; (gethominfo(1)-.hom_tiers[.@i])>0 ; .@i++) // não mexa nisso
+		{ 
+			// Verifica se o ID excede o tier atual
+			.@tier++;
+		}
+		switch(.@tier)
+		{
+			case 0:
+				mes .npc_name$;
+				mes "Para evoluir o seu humúnculo você irá gastar "+.evo_cost+"z e uma ^0000FF"+getitemname(.catalyst)+"^000000, você está ok com isso?";
+				next;
+				if(select("Sim.","Não, obrigado.")==1)
+				{
+					if ((Zeny < .evo_cost) || (countitem(.catalyst) < 1)) goto NTemItem; // aqui é capitalista porra
+					else
+					{
+						Zeny -= .evo_cost;
+						delitem .catalyst,1;
+						atcommand "@homevolution";
+						mes .npc_name$;
+						mes "Parabéns, seu humúnculo evoluiu!";
+						close;
+					}
+				}
+				else close;
+				break;
+			
+			case 1:
+				mes .npc_name$;
+				mes "Para evoluir o seu humúnculo você irá gastar "+.evo_costS+"z e uma ^0000FF"+getitemname(.catalyst)+"^000000, tudo bem?";
+				next;
+				if(select("Sim.","Não, obrigado.")==1)
+				{
+					if ((Zeny < .evo_costS) || (countitem(.catalyst) < 1)) goto NTemItem; // aqui é capitalista porra
+					else
+					{	
+						mes .npc_name$;
+						mes "Eu posso tentar mutar seu "+gethominfo(2)+" para um tipo mais avançado de homúnculo, conhecido como Homúnculo S.";
+						next;
+						mes .npc_name$;
+						mes "Para qual homúnculo S você quer transformar o seu "+gethominfo(2)+"?";
+						next;
+						.@indice = select("Eira.","Bayeri.","Sera.","Dieter.","Eleanor.");
+						.@indice--;	// Seta qual homúnculo
+						Zeny -= .evo_costS;
+						delitem .catalyst,1;
+						atcommand "@hommutate "+.hom_s[.@indice]+"";
+						mes .npc_name$;
+						mes "Parabéns, seu humúnculo evoluiu!";
+						close;
+					}
+				}
+				else close;
+				break;
+				
+			case 2:
+				mes .npc_name$;
+				mes "Parabéns "+strcharinfo(0)+", seu humúnculo "+gethominfo(2)+" já está na última etapa de evolução.";
+				close;
+				break;
+		}
+	
+	NTemItem:
+		mes .npc_name$;
+		mes "Volte quando tiver o item e o dinheiro necessário para evoluir seu humúnculo.";
+		close;
+		
+	Explicar: //Explica pros player burro o que é evoluir o troço
+		mes .npc_name$;
+		mes "Evoluir o seu humúnculo irá aumentar bastante suas habilidades e força. Por uma pequena taxa de "+.evo_cost+"z e uma ^0000FF"+getitemname(.catalyst)+"^000000, eu posso fazer isso para você fácilmente.";
+		next;
+		goto LMenu;
+		
+	Tchau:
+		mes .npc_name$;
+		mes "Okey, tchau!";
+		close;
+
+OnInit:
+	// Configurações
+	.npc_name$ = "[^008080 Geneticista ^000000]";
+	.hom_level = 99;		// Nível mínima para evoluir (default: 99)
+	.hom_friendly = 2100;	// Intimidade mínima para evoluir(default: 2100)
+	.evo_cost = 1000000;	// Preço em zenys para evoluir homúnculo normal
+	.evo_costS = 5000000;	// Preço em zenys para evoluir homúnculo S
+	
+	// ID do item para evoluir (default: 12040)
+	.catalyst = 12040;
+	
+	// Homúnculos info [NÃO MUDE A MENOS QUE VOCÊ TENHA IDs CUSTOM]
+	setarray .hom_tiers,6008,6016,6052;			// Homúnculo tier maximo IDs
+	setarray .hom_s,6048,6049,6050,6051,6052;	// Homúnculo S IDs
+	end;
+}

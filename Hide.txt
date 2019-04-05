@@ -1,0 +1,14 @@
+//===== Descrição =======================================================================
+//= Faz que todos GM quando se logar fiquem em Hide
+//=======================================================================================
+
+-	script	gm_hide		-1,{
+OnPcLoginEvent:
+	if (getgmlevel() >=20) {
+		atcommand strcharinfo(0) + "@hide";
+		end;
+	} else {
+		sleep2 5000;
+		end;
+	}
+}

@@ -1,0 +1,251 @@
+/*=========================================================
+Homunculus Evolution
+by Mumbles
+===========================================================
+Request: http://goo.gl/63xoHL
+===========================================================
+Description:
+Allows players to evolve their homunculus in exchange for
+a catalyst and a fee. If the player has a fully evolved
+homunculus, an option to mutate it into a Homunculus S will
+be given if the setting is enabled.
+
+Please see the configuration settings under the 'OnInit'
+label to see what you can change. Do NOT modify the
+homunculus settings unless you have custom IDs/homunculi.
+===========================================================
+Compatibility:
+Optimised for Hercules emulators.
+===========================================================
+Changelog:
+v1.0 - First version.
+	v1.0.1 - Removed support for backwards compatibility.
+=========================================================*/
+
+prontera,150,144,5	script	Geneticist#hevo::hom_evo	4_M_MUT1,{
+
+	function checkrequirements {
+		// Check if evolution requirements are met
+		if (gethominfo(6) < .hom_level || gethominfo(3) < (.hom_friendly * 100)) {
+			// Display required levels
+			mes "Sorry, but your homunculus does not meet the required levels to evolve. Your homunculus must be at least level "+ .hom_level +" and have an intimacy of "+ (.hom_friendly / 100) +".";
+			next;
+			
+			// Display current levels
+			mes .npc_name$;
+			mes "Currently, your homunculus is level "+ gethominfo(6) +" and has an intimacy of "+ gethominfo(3) +".";
+			close;
+		}
+		
+		return;
+	}
+
+	while (true) {
+		// Introduction
+		mes .npc_name$;
+		
+		// Not looped
+		if (!.@looped) {
+			mes "Hi there! What can I help you with?";
+		
+		// Looped menu
+		} else {
+			mes "Is there anything else I can help you with?";
+		}
+			
+		next;
+		
+		menu "Evolve my homunculus:Evolution?", -;
+		
+		mes .npc_name$;
+		
+		if (checkhomcall()) {
+			mes "Whoa, hold on. It appears you currently don't have a homunculus with you! Make sure you've called your homunculus before evolving it.";
+			close;
+		}
+				
+		switch (@menu) {
+			case 1:	// Evolve homunculus
+				checkrequirements;
+				
+				// Loop through all homunculus tiers
+				for (.@i = 0; .@i < getarraysize(.hom_tiers); .@i++) {
+					// Check if homunculus ID exceeds current tier
+					if (gethominfo(1) <= .hom_tiers[.@i])
+						.@index = .@i + 1;	// Set tier identifier
+				}
+				
+				// Check if current index matches top tier
+				if (.@index == getarraysize(.hom_tiers)) {
+					// No more evolution available
+					mes "Sorry, but it appears your "+ gethominfo(2) +" can no longer evolve.";
+				
+					// Check if Homunculus S is disabled
+					if (!.use_s)
+						close;
+					
+					// Check if Homunculus class passes top tier class
+					else if (gethominfo(1) > .hom_tiers[.@index])
+						close;
+						
+					// Homunculus S enabled
+					else
+						next;
+					
+					// Information dialogue for Homunculus S
+					mes .npc_name$;
+					mes "However, I can try and mutate your "+ gethominfo(2) +" into a more advanced type of homunculi, known as Homunculus S.";
+					next;
+					
+					// Guaranteed success offer
+					mes .npc_name$;
+					mes "For a fee of "+ .s_fee +"z, I can guarantee your desired mutation. Otherwise, there's a chance you won't get what you want. How would you like to proceed?";
+					next;
+					
+					// Select mutation option
+					menu "Pay the fee:Random mutation", -;
+					.@randomize = @menu - 1;	// Randomize success? 0 = off, 1 = on
+					
+					// Player chose to pay fee
+					if (!.@randomize) {	
+						mes .npc_name$;
+						
+						// Check if player has enough zeny
+						if (Zeny < .s_fee) {	
+							// Insufficient funds
+							mes "I'm sorry, but it you don't appear to be carrying enough zeny with you. Please come back when you do.";
+							next;
+							
+							break;
+						}
+						
+						// Confirmation message
+						mes .npc_name$;
+						mes "Wonderful! Let's begin, then, shall we? Which Homunculus S would you like?";
+						next;
+						
+						// Deduct fee
+						Zeny -= .s_fee;
+						
+						// Display deduction message
+						message strcharinfo(0), "You paid "+ .s_fee +"z.";
+						
+						// Ensure success rate
+						.@success = 0;
+					} else {
+						mes .npc_name$;
+						mes "Alright, then! Let's get started!  Which Homunculus S would you like?";
+						next;
+						
+						// Randomize success rate
+						.@success = rand(.chance);
+					}
+					
+					// Choose desired Homunculus S
+					menu "Eira:Bayeri:Sera:Dieter:Eleanor", -;
+					.@index = @menu - 1;	// Set desired Homunculus S
+					
+					// Check if player was successful in their randomization
+					if (!.@success) {
+						// Mutate to desired Homunculus S
+						hommutate .hom_s[.@index];
+					
+					// If not successful, randomize
+					} else {
+						// Mutate to random Homunculus S
+						hommutate;
+						
+						// Desired mutation failed
+						if (gethominfo(1) != .hom_s[.@index])
+							.@failed = 1;	// Set failed identifier
+					}
+					
+					mes .npc_name$;
+					
+					// Check if desired mutation failed
+					if (.@failed) {
+						// Failure message
+						mes "It looks like I wasn't able to mutate it into the one you wanted. I hope you like your "+ gethominfo(2) +" anyways!";
+						close;
+					}
+					
+					// Confirmation message
+					mes "That worked out perfectly! Enjoy your "+ gethominfo(2) +"!";
+					close;
+				}
+				
+					// Normal evolution
+					mes .npc_name$;
+					checkrequirements;
+					
+					mes "Evolution will cost you "+ .evo_cost +"z and one ^0000FF"+ getitemname(.catalyst) +"^000000. Is that okay?";
+					next;
+					
+					mes .npc_name$;
+						
+					// Check if player declined
+					if (select("Yes, that's fine:No, thanks") == 2) {
+						// Display decline message
+						mes "Okay, let me know if you change your mind!";
+						next;
+						
+						break;
+					}
+					
+					// Check zeny and catalyst
+					if (Zeny < .evo_cost || countitem(.catalyst) < 1) {
+						// Display required zeny/items message
+						mes "I'm sorry, but you'll need to bring me enough money and a ^0000FF"+ getitemname(.catalyst) +"^000000 for me to continue.";
+						next;
+						
+						break;
+					}
+					
+					// Deduct zeny
+					Zeny -= .evo_cost;
+					
+					// Display deduction message
+					message strcharinfo(0), "You paid "+ .s_fee +"z.";
+						
+					// Delete catalyst
+					delitem .catalyst, 1;
+					
+					// Evolve current homunculus
+					homevolution;
+					
+					// Confirmation message
+					mes "There you go! Have fun with your "+ gethominfo(2) +"!";
+					close;
+					
+			case 2:
+				// Evolution?
+				mes "Allowing your homunculus to evolve will greatly increase its ability and strength. For a small fee of "+ .evo_cost +"z and one ^0000FF"+ getitemname(.catalyst) +"^000000, I can do this for you with ease.";
+				next;
+				
+				break;
+		}
+		
+		// Set menu loop identifier
+		.@looped++;
+	}
+	
+	
+	OnInit:
+		// Configuration
+		.npc_name$ = "[^008800Geneticist^000000]";
+		.hom_level = 99;		// Minimum level to evolve (default: 99)
+		.hom_friendly = 910;	// Minimum intimacy to evolve (default: 910)
+		.evo_cost = 1000000;	// Cost in Zeny to use service
+		.s_fee = 5000000;		// Cost in Zeny to evolve Homunculus S
+		.use_s = 1;				// Use Homunculus S? 0 = off, 1 = on (default: 1)
+		.chance = 5;			// A one in x chance to succeed without payment (default: 5)
+		
+		// Item ID of catalyst to use for evolution (default: 12040)
+		.catalyst = Stone_Of_Intelligence_;
+		
+		// Homunculus info [DO NOT CHANGE UNLESS YOU HAVE CUSTOM IDs]
+		setarray .hom_tiers[0], 6008, 6016;						// Homunculus tier maximum IDs
+		setarray .hom_s[0],		6048, 6049, 6050, 6051, 6052;	// Homunculus S IDs
+		end;
+		
+}

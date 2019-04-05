@@ -1,0 +1,305 @@
+/*
+	=> GUILD POINT CRONUS E-MULATOR
+	=> NPC CRIADO EM 29 de Agosto de 2012
+	=> Versão do Sistema => V.001 [ Socramjunio ]
+	=> Descrição
+		* Sistema de Guild Point
+		* Mapas+Guild adicionado via Whisper por GM
+		* Controle total do Guild Master sobre as salas
+		* Sistema de Plug-Ins para Add-Ons
+	=> Change Log
+		* Inicio da Criação da Versão 0001 28/08/2012
+		* Término da Criação da Versão 0001 29/08/2012
+*/
+-	script	gp	-1,{
+OnInit:
+	// Mapa Flags do Mapa Guild
+	setarray .@MapFlag[0],mf_nomemo,mf_noteleport,mf_loadevent,mf_nowarp,mf_nowarpto;
+	/* 
+	Npcs do Guild Point
+	IMPORTANTE: Esta parte ficará para versão 2 do sistema,
+	Estou criando os NPCs iniciais como Addo-Ons
+		NPCS:
+		1. Curandeira / Buffs via comando '@buffs'
+		2. Reparador Automático quando estiver no mapa
+		3. PvP de Células ( Depende do Carlos Henr. Vou pedir a ele )
+		4. Auxiliar de vendas ( Vende quase todos os itens que é comprado em npcs )
+		5. Burro Falante - Líder coloca mensagens por tempo e ele fica andando e falando
+		6. Senhora das Cartas - Remove Cartas
+		7. Senhor Feudal - Da suporte para teletransporte
+		8. Resetadora - Reseta Status e Atributos
+		9. Bandeiras dos atuais castelos
+			ACEITO OPINIÕES
+			Notas, cada NPC será invocado via Plug-In
+			Para adicionar o Plug-In, basta adicionar os Npcs no servidor,
+			após digitar whisper para 
+			npc:gp => 
+				addplugin#nomeDoPlugin
+				deleteplugin#nomeDoPlugin
+				reloadplugin#nomeDoPlugin
+*/
+end;
+OnWhisperGlobal:
+	callsub( add_function );
+	if( leader() || getgmlevel < 11 ){	
+		callsub( leader_menu ); 
+		end;
+	}
+	if( getgmlevel() < 99 ) end;
+	if(!@whispervar0$ || !@whispervar1$){
+		dispbottom "Erro ao utilizar o comando";
+		dispbottom "Add Guild: <mapgd>#<idguild>";
+		dispbottom "Deletar Guild: deletar#<idguild>";
+	}else if( @whispervar0$ == "deletar" ) ){
+		if( deletarGP( @whispervar1$ ) ){
+			dispbottom "Guild Point Deletado com Sucesso";
+		} else {
+			dispbottom "Não foi possível deletar esse Guild Point";
+		}
+	}else if( !getcharid( 2,@whispervar0$ ) ){
+		dispbottom "Guild Inexistente.";
+	}else if( !getmapusers( @whispervar1$ ) ){
+		dispbottom "Mapa inexistente.";
+	}else if( gpExists( "verificar",@whispervar0$,@whispervar1$ ) ){
+		gpExists( "print" );
+	}else{
+		callsub( add_map_guild, @whispervar0$, @whispervar1$ );
+		dispbottom "Guild Point adicionado com sucesso";
+	}
+end;
+	
+OnPCLoadMapEvent:
+if( mapsGP( strcharinfo(3) ) ){
+	if(  banGP( $GID_GP[ i( strcharinfo(0) ) ], $GMID_GP[ i( strcharinfo(0) ) ], strcharinfo(0) ) ){
+		dispbottom getguildmaster( $GID_GP[ i( strcharinfo(0) ) ] )+": Você está banido do Guild Point";
+		callsub warpagent,"prontera",150,140;
+	}
+	if( getcharid(2) != $GID_GP[ i( strcharinfo(0) ) ] ){
+		dispbottom "Você não pode ficar neste mapa";
+		callsub warpagent,"prontera",150,140;
+	}
+}
+end;
+		
+warpagent:
+	sleep2 500;
+	warp getarg(0),getarg(1),getarg(2);
+return;
+
+add_map_guild:
+	set .@i_flag,getarraysize( .@MapFlag );
+	do {
+		removemapflag getarg(0),.@MapFlag[.@i_flag];
+		setmapflag getarg(0),.@MapFlag[.@i_flag];
+		set .@i_flag, .@i_flag - 1;
+	} while( .@i_flag > 0 );
+	set $GID_GP[getarraysize($GID_GP)],@whispervar0$;
+	set $MAP_GP$[getarraysize($MAP_GP$)],@whispervar1$;
+	set $GMID_GP[getarraysize($GMID_GP)],getguildmaster( getcharid( 2,@whispervar0$ ) );
+return;
+
+add_function:
+	function i();
+	function leader();	
+	function banGP(); 	
+	function mapGP(); 		
+	function mapGP();
+	function mapsGP();
+	function guildGP();
+	function deleteGP();
+	function gpExists();
+	function banirJogadorSala();
+return;
+
+leader_menu:
+while(1){
+	mes "[ Guild Point ]";
+	mes "Seja bem vindo Honorável Guild Master,";
+	mes "O que o Senhor deseja fazer ?";
+	next;
+	if( select("Gerenciar Sala:Sair") == 1 ){
+		switch(select("Punições de Jogadores:Largar Sala:Ativar/Desativar NPCs:Avisos da Sala:Sair")){
+			// === Fechar
+			case 5: close; break;
+			// ============================================================================== 
+			// === Ativar / Desativar NPCs
+			case 3:
+				mes "[ Guild Point ]";
+				mes "Essa opção está em fase de desenvolvimento, aguarde a versão 2 do sistema.";
+				goto avancar;
+			break;
+			// ============================================================================== 
+			// === Abandonar GP
+			case 2:
+				if( select( "Sim, desejo abandonar:Não, por favor!" ) == 2 ) goto avancar;
+				close2;
+				if( deletarGP( getcharid(2) ) ){
+					mapwarp $MAP_GP$[ i( strcharinfo(0) ) ],"prontera",150,140;
+					dispobottom "A sala foi abandonada com sucesso";
+				} else {
+					dispbottom "Não foi possível sair da sala, contate o administrador";
+				}
+			break;
+			// ============================================================================== 
+			// === Punir Jogador da Sala
+			case 1:
+				mes "[ Guild Point ]";
+				mes "Você pode banir ou desabanir no menu abaixo:";
+				mes " ";
+				mes "Notas:";
+				mes "Jogador; ^ED3237Offline^000000 ou ^000A859Online^000000";
+				deletearray .@char_id[0],127; deletearray .@name$[0],127; 
+				query_sql "SELECT `char_id`,`name` FROM `guild_member` ORDER BY `name` ASC",.@char_id,.@name$;
+				next;
+				set @menu$,"";
+				for( set @i,1; @i<getarraysize( .@char_id ); set @i,@i+1 ){
+					if( isloggedin( .@acc_id[.@i] ) ){
+						set @color$,"^00A859";
+					} else {
+						set @color$,"^ED3237";
+					}
+					if( banGP( $GID_GP[ i( .@name$[@i] ) ], $GMID_GP[ i( .@name$[@i] ) ], .@name$[@i] ) ){
+						set @menu$,@menu$ + ":" + @color$ + .@name$[@i] + "^000000 [ Desbanir ]";
+					} else {
+						set @menu$,@menu$ + ":" + @color$ + .@name$[@i] + "^000000 [ Banir ]";
+					}
+				}
+				menu @menu$,"<< Voltar",avancar;
+				// i( <nomechar> ) seta a posição do Array da Guild
+				// banirJogadorSala( <guildid>,<masterid>,<jogador> )
+				set @banir,banirJogadorSala( $GID_GP[ i( .@name$[@menu-2] ) ], $GMID_GP[ i( .@name$[@menu-2] ) ], .@name$[@menu-2] );
+				mes "[ Guild Point ]";
+				if( @banir ){
+					mes "Jogador Banido com Sucesso";
+					if( mapGP( getcharid( 0,.@name$[@menu-2] ) ) ==  $MAP_GP$[ i( .@name$[@menu-2] ) ] ){
+						warpchar "prontera",150,140,getcharid( 0,.@name$[@menu-2] );
+					}
+					message rid2name( getcharid(3,.@char_id[@menu-2]) ),strcharinfo(0)": Você foi banido da sala, e agora não tem mais acesso a sala \"Guild Point\"";
+				} else {
+					mes "Jogador desabanido com sucesso";
+					message rid2name( getcharid(3,.@char_id[@menu-2]) ),strcharinfo(0)": Você foi desabanido da sala, e agora tem acesso a sala \"Guild Point\"";
+				}
+				next;
+			break;
+			// ============================================================================== 
+		}
+		// === Avancar
+			avancar: next;
+		// ============================================================================== 
+	}
+	close;
+}
+return;
+	
+	function	leader	{
+		if( !getarraysize($GID_GP) ) 
+			return 0;
+		for(set .@i,0; @i<getarraysize($GID_GP) set .@i,.@i+1 ){
+			if( $GMID_GP[.@i] == getcharid(0) )
+				return 1;
+		}
+		return 0;
+	}
+	
+	function	i	{
+		set .@varArray,0;
+		for( set .@i,1; @i<getarraysize( $GID_GP ); set .@i,.@i+1 ){
+			if( $GID_GP[@i] == getcharid( 2,getarg(0) ) ){
+				set .@varArray,.@i;
+			}
+		}
+		return .@varArray;
+	}
+	
+	function	banirJogadorSala	{
+		set .@ban_gp$, getd "$banGP_" + $GID_GP[ i( getarg(0) ) ] + "_" + $GMID_GP[ i( getarg(0) ) ] + "_" + getarg(0) + "$";
+		if( .@ban_gp$ == getarg(0) ){
+			setd "$banGP_" + $GID_GP[ i( getarg(0) ) ] + "_" + $GMID_GP[ i( getarg(0) ) ] + "_" + getarg(0) + "$","";
+			return 0;
+		}
+		setd "$banGP_" + $GID_GP[ i( getarg(0) ) ] + "_" + $GMID_GP[ i( getarg(0) ) ] + "_" + getarg(0) + "$",getarg(0);
+			return 1;
+	}
+	
+	function	banGP	{
+		if( getd("$banGP_" + $GID_GP[ i( getarg(0) ) ] + "_" + $GMID_GP[ i( getarg(0) ) ] + "_" + getarg(0) + "$") == getarg(0) )
+			return 1;
+			
+		return 0;
+	}
+	
+	function	mapGP	{
+		deletearray .@last_map$[0],127;
+		query_sql "SELECT `last_map`,`char_id` FROM `char` WHERE `name` = '" + getarg(0) + "'",.@last_map$;
+		if( .@last_map$[0] == $MAP_GP$[ i(getarg(0)) ] )
+			return 1;
+		
+		return 0;
+	}
+	
+	function	mapsGP	{
+		set .@i_mapsGP,getarraysize($MAP_GP$);
+		do {
+			if( $MAP_GP$[.@i_mapsGP] == getarg(0) )
+				return .@i_mapsGP;
+			set .@i_mapsGP, .@i_mapsGP - 1;
+		} while( .@i_mapsGP >= 0 );
+	}
+	
+	function	guildGP	{
+		set .@i_guildGP,getarraysize($GID_GP);
+		do {
+			if( $GID_GP[.@i_guildGP] == getarg(0) )
+				return .@i_guildGP;
+			set .@i_guildGP, .@i_guildGP - 1;
+		} while( .@i_guildGP >= 0 );
+	}
+	
+		function	deleteGP	{
+		set .@i_deleteGP,getarraysize($GID_GP);
+		do {
+			if( $GID_GP[.@i_deleteGP] == getarg(0) ){
+				deletearray  $GID_GP[.@i_deleteGP], .@i_deleteGP;
+				deletearray  $MAP_GP$[.@i_deleteGP], .@i_deleteGP;
+				deletearray  $GID_GP[.@i_deleteGP], .@i_deleteGP;
+				return 1;
+			}
+			set .@i_deleteGP, .@i_deleteGP - 1;
+		} while( .@i_deleteGP >= 0 );
+		return 0;
+	}
+	
+	function	gpExists	{
+		if( getarg(0) == "verificar" ){
+			deletearray .@print$[0],127;
+			if( mapsGP( getarg(2) ){
+				set .@print$[ getarraysize(.@print$) ], "O mapa já está em uso por outra guild";
+			}
+			if( guildGP( getarg(1) ){
+				set .@print$[ getarraysize(.@print$) ], "Esse guild master já está cadastrado";
+			}
+			return getarraysize(.@print$);
+		} else if( getarg(0) == "print" ){
+			set .@i_print,getarraysize(.@print$);
+			if(!.@i_print){
+				dispbottom "Não há errros a exibir, há algum erro ou falha no sistema.";
+				return;
+			}
+			do {
+				dispbottom .@print$[.@i_print];
+				set .@i_print, .@i_print - 1;
+			} while( .@i_print >= 0 );
+			return;
+		}
+	}
+}
+
+function	script	getleader_gp	{
+	if( !getarraysize($GID_GP) ) 
+		return 0;
+	for(set .@i,0; @i<getarraysize($GID_GP) set .@i,.@i+1 ){
+		if( $GMID_GP[.@i] == getcharid(0) )
+			return 1;
+	}
+	return 0;
+}	
