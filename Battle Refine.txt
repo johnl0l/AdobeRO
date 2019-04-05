@@ -1,0 +1,69 @@
+//===========================================================
+// Battle Refine Script 
+// Created by: Corrosive
+//==================== What it does ==========================
+// Refines the players equipment at a 0.01% rate (by default)
+// when they kill any monster. This script has went through
+// some serious modification to go from the old 100 line 
+// version to the small one you see in front of you.
+//============================================================
+-	script	BattleRefine	-1,{
+
+OnNPCKillEvent:
+
+	if (rand(1,100) == 1) { // You can change the '10000' to increase or decrease the chance of a battle refine.
+		set @refine,rand(1,10);
+		if (getequipisenableref(@refine) == 1 && getequiprefinerycnt(@refine) < 10) {
+			successrefitem(@refine);
+			announce "!~Battle Refine~!",bc_self,0xFFFF00;
+		}
+	}
+	end;
+}
+
+
+
+//EQI_HEAD_TOP (1)          - Upper Headear
+//EQI_ARMOR (2)             - Armor (jackets, robes)
+//EQI_HAND_L (3)            - Left hand (weapons, shields)
+//EQI_HAND_R (4)            - Right hand (weapons)
+//EQI_GARMENT (5)           - Garment (mufflers, hoods, manteaus)
+//EQI_SHOES (6)             - Footgear (shoes, boots)
+//EQI_ACC_L (7)             - Accessory 1
+//EQI_ACC_R (8)             - Accessory 2
+//EQI_HEAD_MID (9)          - Middle Headgear (masks, glasses)
+//EQI_HEAD_LOW (10)         - Lower Headgear (beards, some masks)
+//EQI_COSTUME_HEAD_LOW (11) - Lower Costume Headgear
+//EQI_COSTUME_HEAD_MID (12) - Middle Costume Headgear
+//EQI_COSTUME_HEAD_TOP (13) - Upper Costume Headgear
+//EQI_COSTUME_GARMENT (14)  - Costume Garment
+//EQI_AMMO (15)    		  - Arrow/Ammunition
+//EQI_SHADOW_ARMOR (16)     - Shadow Armor
+//EQI_SHADOW_WEAPON (17)    - Shadow Weapon
+//EQI_SHADOW_SHIELD (18)    - Shadow Shield
+//EQI_SHADOW_SHOES (19)     - Shadow Shoes
+//EQI_SHADOW_ACC_R (20)     - Shadow Accessory 2
+//EQI_SHADOW_ACC_L (21)     - Shadow Accessory 1
+
+//EQI_COMPOUND_ON (-1)      - Item slot that calls this script (In context of item script)
+//EQI_ACC_L (0)             - Accessory 1
+//EQI_ACC_R (1)             - Accessory 2
+//EQI_SHOES (2)             - Footgear (shoes, boots)
+//EQI_GARMENT (3)           - Garment (mufflers, hoods, manteaux)
+//EQI_HEAD_LOW (4)          - Lower Headgear (beards, some masks)
+//EQI_HEAD_MID (5)          - Middle Headgear (masks, glasses)
+//EQI_HEAD_TOP (6)          - Upper Headgear
+//EQI_ARMOR (7)             - Armor (jackets, robes)
+//EQI_HAND_L (8)            - Left hand (weapons, shields)
+//EQI_HAND_R (9)            - Right hand (weapons)
+//EQI_COSTUME_HEAD_TOP (10) - Upper Costume Headgear
+//EQI_COSTUME_HEAD_MID (11) - Middle Costume Headgear
+//EQI_COSTUME_HEAD_LOW (12) - Lower Costume Headgear
+//EQI_COSTUME_GARMENT (13)  - Costume Garment
+//EQI_AMMO (14)    		  - Arrow/Ammunition
+//EQI_SHADOW_ARMOR (15)     - Shadow Armor
+//EQI_SHADOW_WEAPON (16)    - Shadow Weapon
+//EQI_SHADOW_SHIELD (17)    - Shadow Shield
+//EQI_SHADOW_SHOES (18)     - Shadow Shoes
+//EQI_SHADOW_ACC_R (19)     - Shadow Accessory 2
+//EQI_SHADOW_ACC_L (20)     - Shadow Accessory 1

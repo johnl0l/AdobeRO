@@ -1,0 +1,22 @@
+prontera.gat,147,163,5	script	Baby Changer	62,{
+
+SetArray @Size$[0],"Tamanho Pequeno","Tamanho Grande","Tamanho Normal";
+SetArray @Size[0],1,2,3;
+
+If (Class < 4023) {
+	Mes "[^FF0000 Baby Changer ^000000]";
+	Mes "Proibido Gigantes";
+	Close;
+}
+Mes "[^FF0000 Baby Changer ^000000]";
+Mes "Olá ^0000FF"+StrCharInfo(0)+"^000000 Escolha seu tamanho";
+Next;
+For (Set .@i,0;.@i < GetArraySize(@Size$);Set .@i,.@i+1)
+Set .@menu$,.@menu$ + "- "+@Size$[.@i]+ ":";
+If(Select(.@menu$+"- Não fazer nada") > GetArraySize(@Size$)) Close;
+Set @menu,@menu -1;
+Mes "[^FF0000 Baby Changer ^000000]";
+Mes "Você escolheu o tamanho ^FF0000"+@Size$[@menu]+"^000000";
+Atcommand "@size "+@Size[@menu];
+Close;
+}

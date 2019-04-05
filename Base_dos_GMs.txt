@@ -1,0 +1,1838 @@
+//   Portuguese Scripter                    Favor Não Tirar Os créditos
+//
+//=====Cronus Script ================================================
+//===== Base dos GMs
+//===== Por: ==========================================================
+//ADM Katan
+//===== Current Version: ==============================================
+//= 3.0
+//===== Compatível com: ===============================================
+//= Qualquer Cronus
+//===== Descrição: ====================================================
+//= Local vip somente para GMs
+//===== Comentários adicionais: =======================================
+//Funfa BUnitu
+//=====================================================================
+prontera.gat,138,183,5	script	Sala de GM	811,{
+set @gmlvl,20; //Level Máximo de GM que pode acessar o menu GM e entrar na Base dos GM's
+set @ADMlvl,80;	//Level de Administradores
+
+set @gm,getgmlevel();
+if(@gm>20) goto vale0;
+mes "[Guardiao da BaseGM]";
+mes "A Base dos GMs só pode ser acessada por GMs.";
+mes "A Base foi construida para os GMs descansarem e se reunirem";
+mes "Desculpe, só GMs com level igual ou acima de 40 podem entrar";
+close;
+
+vale0:
+mes "[Guardiao da BaseGM]";
+mes "Olá GM ^5566FF"+strcharinfo(0)+"^000000. Você deseja entrar na Base?";
+next;
+mes "[Guardiao da BaseGM]";
+mes "Não tem nenhum perigo, a Base foi construida para os GMs descansarem e se reunirem";
+next;
+mes "[Guardiao da BaseGM]";
+mes "Há muitas coisas na Base, Muitos tesouros, muitos esconderijos.";
+next;
+mes "[Guardiao da BaseGM]";
+mes "Você quer entrar agora?";
+next;
+menu "Sim",sim,"Não",cancelar;
+
+sim:
+mes "[Guardiao da BaseGM]";
+mes "Tenha uma boa visita, GM ^5566FF"+strcharinfo(0)+"^000000!";
+next;
+warp "lhz_in01.gat",276,258;
+close;
+
+cancelar:
+mes "[Guardiao da BaseGM]";
+mes "Tudo bem, GM ^5566FF"+strcharinfo(0)+"^000000, fale comigo quando quiser ir á base.";
+close;
+
+OnInit:
+waitingroom "GM Room",0,"",0;
+end;
+
+}
+
+lhz_in01.gat,263,260,6	script	Governante	798,{
+set @gm,getgmlevel();
+if(@gm>20) goto vale2;
+	mes "[Super Warper]";
+	mes "SUMA DAQUI";
+	warp "prontera.gat",150,163;
+	Close;
+
+vale2:
+mes "[Governante]";
+mes "Olá "+strcharinfo(0)+" precisa de alguma ajuda?";
+next;
+menu "Heal",LHeal,"Teleporte",LWarp,"Nada",E;
+
+LHeal:
+specialeffect2 8;
+percentheal 100,100;
+mes "espero ter ajudado";
+close;
+
+LWarp:
+mes "[Governante]";
+mes "Sou o Governante da Base dos GMs, estou aqui para auxiliar os GMs com os eventos";
+mes "Posso teleportar para qualquer mapa de Rune Midgard";
+mes "Por favor Selecione o tipo de mapa que deseja ir";
+next;
+menu "Fields",F,"Cavernas",D,"Cidades",L_T,"Nenhum",E;
+
+F:
+mes "[Governante]";
+mes "Por Favor escolha seu destino:";
+menu "Prontera Field",PrtF,"Payon Field",PayF,"Morroc Field",mocF,"Geffen Field",gefF,"Mjolnir Field",mjoF,"Comodo Field",cmdF,"Juno Field",yunoF,"Amatsu Field",amaF,"Gonryun Field",gonF,"Niflheim Field",nifF,"Umbala Field",umF,"Next...",FF;
+FF:
+menu "Lutie Field",LutF,"Yggdrasil Field",YggF,"Guild Map",GUILDY,"LouYang Field",LYYY1;
+LYYY1:
+warp "lou_fild01.gat",208,214;
+PrtF:
+menu "Prt Field 0",Prt0,"Prt Field 1",Prt1,"Prt Field 2",Prt2,"Prt Field 3",Prt3,"Prt Field 4",Prt4,"Prt Field 5",Prt5,"Prt Field 6",Prt6,"Prt Field 7",Prt7,"Prt Field 8",Prt8,"Prt Field 9",Prt9,"Prt Field 10",Prt10,"Prt Field 11",Prt11;
+Prt0:
+warp "prt_fild00.gat",208,228;
+close;
+Prt1:
+warp "prt_fild01.gat",306,281;
+close;
+Prt2:
+warp "prt_fild02.gat",336,343;
+close;
+Prt3:
+warp "prt_fild03.gat",126,123;
+close;
+Prt4:
+warp "prt_fild04.gat",230,330;
+close;
+Prt5:
+warp "prt_fild05.gat",280,220;
+close;
+Prt6:
+warp "prt_fild06.gat",130,210;
+close;
+Prt7:
+warp "prt_fild07.gat",240,90;
+close;
+Prt8:
+warp "prt_fild08.gat",105,275;
+close;
+Prt9:
+warp "prt_fild09.gat",105,115;
+close;
+Prt10:
+warp "prt_fild10.gat",100,110;
+close;
+Prt11:
+warp "prt_fild11.gat",104,230;
+close;
+
+mocF:
+menu "Moc Field 1",moc1,"Moc Field 2",moc2,"Moc Field 3",moc3,"Moc Field 4",moc4,"Moc Field 5",moc5,"Moc Field 6",moc6,"Moc Field 7",moc7,"Moc Field 8",moc8,"Moc Field 9",moc9,"Moc Field 10",moc10,"Moc Field 11",moc11,"Next...",mocF2;
+mocF2:
+menu "Moc Field 12",moc12,"Moc Field 13",moc13,"Moc Field 14",moc14,"Moc Field 15",moc15,"Moc Field 16",moc16,"Moc Field 17",moc17,"Moc Field18",moc18;
+moc1:
+warp "moc_fild01.gat",198,195;
+close;
+moc2:
+warp "moc_fild02.gat",94,101;
+close;
+moc3:
+warp "moc_fild03.gat",171,258;
+close;
+moc4:
+warp "moc_fild04.gatt",148,333;
+close;
+moc5:
+warp "moc_fild05.gat",205,274;
+close;
+moc6:
+warp "moc_fild06.gat",134,302;
+close;
+moc7:
+warp "moc_fild07.gat",180,346;
+close;
+moc8:
+warp "moc_fild08.gat",140,178;
+close;
+moc9:
+warp "moc_fild09.gat",214,128;
+close;
+moc10:
+warp "moc_fild10.gat",208,107;
+close;
+moc11:
+warp "moc_fild11.gat",198,214;
+close;
+moc12:
+warp "moc_fild12.gat",161,259;
+close;
+moc13:
+warp "moc_fild13.gat",160,285;
+close;
+moc14:
+warp "moc_fild14.gat",124,93;
+close;
+moc15:
+warp "moc_fild15.gat",200,175;
+moc16:
+warp "moc_fild16.gat",205,234;
+moc17:
+warp "moc_fild17.gat",107,145;
+close;
+moc18:
+warp "moc_fild18.gat",138,233;
+close;
+
+PayF:
+menu "Pay Field 1",pay1,"Pay Field 2",pay2,"Pay Field 3",pay3,"Pay Field 4",pay4,"Pay Field 5",pay5,"Pay Field 6",pay6,"Pay Field 7",pay7,"Pay Field 8",pay8,"Pay Field 9",pay9,"Pay Field 10",pay10,"Pay Field 11",pay11;
+pay1:
+warp "pay_fild01.gat",108,119;
+close;
+pay2:
+warp "pay_fild02.gat",88,129;
+close;
+pay3:
+warp "pay_fild03.gat",350,46;
+close;
+pay4:
+warp "pay_fild04.gat",159,343;
+close;
+pay5:
+warp "pay_fild05.gat",100,104;
+close;
+pay6:
+warp "pay_fild06.gat",279,120;
+close;
+pay7:
+warp "pay_fild07.gat",115,382;
+close;
+pay8:
+warp "pay_fild08.gat",100,100;
+close;
+pay9:
+warp "pay_fild09.gat",100,100;
+close;
+pay10:
+warp "pay_fild10.gat",217,223;
+close;
+pay11:
+warp "pay_fild11.gat",118,276;
+close;
+
+gefF:
+menu "Gef Field 0",gef0,"Gef Field 1",gef1,"Gef Field 2",gef2,"Gef Field 3",gef3,"Gef Field 4",gef4,"Gef Field 5",gef5,"Gef Field 6",gef6,"Gef Field 7",gef7,"Gef Field 8",gef8,"Gef Field 9",gef9,"Gef Field 10",gef10,"Next...",geff2;
+geff2:
+menu "Gef Field 11",gef11,"Gef Field 12",gef12,"Gef Field 14",gef14;
+gef0:
+warp "gef_fild00.gat",71,126;
+close;
+gef1:
+warp "gef_fild01.gat",67,85;
+close;
+gef2:
+warp "gef_fild02.gat",216,211;
+close;
+gef3:
+warp "gef_fild03.gat",297,74;
+close;
+gef4:
+warp "gef_fild04.gat",181,225;
+close;
+gef5:
+warp "gef_fild05.gat",100,100;
+close;
+gef6:
+warp "gef_fild06.gat",55,190;
+gef7:
+warp "gef_fild07.gat",50,158;
+gef8:
+warp "gef_fild08.gat",105,105;
+close;
+gef9:
+warp "gef_fild09.gat",100,100;
+close;
+gef10:
+warp "gef_fild10.gat",100,100;
+close;
+gef11:
+warp "gef_fild11.gat",274,245;
+close;
+gef12:
+warp "gef_fild12.gat",100,100;
+close;
+gef14:
+warp "gef_fild14.gat",363,220;
+close;
+mjoF:
+menu "Mjolnir Field 1",mjolnir1,"Mjolnir Field 2",mjolnir2,"Mjolnir Field 3",mjolnir3,"Mjolnir Field 4",mjolnir4,"Mjolnir Field 5",mjolnir5,"Mjolnir Field 6",mjolnir6,"Mjolnir Field 7",mjolnir7,"Mjolnir Field 8",mjolnir8,"Mjolnir Field 9",mjolnir9,"Mjolnir Field 10",mjolnir10,"Mjolnir Field 11",mjolnir11,"Mjolnir Field 12",mjolnir12;
+mjolnir1:
+warp "mjolnir_01.gat",135,156;
+close;
+mjolnir2:
+warp "mjolnir_02.gat",100,100;
+close;
+mjolnir3:
+warp "mjolnir_03.gat",100,100;
+close;
+mjolnir4:
+warp "mjolnir_04.gat",304,127;
+close;
+mjolnir5:
+warp "mjolnir_05.gat",149,270;
+close;
+mjolnir6:
+warp "mjolnir_06.gat",304,345;
+close;
+mjolnir7:
+warp "mjolnir_07.gat",100,100;
+close;
+mjolnir8:
+warp "mjolnir_08.gat",100,100;
+close;
+mjolnir9:
+warp "mjolnir_09.gat",101,112;
+close;
+mjolnir10:
+warp "mjolnir_10.gat",100,100;
+close;
+mjolnir11:
+warp "mjolnir_11.gat",100,100;
+close;
+mjolnir12:
+warp "mjolnir_12.gat",100,100;
+close;
+cmdF:
+menu "Cmd Field 1",cmd1,"Cmd Field 2",cmd2,"Cmd Field 3",cmd3,"Cmd Field 4",cmd4,"Cmd Field 5",cmd5,"Cmd Field 6",cmd6,"Cmd Field 7",cmd7,"Cmd Field 8",cmd8,"Cmd Field 9",cmd9;
+cmd1:
+warp "cmd_fild01.gat",100,100;
+close;
+cmd2:
+warp "cmd_fild02.gat",100,100;
+close;
+cmd3:
+warp "cmd_fild03.gat",100,100;
+close;
+cmd4:
+warp "cmd_fild04.gat",100,100;
+close;
+cmd5:
+warp "cmd_fild05.gat",231,189;
+close;
+cmd6:
+warp "cmd_fild06.gat",100,100;
+close;
+cmd7:
+warp "cmd_fild07.gat",135,342;
+close;
+cmd8:
+warp "cmd_fild08.gat",100,100;
+close;
+cmd9:
+warp "cmd_fild09.gat",201,355;
+close;
+yunoF:
+menu "Juno Field 1",yuno1,"Juno Field 2",yuno2,"Juno Field 3",yuno3,"Juno Field 4",yuno4;
+yuno1:
+warp "yuno_fild01.gat",207,43;
+close;
+yuno2:
+warp "yuno_fild02.gat",100,100;
+close;
+yuno3:
+warp "yuno_fild03.gat",100,100;
+close;
+yuno4:
+warp "yuno_fild04.gat",150,154;
+close;
+amaF:
+menu "Amatsu Field 1",ama1;
+ama1:
+warp "ama_fild01.gat",57,69;
+close;
+
+gonF:
+menu "Gonryun Field 1",gon1;
+gon1:
+warp "gon_fild01.gat",100,100;
+close;
+nifF:
+menu "Niflheim Field 1",nif1,"Niflheim Field 2",nif2;
+nif1:
+warp "nif_fild01.gat",181,320;
+close;
+nif2:
+warp "nif_fild02.gat",61,329;
+close;
+umF:
+menu "Umbala Field 1",um1,"Umbala Field 2",um2,"Umbala Field 3",um3,"Umbala Field 4",um4;
+um1:
+warp "um_fild01.gat",100,100;
+close;
+um2:
+warp "um_fild02.gat",215,312;
+close;
+um3:
+warp "um_fild03.gat",100,100;
+close;
+um4:
+warp "um_fild04.gat",270,177;
+close;
+LutF:
+menu "Lutie Field 1",xmas1;
+xmas1:
+warp "xmas_fild01.gat",100,100;
+close;
+YggF:
+menu "Yggdrasil Field 1",yggdrasil1;
+yggdrasil1:
+warp "yggdrasil01.gat",40,63;
+GUILDY:
+menu "Payon Castle Map",PCM111,"Geffen Castle Map",GCM111,"Aldeberan Castle Map",ACM111,"Prontera Castle Map",PCM222;
+PCM111:
+warp "pay_gld.gat",114,171;
+close;
+GCM111:
+warp "gef_fild13.gat",164,247;
+close;
+ACM111:
+warp "alde_gld.gat",72,232;
+close;
+PCM222:
+warp "prt_gld.gat",166,103;
+close;
+
+L_T:
+mes "[Governante]";
+mes "Por favor escolha o seu destino:";
+next;
+menu "Prontera",prontera,"Geffen",geffen,"Payon",payon,"Morroc",morroc,"Alberta",alberta,"Adebaran",aldebaran,"Izlude",izlude,"Lutie",lutie,"Juno",yuno,"Comodo",comodo,"Amatsu",amatsu,"Next...",TT;
+
+TT:
+menu "Gonryun",gonryun,"Umbala",umbala,"Niflheim",niflheim,"Jawaii",HawaiiBaby,"Lou Yang",Chink111,"Ayothaya",Ayothaya;
+Ayothaya:
+warp "ayothaya.gat",153,71;
+close;
+HawaiiBaby:
+warp "jawaii.gat",117,205;
+close;
+Chink111:
+warp "louyang.gat",218,106;
+close;
+prontera:
+warp "prontera.gat",156,184;
+close;
+geffen:
+warp "geffen.gat",120,68;
+close;
+payon:
+warp "payon.gat",96,114;
+close;
+morroc:
+warp "morocc.gat",157,94;
+close;
+alberta:
+warp "alberta.gat",116,56;
+close;
+aldebaran:
+warp "aldebaran.gat",141,118;
+close;
+izlude:
+warp "izlude.gat",127,116;
+close;
+lutie:
+warp "xmas.gat",147,117;
+close;
+yuno:
+warp "yuno.gat",280,216;
+close;
+comodo:
+warp "comodo.gat",191,150;
+close;
+amatsu:
+warp "amatsu.gat",200,86;
+close;
+gonryun:
+warp "gonryun.gat",159,124;
+close;
+umbala:
+warp "umbala.gat",125,136;
+close;
+niflheim:
+warp "niflheim.gat",195,185;
+close;
+
+D:
+mes "[Governante]";
+mes "Por favor escolha seu destino:";
+next;
+menu "Clock Tower",CTD,"Amatsu Dungeon",AmaD,"Ant Hell",AntD,"Beach Dungeon",BeachD,"Geffen Dungeon",GefD,"Glastheim",GHD,"Guild Dungeon",GGD,"Gonryun Dungeon",GonD,"Sphinx",SphinxD,"Byalan Dungeon",ByaD,"Magma Dungeon",MagD,"Next...",DD;
+DD:
+menu "Coal Mine",CoalD,"Pyramid",PyramidD,"Orc Dungeon",OrcD,"Payon Dungeon",PayD,"Hidden Temple",HidD,"Sewers",SewD,"Sunken Ship",SSD,"Turtle Dungeon",TurtleD,"Umbala Dungeon",UmbD,"Toy Factory",TFD,"Lou Yang",LLYY12;
+LLYY12:
+menu "LouYang Dun 1",LY1110,"LouYang Dun 2",LY2220,"LouYang Dun 3",LY3330;
+
+LY1110:
+warp "lou_dun01.gat",113,54;
+close;
+LY2220:
+warp "lou_dun02.gat",88,110;
+close;
+LY3330:
+warp "lou_dun03.gat",166,135;
+close;
+CTD:
+menu "Clock Tower 1",CT1,"Clock Tower 2",CT2,"Clock Tower 3",CT3,"Clock Tower 4",CT4,"Clock Tower Dungeon 1",CTD1,"Clock Tower Dungeon 2",CTD2,"Clock Tower Dungeon 3",CTD3,"Clock Tower Dungeon 4",CTD4;
+
+CT1:
+warp "c_tower1.gat",100,100;
+close;
+CT2:
+warp "c_tower2.gat",152,94;
+close;
+CT3:
+warp "c_tower3.gat",100,100;
+close;
+CT4:
+warp "c_tower4.gat",99,100;
+close;
+CTD1:
+warp "alde_dun01.gat",87,242;
+close;
+CTD2:
+warp "alde_dun02.gat",143,228;
+close;
+CTD3:
+warp "alde_dun03.gat",100,100;
+close;
+CTD4:
+warp "alde_dun04.gat",100,100;
+close;
+AmaD:
+menu "Amatsu Dungeon 1",AmaD1,"Amatsu Dungeon 2",AmaD2,"Amatsu Dungeon 3",AmaD3;
+AmaD1:
+warp "ama_dun01.gat",100,100;
+close;
+AmaD2:
+warp "ama_dun02.gat",57,91;
+close;
+AmaD3:
+warp "ama_dun03.gat",100,100;
+close;
+AntD:
+menu "Anthell 1",Ant1,"Anthell 2",Ant2;
+Ant1:
+warp "anthell01.gat",100,100;
+close;
+Ant2:
+warp "anthell02.gat",49,41;
+close;
+BeachD:
+menu "Beach Dungeon 1",BD1,"Beach Dungeon 2",BD2,"Beach Dungeon 3",BD3;
+BD1:
+warp "beach_dun.gat",100,100;
+close;
+BD2:
+warp "beach_dun2.gat",31,84;
+close;
+BD3:
+warp "beach_dun3.gat",117,43;
+close;
+GefD:
+menu "Geffen Dungeon 1",Gef000,"Geffen Dungeon 2",Gef111,"Geffen Dungeon 3",Gef222,"Geffen Dungeon 4",Gef333;
+Gef000:
+warp "gef_dun00.gat",100,100;
+close;
+Gef111:
+warp "gef_dun01.gat",238,71;
+close;
+Gef222:
+warp "gef_dun02.gat",109,128;
+close;
+Gef333:
+warp "gef_dun03.gat",195,202;
+close;
+GHD:
+menu "GlastHeim Castle",GHCas,"GlastHeim Church",GHChu,"GlastHeim Dungeon",GHDun,"GlastHeim Interior",GHInt,"GlastHeim Chivalry",GHChi,"GlastHeim Prison",GHPri,"GlastHeim Serwers",GHSew,"GlastHeim Staircase",GHSte,"GlastHeim",GHeim;
+GHCas:
+menu "GlastHeim Castle 1",GHCas1,"GlastHeim Castle 2",GHCas2;
+GHCas1:
+warp "gl_cas01.gat",198,103;
+close;
+GHCas2:
+warp "gl_cas02.gat",100,100;
+close;
+GHChu:
+menu "GlastHeim St. Abbey",GHSTA,"GlastHeim Churchyard",GHCY;
+GHSTA:
+warp "gl_church.gat",157,68;
+close;
+GHCY:
+warp "gl_chyard.gat",147,149;
+close;
+GHDun:
+menu "GlastHeim Dungeon 1",GHDun1,"GlastHeim Dungeon 2",GHDun2;
+GHDun1:
+warp "gl_dun01.gat",135,267;
+close;
+GHDun2:
+warp "gl_dun02.gat",224,274;
+close;
+GHInt:
+warp "gl_in01.gat",123,124;
+close;
+GHChi:
+menu "GlastHeim Chivalry 1",GHCH1,"GlastHeim Chivalry 2",GHCH2;
+GHCH1:
+warp "gl_knt01.gat",150,15;
+close;
+GHCH2:
+warp "gl_knt02.gat",100,100;
+close;
+GHPri:
+menu "GlastHeim Prison 1",GHP1,"GlastHeim Prison 2",GHP2;
+GHP1:
+warp "gl_prison.gat",100,108;
+close;
+GHP2:
+warp "gl_prison1.gat",127,116;
+close;
+GHSew:
+menu "GlastHeim Sewers 1",GHS1,"GlastHeim Sewers 2",GHS2,"GlastHeim Sewers 3",GHS3,"GlastHeim Sewers 4",GHS4;
+GHS1:
+warp "gl_sew01.gat",214,108;
+close;
+GHS2:
+warp "gl_sew02.gat",100,100;
+close;
+GHS3:
+warp "gl_sew03.gat",100,100;
+close;
+GHS4:
+warp "gl_sew04.gat",100,100;
+close;
+GHSte:
+warp "gl_step.gat",98,100;
+close;
+GHeim:
+warp "glast_01.gat",200,131;
+close;
+GGD:
+menu "Guild Dungeon 1",GDGD1,"Guild Dungeon 2",GDGD2,"Guild Dungeon 3",GDGD3,"Guild Dungeon 4",GDGD4;
+GDGD1:
+warp "gld_dun01.gat",100,100;
+close;
+GDGD2:
+warp "gld_dun02.gat",100,100;
+close;
+GDGD3:
+warp "gld_dun03.gat",100,100;
+close;
+GDGD4:
+warp "gld_dun04.gat",150,238;
+close;
+GonD:
+menu "Gonryun Dungeon 1",GonD1,"Gonryun Dungeon 2",GonD2,"Gonryun Dungeon 3",GonD3;
+GonD1:
+warp "gon_dun01.gat",100,100;
+close;
+GonD2:
+warp "gon_dun02.gat",244,106;
+close;
+GonD3:
+warp "gon_dun03.gat",100,100;
+close;
+SphinxD:
+menu "Sphinx 1",SPX1,"Sphinx 2",SPX2,"Sphinx 3",SPX3,"Sphinx 4",SPX4,"Sphinx 5",SPX5;
+SPX1:
+warp "in_sphinx1.gat",100,100;
+close;
+SPX2:
+warp "in_sphinx2.gat",100,010;
+close;
+SPX3:
+warp "in_sphinx3.gat",100,100;
+close;
+SPX4:
+warp "in_sphinx4.gat",181,155;
+close;
+SPX5:
+warp "in_sphinx5.gat",100,100;
+close;
+ByaD:
+menu "Byalan Dungeon 1",BYD1,"Byalan Dungeon 2",BYD2,"Byalan Dungeon 3",BYD3,"Byalan Dungeon 4",BYD4,"Byalan Dungeon 5",BYD5;
+BYD1:
+warp "iz_dun00.gat",100,100;
+close;
+BYD2:
+warp "iz_dun01.gat",100,100;
+close;
+BYD3:
+warp "iz_dun02.gat",100,100;
+close;
+BYD4:
+warp "iz_dun03.gat",64,74;
+close;
+BYD5:
+warp "iz_dun04.gat",100,100;
+close;
+MagD:
+menu "Magma Dungeon 1",MAGD1,"Magma Dungeon 2",MAGD2;
+MAGD1:
+warp "mag_dun01.gat",231,63;
+close;
+MAGD2:
+warp "mag_dun02.gat",101,202;
+close;
+CoalD:
+menu "Coal Mine 1",COMI1,"Coal Mine 2",COMI2,"Coal Mine 3",COMI3;
+COMI1:
+warp "mjo_dun01.gat",114,67;
+close;
+COMI2:
+warp "mjo_dun02.gat",100,100;
+close;
+COMI3:
+warp "mjo_dun03.gat",171,74;
+close;
+PyramidD:
+menu "Pyramid 1",PRY1,"Pyramid 2",PRY2,"Pyramid 3",PRY3,"Pyramid 4",PRY4,"Pyramid Basement 1",PRYB1,"Pyramid Basement 2",PRYB2;
+PRY1:
+warp "moc_pryd01.gat",100,100;
+close;
+PRY2:
+warp "moc_pryd02.gat",102,13;
+close;
+PRY3:
+warp "moc_pryd03.gat",74,105;
+close;
+PRY4:
+warp "moc_pryd04.gat",176,116;
+close;
+PRYB1:
+warp "moc_pryd05.gat",166,145;
+close;
+PRYB2:
+warp "moc_pryd06.gat",31,197;
+close;
+OrcD:
+menu "Orc Dungeon 1",ORCD1,"Orc Dungeon 2",ORCD2;
+ORCD1:
+warp "orcsdun01.gat",52,105;
+close;
+ORCD2:
+warp "orcsdun02.gat",100,100;
+close;
+PayD:
+menu "Payon Dungeon 1",PAYD1,"Payon Dungeon 2",PAYD2,"Payon Dungeon 3",PAYD3,"Payon Dungeon 4",PAYD4,"Payon Dungeon 5",PAYD5;
+PAYD1:
+warp "pay_dun00.gat",50,60;
+close;
+PAYD2:
+warp "pay_dun01.gat",134,186;
+close;
+PAYD3:
+warp "pay_dun02.gat",104,79;
+close;
+PAYD4:
+warp "pay_dun03.gat",90,35;
+close;
+PAYD5:
+warp "pay_dun04.gat",84,119;
+close;
+HidD:
+menu "Hidden Temple 1",HIDT1,"Hidden Temple 2",HIDT2,"Hidden Temple 3",HIDT3;
+HIDT1:
+warp "prt_maze01.gat",100,100;
+close;
+HIDT2:
+warp "prt_maze02.gat",104,68;
+close;
+HIDT3:
+warp "prt_maze03.gat",100,100;
+close;
+SewD:
+menu "Sewers 1",SEW11,"Sewers 2",SEW22,"Sewers 3",SEW33,"Sewers 4",SEW44;
+SEW11:
+warp "prt_sewb1.gat",285,197;
+close;
+SEW22:
+warp "prt_sewb2.gat",100,100;
+close;
+SEW33:
+warp "prt_sewb3.gat",63,157;
+close;
+SEW44:
+warp "prt_sewb4.gat",157,135;
+close;
+SSD:
+menu "Sunken Ship 1",SUNSHI1,"Sunken Ship 2",SUNSHI2;
+SUNSHI1:
+warp "treasure01.gat",164,116;
+close;
+SUNSHI2:
+warp "treasure02.gat",100,100;
+close;
+TurtleD:
+menu "Turtle Dungeon 1",TURTD1,"Turtle Dungeon 2",TURTD2,"Turtle Dungeon 3",TURTD3,"Turtle Dungeon 4",TURTD4,"Turtle Dungeon 5",TURTD5;
+TURTD1:
+warp "tur_dun01.gat",100,100;
+close;
+TURTD2:
+warp "tur_dun02.gat",115,224;
+close;
+TURTD3:
+warp "tur_dun03.gat",100,100;
+close;
+TURTD4:
+warp "tur_dun04.gat",36,167;
+close;
+TURTD5:
+warp "tur_dun05.gat",80,33;
+close;
+UmbD:
+menu "Umbala Dungeon 1",UMBAD1,"Umbala Dungeon 2",UMBAD2;
+UMBAD1:
+warp "um_dun01.gat",139,82;
+close;
+UMBAD2:
+warp "um_dun02.gat",100,100;
+close;
+TFD:
+menu "Lutie Toy Factory 1",LUTOYFAC1,"Lutie Toy Factory 2",LUTOYFAC2;
+LUTOYFAC1:
+warp "xmas_dun01.gat",67,124;
+close;
+LUTOYFAC2:
+warp "xmas_dun02.gat",174,102;
+close;
+
+E:
+mes "[Governante]";
+mes "Quando quiser alguma ajuda fale comigo novamente";
+close;
+}
+
+lhz_in01.gat,265,264,4	script	Cavaleiro	105,{
+set @gm,getgmlevel();
+if(@gm>60) goto vale3;;
+	mes "[Calaveiro]";
+	mes "Apenas GM's Level 80 podem usar este NPC";
+	Close;
+
+vale3:
+mes "[Cavaleiro]";
+mes "Sou o cavaleiro da base.";
+mes "Esta suspeitando de algum Player?";
+mes "O que quer que eu faça com ele?";
+set @menu,select("Jail","UnJail","Anti-Booter","Quit");
+switch(@menu)
+{
+	case 1:
+		mes "[Cavaleiro]";
+		mes "Me fale o nome desse infeliz";
+		mes "Que mandarei soldados para prendelo";
+		input @jail$;
+		atcommand strcharinfo(0)+":@jail "+@Jail$;
+		set @message$,"Vacê foi mandado para a cadeia por suspeita de Booter";
+		Announce "messagem para "+ strcharinfo(0) +": "+ @message$ +" ",8;
+		next;
+		mes "[Cavaleiro]";
+		mes "Player preso";
+		close;
+	case 2:
+		mes "[Cavaleiro]";
+		mes "Me fale o nome desse individuo para que eu o liberte";
+		input @unjail$;
+		atcommand strcharinfo(0)+":@unjail "+@unJail$;
+		next;
+		mes "[Cavaleiro]";
+		mes "Player libertado";
+		close;
+	case 3:
+		mes "[Cavaleiro]";
+		mes "Me fale o nome do sujeito para que eu o mande";
+		mes "Falar com o Pastor, para verificar se ele é Booter ou não";
+		input @bot$;
+		charcommand strcharinfo(0)+":#warp sec_in02 131 162"+@bot$;
+		set @message$,"Sistema Anti-Booter iniciado, por favor fale com o Pastor";
+		Announce "messagem para "+ strcharinfo(0) +": "+ @message$ +" ",8;
+	case 4:
+		close;
+	}
+}
+//Suporte Room
+lhz_in01.gat,280,260,4	script	Suporte	83,{
+	set @gm,getgmlevel();
+	if(@gm>20) goto ok;
+	mes "[Suporte]";
+	mes "SUMA DAQUI";
+	warp "prontera.gat",150,163;
+	Close;
+
+ok:
+mes "[Suporte]";
+mes "Olá, gostaria de ir para sala de suporte a player's?";
+next;
+menu "Sim",sim,"Não",nao;
+
+sim:
+mes "ok!!";
+mes "Vamos lá";
+next;
+warp "sec_in01.gat",174,32;
+close;
+
+nao:
+mes "[Suporte]";
+mes "Tudo bem";
+mes "Volte quando precisar dos meus serviços";
+mes "Seu desejo é uma ordem :P";
+next;
+close;
+}
+//================= Na Room ===================
+sec_in01.gat,176,37,4	script	Guarda	105,15,15,{
+set @gm,getgmlevel();
+if(@gm>20) goto ok;
+
+//Se NÃO for GM
+	if ($liberar != 1) goto L_NaoLiberado;
+	mes "[Guarda]";
+	mes "Gm já liberou sua saida";
+	mes "Quer voltar a protera?";
+	menu "Sim, por favor",sim,"Não, obrigado",nao;
+	close;
+		sim:
+			mes "[Guarda]";
+			mes "ok! vamos lá";
+			warp "prontera.gat",150,163;
+			set $liberar,0;
+			close;
+
+		nao:
+			mes "[Guarda]";
+			mes "Tudo bem, você que sabe";
+			Close;
+
+L_NaoLiberado:
+	mes "[Guarda]";
+	mes "GM ainda ainda não o liberou para sair";
+	close;
+
+//Se for GM
+ok:
+	mes "[Guarda]";
+	mes "Olá ^5566FF"+strcharinfo(0)+"^000000.";
+	mes "O que quer que eu faça?";
+	menu "Chamar um Player",venha,"Liberar Player",liberar,"Voltar para Base",volta,"Nada não",nada;
+
+
+venha:
+	mes "[Guarda]";
+	mes "Para que eu traga um Player até aqui apenas me fale o nome";
+	goto Xamar;
+
+		Xamar:
+			next;
+			input #WarpName$;
+			charcommand strcharinfo(0)+":#Warp sec_in01 174 28"+#WarpName$;
+			close;
+
+volta:
+warp "lhz_in01.gat",276,258;
+close;
+
+liberar:
+	mes "[Guarda]";
+	mes "Deixarei ele ir";
+	set $liberar,1;
+	close;
+
+nada:
+close;
+	OnTouch:
+	if(@gm<20){
+	npctalk "Por Favor "+strcharinfo(0)+" fica sentado na cadeira enquanto o GM estiver falando";
+	}
+}
+//Kafra
+//lhz_in01.gat,263,258,6	script	Supreme Kafra	861,{
+//	cutin "kafra_09",2;
+//	callfunc "F_Kafra",0,4,1;
+//
+//	M_Save:
+//		savepoint "lhz_in01.gat",273,258;
+//		callfunc "F_KafEnd",0,1;
+//}
+//Saia Player
+-	script	Xo	0,{
+
+callfunc "Xo";
+}
+
+lhz_in01.gat,263,258,0	duplicate(Xo)	Xo#01	-1,10,10
+lhz_in01.gat,280,260,0	duplicate(Xo)	Xo#02	-1,10,10
+lhz_in01.gat,265,264,0	duplicate(Xo)	Xo#03	-1,10,10
+lhz_in01.gat,263,260,0	duplicate(Xo)	Xo#04	-1,10,10
+lhz_in01.gat,276,258,0	duplicate(Xo)	Xo#05	-1,10,10
+
+//Função para que o Player sai do local oned está
+function	script	Xo	{
+OnTouch:
+set @gm,getgmlevel();
+if(@gm>20) goto ok;;
+	mes "[Calaveiro]";
+	mes "Area não autorizada a Player's";
+	mes "saia imediatamente";
+	next;
+	warp "prontera.gat",150,163;
+	Close;
+
+ok:
+close;
+}
+
+lhz_in01.gat	mapflag	noteleport
+lhz_in01.gat	mapflag	nowarp
+lhz_in01.gat	mapflag	nowarpto
+lhz_in01.gat	mapflag	nosave	SavePoint
+lhz_in01.gat	mapflag	nomemo
+lhz_in01.gat	mapflag	nobranch
+lhz_in01.gat	mapflag	noexp
+lhz_in01.gat	mapflag	noloot
+
+
+// .==========================================================.
+// |       _____    _ _                                       |
+// |       |_  _|_ _| | | ____ _ _ __  _ __  ___  _ __        |
+// |        | |/ _` | | |/ / _` | '_ | '_  / _ | '_       |
+// |        | | (_| | | < (_| | | | | | | | (_) | | | |       |
+// |        |_|__,_|_|_|___,_|_| |_|_| |_|___/|_| |_|     |
+// |                                                          |
+// |                                  [ eAthena Script ]      |
+// |                                                          |
+// '=========================================================='
+//
+//===== eAthena Script =======================================
+//= Pastor (NPC Script)
+//===== Idioma ===============================================
+//= Português (Brasil)
+//===== Por: =================================================
+//= Gui Meira (v1.0)
+//= Talkannon/Drathus (v1.1 / v1.2)
+//===== Versão Atual: ========================================
+//= 1.2 (02/01/2006)
+//===== Compactível com: =====================================
+//= Qualquer eAthena!
+//===== Descrição: ===========================================
+//= =>  NPC Anti-Bot, uma obra-prima! Manda os jogadores para
+//=      uma sala onde eles tem que inputar uma senha para
+//=      poderem jogar (verificação de bot)...
+//===== Comentários adicionais: ==============================
+//= 1.0 - NPC Criado ......................... [by Gui Meira]
+//=
+//= 1.1 - Modificações e Melhorias ... [by Talkannon/Drathus]
+//=
+//= 1.2 - Adição das Senhas, Chat .... [by Talkannon/Drathus]
+//= 1.3 - Retirado automaticalização .... [by Vangorime]
+//============================================================
+
+//|*****/*|_____________________________|******|\
+//|****///|Criado por:<Cristian>        |\****|\
+//|***////|_____________________________|\\***|\
+//|**////*|Código Para NPCs De Evento   |*\\**|\
+//|*////**|_____________________________|**\\*|\
+//|////***|Npc script: Post Bug NPC     |***\\|\
+//|///****|_____________________________|****\|\
+//|\****|Classificação:Avançado       |****///|\
+//|\\***|_____________________________|***////|\
+//|*\\**|Nº Linhas c/ créditos:232    |**////*|\
+//|**\\*|_____________________________|*////**|\
+//|***\\|  *Server Original Do NPC:*  |////***|\
+//|****\|  ********KedravaRO********  |///****|\
+//|******|_____________________________|*/*****|\
+
+lhz_in01.gat,284,254,3	script	Secretary	117,{
+
+	if(getgmlevel()<1) goto atender;
+	mes "Oi GM, voce deseja ver as postagens dos jogadores?";
+	menu "Sim",yeap,"Não",-;
+	mes "Então voce gostaria de deletar todos as postagens?";
+	menu "Sim",yeap2,"Não",-;
+	mes "OK!";
+	close;
+yeap:
+	if ($mensagem1$ == "0") goto nopost;
+	mes "Mensagem 1|Postada por "+$postplay1$+":";
+	mes $mensagem1$;
+	next;
+	if ($mensagem2$ == "0") goto nopost2;
+	mes "Mensagem 2|Postada por "+$postplay2$+":";
+	mes $mensagem2$;
+	next;
+	if ($mensagem3$ == "0") goto nopost2;
+	mes "Mensagem 3|Postada por "+$postplay3$+":";
+	mes $mensagem3$;
+	next;
+	if ($mensagem4$ == "0") goto nopost2;
+	mes "Mensagem 4|Postada por "+$postplay4$+":";
+	mes $mensagem4$;
+	next;
+	if ($mensagem5$ == "0") goto nopost2;
+	mes "Mensagem 5|Postada por "+$postplay5$+":";
+	mes $mensagem5$;
+	next;
+	if ($mensagem6$ == "0") goto nopost6;
+	mes "Mensagem 6|Postada por "+$postplay6$+":";
+	mes $mensagem6$;
+	next;
+	if ($mensagem7$ == "0") goto nopost2;
+	mes "Mensagem 7|Postada por "+$postplay7$+":";
+	mes $mensagem7$;
+	next;
+	if ($mensagem8$ == "0") goto nopost2;
+	mes "Mensagem 8|Postada por "+$postplay8$+":";
+	mes $mensagem8$;
+	next;
+	if ($mensagem9$ == "0") goto nopost2;
+	mes "Mensagem 9|Postada por "+$postplay9$+":";
+	mes $mensagem9$;
+	next;
+	if ($mensagem10$ == "0") goto nopost2;
+	mes "Mensagem 10|Postada por "+$postplay10$+":";
+	mes $mensagem10$;
+	next;
+	mes "Acabaram as postagens.";
+	mes "Entáo voce gostaria de deletar todos as postagens?";
+	menu "Não",prox,"Sim",yeap2;
+prox:
+close;
+
+yeap2:
+	set $mensagem1$,0;
+	set $mensagem2$,0;
+	set $mensagem3$,0;
+	set $mensagem4$,0;
+	set $mensagem5$,0;
+	set $mensagem6$,0;
+	set $mensagem7$,0;
+	set $mensagem8$,0;
+	set $mensagem9$,0;
+	set $mensagem10$,0;
+	mes "Postagens deletadas";
+	close;
+
+nopost:
+
+	mes "Não tem nenhuma postagem no momento.";
+	close;
+
+nopost2:
+
+	mes "As postagens acabaram.";
+	mes "Gostaria de deletar as postagens lidas?";
+	menu "Não",n,"Sim",-;
+	set $mensagem1$,0;
+	set $mensagem2$,0;
+	set $mensagem3$,0;
+	set $mensagem4$,0;
+	set $mensagem5$,0;
+	set $mensagem6$,0;
+	set $mensagem7$,0;
+	set $mensagem8$,0;
+	set $mensagem9$,0;
+	set $mensagem10$,0;
+	close;
+
+atender:
+	mes "Quer mandar um recado de Bug para o GM?";
+	menu "Não",nop,"Sim",aqio;
+nop:
+	close;
+aqio:
+	if ($mensagem1$ == "0") goto postar1;
+	if ($mensagem2$ == "0") goto postar2;
+	if ($mensagem3$ == "0") goto postar3;
+	if ($mensagem4$ == "0") goto postar4;
+	if ($mensagem5$ == "0") goto postar5;
+	if ($mensagem6$ == "0") goto postar6;
+	if ($mensagem7$ == "0") goto postar7;
+	if ($mensagem8$ == "0") goto postar8;
+	if ($mensagem9$ == "0") goto postar9;
+	if ($mensagem10$ == "0") goto postar10;
+	mes "A caixa de correio está lotada.";
+	mes "Volte mais tarde.";
+	close;
+postar1:
+	mes "Fale apenas sobre BUGs.";
+	mes "Se você falar a verdade, você poderá ganhar um prêmio.";
+	mes "Mas se isso for uma brincadeira, poderemos banir você.";
+	mes "Quer mesmo mandar recados aqui?";
+	menu "Não",cancel,"Sim",popo;
+popo:
+	set $postplay1$,strcharinfo(0);
+	input $mensagem1$;
+	close;
+postar2:
+	mes "Fale apenas sobre BUGs.";
+	mes "Se você falar a verdade, você poderá ganhar um prêmio.";
+	mes "Mas se isso for uma brincadeira, poderemos banir você.";
+	mes "Quer mesmo mandar recados aqui?";
+	menu "Não",cancel,"Sim",popo2;
+popo2:
+	set $postplay2$,strcharinfo(0);
+	input $mensagem2$;
+	close;
+postar3:
+	mes "Fale apenas sobre BUGs.";
+	mes "Se você falar a verdade, você poderá ganhar um prêmio.";
+	mes "Mas se isso for uma brincadeira, poderemos banir você.";
+	mes "Quer mesmo mandar recados aqui?";
+	menu "Não",cancel,"Sim",popo3;
+popo3:
+	set $postplay3$,strcharinfo(0);
+	input $mensagem3$;
+	close;
+postar4:
+	mes "Fale apenas sobre BUGs.";
+	mes "Se você falar a verdade, você poderá ganhar um prêmio.";
+	mes "Mas se isso for uma brincadeira, poderemos banir você.";
+	mes "Quer mesmo mandar recados aqui?";
+	menu "Não",cancel,"Sim",popo4;
+popo4:
+	set $postplay4$,strcharinfo(0);
+	input $mensagem4$;
+	close;
+postar5:
+	mes "Fale apenas sobre BUGs.";
+	mes "Se você falar a verdade, você poderá ganhar um prêmio.";
+	mes "Mas se isso for uma brincadeira, poderemos banir você.";
+	mes "Quer mesmo mandar recados aqui?";
+	menu "Não",cancel,"Sim",popo5;
+popo5:
+	set $postplay5$,strcharinfo(0);
+	input $mensagem5$;
+	close;
+postar6:
+	mes "Fale apenas sobre BUGs.";
+	mes "Se você falar a verdade, você poderá ganhar um prêmio.";
+	mes "Mas se isso for uma brincadeira, poderemos banir você.";
+	mes "Quer mesmo mandar recados aqui?";
+	menu "Não",cancel,"Sim",popo6;
+popo6:
+	set $postplay6$,strcharinfo(0);
+	input $mensagem6$;
+	close;
+postar7:
+	mes "Fale apenas sobre BUGs.";
+	mes "Se você falar a verdade, você poderá ganhar um prêmio.";
+	mes "Mas se isso for uma brincadeira, poderemos banir você.";
+	mes "Quer mesmo mandar recados aqui?";
+	menu "Não",cancel,"Sim",popo7;
+popo7:
+	set $postplay7$,strcharinfo(0);
+	input $mensagem7$;
+	close;
+postar8:
+	mes "Fale apenas sobre BUGs.";
+	mes "Se você falar a verdade, você poderá ganhar um prêmio.";
+	mes "Mas se isso for uma brincadeira, poderemos banir você.";
+	mes "Quer mesmo mandar recados aqui?";
+	menu "Não",cancel,"Sim",popo8;
+popo8:
+	set $postplay8$,strcharinfo(0);
+	input $mensagem8$;
+	close;
+postar9:
+	mes "Fale apenas sobre BUGs.";
+	mes "Se você falar a verdade, você poderá ganhar um prêmio.";
+	mes "Mas se isso for uma brincadeira, poderemos banir você.";
+	mes "Quer mesmo mandar recados aqui?";
+	menu "Não",cancel,"Sim",popo9;
+popo9:
+	set $postplay9$,strcharinfo(0);
+	input $mensagem9$;
+	close;
+postar10:
+	mes "Fale apenas sobre BUGs.";
+	mes "Se você falar a verdade, você poderá ganhar um prêmio.";
+	mes "Mas se isso for uma brincadeira, poderemos banir você.";
+	mes "Quer mesmo mandar recados aqui?";
+	menu "Não",cancel,"Sim",popo10;
+popo10:
+	set $postplay10$,strcharinfo(0);
+	input $mensagem10$;
+	close;
+cancel:
+	close;
+}
+prontera.gat,143,179,5	duplicate(Secretary)	Postar Bug	721
+//(=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=)
+//(       (c)2006         Banned Presents                     )
+//(    __________                                 .___        )
+//(    ______   _____    ____   ____   ____   __| _/        )
+//(     |    |  _/__    /     /    _/ __  / __ |         )
+//(     |    |    / __ |   |     |    ___// /_/ |         )
+//(     |______  /(____  /___|  /___|  /___  >____ |         )
+//(            /      /     /     /     /     /         )
+//(                                                           )
+//(             -- [S] [c] [r] [i] [p] [t] [s] --             )
+//(  _   _   _   _   _   _   _     _   _   _   _   _   _   _  )
+//( /  /  /  /  /  /  /    /  /  /  /  /  /  /  )
+//(( e | A | t | h | e | n | a ) ( S | c | r | i | p | t | s ))
+//( _/ _/ _/ _/ _/ _/ _/   _/ _/ _/ _/ _/ _/ _/ )
+//(                                                           )
+//(   Advanced NPCs (c) 2005-2006    The BannedRO Project     )
+//(=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=)
+//===== eAthena Script =======================================
+//= GM NPC
+//===== By ===================================================
+//= [Banned]
+//===== Version ==============================================
+//= 3.5
+//===== Compatible With ======================================
+//= eAthena SVN and Freya SVN
+//===== Description ==========================================
+//= Give Some NPC Options.
+//===== Comments =============================================
+// Totalmente refeito por Vangorime
+//============================================================
+lhz_in01.gat,277,260,4	script	Servo	69,{
+set @gm,getgmlevel();
+if(@gm>60) goto vale1;
+	mes "[Servo]";
+	mes "Apenas GM's Level 80 podem usar este NPC";
+	Close;
+
+vale1:
+mes "[Servo]";
+if(sex == 1) mes "Olá Senhor "+strcharinfo(0)+" em que posso ser útil?";
+if(sex == 0) mes "Olá Senhora "+strcharinfo(0)+" em que posso ser útil?";
+mes "Legenda:";
+mes "< > Obrigatorio";
+mes "[ ] Opcional";
+next;
+menu "Comandos em Players",L_Player,"Comandos GM variados",L_CGMV,"Comandos GM para mim",L_CGMS;
+
+L_CGMS:
+next;
+mes "Legenda:";
+mes "< > Obrigatorio";
+mes "[ ] Opcional";
+set @menu,select(
+"Forjar equip",	//3
+"Apagar itens",	//4
+"Todos stats Maximo/Minimo",	//5
+"Mudar 1 Stats",	//6
+"Todas as skill possiveis",	//7
+"Dar uma skill de Quest",	//8
+"Retirar uma skill de Quest",	//9
+"Mudar Level de base",	//10
+"Mudar Job Level",	//11
+"Mudar de Sexo",	//12
+"Mudar de Class",	//13
+"Zeny's",	//14
+"Mudar velocidade",	//15
+"Mudar aparencia",	//16
+"Aparencia normal",	//17
+"Voltar ao menu principal",	//18
+"Sair");	//19
+switch(@menu)
+{
+	case 1:
+		mes "[Servo]";
+		mes "inpute:";
+		mes "<nome do equip ou ID>";
+		input @forja1$;
+		set @forja1$,@forja1$ + " ";
+		next;
+		mes "<elemento> 0 = Nenhum || 1 = Gelo || 2 = Terra || 3 = Fogo || 4 = Vento";
+		input @forja2$;
+		set @forja2$,@forja2$ + " ";
+		next;
+		mes "<# de 'força'> 1 = Forte || 2 = Muito Forte || 3 = Fortíssima";
+		input @forja3$;
+		set @forja$,@forja1$ + @forja2$ + @forja1$;
+		atcommand strcharinfo(0)+":@produce "+@forja$;
+		goto L_CGMS;
+	case 2:
+		mes "[Servo]";
+		mes "Tem certeza que quer apagar todos os itens que estam com você?";
+		menu "Sim",-,"Não",vale1;
+		atcommand strcharinfo(0)+":@itemreset";
+		goto L_CGMS;
+	case 3:
+		mes "[Servo]";
+		mes "Quer seus Stats no Máximo ou no Mínimo?";
+		next;
+		menu "Máximo",L_statsmax,"Mínimo",L_statsmin;
+			L_statsmax:
+				atcommand strcharinfo(0)+":@allstats";
+				mes "[Servo]";
+				mes "Seus Stats estam todos no Máximo possível agora";
+				next;
+				goto L_CGMS;
+			L_statsmin:
+				atcommand strcharinfo(0)+":@allstats -999";
+				mes "[Servo]";
+				mes "Seus Stats estam todos no Mínimo possivel agora";
+				next;
+				goto L_CGMS;
+	case 4:
+	stat:
+		mes "[Servo]";
+		mes "Escolha qual Stats você quer";
+		next;
+		menu "Força",str,
+			 "Agilidade",agi,
+			 "Vitalidade",vit,
+			 "Inteligencia",int,
+			 "Destreza",dex,
+			 "Sorte",luk,
+			 "Voltar ao Menu",L_CGMS;
+
+			str:
+				mes "[Servo]";
+				mes "Me diga quato quer de Força?";
+				mes "caso quera tira ponha um sinal de menos [-] antes do número mas não ponha espaço.";
+				input @stat$;
+				atcommand strcharinfo(0)+":@str "+@stat$;
+				goto stat;
+			agi:
+				mes "[Servo]";
+				mes "Me diga quato quer de Agilidade?";
+				mes "caso quera tira ponha um sinal de menos [-] antes do número mas não ponha espaço.";
+				input @stat$;
+				atcommand strcharinfo(0)+":@agi "+@stat$;
+				goto stat;
+			vit:
+				mes "[Servo]";
+				mes "Me diga quato quer de Vitalidade?";
+				mes "caso quera tira ponha um sinal de menos [-] antes do número mas não ponha espaço.";
+				input @stat$;
+				atcommand strcharinfo(0)+":@vit "+@stat$;
+				goto stat;
+			int:
+				mes "[Servo]";
+				mes "Me diga quato quer de Inteligência?";
+				mes "caso quera tira ponha um sinal de menos [-] antes do número mas não ponha espaço.";
+				input @stat$;
+				atcommand strcharinfo(0)+":@int "+@stat$;
+				goto stat;
+			dex:
+				mes "[Servo]";
+				mes "Me diga quato quer de Destreza?";
+				mes "caso quera tira ponha um sinal de menos [-] antes do número mas não ponha espaço.";
+				input @stat$;
+				atcommand strcharinfo(0)+":@dex "+@stat$;
+				goto stat;
+			luk:
+				mes "[Servo]";
+				mes "Me diga quato quer de Sorte?";
+				mes "caso quera tira ponha um sinal de menos [-] antes do número mas não ponha espaço.";
+				input @stat$;
+				atcommand strcharinfo(0)+":@luk "+@stat$;
+				goto stat;
+
+	case 5:
+		atcommand strcharinfo(0)+":@allskill";
+		mes "[Servo]";
+		mes "Agora você tem todas as skill possíveis";
+		goto L_CGMS;
+	case 6:
+		mes "[Servo]";
+		mes "Me diga a ID da skill de quest que você quer";
+		input @skquest;
+		atcommand strcharinfo(0)+":@questskill "+@skquest;
+		goto L_CGMS;
+	case 7:
+		mes "[Servo]";
+		mes "Me diga a ID da skill de quest que você quer que eu retire";
+		input @skquest;
+		atcommand strcharinfo(0)+":@lostskill "+@skquest;
+		goto L_CGMS;
+	case 8:
+		mes "[Servo]";
+		mes "Me diga para qual level você quer ir.";
+		mes "Caso queira diminuir seu level inpute antes do numero o sinal de menos [-]";
+		input @lvl;
+		atcommand strcharinfo(0)+":@lvup "+@lvl;
+		goto L_CGMS;
+	case 9:
+		mes "[Servo]";
+		mes "Me diga para qual Job Level você quer ir.";
+		mes "Caso queira diminuir seu Job Level inpute antes do numero o sinal de menos [-]";
+		input @lvl;
+		atcommand strcharinfo(0)+":@joblvup "+@lvl;
+		goto L_CGMS;
+	case 10:
+		charcommand strcharinfo(0)+":#setsex "+strcharinfo(0);
+		mes "[Servo]";
+		mes "Espere";
+		mes "Você será desconectado, quando voltar tera seu sexo mudado";
+		close;
+	case 11:
+		mes "[Servo]";
+		mes "Insira o nome exatamente correto ou a ID da classe desejada";
+		input @changejob$;
+		atcommand strcharinfo(0)+":@job "+@changejob$;
+		goto L_CGMS;
+	case 12:
+		mes "[Servo]";
+		mes "Insira o valor desejado";
+		input @zenys$;
+		atcommand strcharinfo(0)+":zeny "+@zenys$;
+		goto L_CGMS;
+	case 13:
+		mes "[Servo]";
+		mes "Insira o numero desejada para sua velocidade de 1 até 1000";
+		mes "Padrão é 150";
+		mes "Quanto menos o valor mais rápido você andara";
+		input @speed;
+		atcommand strcharinfo(0)+":@speed "+@speed;
+	case 14:
+	L_disguise:
+		mes "[Servo]";
+		mes "inpute a ID ou nome do monstro eu NPC que deseja se transformar";
+		input @disguise$;
+		atcommand strcharinfo(0)+":@disguise "+@disguise$;
+		mes "Esse mesmo ou quer outro?";
+		menu "Esse mesmo que quero",L_CGMS,"Não é esse que quero",L_disguise;
+	case 15:
+		atcommand strcharinfo(0)+":@undisguise";
+		close;
+	case 16:
+		goto vale1;
+	case 17:
+		close;
+		}
+L_CGMV:
+next;
+mes "Legenda:";
+mes "< > Obrigatorio";
+mes "[ ] Opcional";
+set @menu,select(
+"Falar em Announce",	//1
+"Quem está on-line?",	//2
+"Noite",	//3
+"Dia",	//4
+"Reiniciar Itemdb",	//5
+"Reiniciar Mobdb",	//6
+"Reiniciar Skilldb",	//7
+"Reiniciar Todos os NPC's",	//8
+"Reiniciar Leveis de GM",	//9
+"Reiniciar Comando de GM",	//10
+"Reiniciar a pasta Battle",	//11
+"Reiniciar Status",	//12
+"Voltar ao menu principal",	//13
+"Sair");	//14
+switch(@menu)
+ {
+ 	case 1:
+ 		L_announce:
+ 		mes "[Servo]";
+ 		mes "Como prefere manda sua mensagem?";
+ 		menu "Amarelo com meu nome",L_b,
+ 			 "Amarelo sem meu nome",L_nb,
+ 			 "Azul com meu nome",L_bbcn,
+ 			 "Azul sem meu nome",L_bb,
+ 			 "Voltar ao menu",L_CGMV;
+ 			L_b:
+ 				mes "[Servo]";
+ 				mes "Insira a mensagem.";
+ 				input @msg$;
+ 				atcommand strcharinfo(0)+":@broadcast "+@msg$;
+ 				goto L_announce;
+			L_nb:
+ 				mes "[Servo]";
+ 				mes "Insira a mensagem.";
+ 				input @msg$;
+ 				atcommand strcharinfo(0)+":@kami "+@msg$;
+ 				goto L_announce;
+			L_bbcn:
+ 				mes "[Servo]";
+ 				mes "Insira a mensagem.";
+ 				input @msg$;
+ 				atcommand strcharinfo(0)+":@kamib "+strcharinfo(0)+" : "+@msg$;
+ 				goto L_announce;
+ 			L_bb:
+ 				mes "[Servo]";
+ 				mes "Insira a mensagem.";
+ 				input @msg$;
+ 				atcommand strcharinfo(0)+":@kamib "+@msg$;
+ 				goto L_announce;
+ 	case 2:
+ 		atcommand strcharinfo(0)+":@who";
+ 		close;
+ 	case 3:
+ 		atcommand strcharinfo(0)+":@night";
+ 		close;
+ 	case 4:
+ 		atcommand strcharinfo(0)+":@day";
+ 		close;
+ 	case 5:
+ 		if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+ 		mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar o Banco de Dados dos Itens?";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloaditemdb";
+ 		close;
+ 	case 6:
+ 	 	if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+ 	 	mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar o Banco de Dados dos Monstros?";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloadmobdb";
+ 		close;
+ 	case 7:
+ 		if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+ 		mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar o Banco de Dados de Skill's?";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloadskilldb";
+ 		close;
+ 	case 8:
+ 		if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+ 		mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar todos os NPC's?";
+ 		mes "Isso pode fazer com que o server de uma caida";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloadscript";
+ 		close;
+ 	case 9:
+ 		if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+ 		mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar todas as contas GM?";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloadgmdb";
+ 		close;
+ 	case 10:
+ 		if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+ 		mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar todas os comandos de GM?";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloadatcommand";
+ 		close;
+ 	case 11:
+ 		if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+ 		mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar a pasta Battle?";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloadbattleconf";
+ 		close;
+	case 12:
+		if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+	 	mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar os Status do server?";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloadstatusdb";
+ 		close;
+	case 13:
+		goto vale1;
+	case 14:
+		close;
+		}
+L_Player:
+next;
+mes "Legenda:";
+mes "< > Obrigatorio";
+mes "[ ] Opcional";
+set @menu,select(
+"Localizar um Player",	//1
+"Ir até um Player",	//2
+"Prender",	//3
+"Libertar",	//4
+"Banir temporariamente",	//5
+"UnBan",	//6
+"Bloquiar conta permanentemente",	//7
+"UnBlock",	//8
+"Warp",	//9
+"Mostrar Stats de um Player",	//10
+"Lista de itens",	//11
+"Mudar Save Point",	//12
+"Matar todos os Players",	//13
+"Reviver todos os Players",	//14
+"Mudar de Class",	//15
+"Mudar Level de base",	//16
+"Mudar Job Level",	//17
+"Deletar item",	//19
+"Zeny",	//20
+"Stats Point",	//21
+"Skill Point",	//22
+"Voltar ao menu principal",	//23
+"Sair");	//24
+switch(@menu)
+	{
+	case 1:
+		mes "[Servo]";
+	 	mes "Me fale o nome";
+	 	input @name$;
+	 	atcommand strcharinfo(0)+":@where "+@name$;
+	 close;
+	case 2:
+		mes "[Servo]";
+		mes "Me fale o nome para que eu o leve até ele";
+		input @name$;
+		atcommand strcharinfo(0)+":@goto "+@name$;
+		close;
+	case 3:
+		mes "[Servo]";
+		mes "Me diga o nome o infeliz que eu manderei nossas tropas até ele";
+		input @jailname$;
+		atcommand strcharinfo(0)+":@jail "+@jailname$;
+		goto L_Player;
+	case 4:
+		mes "[Servo]";
+		mes "Me diga o nome do sujeito para que eu mande liberarem";
+		input @jailname$;
+		atcommand strcharinfo(0)+":@unjail "+@jailname$;
+		goto L_Player;
+	case 5:
+		mes "[Servo]";
+		mes "Me diaga o nome do individuo";
+		input @banname$;
+		set @banname$,@banname$ + " ";
+		mes "agora me diga quanto tempo ele ficara banido.";
+		mes "use valor <+/-> e o elemento <[y/a],[m],[d/j],[h],[mn],[s]>";
+		mes "Ex.: +1m-2mn1s-6y";
+		input @bantimer$;
+		set @ban$,@banname$ + @bantimer$;
+		atcommand strcharinfo(0)+":@ban "+@ban$;
+		goto L_Player;
+	case 6:
+		mes "[Servo]";
+		mes "Desbanir conta de qual char?";
+		input @unbanname$;
+		atcommand strcharinfo(0)+":@unban "+@unbanname$;
+		goto L_Player;
+	case 7:
+		mes "[Servo]";
+		mes "Bloquiar conta de qual quem?";
+		input @blackname$;
+		atcommand strcharinfo(0)+":@block "+@blackname$;
+		goto L_Player;
+	case 8:
+		mes "[Servo]";
+		mes "Desbloquiar conta de quem?";
+		input @unblackname$;
+		atcommand strcharinfo(0)+":@block "+@unblackname$;
+		goto L_Player;
+	case 9:
+		mes "[Servo]";
+		mes "Me diga o <nome do char> que você deseja teletransportar";
+		input @name$;
+		mes "agora o <mapa> e as <coordenadas>";
+		mes "para mandar ele para um mapa com coordenadas aleatorias inpute 0 0 em coordenadas";
+		input @map$;
+		set @map$,@map$ + " ";
+		charcommand strcharinfo(0)+":#warp "+@map$+@name$;
+		goto L_Player;
+	case 10:
+		mes "[Servo]";
+		mes "Me diga o nome";
+		input @name$;
+		charcommand strcharinfo(0)+":#stats "+@name$;
+		close;
+	case 11:
+		mes "[Servo]";
+		mes "Me diga o nome";
+		input @name$;
+		charcommand strcharinfo(0)+":#stats "+@name$;
+		close;
+	case 12:
+		mes "[Servo]";
+		mes "Me diga o nome";
+		input @name$;
+		charcommand strcharinfo(0)+":#itemlist "+@name$;
+		close;
+	case 13:
+		mes "[Servo]";
+		mes "Tem certeza que quer matar todos os Players do server?";
+		menu "Sim",-,"Não",L_Player;
+		atcommand strcharinfo(0)+":@doom";
+		goto L_Player;
+	case 14:
+		mes "[Servo]";
+		mes "Tem certeza que quer reviver todos os Players do server?";
+		menu "Sim",-,"Não",L_Player;
+		atcommand strcharinfo(0)+":@raise";
+		goto L_Player;
+	case 15:
+		mes "[Servo]";
+		mes "Me diga o <nome do char>";
+		input @name$;
+		mes "agora me diga a <ID> da class que você quer para este";
+		input @changejob$;
+		charcommand strcharinfo(0)+":#job "+@changejob$+" "+@name$;
+		goto L_Player;
+	case 16:
+		mes "[Servo]";
+		mes "Me diga o <nome do char>";
+		input @name$;
+		mes "Me diga para qual level de base você quer";
+		input @levelb;
+		charcommand strcharinfo(0)+":#baselvl "+@levelb+" "+@name$;
+		goto L_Player;
+	case 17:
+		mes "[Servo]";
+		mes "Me diga o <nome do char>";
+		input @name$;
+		mes "Me diga para qual Job level você quer";
+		input @jlevel;
+		charcommand strcharinfo(0)+":#jlvl "+@jlevel+" "+@name$;
+		goto L_Player;
+	case 18:
+		mes "[Servo]";
+		mes "Me diga o <nome> do sujeito";
+		input @name$;
+		mes "<ID ou nome> do item a ser deletado";
+		input @item$;
+		charcommand strcharinfo(0)+":#delitem "+@item$+" "+@name$;
+		goto L_Player;
+	case 19:
+		mes "[Servo]";
+		mes "Me diga o <nome> do sujeito";
+		input @name$;
+		mes "<quantidade> a ser dada";
+		mes "inpute um sinal de meno [-] antes do numero caso seja para retirar";
+		input @zenys$;
+		charcommand strcharinfo(0)+":#zeny "+@zenys$+" "+@name$;
+		goto L_Player;
+	case 20:
+		goto vale1;
+	case 21:
+		close;
+		}
+}
+}

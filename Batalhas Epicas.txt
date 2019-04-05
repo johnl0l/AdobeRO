@@ -1,0 +1,419 @@
+//==============================================//
+//==============================================//
+//                Npc Criado por:   ============//
+// _____  _              __       _ ============//
+//|_   _|| |_  ___    __|  | ___ | |_  ___  ___ //
+//  | |  |   || -_|  |  |  || . || '_|| -_||  _|//
+//  |_|  |_|_||___|  |_____||___||_,_||___||_|==//
+//==============================================//
+//===============Changelog======================//
+//=*Npc Iniciado por:==========*[The Joker]*====//
+//==============================================//
+//==============================================//
+
+prontera,158,159,5	script	Batalha Épica	110,{
+
+//=======Nome do npc====================================//
+set @nome$,"^0000FF[Batalha Épica]^000000";//Nome do npc//
+//======================================================//
+//======Não mexa aqui!!!================================//
+if($test == 0){						//
+set $test,1;						//
+setarray $premios[0],0,0,0,0,0,0,0,0,0,0,0,0,0,0,0;	//
+setarray $pontos[0],0,0,0,0,0,0,0,0,0,0,0,0,0,0,0; }	//
+//======================================================//
+if(getgmlevel() == 99)goto adminmenu;
+
+mes @nome$;
+mes "Olá "+strcharinfo(0)+", o que deseja?";
+switch(select("Entrar no evento:Me informar como funciona:Gastar meus pontos:Nada")){
+case 1:
+	if($portao_batalha == 0){ mes @nome$; mes "O evento não está funcionando no momento, volte outra hora."; close; }
+	next;
+	mes @nome$;
+	mes "Vamos lá!!!";
+	close2;
+	warp "guild_vs1.gat",0,0;
+case 2:
+	next;
+	mes @nome$;
+	mes "Funciona da seguinte maneira, você entra em uma arena PvP, e a cada pessoa que você mata, você ganha 1 ponto";
+	next;
+	mes @nome$;
+	mes "Essa arena abre nos horários pares do dia, e fica aberta durante 10 minutos.";
+	next;
+	mes @nome$;
+	mes "Com esses pontos você pode conseguir itens.";
+	next;
+	mes @nome$;
+	mes "Cada personagem da conta tem um contador próprio, se você matou 50 com um char e entra com outro, ele não vai ter os mesmos numeros de pontos.";
+	close;
+case 3:
+	next;
+	mes @nome$;
+	mes "Você tem atualmente "+pontospvp+".";
+	mes "Deseja trocar por qual item?";
+	mes "OBS: Se algum item estiver como 0, não escolha ou irá perder seus pontos.";
+	switch(select(""+getitemname($premios[0])+":"+getitemname($premios[1])+":"+getitemname($premios[2])+":"+getitemname($premios[3])+":"+getitemname($premios[4])+":"+getitemname($premios[5])+":"+getitemname($premios[6])+":"+getitemname($premios[7])+":"+getitemname($premios[8])+":"+getitemname($premios[9])+":"+getitemname($premios[10])+":"+getitemname($premios[11])+":"+getitemname($premios[12])+":"+getitemname($premios[13])+":"+getitemname($premios[14])+":Nada")){
+	case 1:
+		next;
+		mes @nome$;
+		mes "Este item custa "+$pontos[0]+" pontos.";
+		mes "Você tem "+pontospvp+".";
+		mes "Deseja trocar?";
+		if(select("Sim:Não")==1){
+		if(pontospvp < $pontos[0]){ mes @nome$; mes "Você não tem o numero de pontos suficiente, volte quando tiver."; close; }
+		set pontospvp,pontospvp-$pontos[0];
+		getitem $premios[0],1;
+		next;
+		mes @nome$;
+		mes "Prontinho, volte aqui quando precisar de mim novamente!";
+		close; }
+		else { mes @nome$; mes "Está bem então, volte depois se precisar da minha ajuda."; close; }
+	case 2:
+		next;
+		mes @nome$;
+		mes "Este item custa "+$pontos[1]+".";
+		mes "Você tem "+pontospvp+".";
+		mes "Deseja trocar?";
+		if(select("Sim:Não")==1){
+		if(pontospvp < $pontos[1]){ mes @nome$; mes "Você não tem o numero de pontos suficiente, volte quando tiver."; close; }
+		set pontospvp,pontospvp-$pontos[1];
+		getitem $premios[1],1;
+		next;
+		mes @nome$;
+		mes "Prontinho, volte aqui quando precisar de mim novamente!";
+		close; }
+		else { mes @nome$; mes "Está bem então, volte depois se precisar da minha ajuda."; close; }
+	case 3:
+		next;
+		mes @nome$;
+		mes "Este item custa "+$pontos[2]+".";
+		mes "Você tem "+pontospvp+".";
+		mes "Deseja trocar?";
+		if(select("Sim:Não")==1){
+		if(pontospvp < $pontos[2]){ mes @nome$; mes "Você não tem o numero de pontos suficiente, volte quando tiver."; close; }
+		set pontospvp,pontospvp-$pontos[2];
+		getitem $premios[2],1;
+		next;
+		mes @nome$;
+		mes "Prontinho, volte aqui quando precisar de mim novamente!";
+		close; }
+		else { mes @nome$; mes "Está bem então, volte depois se precisar da minha ajuda."; close; }
+	case 4:
+		next;
+		mes @nome$;
+		mes "Este item custa "+$pontos[3]+".";
+		mes "Você tem "+pontospvp+".";
+		mes "Deseja trocar?";
+		if(select("Sim:Não")==1){
+		if(pontospvp < $pontos[3]){ mes @nome$; mes "Você não tem o numero de pontos suficiente, volte quando tiver."; close; }
+		set pontospvp,pontospvp-$pontos[3];
+		getitem $premios[3],1;
+		next;
+		mes @nome$;
+		mes "Prontinho, volte aqui quando precisar de mim novamente!";
+		close; }
+		else { mes @nome$; mes "Está bem então, volte depois se precisar da minha ajuda."; close; }
+	case 5:
+		next;
+		mes @nome$;
+		mes "Este item custa "+$pontos[4]+".";
+		mes "Você tem "+pontospvp+".";
+		mes "Deseja trocar?";
+		if(select("Sim:Não")==1){
+		if(pontospvp < $pontos[4]){ mes @nome$; mes "Você não tem o numero de pontos suficiente, volte quando tiver."; close; }
+		set pontospvp,pontospvp-$pontos[4];
+		getitem $premios[4],1;
+		next;
+		mes @nome$;
+		mes "Prontinho, volte aqui quando precisar de mim novamente!";
+		close; }
+		else { mes @nome$; mes "Está bem então, volte depois se precisar da minha ajuda."; close; }
+	case 6:
+		next;
+		mes @nome$;
+		mes "Este item custa "+$pontos[5]+".";
+		mes "Você tem "+pontospvp+".";
+		mes "Deseja trocar?";
+		if(select("Sim:Não")==1){
+		if(pontospvp < $pontos[5]){ mes @nome$; mes "Você não tem o numero de pontos suficiente, volte quando tiver."; close; }
+		set pontospvp,pontospvp-$pontos[5];
+		getitem $premios[5],1;
+		next;
+		mes @nome$;
+		mes "Prontinho, volte aqui quando precisar de mim novamente!";
+		close; }
+		else { mes @nome$; mes "Está bem então, volte depois se precisar da minha ajuda."; close; }
+	case 7:
+		next;
+		mes @nome$;
+		mes "Este item custa "+$pontos[6]+".";
+		mes "Você tem "+pontospvp+".";
+		mes "Deseja trocar?";
+		if(select("Sim:Não")==1){
+		if(pontospvp < $pontos[6]){ mes @nome$; mes "Você não tem o numero de pontos suficiente, volte quando tiver."; close; }
+		set pontospvp,pontospvp-$pontos[6];
+		getitem $premios[6],1;
+		next;
+		mes @nome$;
+		mes "Prontinho, volte aqui quando precisar de mim novamente!";
+		close; }
+		else { mes @nome$; mes "Está bem então, volte depois se precisar da minha ajuda."; close; }
+	case 8:
+		next;
+		mes @nome$;
+		mes "Este item custa "+$pontos[7]+".";
+		mes "Você tem "+pontospvp+".";
+		mes "Deseja trocar?";
+		if(select("Sim:Não")==1){
+		if(pontospvp < $pontos[7]){ mes @nome$; mes "Você não tem o numero de pontos suficiente, volte quando tiver."; close; }
+		set pontospvp,pontospvp-$pontos[7];
+		getitem $premios[7],1;
+		next;
+		mes @nome$;
+		mes "Prontinho, volte aqui quando precisar de mim novamente!";
+		close; }
+		else { mes @nome$; mes "Está bem então, volte depois se precisar da minha ajuda."; close; }
+	case 9:
+		next;
+		mes @nome$;
+		mes "Este item custa "+$pontos[8]+".";
+		mes "Você tem "+pontospvp+".";
+		mes "Deseja trocar?";
+		if(select("Sim:Não")==1){
+		if(pontospvp < $pontos[8]){ mes @nome$; mes "Você não tem o numero de pontos suficiente, volte quando tiver."; close; }
+		set pontospvp,pontospvp-$pontos[8];
+		getitem $premios[8],1;
+		next;
+		mes @nome$;
+		mes "Prontinho, volte aqui quando precisar de mim novamente!";
+		close; }
+		else { mes @nome$; mes "Está bem então, volte depois se precisar da minha ajuda."; close; }
+	case 10:
+		next;
+		mes @nome$;
+		mes "Este item custa "+$pontos[9]+".";
+		mes "Você tem "+pontospvp+".";
+		mes "Deseja trocar?";
+		if(select("Sim:Não")==1){
+		if(pontospvp < $pontos[9]){ mes @nome$; mes "Você não tem o numero de pontos suficiente, volte quando tiver."; close; }
+		set pontospvp,pontospvp-$pontos[9];
+		getitem $premios[9],1;
+		next;
+		mes @nome$;
+		mes "Prontinho, volte aqui quando precisar de mim novamente!";
+		close; }
+		else { mes @nome$; mes "Está bem então, volte depois se precisar da minha ajuda."; close; }
+	case 11:
+		next;
+		mes @nome$;
+		mes "Este item custa "+$pontos[10]+".";
+		mes "Você tem "+pontospvp+".";
+		mes "Deseja trocar?";
+		if(select("Sim:Não")==1){
+		if(pontospvp < $pontos[10]){ mes @nome$; mes "Você não tem o numero de pontos suficiente, volte quando tiver."; close; }
+		set pontospvp,pontospvp-$pontos[10];
+		getitem $premios[10],1;
+		next;
+		mes @nome$;
+		mes "Prontinho, volte aqui quando precisar de mim novamente!";
+		close; }
+		else { mes @nome$; mes "Está bem então, volte depois se precisar da minha ajuda."; close; }
+	case 12:
+		next;
+		mes @nome$;
+		mes "Este item custa "+$pontos[11]+".";
+		mes "Você tem "+pontospvp+".";
+		mes "Deseja trocar?";
+		if(select("Sim:Não")==1){
+		if(pontospvp < $pontos[11]){ mes @nome$; mes "Você não tem o numero de pontos suficiente, volte quando tiver."; close; }
+		set pontospvp,pontospvp-$pontos[11];
+		getitem $premios[11],1;
+		next;
+		mes @nome$;
+		mes "Prontinho, volte aqui quando precisar de mim novamente!";
+		close; }
+		else { mes @nome$; mes "Está bem então, volte depois se precisar da minha ajuda."; close; }
+	case 13:
+		next;
+		mes @nome$;
+		mes "Este item custa "+$pontos[12]+".";
+		mes "Você tem "+pontospvp+".";
+		mes "Deseja trocar?";
+		if(select("Sim:Não")==1){
+		if(pontospvp < $pontos[12]){ mes @nome$; mes "Você não tem o numero de pontos suficiente, volte quando tiver."; close; }
+		set pontospvp,pontospvp-$pontos[12];
+		getitem $premios[12],1;
+		next;
+		mes @nome$;
+		mes "Prontinho, volte aqui quando precisar de mim novamente!";
+		close; }
+		else { mes @nome$; mes "Está bem então, volte depois se precisar da minha ajuda."; close; }
+	case 14:
+		next;
+		mes @nome$;
+		mes "Este item custa "+$pontos[13]+".";
+		mes "Você tem "+pontospvp+".";
+		mes "Deseja trocar?";
+		if(select("Sim:Não")==1){
+		if(pontospvp < $pontos[13]){ mes @nome$; mes "Você não tem o numero de pontos suficiente, volte quando tiver."; close; }
+		set pontospvp,pontospvp-$pontos[13];
+		getitem $premios[13],1;
+		next;
+		mes @nome$;
+		mes "Prontinho, volte aqui quando precisar de mim novamente!";
+		close; }
+		else { mes @nome$; mes "Está bem então, volte depois se precisar da minha ajuda."; close; }
+	case 15:
+		next;
+		mes @nome$;
+		mes "Este item custa "+$pontos[14]+".";
+		mes "Você tem "+pontospvp+".";
+		mes "Deseja trocar?";
+		if(select("Sim:Não")==1){
+		if(pontospvp < $pontos[14]){ mes @nome$; mes "Você não tem o numero de pontos suficiente, volte quando tiver."; close; }
+		set pontospvp,pontospvp-$pontos[14];
+		getitem $premios[14],1;
+		next;
+		mes @nome$;
+		mes "Prontinho, volte aqui quando precisar de mim novamente!";
+		close; }
+		else { mes @nome$; mes "Está bem então, volte depois se precisar da minha ajuda."; close; }
+	case 16:
+		next;
+		mes @nome$;
+		mes "Está bem, volte quando decidir.";
+		close;
+	}
+case 4:
+		next;
+		mes @nome$;
+		mes "Está bem, volte quando decidir.";
+		close;
+	}
+
+adminmenu:
+	mes @nome$;
+	mes "Olá Administrador "+strcharinfo(0)+", o que deseja?";
+	switch(select("Entrar no evento:Alterar os itens:Alteras os custos:Nada")){
+	case 1:
+		if(@evento_ligado == 0){ mes @nome$; mes "O evento não está funcionando no momento, volte outra hora."; close; }
+		next;
+		mes @nome$;
+		mes "Vamos lá!!!";
+		close2;
+		warp "guild_vs1.gat",0,0;
+	case 2:
+		next;
+		mes @nome$;
+		mes "Digite o numero do item a ser alterado. De 1 a 15.";
+		digit @itemalterado;
+		mes @nome$;
+		mes "Digite agora o ID do novo item.";
+		digit @item;
+		next;
+		mes @nome$;
+		mes "O numero de item à ser alterado é "+@itemalterado+" e o Item escolhido é "+getitemname(@item)+", certo?";
+		if(select("Sim:Não") == 1){
+		set $premios[@itemalterado-1],@item;
+		mes @nome$;
+		mes "Prontinho, item alterado com sucesso!";
+		close; }
+		else { mes @nome$; mes "Volte aqui quando precisar da minha ajuda."; close }
+	case 3:
+		next;
+		mes @nome$;
+		mes "Digite o item escolhido, de 1 a 15.";
+		digit @itempoints;
+		mes @nome$;
+		mes "Agora digite o Numero de pontos escolhido.";
+		digit @points;
+		next;
+		mes @nome$;
+		mes "O numero de pontos escolhido para o item "+getitemname(@itempoints)+" foi "+@points+".";
+		mes "Tem certeza?";
+		if(select("Sim:Não") == 1){
+		setarray $pontos[@itempoints-1],@points;
+		mes @nome$;
+		mes "Prontinho, o item está configurado!";
+		close; }
+		else { mes @nome$; mes "Está bem, volte aqui quando decidir."; close; }
+
+	case 4:
+		next;
+		mes @nome$;
+		mes "Está bem, volte quando decidir.";
+		close;
+	}
+
+OnClock0000: set $portao_batalha,1; announce "O Evento 'Batalhas épicas' irá começar, vocês só tem 5 minutos !",bc_yellow; end;
+OnClock0005: set $portao_batalha,0; announce "Os portões para o evento foram fechados !",bc_yellow; end;
+OnClock0010: announce "O evento 'Batalhas épicas' terminou, vá gastar os seus pontos!!!",bc_yellow; end;
+mapwarp "guild_vs1.gat","prontera.gat",155,185;
+OnClock0200: set $portao_batalha,1; announce "O Evento 'Batalhas épicas' irá começar, vocês só tem 5 minutos !",bc_yellow; end;
+OnClock0205: set $portao_batalha,0; announce "Os portões para o evento foram fechados !",bc_yellow; end;
+OnClock0210: announce "O evento 'Batalhas épicas' terminou, vá gastar os seus pontos!!!",bc_yellow; end;
+mapwarp "guild_vs1.gat","prontera.gat",155,185;
+OnClock0400: set $portao_batalha,1; announce "O Evento 'Batalhas épicas' irá começar, vocês só tem 5 minutos !",bc_yellow; end;
+OnClock0405: set $portao_batalha,0; announce "Os portões para o evento foram fechados !",bc_yellow; end;
+OnClock0410: announce "O evento 'Batalhas épicas' terminou, vá gastar os seus pontos!!!",bc_yellow; end;
+mapwarp "guild_vs1.gat","prontera.gat",155,185;
+OnClock0600: set $portao_batalha,1; announce "O Evento 'Batalhas épicas' irá começar, vocês só tem 5 minutos !",bc_yellow; end;
+OnClock0605: set $portao_batalha,0; announce "Os portões para o evento foram fechados !",bc_yellow; end;
+OnClock0610: announce "O evento 'Batalhas épicas' terminou, vá gastar os seus pontos!!!",bc_yellow; end;
+mapwarp "guild_vs1.gat","prontera.gat",155,185;
+OnClock0800: set $portao_batalha,1; announce "O Evento 'Batalhas épicas' irá começar, vocês só tem 5 minutos !",bc_yellow; end;
+OnClock0805: set $portao_batalha,0; announce "Os portões para o evento foram fechados !",bc_yellow; end;
+OnClock0810: announce "O evento 'Batalhas épicas' terminou, vá gastar os seus pontos!!!",bc_yellow; end;
+mapwarp "guild_vs1.gat","prontera.gat",155,185;
+OnClock1000: set $portao_batalha,1; announce "O Evento 'Batalhas épicas' irá começar, vocês só tem 5 minutos !",bc_yellow; end;
+OnClock1005: set $portao_batalha,0; announce "Os portões para o evento foram fechados !",bc_yellow; end;
+OnClock1010: announce "O evento 'Batalhas épicas' terminou, vá gastar os seus pontos!!!",bc_yellow; end;
+mapwarp "guild_vs1.gat","prontera.gat",155,185;
+OnClock1200: set $portao_batalha,1; announce "O Evento 'Batalhas épicas' irá começar, vocês só tem 5 minutos !",bc_yellow; end;
+OnClock1205: set $portao_batalha,0; announce "Os portões para o evento foram fechados !",bc_yellow; end;
+OnClock1210: announce "O evento 'Batalhas épicas' terminou, vá gastar os seus pontos!!!",bc_yellow; end;
+mapwarp "guild_vs1.gat","prontera.gat",155,185;
+OnClock1400: set $portao_batalha,1; announce "O Evento 'Batalhas épicas' irá começar, vocês só tem 5 minutos !",bc_yellow; end;
+OnClock1405: set $portao_batalha,0; announce "Os portões para o evento foram fechados !",bc_yellow; end;
+OnClock1410: announce "O evento 'Batalhas épicas' terminou, vá gastar os seus pontos!!!",bc_yellow; end;
+mapwarp "guild_vs1.gat","prontera.gat",155,185;
+OnClock1600: set $portao_batalha,1; announce "O Evento 'Batalhas épicas' irá começar, vocês só tem 5 minutos !",bc_yellow; end;
+OnClock1605: set $portao_batalha,0; announce "Os portões para o evento foram fechados !",bc_yellow; end;
+OnClock1610: announce "O evento 'Batalhas épicas' terminou, vá gastar os seus pontos!!!",bc_yellow; end;
+mapwarp "guild_vs1.gat","prontera.gat",155,185;
+OnClock1800: set $portao_batalha,1; announce "O Evento 'Batalhas épicas' irá começar, vocês só tem 5 minutos !",bc_yellow; end;
+OnClock1805: set $portao_batalha,0; announce "Os portões para o evento foram fechados !",bc_yellow; end;
+OnClock1810: announce "O evento 'Batalhas épicas' terminou, vá gastar os seus pontos!!!",bc_yellow; end;
+mapwarp "guild_vs1.gat","prontera.gat",155,185;
+OnClock2000: set $portao_batalha,1; announce "O Evento 'Batalhas épicas' irá começar, vocês só tem 5 minutos !",bc_yellow; end;
+OnClock2005: set $portao_batalha,0; announce "Os portões para o evento foram fechados !",bc_yellow; end;
+OnClock2010: announce "O evento 'Batalhas épicas' terminou, vá gastar os seus pontos!!!",bc_yellow; end;
+mapwarp "guild_vs1.gat","prontera.gat",155,185;
+OnClock2200: set $portao_batalha,1; announce "O Evento 'Batalhas épicas' irá começar, vocês só tem 5 minutos !",bc_yellow; end;
+OnClock2205: set $portao_batalha,0; announce "Os portões para o evento foram fechados !",bc_yellow; end;
+OnClock2210: announce "O evento 'Batalhas épicas' terminou, vá gastar os seus pontos!!!",bc_yellow; end;
+mapwarp "guild_vs1.gat","prontera.gat",155,185;
+
+}
+
+-	script	OnPCKillEvent	-1,{
+
+OnPCKillEvent:
+
+getmapxy @map$,@x,@y,0;
+if (@map == "guild_vs1.gat"){
+set pontospvp,pontospvp+1;
+}
+
+}
+
+guild_vs1.gat	mapflag	nomemo
+guild_vs1.gat	mapflag	nowarp
+guild_vs1.gat	mapflag	nowarpto
+guild_vs1.gat	mapflag	noicewall
+guild_vs1.gat	mapflag	nomemo
+guild_vs1.gat	mapflag	noreturn
+guild_vs1.gat	mapflag	nosave
+guild_vs1.gat	mapflag	noicewall
