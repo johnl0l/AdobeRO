@@ -1,0 +1,105 @@
+// --------------------------------------------------------------------------------------------* 
+//                                                                                             //
+// ______                                           _                                          // 
+// | ___ \                                         | |                                         //
+// | |_/ /___  ___  ___ _ __ ___   ___  _   _ _ __ | |_                                        //
+// |    // _ \/ __|/ _ \ '_ ` _ \ / _ \| | | | '_ \| __|                                       // 
+// | |\ \ (_) \__ \  __/ | | | | | (_) | |_| | | | | |_                                        //
+// \_| \_\___/|___/\___|_| |_| |_|\___/ \__,_|_| |_|\__|                                       //
+//                                                                                             //
+//                                         _____           _       _                           //
+//                                        /  ___|         (_)     | |                          //
+//                                        \ `--.  ___ _ __ _ _ __ | |_                         //
+//                                         `--. \/ __| '__| | '_ \| __|                        //
+//                                        /\__/ / (__| |  | | |_) | |_                         //
+//                                        \____/ \___|_|  |_| .__/ \__|                        //
+//                                                          | |                                //
+//                                                          |_|                                //
+// --------------------------------------------------------------------------------------------*
+//					Create By ~ Rosemount				       //
+//					Current Version ~ v1.1	                               //
+//					Tested ~ Latest Rathena                                //
+// --------------------------------------------------------------------------------------------*
+
+prontera,147,186,5	script	Element Enchant	834,{
+set .price,100000; // Cost Element Enchant
+mes "Hi "+strcharinfo(0);
+next;
+mes "What can i do for you";
+menu "~ Nothing",L_lol,"~ Element Enchant",L_menu;
+
+L_menu:
+switch(select("~ ^990000Earth^000000:~ ^99FF00Wind^000000:~ ^0033FFWater^000000:~ ^FF3300Fire^000000:~ ^333333Ghost^000000:~ ^999999Shadow^000000:~ ^CCCCFFHoly^000000:~ Cancel")) {
+
+case 1:
+if( Zeny < .price ) goto L_NoZeny;
+if ( getstatus (37) || getstatus (99) || getstatus (98) || getstatus (97) || getstatus (146) || getstatus (144)) goto L_remove;
+set Zeny, Zeny - .price;
+sc_start 99,760000,1;
+end;
+
+case 2: 
+if( Zeny < .price ) goto L_NoZeny;
+if ( getstatus (37) || getstatus (99) || getstatus (98) || getstatus (97) || getstatus (146) || getstatus (144)) goto L_remove;
+set Zeny, Zeny - .price;
+sc_start 98,760000,1;
+end;
+
+case 3: 
+if( Zeny < .price ) goto L_NoZeny;
+if ( getstatus (37) || getstatus (99) || getstatus (98) || getstatus (97) || getstatus (146) || getstatus (144)) goto L_remove;
+set Zeny, Zeny - .price;
+sc_start 97,760000,1;
+end;
+
+case 4: 
+if( Zeny < .price ) goto L_NoZeny;
+if ( getstatus (37) || getstatus (99) || getstatus (98) || getstatus (97) || getstatus (146) || getstatus (144)) goto L_remove;
+set Zeny, Zeny - .price;
+sc_start 96,760000,1;
+end;
+
+case 5: 
+if( Zeny < .price ) goto L_NoZeny;
+if ( getstatus (37) || getstatus (99) || getstatus (98) || getstatus (97) || getstatus (146) || getstatus (144)) goto L_remove;
+set Zeny, Zeny - .price;
+sc_start 146,760000,1;
+end;
+
+case 6: 
+if( Zeny < .price ) goto L_NoZeny;
+if ( getstatus (37) || getstatus (99) || getstatus (98) || getstatus (97) || getstatus (146) || getstatus (144)) goto L_remove; 
+set Zeny, Zeny - .price;
+sc_start 144,760000,1;
+end;
+
+case 7: 
+if( Zeny < .price ) goto L_NoZeny;
+if ( getstatus (37) || getstatus (99) || getstatus (98) || getstatus (97) || getstatus (146) || getstatus (144)) goto L_remove;
+set Zeny, Zeny - .price;
+sc_start 37,760000,1;
+end;
+
+case 8: 
+end;
+
+L_NoZeny:
+next;
+mes "Not Enough Zeny";
+close;
+
+L_lol:
+emotion e_swt;
+end;
+
+L_remove:
+sc_end 37; 
+sc_end 99;
+sc_end 98;
+sc_end 97;
+sc_end 146;
+sc_end 144;
+sleep2 1000;
+goto L_menu;
+}
+}

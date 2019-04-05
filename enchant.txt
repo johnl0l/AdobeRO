@@ -1,0 +1,170 @@
+// Hidden Enchant Slot with the chance to increase stats +1~+3 v1.0 [Rokimoki] - alexmanalopez@gmail.com
+// ---
+lhz_in01,260,269,5	script	Shiriublem	795,{
+set .@nombre$, "[^0000FFHidden Slot Enchant^000000]";
+mes .@nombre$;
+mes "Welcome to my enchanted services. This services will cost you ^FF0000" + .zeny + " z^000000.";
+next;
+if (select("Continue.:More information.") == 2) {
+	mes .@nombre$;
+	mes "I can enchant your armor with a special rune in your 4th armor slot, it can be +1 or +10 (range 1~10) increased stat, each stat is selected randomly too.";
+	next;
+	mes .@nombre$;
+	mes "I can enchant armors without slot, with slot or high quality armor.";
+	mes "^FF0000Non sloted armors wich I can enchant: ^000000";
+	for (set .@c, 0; .@c < getarraysize(.ids1); set .@c, .@c + 1)
+		mes "- " + getitemname(.ids1[.@c]) + " [0]";
+	next;
+	mes .@nombre$;
+	mes "^FF0000Sloted armors wich I can enchant: ^000000";
+	for (set .@c, 0; .@c < getarraysize(.ids2); set .@c, .@c + 1)
+		mes "- " + getitemname(.ids2[.@c]) + " [1]";
+	next;
+	mes .@nombre$;
+	mes "^FF0000High Quality armors wich I can enchant: ^000000";
+	for (set .@c, 0; .@c < getarraysize(.ids3); set .@c, .@c + 1)
+		mes "- " + getitemname(.ids3[.@c]) + " [1]";
+	next;
+} // End if
+mes .@nombre$;
+if (zeny < .zeny)	{
+	mes "Sorry but you don't have enough Zeny.";
+	close;
+} // End if
+mes "Select your kind of armor you want enchant: ^FF0000There is a 10% chance to break the armor^000000.";
+next;
+switch (select("Non sloted armor.:Sloted armor.:High quality armor.")) {
+	case 1:
+		set .@j, 1;
+		break;
+
+	case 2:
+		set .@j, 2;
+		break;
+
+	case 3:
+		set .@j, 3;
+		break;
+} // End switch
+// Detectamos si tiene equipado una armos que podemos encantar
+for (set .@c, 0; .@c < getarraysize(getd(".ids" + .@j)); set .@c, .@c + 1)
+	if (isequipped(getd(".ids" + .@j + "[" + .@c +"]")) == 1)
+		set .@s, .@c; // Definimos la ID de esa armor en la posición del array
+mes .@nombre$;
+// Descartamos si no tiene armor equipada o si no está definida
+if (!.@s) {
+	if (atoi(getequipname(EQI_ARMOR)) == -1)
+		mes "You have no armor equiped..";
+	else
+		mes "You have equiped ^FF0000" + getequipname(EQI_ARMOR) + " armor^000000, and that cannot be enchanted. Talk to me again and ask more information to know wich armors I can enchant.";
+	close;
+} // End if
+// Empezamos el proceso de encantamiento
+mes "You have equiped a ^FF0000[" + getitemname(getd(".ids" + .@j + "[" + .@s +"]")) + "]^000000 armor.";
+next;
+mes .@nombre$;
+mes "Okay, lets go...";
+mes "Good luck!";
+next;
+set zeny, zeny - .zeny;
+// Borramos el item equipado
+set .@itemid, getequipid(EQI_ARMOR);
+delitem .@itemid,1;
+// Cálculo del % y según el % definimos un array con la runa de +X stat y sus stats pertenecientes
+set .@rand, rand(1000);
+mes .@nombre$;
+if (.@rand >= 0 && .@rand < 100) { // Break 10%
+	mes "I'm sorry but I failed enchanting...";
+	close;
+} else if (.@rand >= 100 && .@rand < 300) // +1 20%
+	setarray .@level[0],4700,4710,4720,4730,4740,4750;
+else if (.@rand >= 300 && .@rand < 450) // +2 15%
+	setarray .@level[0],4701,4711,4721,4731,4741,4751;
+else if (.@rand >= 450 && .@rand < 600) // +3 10%
+	setarray .@level[0],4702,4712,4722,4732,4742,4752;
+else if (.@rand >= 600 && .@rand < 700) // +4 0%
+	setarray .@level[0],4703,4713,4723,4733,4743,4753;
+else if (.@rand >= 700 && .@rand < 800) // +5 0%
+	setarray .@level[0],4704,4714,4724,4734,4744,4754;
+else if (.@rand >= 800 && .@rand < 890) // +6 0%
+	setarray .@level[0],4705,4715,4725,4735,4745,4755;
+else if (.@rand >= 890 && .@rand < 940) // +7 0%
+	setarray .@level[0],4706,4716,4726,4736,4746,4756;
+else if (.@rand >= 940 && .@rand < 965) // +8 2,0%
+	setarray .@level[0],4707,4717,4727,4737,4747,4757;
+else if (.@rand >= 965 && .@rand < 990) // +9 2,0%
+	setarray .@level[0],4708,4718,4728,4738,4748,4758;
+else if (.@rand >= 990) // +10 0%
+	setarray .@level[0],4709,4719,4728,4739,4749,4759;
+// Calculamos aleatoriamente el stat con 16,6% cada una
+set .@runa, .@level[rand(getarraysize(.@level))];
+// Encantamos el armor con la runa seleccionada
+getitem2 .@itemid, 1, 1, 0, 0, 0, 0, 0, .@runa;
+mes "Hooray~ Here you are your armor enchanted !";
+close;
+
+OnInit:
+// Definimos el Zeny que cuesta encantar, 600k por defecto
+set .zeny, 600000;
+
+// En esta parte se indica que ID's de armadura pertenece a cada tipo de categoria, para hacerte mas sencillo la comprensión y customizacion si se lo desea.
+setarray .ids1[0],2307, // Mantle
+				2309, // Coat
+				2314, // Chain Mail
+				2316, // Plate Armor
+				2321, // Silk Robe
+				2325, // Saint Robe
+				2327, // Holy Robe
+				2330, // Tights
+				2332, // Silver Robe
+				2334, // Magic Coat
+				2335, // Thief Clothes
+				2341, // Legion Full Plate
+				2344, // Pierce Armor of Volcano
+				2348, // Saphien's armor of ocean
+				2346, // Aebeecee's Raging Typhoon Armor
+				2350, // Claytos Cracking Earth Armor
+				2395, // Glorious Suit type 2
+				2396, // Glorious Suit type 3
+				2394, // Glorious Suit type 1
+				2337, // Ninja Suit
+				2386; // Chameleon Armor
+
+setarray .ids2[0],2311, // Mink Coat[1]
+				2318, // Lord Clothes[1]
+				2319, // Glitering Jacket[1]
+				2320, // Formal Suit[1]
+				2308, // Mantle[1]
+				2310, // Coat [1]
+				2315, // Chain Mail[1]
+				2317, // Plate Armor[1]
+				2322, // Silk Robe[1]
+				2323, // Scapulare[1]
+				2326, // Saint Robe[1]
+				2331, // Tights[1]
+				2333, // Silver Robe[1]
+				2336, // Thief Clothes[1]
+				2342, // Legion's Full Plate[1]
+				2345, // Pierce Armor of Volcano[1]
+				2347, // Saphien's Armor of ocean[1]
+				2349, // Aebecee's Raging Typhoon Armor[1]
+				2351; // Claytos Cracking Earth Armor[1]
+
+setarray .ids3[0],2364, // Meteor Plate[1]
+				2365, // Orlean's Uniform[1]
+				2375, // Diabolus Robe[1]
+				2374, // Diabolus Armor[1]
+				2387, // Sprint Mail[1]
+				2389, // Kandra[1] || Gandora[1]
+				2388, // Naga Scale Armor[1]
+				2391, // Life Link[1]
+				2390, // Refined Tights[1]
+				2376, // Assaulter Plate[1]
+				2377, // Elite Engineer Armor[1]
+				2378, // Assassin Robe[1]
+				2379, // Warlock Battle Robe[1]
+				2380, // Robe of Order[1]
+				2381, // Elite Archer Suit[1]
+				2382; // Elite Shooter Suit[1]
+end;
+} // End Script

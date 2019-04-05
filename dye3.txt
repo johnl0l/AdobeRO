@@ -1,0 +1,156 @@
+// +--------------------------------------------+
+// | Advanced Stylist							|
+// +--------------------------------------------+
+// | By: Hudelf									|
+// +--------------------------------------------+
+// | Current Version: 2.0						|
+// +--------------------------------------------+
+// | Description:								|
+// |	This is the traditional banker with 	|
+// |	a few more options, including storage	|
+// |	and several ways to make withdrawing	|
+// |	and depositing zeny easier.				|
+// +--------------------------------------------+
+// | Changelog:									|
+// |	02/08/07 - Created V1.0 [Hudelf]		|
+// |	06/04/07 - Rewrote entire script		|
+// |				Added new features [Hudelf]	|
+// +--------------------------------------------+
+
+prontera.gat,173,176,1	script	Stylist	509,{
+
+	set @name$,"[^FF8000Stylist^000000]";
+	setarray @max[1],300,251,24;	// Number of cloths, haircolors, hairstyles in client
+	setarray @blacklist[0],188,143,261;		// NPC will skip any cloth colors in this array
+									//  	use for palettes that cause errors or just plain look bad.
+									//		Leave first value at 0 to disable.
+	setarray @type[1],7,6,1;		// Do not touch
+	set @style,0;
+	
+	mes @name$;
+	mes "I can change your appearance for you if you'd like.";
+	mes " ";
+	mes "Just choose what you'd like to change:";
+	next;
+	set @s,select("Clothes color",
+				"Hair color",
+				"Hair style");
+	
+	mes @name$;
+	mes "Alright, how would you like to search?";
+	next;
+	menu "Start at the beginning",L_start,
+		"Choose where to start",-;
+	
+	// CHOOSE WHERE TO START =====================================================
+	mes @name$;
+	mes "Alright, choose a style between ^0000FF0 and " +@max[@s]+ "^000000.";
+	next;
+	input @style;
+	
+	if (@style < 0 || @style > @max[@s]) {
+		mes @name$;
+		mes "Style chosen is out of range.";
+		close;
+	}
+
+  L_start:
+	setarray @revert[1],getlook(@type[@s]),0,0;
+	mes @name$;
+	mes "Alright here we go, starting at style ^007700" +@style+ "^000000.";
+	next;
+	
+  // BEGINNING OF STYLE MENU LOOP ================================================
+  L_menuloop:
+	if (@blacklist[0]) {
+		for (set @f,0; @f < getarraysize(@blacklist); set @f,@f+1) {
+			if (@style == @blacklist[@f] && @previous == 1 && @s == 1) {
+				message strcharinfo(0),"GM Message - Cloth " +@style+ " was removed.";
+				set @style, @style - 1;
+				goto L_menuloop;
+			} else if (@style == @blacklist[@f] && @s == 1) {
+				message strcharinfo(0),"GM Message - Cloth " +@style+ " was removed.";
+				set @style, @style +1;
+				goto L_menuloop;
+			}
+		}
+	}
+	setlook @type[@s],@style;
+	mes "This is style number ^007700" +@style+ "^000000.";
+	
+	set @next, @style + 1;
+	set @prev, @style - 1;
+	
+	// MAXIMUM MENU
+	if (@style == @max[@s]) {
+		set @next,0;
+		message strcharinfo(0),"Limit Reached";
+	}
+	
+	// MINIMUM MENU ==============================================================
+	if (@style == 0) {
+		set @prev,@max[@s];
+		message strcharinfo(0),"Beginning Reached";
+	}
+	
+	// PREVIOUS MENU =============================================================
+	if (@previous) {
+		menu "^FF0000Previous - " +@prev+ "^000000",L_prev,
+			"^0000FFNext - " +@next+ "^000000",L_next,
+			"Jump to",L_jump,
+			"Save",L_save,
+			"Load",L_load;
+	}
+	
+	// DEFAULT MENU ==============================================================
+	menu "^0000FFNext - " +@next+ "^000000",L_next,
+		"^FF0000Previous - " +@prev+ "^000000",L_prev,
+		"Jump to",L_jump,
+		"Save",L_save,
+		"Load",L_load;
+		
+  L_next:
+	set @previous,0;
+	set @style, @next;
+	goto L_menuloop;
+
+  L_prev:
+	set @previous,1;
+	set @style, @prev;
+	goto L_menuloop;
+	
+  L_jump:
+	next;
+	mes @name$;
+	mes "Choose which style you'd like to jump to:";
+	next;
+	input @style;
+	if (@style < 0 || @style > @max[@s]) {
+		mes @name$;
+		mes "Style chosen is out of range.";
+		close;
+	}
+	goto L_menuloop;
+	
+  L_save:
+	next;
+	mes @name$;
+	mes "Choose which slot you'd like to save to:";
+	set @x, select("Slot 1 - [" +@revert[1]+ "]",
+					"Slot 2 - [" +@revert[2]+ "]",
+					"Slot 3 - [" +@revert[3]+ "]");
+					
+	setarray @revert[@x], @style;
+	goto L_menuloop;
+	
+  L_load:
+	next;
+	mes @name$;
+	mes "Choose which slot you'd like to load from:";
+	set @x, select("Slot 1 - [" +@revert[1]+ "]",
+					"Slot 2 - [" +@revert[2]+ "]",
+					"Slot 3 - [" +@revert[3]+ "]");
+					
+	set @style, @revert[@x];
+	goto L_menuloop;
+}

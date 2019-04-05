@@ -1,0 +1,69 @@
+/* =============================================================
+/* Effect List
+/* =============================================================
+/* Version: v0.1
+/* v0.1 - Original Script Created.
+/* v0.2 - Added Indentation as suggested by [Euphy].
+/* =============================================================
+/* Description
+/* =============================================================
+/* This script will allow users to cycle through the effects
+/* listed in 'effect_list.txt' without errors.
+/* =============================================================
+/* Features
+/* =============================================================
+/* Next - Cycle Foward.
+/* Prev - Go back to previous Effect.
+/* Jump - Jump around to a given effect number.
+/* Refresh - Will refresh your screen to remove visual effects.
+/* Dispbottom - Will display what effect you just used, as well
+/* as tell you if an effect was removed due to errors.
+/* =============================================================
+/* Created By: GmOcean
+/* ===========================================================*/
+prontera,155,180,4	script	Effect List#eff1	123,{
+	@effect=0;
+	mes "What do you want to do?";
+iEffect:
+	switch(select("Next:Prev:Jump:Repeat:Refresh:Close")){
+		case 1:
+			@effect++;
+			while( compare(.blacklist$,":"+@effect+":") ){dispbottom "Effect Removed"; @effect++;}
+			dispbottom "@effect "+@effect+"";
+			specialeffect2 @effect;
+			goto iEffect;
+			end;
+		case 2:
+			@effect--;
+			while( compare(.blacklist$,":"+@effect+":") ){dispbottom "Effect Removed"; @effect--;}
+			dispbottom "@effect "+@effect+"";
+			specialeffect2 @effect;
+			goto iEffect;
+			end;
+		case 3:
+			input @effect;
+			if( compare(.blacklist$,":"+@effect+":") ){dispbottom "Effect Removed"; goto iEffect;}
+			dispbottom "@effect "+@effect+"";
+			specialeffect2 @effect;
+			goto iEffect;
+			end;
+		case 4:
+			dispbottom "@effect "+@effect+"";
+			specialeffect2 @effect;
+			goto iEffect;
+			end;
+		case 5:
+		case 6:
+			close2;
+			atcommand "@refresh";
+			end;
+	}
+OnInit:
+set .blacklist$,":19:105:156:157:161:164:165:167:168:184:185:"+
+                "198:228:229:230:243:264:299:340:357:382:416:"+
+			    "427:428:443:474:489:490:504:506:511:517:541:"+
+			    "545:552:556:591:605:629:657:658:659:660:662:"+
+			    "663:664:667:697:698:704:705:706:707:714:735:"+
+			    "736:737:738:819:833:846:849:850:855:894:914:931:933:945:";
+end;
+}

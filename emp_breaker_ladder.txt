@@ -1,0 +1,66 @@
+//===== eAthena Script ============================================
+//= Emperium Breaker ladder
+//===== By: =======================================================
+//= AnnieRuru
+//===== Current Version: ==========================================
+//= 1.0
+//===== Compatible With: ==========================================
+//= hercules 2014-03-06
+//===== Description: ==============================================
+//= what is description ?
+//===== Topic =====================================================
+//= http://hercules.ws/board/topic/4745-
+//===== Additional Comments: ======================================
+//= ... / ... | ... \ ...
+//=================================================================
+
+/* SQL Query
+alter table `char` add empbreak int(11) unsigned not null default 0 after unban_time, add index (empbreak);
+*/
+
+prontera,147,162,4	script	Emperium Ladder	100,{
+	mes "["+ strnpcinfo(1) +"]";
+	mes "I can show you Emperium Rankings";
+	next;
+	switch ( select ( "View Emperium Ranking", "Information", ( getgmlevel() >= .gm_reset )? "Reset Ladder" : "" ) ) {
+	case 1:
+		.@nb = query_sql( "select name, empbreak, guild_id as aaa, ( select name from guild where guild_id = aaa ) from `char` where empbreak > 0 order by empbreak desc limit "+ .ladder_length, .@name$, .@empbreak, .@gid, .@guild$ );
+		if ( !.@nb ) {
+			mes "["+ strnpcinfo(1) +"]";
+			mes " ";
+			mes "The ladder currently is empty.";
+			close;
+		}
+		for ( .@j = 0; .@j < .@nb; .@j += .show_per_page ) {
+			mes "["+ strnpcinfo(1) +"]";
+			for ( .@i = .@j; .@i < ( .show_per_page + .@j ) && .@i < .@nb; .@i++ )
+				mes "^996600"+( .@i +1 )+". ^0000FF"+ .@name$[.@i] +" ^00CC00"+ .@guild$[.@i] +" ^FF0000"+ .@empbreak[.@i] +"^000000 Break(s)";
+			if ( .@j + .show_per_page < .@nb )
+				next;
+			else
+				close;
+		}
+		break;
+	case 2:
+		mes "["+ strnpcinfo(1) +"]";
+		query_sql "select empbreak from `char` where char_id = "+ getcharid(0), .@empbreak;
+		mes "^0000FF"+ strcharinfo(0) +"^000000 has ^FF0000" + .@empbreak + "^000000 Emperium Break(s)";
+		mes " ";
+        mes "Each time you break the emp, you earn 1 point.";
+		close;
+	case 3:
+		mes "["+ strnpcinfo(1) +"]";
+		mes "Are you sure you want to reset this ladder ?";
+		if ( select ( "No", "Yes " ) == 1 ) close;
+		query_sql "update `char` set empbreak = 0";
+		mes " ";
+		mes "The ladder has been reset";
+		close;
+	}
+	end; // shouldn't reach
+OnInit:
+	.gm_reset = 99; // at which GM level can reset the ladder ?
+	.ladder_length = 100; // display how many players in the ladder ? 100 = display top 100 players
+	.show_per_page = 10; // show how many players in 1 page ?
+	end;
+}

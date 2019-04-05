@@ -1,0 +1,143 @@
+//=============================================
+//== Script ~ brA || Encantador global ========
+//== Versão: ==================================
+//== 1.7
+//== Autor: ===================================
+//== CinquentaeUM || Vulthoom
+//=============================================
+
+prontera,155,245,3	script	Mago Negro	64,{
+
+
+// ==============================================================
+// CONFIGURAÇÕES GERAIS
+set @npc$,"[^0000FF Mago Negro ^000000]"; // NOME DO NPC
+set @price,500000; // PREÇO
+// ==============================================================
+// CONFIGURAÇÕES DE CHANCE DE FALHA
+set @rate,100;
+// EX 1: @rate == 100 = 42% de sair algum enchant, 58% falhar.
+// EX 2: @rate == 42 = 100% de chance de sair algum enchant, 0% de falhar.
+// EX 3: @rate == 12 = 100% de chance de sair algum enchant, 0% de falhar. Apenas enchants de nível 5 e 4.
+// ==============================================================
+set @sys,1; // Se o equipamento tiver slot, não fará o enchant. 
+// 1 para não encantar se tiver slot, 0 para encantar independente.
+// ==============================================================
+
+
+
+	mes @npc$;
+	mes "Gostaria de refinar o seu equipamento, usando um tipo de magia negra desconhecida?";
+	next;
+	mes @npc$;
+	mes "Você vai precisar de "+@price+" Zeny.";
+	mes "Deseja usar os meus poderes mágicos?";
+	next;
+	switch(select("Sim","Não")){
+	
+		case 1:
+		mes @npc$;
+		mes "Se seu equipamento tiver algum refinamento, será perdido no processo.";
+		next;
+		mes @npc$;
+		mes "Coloque o ID do equipamento que deseja encantar.";
+		mes "Você pode pegar o ID de todos os equipamentos em:";
+		mes "^0000FFragnadb.com^000000";
+		input .@input;
+		next;
+		mes @npc$;
+		mes "Deseja encantar: "+getitemname(.@input)+"?";
+		mes "Lembre-se que você só pode ter ^FF0000UM^000000 desse item no inventário.";
+		next;
+		switch(select("Sim","Não")){	
+		
+			case 1:
+			if(countitem(.@input) > 1) { mes @npc$; mes "Você tem itens demais. Volte com apenas UM."; close; }
+			if(countitem(.@input) == 0) { mes @npc$; mes "Você não tem nenhum item. Volte depois."; close; }
+			if(Zeny < @price) { mes @npc$; mes "Você não tem zeny suficiente. Volte aqui quando tiver "+@price+" Zeny."; close; }
+			if(@sys == 1 && getitemslots(.@input) > 0) { mes @npc$; mes "O equipamento não pode haver nenhum slot."; close; }
+			
+			mes @npc$;
+			mes "Okay, vamos lá!!!";
+			next;
+			callsub S_EnchantArmor,.@input,@rate;
+			
+			case 2:
+			goto L_Cancel;
+			
+			}
+			
+		case 2:
+		goto L_Cancel;
+		
+		}
+
+S_EnchantArmor:
+			set @npc$,"[^0000FF Mago Negro ^000000]";
+			set .@itemid,getarg(0);
+			set @failrate,getarg(1);
+			
+			progressbar "ffff00",100;
+			
+			nude;
+			set .@enc_ran,rand(1,@failrate);
+			set Zeny,Zeny-@price;
+			delitem .@itemid,1;
+			
+			//+5
+			if (.@enc_ran == 1) set .@addpart,4704;
+			else if (.@enc_ran == 2) set .@addpart,4714;
+			else if (.@enc_ran == 3) set .@addpart,4724;
+			else if (.@enc_ran == 4) set .@addpart,4734;
+			else if (.@enc_ran == 5) set .@addpart,4744;
+			else if (.@enc_ran == 6) set .@addpart,4754;
+			//+4
+			else if (.@enc_ran == 7) set .@addpart,4703;
+			else if (.@enc_ran == 8) set .@addpart,4713;
+			else if (.@enc_ran == 9) set .@addpart,4723;
+			else if (.@enc_ran == 10) set .@addpart,4733;
+			else if (.@enc_ran == 11) set .@addpart,4743;
+			else if (.@enc_ran == 12) set .@addpart,4753;
+			//+3
+			else if (.@enc_ran == 13) set .@addpart,4702;
+			else if (.@enc_ran == 14) set .@addpart,4712;
+			else if (.@enc_ran == 15) set .@addpart,4722;
+			else if (.@enc_ran == 16) set .@addpart,4732;
+			else if (.@enc_ran == 17) set .@addpart,4742;
+			else if (.@enc_ran == 18) set .@addpart,4752;
+			//+2
+			else if ((.@enc_ran == 19) && (.@enc_ran == 20)) set .@addpart,4701;
+			else if ((.@enc_ran == 21) && (.@enc_ran == 22)) set .@addpart,4711;
+			else if ((.@enc_ran == 23) && (.@enc_ran == 24)) set .@addpart,4721;
+			else if ((.@enc_ran == 25) && (.@enc_ran == 26)) set .@addpart,4731;
+			else if ((.@enc_ran == 27) && (.@enc_ran == 28)) set .@addpart,4741;
+			else if ((.@enc_ran == 29) && (.@enc_ran == 30)) set .@addpart,4751;
+			//+1
+			else if ((.@enc_ran == 31) && (.@enc_ran == 32)) set .@addpart,4700;
+			else if ((.@enc_ran == 33) && (.@enc_ran == 34)) set .@addpart,4710;
+			else if ((.@enc_ran == 35) && (.@enc_ran == 36)) set .@addpart,4720;
+			else if ((.@enc_ran == 37) && (.@enc_ran == 38)) set .@addpart,4730;
+			else if ((.@enc_ran == 39) && (.@enc_ran == 40)) set .@addpart,4740;
+			else if ((.@enc_ran == 41) && (.@enc_ran == 42)) set .@addpart,4750;
+			else {
+			
+				mes @npc$;
+				mes "Bem, isso é muito ruim.";
+				mes "Não consegui encantar seu equipamento.";
+				close;
+				
+				}
+				
+			mes @npc$;
+			mes "Parece que tudo ocorreu bem.";
+			mes "Você recebeu um adicional de: "+getitemname(.@addpart);
+			mes "Tome seu item!";
+			getitem2 .@itemid, 1, 1, 0, 0, 0, 0, 0, .@addpart;
+			close;
+
+L_Cancel:
+	mes @npc$;
+	mes "Okay. Volte quando precisar de algo.";
+	close;
+
+}
