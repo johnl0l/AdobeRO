@@ -1,0 +1,248 @@
+prontera.gat,154,194,4	script	Presença Vale Ouro	877,{
+
+
+set @sharep, 0; //Número mínimo de pontos para compartilhar com o player que o indicou.
+set @quantpv, 5; //Pontos Recebidos por cada presença(VIP TOTAL).
+set @quantpn, 3; //Pontos Recebidos por cada presença(SEM VIP).
+set @quants, 1; //Pontos Recebidos por cada serviço, ainda não implementado.
+set @qsharep, 1; //Número de pontos a compartilhar por cada presença.
+
+set @npc$, "[Presença Vale Ouro]";
+query_sql "SELECT pontos FROM login WHERE account_id ='"+getcharid(3)+"'", @pontosindi;
+query_sql "SELECT referencia FROM login WHERE account_id ='"+getcharid(3)+"'", @referencia;
+query_sql "SELECT apelido FROM login WHERE account_id ='"+getcharid(3)+"'", @apelidop$;
+query_sql "SELECT apelido FROM login WHERE account_id ='"+@referencia+"'", @apelidor$;
+query_sql "SELECT pontos_referencia FROM login WHERE account_id ='"+getcharid(3)+"'", @pontosref;
+
+
+
+
+cutin "nyuang_1",2;
+mes @npc$;
+mes "Você tem: ^FF0000"+@pontosindi+"^000000 ponto(s) de indicação";
+if(@apelidop$ !=""){
+mes "Seu apelido é: ^FF0000"+@apelidop$+"^000000"; } else { mes "Você não tem um apelido cadastrado"; }
+mes "O SEU número de referência é ^FF0000"+getcharid(3)+"^000000";
+if(@referencia !=0){
+mes "Você foi indicado por: ^FF0000"+@apelidor$+"^000000"; }else{ mes "Você não foi indicado por ninguém."; }
+next;
+menu "Marcar Presença",apont,"Trocar Apelido",apel,"Ver Pontos de Indicados",pcon,"Trocar Pontos Por Cash",tcash,"Ir Para Central de Lojas pbRO",scash,"Como Funciona?",inform,"Sair",-;
+cutin "",255;
+close;
+
+
+scash:
+warp "job3_war01",23,28;
+cutin "",255;
+close;
+end;
+
+tcash:
+mes @npc$;
+mes "Quantos pontos ^0107F8de indicação^000000 deseja trocar?";
+mes "^1F9B00Para cada 2 pontos de indicação lhe darei 1 ponto de cash^000000";
+next;
+input @bidd;
+next;
+set @bidt, @bidd / 2;
+mes @npc$;
+if(@bidd < 1){ mes "Você vai precisar de mais de 1 ponto para trocar por cash."; cutin "",255; close; }
+if(@bidd > @pontosindi){ mes "Você não tem ^FF0000"+@bidd+"^000000 pontos."; cutin "",255; close; }
+mes "Tem certeza que deseja converter ^FF0000"+@bidd+"^000000 pontos em ^0000FF"+@bidt+"^000000 cash?";
+next;
+if(select("Cancelar:Confirmar")==1){ close; }
+query_sql("UPDATE login SET pontos = pontos-'"+@bidt+"' WHERE account_id ='"+getcharid(3)+"'");
+atcommand "@cash "+@bidt+"";
+mes @npc$;
+mes "Pronto!";
+mes "Agora você tem ^FF0000"+#CASHPOINTS+"^000000 pontos de cash.";
+cutin "",255;
+close;
+end;
+
+
+
+
+inform:
+cutin "nyuang_3",2;
+mes @npc$;
+mes "No momento existem 2 modo de ganhar pontos, qual deseja ver?";
+next;
+switch(select("Pontos com Indicação","Pontos com Presença","Trocando Pontos por Itens")){
+case 1: // <- Indicação
+		mes @npc$;
+		mes "Para ganhar pontos com indicação é simples, basta você pegar o seu Numero de Referencia, passar para um amigo que você convide para jogar, no momento que o mesmo for fazer o cadastro da conta no site, ele deve preencher o campo referencia com o numero de referencia que você informou para ele.";
+		next;
+		mes @npc$;
+		mes "Quando você convida alguém e o mesmo se registra como sua referencia os dois irão ganhar pontos.";
+		mes "No momento que o seu convidado se registra ele já ganha 25 pontos. Já você ganha 1 ponto a cada 4 pontos adquiridos pelo seu convidado, quanto mais pontos seu convidado fizer mais pontos você irá adquirir.";
+		next;
+		mes @npc$;
+		mes "Começe agora mesmo a convidar seus amigos e adquira pontos para trocar por itens exclusivos!";
+		cutin "",255;
+		close;
+		break;
+case 3: // <- Trocando
+		mes @npc$;
+		mes "Depois de adquirir os pontos marcando presença e convidando amigos basta você escolher a opção Trocar Pontos por Cash, os pontos serão convertidos em Cash que você irá utilizar na Central de Lojas pbRO.";
+		next;
+		mes @npc$;
+		mes "Então junte seus pontos para trocar por itens exclusivos!";
+		cutin "",255;
+		close;
+		break;
+case 2: // <- Presença
+		mes @npc$;
+		mes "Ganhe pontos com sua preseça no pbRO, é muito simples basta escolher a opção no NPC e ficar online durante 1 hora, sem trocar de persongem, relogar ou sair do jogo. Apos o tempo terminar você receberá um aviso que a presença foi marcada, basta retornar aqui e receber os 4 pontos pela sua presença.";
+		next;
+		mes @npc$;
+		mes "Comece agora mesmo a marcar sua presença e adquira pontos para trocar por itens exclusivos!";
+		cutin "",255;
+		close;
+		break;
+}
+end;
+
+
+pcon:
+query_sql("SELECT apelido,pontos_referencia FROM `login` WHERE `referencia` = '"+getcharid(3)+"' ORDER BY pontos_referencia DESC LIMIT 100 ", @apelidosc$, @pontosc);
+if(@apelidosc$[0] == ""){ dispbottom "Você não convidou ninguém."; cutin "",255; close; }
+for(set @auxv, 0; @auxv < getarraysize(@apelidosc$); set @auxv, @auxv + 1){
+dispbottom "Apelido: "+@apelidosc$[@auxv]+" - Pontos dados: "+@pontosc[@auxv]+"";
+}
+cutin "",255;
+close;
+end;
+
+
+rank:
+query_sql("SELECT apelido,pontos FROM `login` ORDER BY pontos DESC LIMIT 10", @apelidos$, @pontoss);
+dispbottom "[Presença Vale Ouro] Pontos de Referência - TOP 10";
+dispbottom "1° - Apelido: "+@apelidos$[0]+" - Pontos: "+@pontoss[0]+"";
+dispbottom "2° - Apelido: "+@apelidos$[1]+" - Pontos: "+@pontoss[1]+"";
+dispbottom "3° - Apelido: "+@apelidos$[2]+" - Pontos: "+@pontoss[2]+"";
+dispbottom "4° - Apelido: "+@apelidos$[3]+" - Pontos: "+@pontoss[3]+"";
+dispbottom "5° - Apelido: "+@apelidos$[4]+" - Pontos: "+@pontoss[4]+"";
+dispbottom "6° - Apelido: "+@apelidos$[5]+" - Pontos: "+@pontoss[5]+"";
+dispbottom "7° - Apelido: "+@apelidos$[6]+" - Pontos: "+@pontoss[6]+"";
+dispbottom "8° - Apelido: "+@apelidos$[7]+" - Pontos: "+@pontoss[7]+"";
+dispbottom "9° - Apelido: "+@apelidos$[8]+" - Pontos: "+@pontoss[8]+"";
+dispbottom "10° - Apelido: "+@apelidos$[9]+" - Pontos: "+@pontoss[9]+"";
+cutin "",255;
+close;
+end;
+
+apel:
+mes @npc$;
+mes "Qual apelido deseja?";
+next;
+input @apel$;
+next;
+mes @npc$;
+mes "Seu apelido escolhido é: ^0000FF"+@apel$+"^000000";
+mes "Deseja continuar?";
+next;
+if(select("Não:Confirmar") == 1){ cutin "",255; close; }
+mes @npc$;
+query_sql "SELECT apelido FROM login WHERE apelido ='"+@apel$+"'", @debugap$;
+if(@debugap$ !=""){ mes "Este apelido já está sendo usado"; mes "Relogue e tente novamente"; cutin "",255; close; }
+mes "Seu apelido foi trocado!";
+query_sql("UPDATE login SET apelido = '"+@apel$+"' WHERE account_id ='"+getcharid(3)+"'");
+cutin "",255;
+close;
+end;
+
+
+apont:
+if(@apelidop$ == ""){
+mes @npc$;
+mes "Você precisa cadastrar um apelido antes";
+cutin "",255;
+close;
+}
+if(@time == 1 && @libt == 1){
+cutin "nyuang_3",2;
+if(getgmlevel() >= 20){ set @quant, @quantpv; }else{ set @quant, @quantpn; }
+mes @npc$;
+mes "Parabéns, você confirmou sua presença!";
+query_sql("UPDATE login SET pontos = pontos+'"+@quant+"' WHERE account_id ='"+getcharid(3)+"'");
+if(@pontosindi > @sharep){ //Shareando os pontos
+set @quantr, @qsharep;
+query_sql("UPDATE login SET pontos_referencia = pontos_referencia+'"+@quantr+"' WHERE account_id ='"+getcharid(3)+"'");
+query_sql("UPDATE login SET pontos = pontos+'"+@quantr+"' WHERE account_id ='"+@referencia+"'");
+}
+set @time, 0;
+set @libt, 0;
+detachnpctimer;
+stopnpctimer;
+next;
+mes @npc$;
+mes "E ganhou mais ^FF0000"+@quant+"^000000 pontos!";
+next;
+mes @npc$;
+mes "Continue a marcar sua presença e a ajudar o servidor!";
+cutin "",255;
+close;
+}
+if(@time < 1){
+mes @npc$;
+mes "Venha confirmar sua presença daqui a 1 hora!";
+close2;
+attachnpctimer strcharinfo(0);
+initnpctimer;
+set @time, 6000;
+cutin "",255;
+end;
+}else{
+mes @npc$;
+mes "Ainda não está na hora de confirmar sua presença.";
+mes "Retorne quando for a hora certa, por favor!";
+cutin "",255;
+close;
+}
+end;
+
+//3600000 <- 1 hora
+OnTimer10000:
+if(@time == 1){
+set @libt, 1;
+dispbottom "[Presença Vale Ouro] Você já pode voltar no NPC para confirmar sua presença e ganhar seus pontos!";
+close;
+}else{ detachnpctimer; stopnpctimer; close; }
+end;
+
+
+}
+
+
+job3_war01,23,26,3	script	Recepcionista	858,{
+mes "-   ^977117Central de Lojas pbRO^000000   -";
+next;
+if(select("Voltar para Prontera:Cancelar")==2){ close; }
+warp "prontera",156,187;
+close;
+
+OnInit:
+setmapflag "job3_war01",mf_notrade;
+setmapflag "job3_war01",mf_nochat;
+end;
+}
+
+
+
+
+
+job3_war01	mapflag	noskill
+job3_war01	mapflag	nomemo
+job3_war01	mapflag	noteleport
+job3_war01	mapflag	nobranch
+job3_war01	mapflag	nosave	SavePoint
+
+
+
+/*
+ALTER TABLE `login` ADD `pontos` INT( 11 ) NOT NULL ,
+ADD `referencia` VARCHAR( 255 ) NOT NULL ,
+ADD `apelido` VARCHAR( 255 ) NOT NULL ,
+ADD `pontos_referencia` INT( 11 ) NOT NULL
+*/

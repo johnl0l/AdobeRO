@@ -1,0 +1,269 @@
+/* Treasure Hunter Script Version 1.1
+	Created by: Aeromesi
+	- with @commands for ease-of-use!
+	- '@repeathunt' - Allow you to repeat the previous Treasure Hunt setup you made!
+	- '@treasurehunt' - Able to start off by creating Treasure Hunter settings. Able to disable or delete the setup to start configuring new treasure hunter event. 
+		(Note: It will be able to tell if created or event is active.)
+	- '@joinhunt' - Allow player to warp to the designated map where event is being held.
+	- 1.1: Fixed grammar issues and fixed the reward amounts (there were switched out as opposite. Sorry! All is fixed now.
+	- 1.2: Removed atcommand "@cleanmap" because it could be exploited by members using @autoloot, replaced with mapflag "mf_nomobdrop", when you disable and or the event ends, the mapflag is removed.
+*/
+prontera,156,152,4	script	Treasure Hunter	4_TREASURE_BOX,{
+mes  .Tname$;
+if( $@Treasure_Active ) {
+mes "Information";
+mes "Map event is active: ^FF0000"+$TMapDetails$+"^000000";
+	mes "Treasure Info:";
+	mes "1. [Normal - ^7D26CD"+strmobinfo(1,1346)+"^000000] x (^0000FF"+$NormalTreasureAM+"^000000).";
+	mes "2. [Special -  ^7D26CD"+strmobinfo(1,1346)+"^000000] x (^0000FF"+$SpecialTreasureAM+"^000000).";
+mes "Special Treasure Chest Reward: "+getitemname( $TITEM_ID )+" x "+$COIN_AMOUNT+" ";
+mes "Last Chest Reward: "+getitemname( $LITEM_ID )+" x "+$COIN2_AMOUNT+"";
+close;
+} else
+mes "No Treasure Hunt in-progress";
+close;
+OnInit:
+	.Tname$ = "[^8B3626Treasure Hunter^000000]";
+end;
+}
+-	script	TreasureHunt#CMD	-,{
+OnInit:
+	.treasure_name$ = "[^8B3626Treasure Hunter^000000]";
+	bindatcmd "treasurehunt",strnpcinfo(0)+"::OnAtTreasureHunt";
+	bindatcmd "repeathunt",strnpcinfo(0)+"::OnAtRepeatTreasureHunt";
+	bindatcmd "joinhunt",strnpcinfo(0)+"::OnAtJoinTreasureHunt";
+end;
+OnAtJoinTreasureHunt:
+	if( !$@Treasure_Active  ) {
+	dispbottom "No Treasure Hunter Event In-Progress.";
+	end;
+} else
+	warp $TMapDetails$, 0 ,0;
+	dispbottom "Successfully joined Treasure Hunter Event.";
+	end;
+OnAtRepeatTreasureHunt:
+	if(getgmlevel() >=  99) {
+	if( $@Treasure_Active ) {
+	dispbottom "Treasure Hunter Event is currently active.";
+	end;
+} else
+	if($TLast_Setup) {
+	$@Treasure_Active++;
+	donpcevent ("TreasureHunt#CMD::OnCounterReset");
+	announce "Treasure Hunter Event has been restarted by GM "+strcharinfo(0)+"!",bc_all;
+	sleep2 2500;
+	donpcevent ("TreasureHunt#CMD::OnStartEvent");
+	end;
+} else
+	dispbottom "You haven't setup a Treasure Hunter Event before.";
+	end;
+} else
+end;
+OnAtTreasureHunt:
+	if(getgmlevel() >=  99) {
+	mes .treasure_name$;
+if ($TLast_Setup >= 1 )
+{
+	mes "Delete last Setup or Disable Event?";
+switch(select("Delete last Setup","Disable Treasure Hunt","Exit")) {
+case 1:
+if( $@Treasure_Active ) {
+mes "Currently the Treasure Hunt is active. Disable or finish the event to delete your setup.";
+close;
+} else
+$TLast_Setup = 0;
+mes "Previous setup deleted. Proceed using '^ff0000@treasurehunt^000000' to create a new Treasure Hunt Event.";
+close;
+case 2:
+if( $@Treasure_Active ) {
+	mes "Would you like to Disable/Prematurely end Treasure Hunt for whatever reason?";
+	next;
+	switch(select("Yes please.:No thanks!"))
+	{
+	case 1:
+	mes "You will now warp to the map in order to destroy the Treasure Hunt Event that's in-progress.";
+	next;
+	warp $TMapDetails$,0,0;
+	sleep2 4000;
+	$@Treasure_Active = 0;
+	killmonster $TMapDetails$,"All";
+	removemapflag $TMapDetails$, mf_nomobloot;
+	sleep2 1000;
+	announce "Treasure Hunt has been disabled by GM "+strcharinfo(0)+".",bc_map;
+	end;
+
+	case 2:
+	mes .treasure_name$;
+	mes "Alrighty then!";
+	close;
+}
+} else
+mes "Treasure Hunt is currently not active.";
+close;
+case 3:
+close;
+}
+} else
+mes "Create Treasure Hunt?";
+	next;
+	switch(select(
+	"[Event] Treasure Hunt",
+	"Exit")) {
+case 1:
+if ($@Treasure_Active)
+{
+	mes .treasure_name$;
+	mes "Currently there is a Treasure Hunt in session. Please wait until it is over or Disable in the GM options to end the Treasure Hunt Event prematurely.";
+	close;
+}
+	mes .treasure_name$;
+	mes "Please input the map you want to start the Treasure Hunt Event.";
+MAP_DETAILS:
+if ( input( $TMapDetails$, 4, 23 ) ) { 
+	dispbottom " Please input a valid map name with length between 4~23";
+	callsub MAP_DETAILS;
+	end;
+}
+if ( getmapusers($TMapDetails$) == -1 ) { 
+	dispbottom "Please input a valid mapname.";
+	callsub MAP_DETAILS;
+	end;
+}
+	mes "Alright, so the map we chose is ^FF0000"+$TMapDetails$+"^000000.";
+	next;
+
+	mes .treasure_name$;
+	mes "How many of Normal Treasure Chests  would you like to spawn?";
+	next;
+NORMAL_INPUT:
+	input $NormalTreasureAM;
+	if($NormalTreasureAM == 0) {
+	dispbottom "Sorry, but it's impossible to enter 0 Normal Treasure Chests.";
+	dispbottom "Please reinput Normal Treasure Chests amount.";
+	callsub NORMAL_INPUT;
+	end;
+}
+	mes .treasure_name$;
+	mes "Alright, Normal Treasure Chest amount will be x ("+$NormalTreasureAM+").";
+next;
+	mes .treasure_name$;
+	mes "How many of Special Treasure Chests would you like to spawn?";
+
+SPECIAL_INPUT:
+	input $SpecialTreasureAM;
+	if($SpecialTreasureAM == 0) {
+	dispbottom "Sorry, but it's impossible to enter 0 Special Treasure Chests.";
+	dispbottom "Please reinput Special Treasure Chest's amount.";
+	callsub SPECIAL_INPUT;
+	end;
+}
+	mes "Alright, Special Treasure Chest amount will be x ("+$SpecialTreasureAM+").";
+next;
+	mes .treasure_name$;
+	mes "Now input the item ID for the Special Treasure Chests.";
+TITEM_ID:
+	input $TITEM_ID;
+if($TITEM_ID == 0) {
+	dispbottom "Sorry, but it's impossible to enter 0 for Item ID.";
+	dispbottom "Please reinput the total amount of Rewards you'd like players to get per-kill.";
+	callsub TITEM_ID;
+	end;
+}
+next;
+	mes .treasure_name$;
+	mes "Now input the item ID for the Lucky Player who finds the last Chest.";
+LITEM_ID:
+	input $LITEM_ID;
+if($LITEM_ID == 0) {
+	dispbottom "Sorry, but it's impossible to enter 0 for Item ID.";
+	dispbottom "Please reinput the total amount of Rewards you'd like players to get per-kill.";
+	callsub LITEM_ID;
+	end;
+}
+next;
+	mes .treasure_name$;
+	mes "Now input amount of Reward you would like player to receive from Special Treasure Chest:";
+
+ITEM1_AMOUNT:
+	input $COIN_AMOUNT;
+	if($COIN_AMOUNT == 0) {
+	dispbottom "Sorry, but it's impossible to enter 0 for Rewards.";
+	dispbottom "Please reinput the total amount of Rewards you'd like players to get per-kill.";
+	callsub ITEM1_AMOUNT;
+	end;
+}
+next;
+	mes .treasure_name$;
+	mes "Now input amount of Reward you would like the lucky player to recieve from finding the Last Treasure Chest:";
+
+ITEM2_AMOUNT:
+	input $COIN2_AMOUNT;
+	if($COIN2_AMOUNT == 0) {
+	dispbottom "Sorry, but it's impossible to enter 0 for Rewards.";
+	dispbottom "Please reinput the total amount of Rewards you'd like the lucky player to get.";
+	callsub ITEM2_AMOUNT;
+	end;
+}
+next;
+	mes .treasure_name$;
+	mes "Now activating Treasure Hunter Event.";
+	close2;
+$TLast_Setup++;
+$@Treasure_Active++;
+$SpecialTreasureCount = $SpecialTreasureAM;
+donpcevent ("TreasureHunt#CMD::OnStartEvent");
+end;
+OnStartEvent:
+	setmapflag $TMapDetails$, mf_nomobloot;
+	announce "The Special Treasure Chest Event has started on "+$TMapDetails$+" Please type '@joinhunt' to find some Treasure!",bc_all;
+
+	// Normal Treasure Chest
+
+	monster $TMapDetails$,0,0,"Treasure Chest",1346,$NormalTreasureAM,("TreasureHunt#CMD::OnKillNormal");
+
+	// Special Treasure Chest
+
+	monster $TMapDetails$,0,0,"Treasure Chest",1346,$SpecialTreasureAM,("TreasureHunt#CMD::OnKillSpecial");
+
+end;
+
+OnCounterReset:
+$SpecialTreasureCount = $SpecialTreasureAM;
+
+end;
+
+OnKillNormal:
+announce "You found an empty treasure chest! Keep looking more!",bc_self;
+sleep2 200;
+ 
+end;
+
+OnKillSpecial:
+
+	if($SpecialTreasureCount <= 1) {
+	$@Treasure_Active = 0;
+	getitem $LITEM_ID, $COIN2_AMOUNT;
+	killmonster $TMapDetails$,"All";
+	removemapflag $TMapDetails$, mf_nomobloot;
+	sleep2 1000;
+	 
+	announce ""+strcharinfo(0)+" has obtained the Last Treasure Chest! Congratulations!",bc_all;
+	sleep2 2500;
+	announce "The Treasure Hunter Event has ended. Thanks for all who participated! Hope you enjoyed!",bc_all;
+	donpcevent ("TreasureHunt#CMD::OnCounterReset");
+	end;
+} else
+
+	$SpecialTreasureCount--;
+	announce ""+strcharinfo(0)+" has found a Special Treasure Chest! Only "+$SpecialTreasureCount+" are left!",bc_all;
+	getitem $LITEM_ID, $COIN_AMOUNT;
+	sleep2 200;
+	 
+	end;
+case 2:
+close;
+}
+
+} else
+end;
+}

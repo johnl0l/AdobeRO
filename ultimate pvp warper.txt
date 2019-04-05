@@ -1,0 +1,232 @@
+// UVP 2
+prontera.gat,164,184,4	script	PvP#00::PvP	434,{
+	if (.pvp_square$=="") donpcevent "Ultimate PVP warper::OnClock0000";
+ 
+	mes "[PvP Warper]";
+	mes "Which arena do you want to go to?";
+	switch(select("PVP Square ["+getmapusers(.pvp_square$)+"/100]:PVP Nightmare ["+getmapusers("guild_vs3")+"/100]:PVP LowLevel ["+getmapusers("guild_vs1")+"/100]:PVP NoPotion ["+getmapusers("pvp_y_8-1")+"/100]:Non Donator PVP ["+getmapusers("1@orcs")+"/100]:Baby PvP Room ["+getmapusers("pvp_y_1-2")+"/100]")) {
+	case 1:	// PVP Square
+		if (getmapusers(.pvp_square$) > 99) callsub S_full;
+		callsub S_payment;
+		warp .pvp_square$,0,0;
+		end;
+ 
+	case 2:	// PVP Nightmare
+		if (getmapusers("guild_vs3") > 99) callsub S_full;
+		callsub S_payment;
+		warp "guild_vs3",0,0;
+		end;
+ 
+	case 3:	// PVP LowLevel
+		if (getmapusers("guild_vs1") > 99) callsub S_full;
+		if (BaseLevel > 70) { // Edit 70 to any maximum Lvl of a player can enter this room
+			mes "only Base Level 1 - 70 may enter.";
+			close;
+		}
+		callsub S_payment;
+		warp "guild_vs1",0,0;
+		end;
+ 
+	case 4:	// PVP NoPotion
+		if (getmapusers("pvp_y_8-1") > 99) callsub S_full;
+		for( set .@i,0; .@i<getarraysize(.NoPotion_ids); set .@i,.@i+1 ) {
+			if (countitem(.NoPotion_ids[.@i])) {
+				mes "You can not bring potions in this pvp.";
+				close;
+			}
+		}
+		callsub S_payment;
+		warp "pvp_y_8-1",0,0;
+		end;
+ 
+	case 5:	// Non Donator PVP
+		if (getmapusers("1@orcs") > 99) callsub S_full;
+		for( set .@i,0; .@i<getarraysize(.NoDonator_ids); set .@i,.@i+1 ) {
+			if (countitem(.NoDonator_ids[.@i])) {
+				mes "You can not bring God items in this pvp.";
+				close;
+			}
+		}
+		callsub S_payment;
+		warp "1@orcs",0,0;
+		end;
+	Case 6: // Baby PvP Room
+		if (getmapusers("pvp_y_1-2") > 99) callsub S_full;
+		if (class < 4023 || class > 4045) goto L_NotBaby;
+		callsub S_payment;
+		warp "pvp_y_1-2",0,0;
+		end;
+L_NotBaby:
+		mes "Only baby can enter this room";
+		close;	
+ 
+	}
+ 
+S_full:
+	mes " ";
+	mes "I'm sorry, this arena is full.  Please try again later...";
+	close;
+S_payment:
+	if (Zeny < (0*BaseLevel + 0)) {
+		mes "You don't have enough zeny.";
+		mes "It costs "+(0*BaseLevel + 0)+" zeny for you to enter.";
+		close;
+	}
+	set Zeny, Zeny - (0*BaseLevel + 0);
+	return;
+ 
+OnInit:
+	OnTimer5000:
+	delwaitingroom;
+	switch(rand(1,6)) {
+Case 1:
+	waitingroom getmapusers(.pvp_square$)+" player"+( getmapusers(.pvp_square$) > 1 ? "s":"") +" are in the PvP Square", 0;
+	goto Timer;
+	end;
+	break;
+Case 2:
+	waitingroom getmapusers("guild_vs3")+" player"+( getmapusers("guild_vs3") > 1 ? "s":"") +" are in the PvP Nightmare", 0;
+	goto Timer;
+	end;
+	break;
+Case 3:
+	waitingroom getmapusers("guild_vs1")+" player"+( getmapusers("guild_vs1") > 1 ? "s":"") +" are in the PvP Lowlvl", 0;	
+	goto Timer;
+	end;
+	break;
+Case 4:
+	waitingroom getmapusers("pvp_y_8-1")+" player"+( getmapusers("pvp_y_8-1") > 1 ? "s":"") +" are in the PvP NoPotion", 0;
+	goto Timer;
+	end;
+	break;
+Case 5:	
+	waitingroom getmapusers("1@orcs")+" player"+( getmapusers("1@orcs") > 1 ? "s":"") +" are in the PvP NoDonator", 0;	
+	goto Timer;
+	end;
+	break;
+Case 6:
+	waitingroom getmapusers("pvp_y_1-2")+" player"+( getmapusers("pvp_y_1-2") > 1 ? "s":"") +" are in the Baby PvP", 0;	
+	goto Timer;
+	end;
+	break;
+Timer:
+	initnpctimer;
+}
+OnClock0000:
+	// set the "PVP Square" map, based on day of the weeek
+	switch(gettime(4)) {
+	case 0:	// Sunday
+	case 1:	// Monday
+		set .pvp_square$, "guild_vs2";
+		break;
+	case 2:	// Tuesday
+	case 3:	// Wednesday
+		set .pvp_square$, "guild_vs5";
+		break;
+	case 4:	// Thursday
+	case 5:	// Friday
+		set .pvp_square$, "guild_vs4";
+		break;
+	case 6:	// Saturday
+		set .pvp_square$, "guild_vs1-2";
+		break;
+	}
+ 
+	// items not allowed in PVP NoPotion
+	setarray .NoPotion_ids[0], 607, 608, 547, 506, 518, 11501, 526, 504, 509, 11503;
+ 
+	// items not allowed in Non Donator PVP
+	setarray .NoDonator_ids[0], 2410, 1530, 2383, 2369, 2199, 2136, 2137, 2541, 2439, 2431, 2630, 2629, 1599, 5374, 5518, 20209, 20259, 20262, 20265, 20222, 5377, 5800, 20284, 20247, 5565;
+	end;
+}
+ 
+moscovia.gat,220,191,4	duplicate(PvP)	PvP#1	871
+//askydun.gat,96,113,3	duplicate(PvP)	PvP#2	871 // Kliwa
+alberta.gat,182,145,3	duplicate(PvP)	PvP#3	871 // Kliwa
+alberta.gat,33,240,5	duplicate(PvP)	PvP#25	871 // Kliwa
+aldebaran.gat,147,113,4	duplicate(PvP)	PvP#4	871 // Kliwa
+amatsu.gat,201,80,3	duplicate(PvP)	PvP#5	871 // Kliwa
+ayothaya.gat,155,121,5	duplicate(PvP)	PvP#6	871 // Kliwa
+comodo.gat,207,148,4	duplicate(PvP)	PvP#7	871 // Kliwa
+einbech.gat,67,98,4	duplicate(PvP)	PvP#8	871 // Taas Kaliwa
+einbroch.gat,59,198,5	duplicate(PvP)	PvP#9	871 // Taas Kaliwa
+geffen.gat,112,64,4	duplicate(PvP)	PvP#10	871
+gonryun.gat,162,122,4	duplicate(PvP)	PvP#11	871
+hugel.gat,89,151,5	duplicate(PvP)	PvP#12	871
+izlude.gat,123,118,4	duplicate(PvP)	PvP#13	871
+lighthalzen.gat,163,104,4	duplicate(PvP)	PvP#14	871
+louyang.gat,221,104,5	duplicate(PvP)	PvP#15	871
+xmas.gat,155,136,4	duplicate(PvP)	PvP#16	871
+morocc.gat,162,97,4	duplicate(PvP)	PvP#17	871
+payon.gat,180,226,4	duplicate(PvP)	PvP#18	871
+payon.gat,170,104,4	duplicate(PvP)	PvP#26	871
+rachel.gat,129,117,4	duplicate(PvP)	PvP#19 	871
+veins.gat,208,123,4	duplicate(PvP)	PvP#20	871
+yuno.gat,138,187,4	duplicate(PvP)	PvP#21	871
+umbala.gat,95,161,3	duplicate(PvP)	PvP#22	871
+umbala.gat,135,132,5	duplicate(PvP)	PvP#27	871
+poring_c02,139,81,4	duplicate(PvP)	PvP#23	871
+niflheim.gat,198,193,5	duplicate(PvP)	PvP#24	871
+ 
+// Mapflags (No commands)
+pvp_y_8-1	mapflag	nocommand	99
+guild_vs2	mapflag	nocommand	99
+guild_vs3	mapflag	nocommand	99
+guild_vs1	mapflag	nocommand	99
+guild_vs5	mapflag	nocommand	99
+guild_vs4	mapflag	nocommand	99
+guild_vs1-2	mapflag	nocommand	99
+ 
+// Will disable players using @go
+pvp_y_8-1	mapflag	nowarpto
+guild_vs2	mapflag	nowarpto
+guild_vs3	mapflag	nowarpto
+guild_vs1	mapflag	nowarpto
+guild_vs5	mapflag	nowarpto
+guild_vs4	mapflag	nowarpto
+guild_vs1-2	mapflag	nowarpto
+ 
+// Will disable players using @go
+pvp_y_8-1	mapflag	nowarp
+guild_vs2	mapflag	nowarp
+guild_vs3	mapflag	nowarp
+guild_vs1	mapflag	nowarp
+guild_vs5	mapflag	nowarp
+guild_vs4	mapflag	nowarp
+guild_vs1-2	mapflag	nowarp
+ 
+// Will disable players using @go
+pvp_y_8-1	mapflag	pvp_noparty
+guild_vs2	mapflag	pvp_noparty
+guild_vs3	mapflag	pvp_noparty
+guild_vs1	mapflag	pvp_noparty
+guild_vs5	mapflag	pvp_noparty
+guild_vs4	mapflag	pvp_noparty
+guild_vs1-2	mapflag	pvp_noparty
+ 
+// Will disable players using @go
+pvp_y_8-1	mapflag	nobranch
+guild_vs2	mapflag	nobranch
+guild_vs3	mapflag	nobranch
+guild_vs1	mapflag	nobranch
+guild_vs5	mapflag	nobranch
+guild_vs4	mapflag	nobranch
+guild_vs1-2	mapflag	nobranch
+ 
+// Will disable players using @go
+pvp_y_8-1	mapflag	nomemo
+guild_vs2	mapflag	nomemo
+guild_vs3	mapflag	nomemo
+guild_vs1	mapflag	nomemo
+guild_vs5	mapflag	nomemo
+guild_vs4	mapflag	nomemo
+guild_vs1-2	mapflag	nomemo
+ 
+// Will disable players using @go
+pvp_y_8-1	mapflag	pvp
+guild_vs2	mapflag	pvp
+guild_vs3	mapflag	pvp
+guild_vs1	mapflag	pvp
+guild_vs5	mapflag	pvp
+guild_vs4	mapflag	pvp
+guild_vs1-2	mapflag	pvp

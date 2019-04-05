@@ -1,0 +1,131 @@
+//=====www.PANDABRO.com========================================
+//===== Nome: ===========================================================
+//= V.Stats
+//===== Por: ============================================================
+//= vip@pandabro.com (msn) www.pandabro.com
+//===== Descrição: ======================================================
+//= Npc que vende 200 pontos de cada atributo.
+//===== Emulador: =======================================================
+//= Cronus
+//===== Versão Atual: ===================================================
+//= 1,0
+//===== Comentários: ====================================================
+//= =
+
+sec_in02,166,170,2	script	Vendedor de Stats	812,{
+
+
+//===Variaveis========
+set @ZenyQuant, 100000000;
+//====================
+
+
+mes "[V.Stats]";
+mes "Olá, eu vendo todos os Stats.";
+mes "Qual stats você gostaria de comprar ?";
+next;
+menu "Força",Str,"Agilidade",Agi,"Vitalidade",Vit,"Inteligencia",Int,"Destreza",Dex,"Sorte",Luk,"Nenhum",-;
+mes "[V.Stats]";
+mes "Está bem, quando quiser algum volte.";
+close;
+
+Str:
+mes "[V.Stats]";
+mes "O preço é de: " + @ZenyQuant +" Zeny.";
+mes "Deseja compar 10pt. Str?";
+next;
+menu "Sim",-,"Não",No;
+next;
+mes "[V.Stats]";
+if(Zeny < @ZenyQuant) goto L_SemZeny;
+set Zeny, Zeny - @ZenyQuant;
+statusup2 bStr,10;
+mes "[V.Stats]";
+mes "Obrigado";
+close;
+
+Agi:
+mes "[V.Stats]";
+mes "O preço é de; " + @ZenyQuant +"Zeny.";
+mes "Deseja comprar 10pt. Agi?";
+next;
+menu "Sim",-,"Não",No;
+next;
+mes "[V.Stats]";
+if(Zeny < @ZenyQuant) goto L_SemZeny;
+set Zeny, Zeny - @ZenyQuant;
+statusup2 bAgi,10;
+mes "[V.Stats]";
+mes "Obrigado";
+close;
+
+Vit:
+mes "[V.Stats]";
+mes "O preço é de; " + @ZenyQuant +"Zeny.";
+mes "Deseja comprar 10pt. Vit?";
+next;
+menu "Sim",-,"Não",No;
+next;
+mes "[V.Stats]";
+if(Zeny < @ZenyQuant) goto L_SemZeny;
+set Zeny, Zeny - @ZenyQuant;
+statusup2 bVit,10;
+mes "[V.Stats]";
+mes "Obrigado";
+close;
+
+Int:
+mes "[V.Stats]";
+mes "O preço é de; " + @ZenyQuant +"Zeny.";
+mes "Deseja comprar 10pt. Int?";
+next;
+menu "Sim",-,"Não",No;
+next;
+mes "[V.Stats]";
+if(Zeny < @ZenyQuant) goto L_SemZeny;
+set Zeny, Zeny - @ZenyQuant;
+statusup2 bInt,10;
+mes "[V.Stats]";
+mes "Obrigado";
+close;
+
+Dex:
+mes "[V.Stats]";
+mes "O preço é de; " + @ZenyQuant +"Zeny.";
+mes "Deseja comprar 10pt. Dex?";
+next;
+menu "Sim",-,"Não",No;
+next;
+mes "[V.Stats]";
+if(Zeny < @ZenyQuant) goto L_SemZeny;
+set Zeny, Zeny - @ZenyQuant;
+statusup2 bDex,10;
+mes "[V.Stats]";
+mes "Obrigado";
+close;
+
+Luk:
+mes "[V.Stats]";
+mes "O preço é de; " + @ZenyQuant +"Zeny.";
+mes "Deseja comprar 10pt. Luk?";
+next;
+menu "Sim",-,"Não",No;
+next;
+mes "[V.Stats]";
+if(Zeny < @ZenyQuant) goto L_SemZeny;
+set Zeny, Zeny - @ZenyQuant;
+statusup2 bLuk,10;
+mes "[V.Stats]";
+mes "Obrigado";
+close;
+
+L_SemZeny:
+mes "[V.Stats]";
+mes "Desculpe, mas você nao tem a quantia certa. "+ @ZenyQuant +" Zeny.";
+close;
+
+No:
+mes "[V.Stats]";
+mes "Esta bem, volte quando precisar.";
+close;
+}

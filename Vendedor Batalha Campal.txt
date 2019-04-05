@@ -1,0 +1,196 @@
+/*	    ___       ___       ___       ___       ___       ___       ___       ___       ___       ___       ___   
+	   /\  \     /\  \     /\  \     /\__\     /\  \     /\  \     /\  \     /\  \     /\__\     /\__\     /\  \  
+	   \:\  \   /::\  \   /::\  \   /:| _|_   /::\  \   /::\  \   /::\  \   /::\  \   /:| _|_   /:/ _/_   /::\  \ 
+	   /::\__\ /::\:\__\ /:/\:\__\ /::|/\__\ /:/\:\__\ /:/\:\__\ /::\:\__\ /:/\:\__\ /::|/\__\ /:/_/\__\ /\:\:\__\
+	  /:/\/__/ \:\:\/  / \:\ \/__/ \/|::/  / \:\/:/  / \:\ \/__/ \;:::/  / \:\/:/  / \/|::/  / \:\/:/  / \:\:\/__/
+	  \/__/     \:\/  /   \:\__\     |:/  /   \::/  /   \:\__\    |:\/__/   \::/  /    |:/  /   \::/  /   \::/  / 
+        	     \/__/     \/__/     \/__/     \/__/     \/__/     \|__|     \/__/     \/__/     \/__/     \/__/ 
+			          
+	*----------------------------------------- eAthena Script ---------------------------------------------*
+	* Battleground Seller										       *
+	*----------------------------------------------- By: --------------------------------------------------*
+	* TecnoCronus                                                                                          *
+	*----------------------------------------- Current Version: -------------------------------------------*
+	* 1.0												       *
+	*----------------------------------------- Compatible With: -------------------------------------------*
+	* eAthena /Cronus	             								       *
+	*------------------------------------------- Description: ---------------------------------------------*
+	* Troca medalhas de battleground por items consumíveis						       *
+	*----------------------------------------- Additional Comments: ---------------------------------------*
+	* Troca por qualquer tipo de medalha, o jogador escolhe a medalha que quer pagar		       *
+	* Tem 3 opções: 1 Items Consumíveis, Comidas +9 e +10 Os 2 primeiros custam 1 medalha e as +10 2       *
+	*----------------------------------------------- changelog --------------------------------------------*
+	* http://trac.xp-dev.com/TC_Scripts/log/scripts/PT/Bg_seller.txt		 		       *
+	*------------------------------------------------------------------------------------------------------*/
+
+bat_room,162,146,3	script	Thor#bgroom	414,{
+
+	function ChecarMoeda;
+	function index2id;
+	function index2id2;
+	function index2qnt;
+
+	mes "[Thor]";
+	mes "Olá ^FF0000"+strcharinfo(0)+"^000000, cansad"+(sex > 0 ? "o" : "a")+" de gastar items";
+	mes "Consumíveis nas partidas de battleground ?";
+	mes "Eu tenha uma boa notícia para você";
+	mes "Eu posso vender items consumíveis especiais";
+	mes "Que podem ser usados nas partidas de Battleground";
+
+	next;
+
+	mes "[Thor]";
+	mes "Assim você não precisará ficar usando seus";
+	mes "Item consumíveis nas partidas.";
+	mes "O preço aqui não é Zeny";
+	mes "Mas sim emblemas de Bravura, Valor e de guerra";
+
+	next;
+
+	mes "[Thor]";
+	mes "Você pode conseguí-los lutando dentro";
+	mes "Das partidas de battlegroung, quando";
+	mes "Você ganhar essas moedas você pode vir";
+	mes "Aqui e trocá-las por items consumíveis";
+
+	next;
+
+	mes "[Thor]";
+	mes "Lembrando que você pode pagar com";
+	mes "Qualquer uma das trê moedas";
+	mes "Tem interesse ?";
+
+	next;
+
+	mes "[Thor]";
+
+	if(select("Sim, eu tenho","Não, Obrigado") == 1) {
+
+		mes "Bem você primeiro escolha o tipo de item:";
+
+		select("Items Consumíveis (1 Moeda)","+9 Foods(1 Moeda)","+10 Foods(2 Moedas)");
+
+		mes "Escolha um item";
+		mes "Lembrando que tod"+(@menu == 1 ? "os" : "as")+" custam "+(@menu > 2 ? 2 : 1)+" Moed"+(@menu > 2 ? "as": "a");
+
+		set @tmp$,"";
+		set @menu2, @menu;
+
+		for(set @i, 0; @i < index2id2(@menu); set @i, @i + 1) {
+
+			set @tmp$,@tmp$+getitemname(index2id(@menu,@i));
+
+			if(@i < index2id2(@menu)) set @tmp$,@tmp$+":";
+
+		}
+
+		select(@tmp$);
+
+		mes index2qnt(@menu2,(@menu-1))+" Unidades do item "+getitemname(index2id(@menu2,(@menu-1)));
+		mes "Custa "+(@menu2 > 2 ? 2 : 1)+" Moed"+(@menu2 > 2 ? "as": "a")+", deseja mesmo continuar ?";
+
+		if(select("Sim","Não")==1) {
+
+				mes "Com qual moeda deseja pagar ?";
+
+				ChecarMoeda(index2id(@menu2,(@menu-1)),index2qnt(@menu2,(@menu-1)),(@menu2 > 2 ? 2 : 1));
+
+			} else
+
+		mes "Volte quando quiser";
+
+		close;
+
+	} else {
+
+		mes "Obrigado pela visita";
+		mes "Volte quando quiser";
+		mes "Sinta-se à vontade";
+		mes "Até mais";
+
+	}
+	close;
+
+
+
+	OnInit:
+
+		// Array com os ids dos item consumíveis
+		setarray .Item_id1[0],547,505,678,7135,7136,7137,7138,7139,715,716,717,12016,1025,671;
+		// Respectivas quantidades de item consumíveis
+		setarray .Item_qnt1[0],150,90,3,30,30,30,30,15,50,50,100,5,20,100;
+
+		// Array com os ids das Comidas +9
+		setarray .Item_id2[0],12074,12079,12085,12090,12095,12100;
+		setarray .Item_qnt2[0],1,1,1,1,1,1;
+
+		// Array com os ids das comidas +10
+		setarray .Item_id3[0],12075,12080,12087,12089,12094,12099;
+		setarray .Item_qnt3[0],1,1,1,1,1,1;
+		end;
+
+        function        ChecarMoeda     {
+
+        select("Emblema de Guerra:Emblema de Bravura:Emblema de Valor");
+
+        setarray .@medalid, 7773, 7828, 7829;
+
+        if(countitem(.@medalid[@menu-1]) > getarg(2)) {
+
+                delitem .@medalid[@menu-1],getarg(2);
+                getitem getarg(0),getarg(1);
+
+                mes "Troca concluída, obrigado e volte sempre.";
+
+        } else {
+
+                mes "Me desculpe mais você não tem a quantidade";
+                mes "Dessa moeda necessária";
+ 	
+		close;
+        }
+
+        return;
+        }
+
+
+	function	index2id	{
+
+	if ( getarg(0) == 1 ) set @value, .Item_id1[getarg(1)];
+
+	else if( getarg(0) == 2 ) set @value, .Item_id2[getarg(1)];
+
+	else if( getarg(0) == 3 ) set @value, .Item_id3[getarg(1)];
+
+	return @value;
+	
+	}
+
+
+
+	function	index2id2	{
+
+	if ( getarg(0) == 1 ) set @value, getarraysize(.Item_id1);
+
+	else if( getarg(0) == 2 ) set @value, getarraysize(.Item_id2);
+
+	else if( getarg(0) == 3 ) set @value, getarraysize(.Item_id3);
+
+	return @value;
+	
+	}
+
+
+
+	function	index2qnt	{
+
+	if ( getarg(0) == 1 ) set @value, .Item_qnt1[getarg(1)];
+
+	else if( getarg(0) == 2 ) set @value, .Item_qnt2[getarg(1)];
+
+	else if( getarg(0) == 3 ) set @value, .Item_qnt3[getarg(1)];
+
+	return @value;
+	
+	}
+}

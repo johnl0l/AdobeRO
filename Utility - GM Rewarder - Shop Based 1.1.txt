@@ -1,0 +1,352 @@
+
+
+/*
+
+CREATE TABLE IF NOT EXISTS `ero_gm_reward` (
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`gm_aid` int(11) NOT NULL default '0',
+	`gm_name` varchar(30) NOT NULL default '',
+	`nameid` int(11) NOT NULL default '0',
+	`amount` int(11) unsigned NOT NULL default '0',
+	`refine` tinyint(3) unsigned NOT NULL default '0',
+	`card1` smallint(4) unsigned NOT NULL default '0',
+	`card2` smallint(4) unsigned NOT NULL default '0',
+	`card3` smallint(4) unsigned NOT NULL default '0',
+	`card4` smallint(4) unsigned NOT NULL default '0',
+	`format_name` varchar(30) NOT NULL default 'null',
+	`reward_time` datetime NOT NULL default '0000-00-00 00:00:00',
+	`status` tinyint(1) NOT NULL default '0',
+	`claim_aid` int(11) NOT NULL default '0',
+	`claim_name` varchar(30) NOT NULL DEFAULT '',
+	`claim_time` datetime NOT NULL default '0000-00-00 00:00:00',
+	`note` varchar(255) NOT NULL default 'none',
+	PRIMARY KEY  (`id`)
+) ENGINE=MyISAM;
+
+*/
+
+
+prt_in,35,109,4	script	Sample#gmreward	4_F_KAFRA9,{
+	doevent "gm_reward_main::OnTalk";
+}
+
+
+-	shop	gm_reward_shop	-1,909:-1
+
+-	script	gm_reward_main	-1,{
+	function func_sql_reward;
+	function func_item_name;
+	function func_list_char;
+	function func_display_card;
+	function func_list_reward;
+	function func_view_reward;
+	
+	OnInit:
+		.gm_level = 60;
+		.shop_name$ = "gm_reward_shop";
+		end;
+		
+	OnTalk:
+		.@gm_level = getgmlevel();
+		.@not_gm = ( .@gm_level < .gm_level || !.gm_level || !.@gm_level );
+		
+		cutin "kafra_09",2;
+		mes "^FF0000[ GM Reward - Introduction ]^000000";
+		mes "Hi "+strcharinfo(0)+", what can I do for you today?";
+		next;
+		switch ( select(
+			( .@not_gm )? "Check Pending Reward":"",
+			( .@not_gm )? "Check Reward History":"",
+			( .@not_gm )? "":"^FF0000[GM]^000000 Send Reward",
+			( .@not_gm )? "":"^FF0000[GM]^000000 Delete Reward",
+			( .@not_gm )? "":"^FF0000[GM]^000000 Check History",
+			"Information"
+		)) {
+			case 1:
+				mes "^FF0000[ GM Reward - Pending Reward ]^000000";
+				mes "I will show you a list of rewards that are still not yet claimed.";
+				func_list_reward( "`claim_name` = '"+escape_sql( strcharinfo(0) )+"' AND `status` = 0" );
+				break;
+			case 2:
+				mes "^FF0000[ GM Reward - History ]^000000";
+				mes "I will show you a list of rewards that are claimed previously.";
+				func_list_reward( "`claim_name` = '"+escape_sql( strcharinfo(0) )+"' AND `status` = 1" );
+				break;
+			case 3:
+				mes "^FF0000[ GM Reward - Setup ]^000000";
+				mes "Please place all the items that you want to sent to player into the selling shop window.";
+				// close2;
+				callshop .shop_name$,2;
+				npcshopattach .shop_name$;
+				end;
+			case 4:
+				mes "^FF0000[ GM Reward - Remove Rewards ]^000000";
+				mes "I will show you a list of rewards that are sent out but not yet claimed.";
+				func_list_reward( "`status` = 0" );
+				break;
+			case 5:
+				mes "^FF0000[ GM Reward - Reward History ]^000000";
+				mes "I will show you a list of recent rewards based on the status you selected.";
+				.@i = select( "Pending Reward","Claimed Reward","Deleted Reward" ) - 1;
+				func_list_reward( "`status` = "+.@i );
+				break;
+			default: 
+				mes "^FF0000[ GM Reward - Information ]^000000";
+				mes "Hi, I work for Game Master. I assist GM to distribute or manage the rewards setup by GM.";
+				break;
+		}
+		close2;
+		cutin "",255;
+		end;
+		
+	OnSellItem:
+		cutin "kafra_09",2;
+		mes "^FF0000[ GM Reward - Checklist ]^000000";
+		if ( getgmlevel() < .gm_level ) {
+			mes "You're not authorized to perform this actions.";
+		}
+		else {
+			.@reward_size = getarraysize( @sold_nameid );
+			if ( .@reward_size < 1 ) {
+				mes "Failed, no items found in the list.";
+			}
+			else {
+				mes "Enter Player name:";
+				mes "^777777------------------------------^000000";
+				for ( .@i = 0; .@i < .@reward_size; .@i++ ) {
+					mes "^6495ED# ^000000"+func_item_name( @sold_nameid[.@i],@sold_quantity[.@i],@sold_refine[.@i] );
+					.@item_type = getiteminfo( @sold_nameid[.@i],2 );
+					if ( .@item_type == IT_ARMOR || .@item_type == IT_WEAPON )
+						func_display_card( @sold_card1[.@i],@sold_card2[.@i],@sold_card3[.@i],@sold_card4[.@i] );
+				}
+				.@player_name$ = func_list_char();
+				if ( .@player_name$ != "" ) {
+					next;
+					mes "^FF0000[ GM Reward - Confirmation ]^000000";
+					mes "Player: ^FF0000"+.@player_name$+"^000000";
+					mes "^777777------------------------------^000000";
+					for ( .@i = 0; .@i < .@reward_size; .@i++ ) {
+						mes "^6495ED > ^000000"+func_item_name( @sold_nameid[.@i],@sold_quantity[.@i],@sold_refine[.@i] );
+						.@item_type = getiteminfo( @sold_nameid[.@i],2 );
+						if ( .@item_type == IT_ARMOR || .@item_type == IT_WEAPON )
+							func_display_card( @sold_card1[.@i],@sold_card2[.@i],@sold_card3[.@i],@sold_card4[.@i] );
+					}
+					if ( select( "Confirm","Cancel" ) == 1 ) {
+						next;
+						mes "^FF0000[ GM Reward - Confirmation ]^000000";
+						mes "Enter a Title:";
+						do {
+							.@length = input( .@note$,4,70 );
+							.@check = ( compare( .@note$,":" ) || .@length );
+							if ( .@check ) {
+								mes "^777777Invalid title^000000";
+							}
+						}while ( .@check );
+						
+						.@gm_aid = getcharid(3);
+						.@gm_name$ = strcharinfo(0);
+						
+						query_sql( "SELECT `account_id`,`char_id`,`online` FROM `char` WHERE `name` = '"+escape_sql( .@player_name$ )+"' LIMIT 1",.@player_aid,.@player_cid,.@online );
+						
+						for ( .@i = 0; .@i < .@reward_size; .@i++ ) {
+							.@formatted_name$ = func_item_name( @sold_nameid[.@i],@sold_quantity[.@i],@sold_refine[.@i] );
+							if ( func_sql_reward( .@gm_aid,escape_sql( .@gm_name$ ),@sold_nameid[.@i],@sold_quantity[.@i],@sold_refine[.@i],escape_sql( .@formatted_name$ ),@sold_card1[.@i],@sold_card2[.@i],@sold_card3[.@i],@sold_card4[.@i],.@player_aid,.@player_name$,.@note$ ) )
+								dispbottom "[Reward Sent] "+.@player_name$+" - "+.@formatted_name$;
+							else 
+								dispbottom "[Reward Sent Failure] "+.@player_name$+" - "+.@formatted_name$;
+						}
+						
+						if ( .@player_aid > 0 && isloggedin( .@player_aid,.@player_cid ) ) {
+							message .@player_name$,"You received "+.@reward_size+" reward(s) from "+.@gm_name$;
+							message .@gm_name$,"You sent "+.@reward_size+" reward(s) to "+.@player_name$;
+						}
+						mes "Rewards sent.";
+					}
+				}
+			}
+		}
+		close2;
+		cutin "",255;
+		end;
+		
+	function	func_sql_reward	{
+
+		if ( getargcount() >= 12 ) {
+			.@gm_aid = getarg(0);
+			.@gm_name$ = getarg(1);
+			.@sold_nameid = getarg(2);
+			.@sold_quantity = getarg(3);
+			.@sold_refine = getarg(4);
+			.@formatted_name$ = getarg(5);
+			.@sold_card1 = getarg(6);
+			.@sold_card2 = getarg(7);
+			.@sold_card3 = getarg(8);
+			.@sold_card4 = getarg(9);
+			.@player_aid = getarg(10);
+			.@player_name$ = getarg(11);
+			.@note$ = getarg(12);
+			
+			query_sql( "INSERT INTO `ero_gm_reward` ( `gm_aid`,`gm_name`,`nameid`,`amount`,`refine`,`format_name`,`card1`,`card2`,`card3`,`card4`,`reward_time`,`claim_aid`,`claim_name`,`note` ) VALUES ( "+.@gm_aid+",'"+escape_sql( .@gm_name$ )+"',"+.@sold_nameid+","+.@sold_quantity+","+.@sold_refine+",'"+escape_sql( .@formatted_name$ )+"',"+.@sold_card1+","+.@sold_card2+","+.@sold_card3+","+.@sold_card4+",NOW(),"+.@player_aid+",'"+escape_sql( .@player_name$  )+"','"+.@note$+"' )" );	
+			return 1;
+		}
+		
+		return 0;
+	}
+
+	function	func_item_name	{
+		.@item_id = getarg(0);
+		.@amount = getarg(1);
+		.@refine = getarg(2);
+		
+		.@string$ = getitemname( .@item_id );
+		.@type = getiteminfo( .@item_id,2 );
+			
+		if ( .@string$ == "null" )
+			return "none";
+			
+		if ( .@refine ) 
+			.@string$ = "+"+.@refine+" "+.@string$;
+		if ( .@type == IT_WEAPON || .@type == IT_ARMOR )
+			.@string$ = .@string$ + " ["+getitemslots( .@item_id )+"]";
+		if ( .@amount > 1 )
+			.@string$ = .@amount+" x "+.@string$;
+			
+		return .@string$;
+	}
+	
+	function	func_list_char	{
+		__OnInput:
+			while( input( .@player_name$,3,24 ) );
+			query_sql( "SELECT `name`,`class` FROM `char` WHERE `name` LIKE '%"+escape_sql( .@player_name$ )+"%' ORDER BY `name` LIMIT 50",.@temp_name$,.@class );
+			.@temp_name_size = getarraysize( .@temp_name$ );
+			
+			if ( .@temp_name_size <= 0 ) {
+				dispbottom "[ GM Reward - Checklist ] '"+.@player_name$+"' doesnt exist.";
+				// next;
+				if( select( "Search another Name","Cancel" ) == 1 ) goto __OnInput;
+				return "";
+			}
+			else if ( .@temp_name_size > 1 ) {
+				dispbottom "[ GM Reward - Checklist ] Pick a player.";
+				for ( .@i = 0; .@i < .@temp_name_size; .@i++ )
+					.@menu$ = .@menu$ + "^FF0000["+jobname( .@class[.@i] )+"] ^000000" + .@temp_name$[.@i] +":";
+				.@i = select( .@menu$ ) - 1;
+			}
+		return .@temp_name$[.@i];
+	}
+	
+	function	func_display_card	{
+		for ( .@i = 0; .@i < 4; .@i++ ) {
+			.@card_id = getarg( .@i );
+			if ( .@card_id ) {
+				.@card_found++;
+				.@card[.@i] = .@card_id;
+				setd( ".@card_"+.@card_id+"_count" ),getd( ".@card_"+.@card_id+"_count" ) + 1;
+			}
+		}
+		if ( .@card_found ) {
+			.@exist_card$ = "#";
+			for ( .@i = 0; .@i < 4; .@i++ )
+				if ( .@card[.@i] ) {
+					if ( !compare( .@exist_card$,"#"+.@card[.@i]+"#" ) )
+						mes "  ^6495ED>^000000 "+func_item_name( .@card[.@i],getd( ".@card_"+.@card[.@i]+"_count" ),0 );
+					.@exist_card$ = .@exist_card$ + .@card[.@i] + "#";
+				}
+		}
+		return;
+	}
+
+	function	func_list_reward	{
+		.@condition$ = getarg( 0,"" );
+
+		query_sql( "SELECT `id`,`nameid`,`amount`,`refine`,`status`,`note` FROM `ero_gm_reward` WHERE "+.@condition$+" ORDER BY `id` DESC LIMIT 50",.@id,.@nameid,.@amount,.@refine,.@status,.@note$ );
+		.@id_size = getarraysize( .@id );
+		
+		mes " ";
+		if ( .@id_size <= 0 ) {
+			mes "^FF0000No records are founds.^000000";
+		}
+		else {
+			mes "Found "+.@id_size+" Reward(s).";
+			while( .@id_size > 0 ) {
+				
+				.@menu$ = "";
+				for ( .@i = 0; .@i < .@id_size; .@i++ ) {
+					// .@menu$ = .@menu$ + func_item_name( .@nameid[.@i],.@amount[.@i],.@refine[.@i] );
+					.@menu$ = .@menu$ + .@note$[.@i];
+					.@menu$ = .@menu$ + ":";
+				}
+				next;
+				.@reward = select( .@menu$ ) - 1;
+			
+				if ( func_view_reward( .@id[.@reward],.@status[.@reward] ) > 0 ) {
+					deletearray .@id[.@reward],1;
+					deletearray .@nameid[.@reward],1;
+					deletearray .@amount[.@reward],1;
+					deletearray .@amount[.@reward],1;
+					deletearray .@status[.@reward],1;
+					.@id_size--;
+				}
+			}
+		}
+		return;
+	}
+	
+	function	func_view_reward	{
+		.@id = getarg(0);
+		.@status = getarg(1);
+		
+		if ( .@id <= 0 ) {
+			mes "Invalid Reward - "+.@id;
+			return 0;
+		}
+		else {
+			query_sql( "SELECT `gm_name`,`nameid`,`amount`,`refine`,`reward_time`,`claim_name`,`claim_time`,`note`,`card1`,`card2`,`card3`,`card4` FROM `ero_gm_reward` WHERE `id` = '"+.@id+"' LIMIT 1",.@gm_name$,.@nameid,.@amount,.@refine,.@reward_time$,.@claim_name$,.@claim_time$,.@note$,.@card1,.@card2,.@card3,.@card4 );
+			
+			.@item_name$ = func_item_name( .@nameid,.@amount,.@refine );
+			mes "^0055FF[ Reward # "+.@id+" ]^000000";
+			mes "GM : ^777777"+.@gm_name$+"^000000";
+			mes "Player : ^777777"+.@claim_name$+"^000000";
+			mes "Item: ^0055FF"+.@item_name$+"^000000";
+			.@item_type = getiteminfo( .@nameid,2 );
+			if ( .@item_type == IT_ARMOR || .@item_type == IT_WEAPON )
+				func_display_card( .@card1,.@card2,.@card3,.@card4 );
+				
+			mes "Date: ^777777"+.@reward_time$+"^000000";
+			mes "Claimed: "+( ( .@status )? "^777777"+.@claim_time$:"^FF0000not yet" )+"^000000";
+			mes "GM Note : ";
+			mes "^777777"+.@note$+"^000000";
+			
+			.@char_name$ = strcharinfo(0);
+			.@is_gm = ( getgmlevel() >= .gm_level );
+			
+			switch( select( 
+				( .@char_name$ == .@claim_name$ && !.@status && .@claim_time$ == "0000-00-00 00:00:00" ) ? "Claim Reward":"",
+				( .@is_gm && .@status == 0 ) ? "^FF0000Delete Reward^000000":"",
+				( .@is_gm && .@status == 2 ) ? "^FF0000Recover Reward^000000":"",
+				"Back"
+			)){
+				default: return 0;
+				case 1:
+					if ( !checkweight( .@nameid,.@amount ) ) {
+						message .@char_name$,"Overweight Detected!";
+					}
+					else {
+						query_sql( "UPDATE `ero_gm_reward` SET `status` = 1,`claim_time` = NOW() WHERE `id` = "+.@id+" LIMIT 1" );
+						getitem2 .@nameid,.@amount,1,.@refine,0,.@card1,.@card2,.@card3,.@card4;
+						message .@char_name$,"Claimed Reward # "+.@id+" - "+.@item_name$;
+						break;
+					}
+				case 2:
+					query_sql( "UPDATE `ero_gm_reward` SET `status` = 2 WHERE `id` = "+.@id+" LIMIT 1" );
+					message .@char_name$,"Deleted Reward # "+.@id+" - "+.@item_name$;
+					break;
+				case 3:
+					query_sql( "UPDATE `ero_gm_reward` SET `status` = 0 WHERE `id` = "+.@id+" LIMIT 1" );
+					message .@char_name$,"Recovered Reward # "+.@id+" - "+.@item_name$;
+					break;
+			}
+		}
+		return 1;
+	}
+}

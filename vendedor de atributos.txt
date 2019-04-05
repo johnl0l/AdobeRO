@@ -1,0 +1,72 @@
+//===== Cronus Script ========================================
+
+//= Vende e Tira Atributos
+//===== Por: =================================================
+//= Npc criado por junin_eumesmo@hotmail.com
+//===== Descrição: ===========================================
+//= Ele vende e Tira seus atributos.
+//===== Comentários Adicionais: ==============================
+//= Versão 2.0 Completa
+//============================================================
+//==========Editado e Adaptado dia 05 de Nov de 2013 Por Keep Calm 
+//==========ou Artur Vale do Cronus Emulator==================
+prontera,161,183,4	script	Vendedora de Atributos	71,{
+
+set @zeny,100000000; // Padrão = 100KK , Caso queira de graça coloca 0.
+set @totalstats,5000; // Aqui altera a quantia max que pode comprar por vez.
+set @retirarstats,10000; // Aqui altera a quantia max que retira os pontos por vez.
+
+mes "Olá "+strcharinfo(0)+".!";
+next;
+mes "Selecione o menu que deseja usar.";
+switch( select("Comprar Pontos de atributos.","Retirar Pontos de atributos","Sair.")){
+case 1:
+mes "Ok, Vamos lá";
+next;
+mes "inpute a quantia de stats que você deseja comprar.";
+input @atcommand;
+if (@atcommand > @totalstats) goto ops;
+if (@atcommand != @totalstats) goto ops2;
+if(zeny < @zeny) goto faltazeny;
+set zeny, zeny - @zeny;
+atcommand "@stpoint "+@totalstats+"";
+mes "^339966"+@totalstats+" de pontos comprados com sucesso!^000000";
+close;
+case 2:
+mes "Vamos tirar seus pontos.";
+next;
+mes "inpute a quantia de pontos de atributos que você deseja tirar.";
+input @stats;
+if (@stats > @retirarstats) goto statserror;
+atcommand "@stpoint -"+@retirarstats+"";
+mes "^339966Seus Pontos de atributos foi retirados com Sucesso!^000000";
+close;
+case 3:
+mes "Volte quando precisar.";
+close;
+
+faltazeny:
+next;
+mes "^FF0000Você não tem "+@zeny+".^000000";
+close;
+
+ops:
+next;
+mes "^FF0000O maximo e "+@totalstats+" de pontos de stats por vez.^000000";
+close;
+
+ops2:
+next;
+mes "^FF0000Não e possivel comprar menos do que "+@totalstats+".^000000";
+close;
+
+statserror:
+next;
+mes "^FF0000So pode tirar "+@retirarstats+" de pontos de atributos por vez.^000000";
+close;
+
+OnInit:
+waitingroom "Vende/Tira Atributos "+.server$+" ",0,"",0;
+end;
+}
+}
