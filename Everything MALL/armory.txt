@@ -1,0 +1,7 @@
+que_moc_16.gat,107,73,3	script	Sign	857,{
+OnInit:
+	waitingroom "ARMORY",0;
+end;
+}
+close;
+}

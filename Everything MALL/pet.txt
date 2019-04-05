@@ -1,0 +1,7 @@
+que_moc_16.gat,92,93,4	script	Sign	857,{
+OnInit:
+	waitingroom "PET SHOP",0;
+end;
+}
+close;
+}

@@ -1,0 +1,7 @@
+que_moc_16.gat,77,65,6	script	Sign	857,{
+OnInit:
+	waitingroom "HEADGEARS AND COSTUMES",0;
+end;
+}
+close;
+}

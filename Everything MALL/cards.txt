@@ -1,0 +1,7 @@
+que_moc_16.gat,83,57,6	script	Sign	857,{
+OnInit:
+	waitingroom "CARDS",0;
+end;
+}
+close;
+}
