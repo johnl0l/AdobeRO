@@ -1,0 +1,37 @@
+//===== rAthena/Hercules Script =======================================
+//= Single NPC reloader
+//===== By: ==================================================
+//= luizragna
+//===== Current Version: =====================================
+//= 1.0
+//===== Description: =========================================
+//= Use @r <npc_name>
+//= To reload a single npc
+//= Sample-1:
+//= to reload npc/custom/jobmaster.txt
+//= use @r jobmaster
+//= Sample-2:
+//= to reload npc/custom/events/poring_race.txt
+//= use @r events/poring_race
+//===== Additional Comments: =================================
+//= 1.0 First release.
+//============================================================
+
+-	script	Reloader#OP	FAKE_NPC,{
+
+	OnInit:
+		bindatcmd "r",strnpcinfo(3)+"::OnAtcommandReload",99;
+	end;
+
+	OnAtcommandReload:
+	
+	if (.@atcmd_parameters$[0] == "")
+	{
+	message(strcharinfo(PC_NAME), "Por favor, digite o nome do NPC!");
+	end;
+	}
+	
+	atcommand "@unloadnpcfile npc/custom/"+.@atcmd_parameters$[0]+".txt";
+	sleep2 100;
+	atcommand "@loadnpc npc/custom/"+.@atcmd_parameters$[0]+".txt";
+}

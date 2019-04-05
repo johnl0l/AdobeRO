@@ -1,0 +1,72 @@
+//===== eAthena Script ======================================= 
+//= Third Job Mount
+//===== By: ================================================== 
+//= Lionheart
+//===== Current Version: ===================================== 
+//= 1.0
+//===== Compatible With: ===================================== 
+//= eAthena SVN
+//===== Description: ========================================= 
+//= Official third job mounts.
+//===== Additional Comments: ================================= 
+//= 1.0 First version. [Lionheart]
+//============================================================ 
+
+prontera,130,215,5	script	Riding Creature Master	105,{
+	if((Class == Job_Rune_Knight || Class == Job_Rune_Knight_T) && getskilllv("RK_DRAGONTRAINING") > 0) {
+	mes "[Riding Creature Master]";
+	mes "Welcome. Would you like to rent a Dragon?";
+	next;
+	menu "Yes",-,"No",L_NO;
+	if(checkriding()) {
+		mes "[Riding Creature Master]";
+		mes "You have already rented a Dragon.";
+		close;
+	} else {
+		setriding;
+		close;
+	}
+	}
+	if((Class == Job_Royal_Guard || Class == Job_Royal_Guard_T) && getskilllv("KN_RIDING") > 0) {
+	mes "[Riding Creature Master]";
+	mes "Welcome. Would you like to rent a Gryphon?";
+	next;
+	menu "Yes",-,"No",L_NO;
+	if(checkriding()) {
+		mes "[Riding Creature Master]";
+		mes "You have already rented a Gryphon.";
+		close;
+	} else {
+		setriding;
+		close;
+	}
+	}
+	mes "[Riding Creature Master]";
+	mes "I'm here to provide Rune Knights and Royal Guards with riding creatures.";
+	close;
+	
+L_NO:
+	mes "[Riding Creature Master]";
+	mes "I see. Then have a great day.";
+	close;
+}
+
+prontera,128,213,5	script	PecoPeco Remover	105,{
+	mes "[Soldier]";
+	mes "If you're unable to dismount from a PecoPeco";
+	mes "for some unknown reason,";
+	mes "please feel free to use my";
+	mes "service.";
+	close;
+}
+
+prontera,164,175,3	script	Magic Gear Master	105,{
+	if((Class == Job_Mechanic || Class == Job_Mechanic_T) && checkriding() == 0) {
+		setriding;
+		close;
+	}
+	mes "[Magic Gear Master]";
+	mes "How may I help you?";
+	mes "Magic Gears are only available for Mechanics.";
+	close;
+}

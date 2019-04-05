@@ -1,0 +1,306 @@
+/*			
+ ___________________________________________________________
+/                                                       	 \
+|                           \|||/                        	  |
+|      .-.________          (o o)            ________.-.   	  |
+| ----/ \_)_______) *--oooO--(_)---------* (_______(_/ \----  |
+|    (    ()___)    |                    |    (___()     )    |
+|         ()__)     |   * J o s e f h *  |     (__()          |
+| ----\___()_)      |                    |      (_()___/----- |
+|                   *------------Ooo-----*                    |
+|                    	   |__|__|                            |
+|                           || ||                             |
+|                  ________ooO Ooo________                    |
+|                                                             |
+|-------------------------------------------------------------|
+| Nome do Script: Sistema Pm Vip				           	  |
+|-------------------------------------------------------------|
+| Criado por: Josefh			                         	  |
+|-------------------------------------------------------------|
+| Versões: 1.0  	                                     	  |
+|-------------------------------------------------------------|
+| Descrição: 										     	  |
+|-------------------------------------------------------------|
+| Changelog:               	                            	  |
+| 1.0 Script Criado [Josefh]                            	  |	
+\___________________________________________________________ /
+
+*/
+
+
+-	script	atcmd_vip	-1,{
+
+// ============ Configurações do NPC ==================//
+set @nomedonpc$,"[^0080C0Sistema Vip^000000]";
+set .zeny, 0; // zeny cobrada para retira cartas
+set .lvlvip, 1; // Level do vip
+// ====================================================//
+	
+	OnInit:
+		bindatcmd "vip",strnpcinfo(3)+"::OnAtcommandvip",.lvlvip,90;
+	end;
+	
+	OnAtcommandvip:
+		// Você pode bloquear mapas que não queira que use o comando @vip
+		if (strcharinfo(3)=="prontera") || (strcharinfo(3)=="guild_vs1") || (strcharinfo(3)=="guild_vs2") || (strcharinfo(3)=="guild_vs3") {
+		dispbottom "Comando não pode ser utilizado nesse mapa.";
+		end;
+	}
+	
+	mes @nomedonpc$;
+	if(gettime(3) <= 18)
+		{
+	 		set .hr$,"om dia";
+		}
+	else
+		{
+			set .hr$,"oa noite";
+		}		
+	mes "B"+.hr$+", "+strcharinfo(0);
+	mes "Em que posso te ajudalo?";
+	next;
+		
+		switch(select("» Buffs:» Reparar Equipamentos:» Retirar Cartas:» Resetar Pontos:» Mudar Estilo:» Nada, Obrigada")){
+		
+
+	case 1:
+	
+			if(strcharinfo(3) == "prontera") || (strcharinfo(3)=="payon") {
+				// Você pode bloquear o bufs em certo mapa
+				dispbottom "Desculpe mais você não pode pegar buffs nessa mapa.";
+				close;
+			}
+
+			sc_end Eff_Poison;
+			sc_end Eff_Silence;
+			sc_end Eff_Blind;
+			sc_end Eff_Confusion;
+			sc_end Eff_Curse;
+			sc_end Eff_Hallucination;
+	
+			percentheal 100,100;
+			sc_start 30, 600000,10;
+			sc_start 32, 600000,10;
+			sc_start 29, 600000,10;
+			sc_start 40, 600000,10;
+			close;
+			end;
+			
+	
+	case 2:
+	
+			mes @nomedonpc$;
+			mes "Pronto seus itens foram Concertados!";
+			specialeffect2 154;
+			atcommand "@repairall";
+			close;
+			end;
+			
+	
+	case 3:
+		
+			setarray @item_id[1],getequipid (1),getequipid (2),getequipid (3),getequipid (4),getequipid (5),getequipid (6),getequipid (7),getequipid (8),getequipid (9),getequipid (10);
+			setarray @item_refine[1],getequiprefinerycnt (1),getequiprefinerycnt (2),getequiprefinerycnt (3),getequiprefinerycnt (4),getequiprefinerycnt (5),getequiprefinerycnt (6),getequiprefinerycnt (7),getequiprefinerycnt (8),getequiprefinerycnt (9),getequiprefinerycnt (10);
+			setarray @item_slotcnt[1],getitemslots(@item_id[1]),getitemslots(@item_id[2]),getitemslots(@item_id[3]),getitemslots(@item_id[4]),getitemslots(@item_id[5]),getitemslots(@item_id[6]),getitemslots(@item_id[7]),getitemslots(@item_id[8]),getitemslots(@item_id[9]),getitemslots(@item_id[10]);
+			setarray @item_name$[1],"+"+@item_refine[1]+" "+getequipname (1)+" ["+@item_slotcnt[1]+"]","+"+@item_refine[2]+" "+getequipname (2)+" ["+@item_slotcnt[2]+"]","+"+@item_refine[3]+" "+getequipname (3)+" ["+@item_slotcnt[3]+"]","+"+@item_refine[4]+" "+getequipname (4)+" ["+@item_slotcnt[4]+"]","+"+@item_refine[5]+" "+getequipname (5)+" ["+@item_slotcnt[5]+"]","+"+@item_refine[6]+" "+getequipname (6)+" ["+@item_slotcnt[6]+"]","+"+@item_refine[7]+" "+getequipname (7)+" ["+@item_slotcnt[7]+"]","+"+@item_refine[8]+" "+getequipname (8)+" ["+@item_slotcnt[8]+"]","+"+@item_refine[9]+" "+getequipname (9)+" ["+@item_slotcnt[9]+"]","+"+@item_refine[10]+" "+getequipname (10)+" ["+@item_slotcnt[10]+"]";
+			setarray @item_name2$[1],getequipname (1)+" ["+@item_slotcnt[1]+"]",getequipname (2)+" ["+@item_slotcnt[2]+"]",getequipname (3)+" ["+@item_slotcnt[3]+"]",getequipname (4)+" ["+@item_slotcnt[4]+"]",getequipname (5)+" ["+@item_slotcnt[5]+"]",getequipname (6)+" ["+@item_slotcnt[6]+"]",getequipname (7)+" ["+@item_slotcnt[7]+"]",getequipname (8)+" ["+@item_slotcnt[8]+"]",getequipname (9)+" ["+@item_slotcnt[9]+"]",getequipname (10)+" ["+@item_slotcnt[10]+"]";
+			setarray @item_cardcnt[1],getequipcardcnt (1),getequipcardcnt (2),getequipcardcnt (3),getequipcardcnt (4),getequipcardcnt (5),getequipcardcnt (6),getequipcardcnt (7),getequipcardcnt (8),getequipcardcnt (9),getequipcardcnt (10);
+		
+			set @loops, 1;
+			while (@loops < getarraysize (@item_name$)) {
+			if (@item_name$[@loops] == "+0 -1 [0]" || @item_cardcnt[@loops] == 0) {
+				setarray @item_name$[@loops], "";
+			}
+			set @loops, @loops+1;
+			}
+		
+			if (readparam(20) < .zeny) { goto havenozeny; }
+		
+		intro: {
+			mes @nomedonpc$;
+			mes "Deseja remover alguma carta?";
+			next;
+			if (select ("» Sim:» Não, agora não") == 1) {
+				if (@item_name$[1] == "" && @item_name$[2] == "" && @item_name$[3] == "" && @item_name$[4] == "" && @item_name$[5] == "" && @item_name$[6] == "" && @item_name$[7] == "" && @item_name$[8] == "" && @item_name$[9] == "" && @item_name$[10] == "") {
+					goto noitemstoremove;
+				} else {
+					goto item_list;
+				}
+			} else {
+				goto _end;
+			}
+		}
+		
+			item_list: {
+			mes @nomedonpc$;
+			mes "Escolha com qual dos items abaixo você quer realizar o processo de remoção";
+			next;
+			menu @item_name$[1],item_1,@item_name$[2],item_2,@item_name$[3],item_3,@item_name$[4],item_4,@item_name$[5],item_5,@item_name$[6],item_6,@item_name$[7],item_7,@item_name$[8],item_8,@item_name$[9],item_9,@item_name$[10],item_10,"Nenhum.",_end;
+		
+			item_1: {
+				set @item_arrayid, 1;
+				goto remove_cards;
+			}
+			item_2: {
+				set @item_arrayid, 2;
+				goto remove_cards;
+			}
+			item_3: {
+				set @item_arrayid, 3;
+				goto remove_cards;
+			}
+			item_4: {
+				set @item_arrayid, 4;
+				goto remove_cards;
+			}
+			item_5: {
+				set @item_arrayid, 5;
+				goto remove_cards;
+			}
+			item_6: {
+				set @item_arrayid, 6;
+				goto remove_cards;
+			}
+			item_7: {
+				set @item_arrayid, 7;
+				goto remove_cards;
+			}
+			item_8: {
+				set @item_arrayid, 8;
+				goto remove_cards;
+			}
+			item_9: {
+				set @item_arrayid, 9;
+				goto remove_cards;
+			}
+			item_10: {
+				set @item_arrayid, 10;
+				goto remove_cards;
+			}
+		}
+	
+		remove_cards: {
+			setarray @cards_id[1],getequipcardid (@item_arrayid,0),getequipcardid (@item_arrayid,1),getequipcardid (@item_arrayid,2),getequipcardid (@item_arrayid,3);
+			set @item_refine, getequiprefinerycnt (@item_arrayid);
+			mes @nomedonpc$;
+			mes "Você escolheu ^FF0000"+@item_name2$[@item_arrayid]+"^000000, podemos prosseguir?";
+			mes "^FF6C00>> Informações do Equipamento << ^000000";
+			mes "Refinamento: ^FF0000+"+@item_refine+"^000000.";
+			set @slots, 1;
+			while (@slots <= @item_cardcnt[@item_arrayid]) {
+				mes "["+@slots+"]: ^FF0000"+getitemname(@cards_id[@slots])+"^000000.";
+				set @slots, @slots+1;
+			}
+			next;
+			if (select ("» Sim:» Não") == 2) {
+				mes @nomedonpc$;
+				mes "O que deseja fazer?";
+				next;
+				if (select ("» Escolher outro item.:» Sair") == 1) {
+					goto item_list;
+				} else {
+					goto _end;
+				}
+			} else {
+				if (getequipisequiped(@item_arrayid) == 1) {
+					set Zeny, Zeny - .zeny;
+					successremovecards @item_arrayid;
+					specialeffect2 154,strcharinfo(0);
+				} else {
+					goto espertinho;
+				}
+			}
+		}
+	
+		havenozeny: {
+			mes @nomedonpc$;
+			mes "Você não possui Zenys suficientes para utilizar meus serviços.";
+			close;
+		}
+	
+		noitemstoremove: {
+			mes @nomedonpc$;
+			mes "Desculpe, mas você não possui nenhum equipamento com cartas";
+			close;
+		}
+	
+		_end: {
+			mes @nomedonpc$;
+			mes "Ok, volte quando quiser";
+			close;
+		}
+	
+		espertinho: {
+			mes @nomedonpc$;
+			mes "haha... você tentou me passar a perna mas não conseguiu, sou uma aventureira experiente, tente seus truques com outros não comigo";
+			close;
+		}
+		
+		case 4:
+		
+			mes @nomedonpc$;
+			mes "Eu posso resetar suas habilidades e seus atributos grátis";
+			mes "O que você deseja resetar?";		
+			next;
+			
+				switch(select("» Resetar Habilidades","» Resetar Atributos","» Resetar Ambos","» Cancelar")){
+
+					case 1:
+				
+						mes @nomedonpc$;
+						mes "Atributos resetado com sucesso!";
+						resetskill;
+						close;
+
+					case 2:
+				
+						mes @nomedonpc$;
+						mes "Habilidades resetado com sucesso!";
+						resetstatus;	
+						close;
+
+					case 3:
+				
+						mes @nomedonpc$;
+						mes "Atributos e Habilidades resetado com sucesso!";
+						resetstatus;
+						resetskill;		
+						close;
+
+					case 4:
+						close;
+			}
+	
+	case 5:	
+			mes @nomedonpc$;
+			mes "Bem-vind"+ (Sex?"o":"a") +" "+strcharinfo(0)+",";
+			mes "o que você gostaria de alterar?";
+			next;
+			if(select("» Estilo do Cabelo","» Cor do Cabelo","» Cor da Roupa","» Cancelar") == 4) close;
+			if(@menu == 1) setarray .@cor[0],1,getbattleflag ("min_hair_style"),getbattleflag ("max_hair_style");
+			if(@menu == 2) setarray .@cor[0],6,getbattleflag ("min_hair_color"),getbattleflag ("max_hair_color");
+			if(@menu == 3) setarray .@cor[0],7,getbattleflag ("min_cloth_color"),getbattleflag ("max_cloth_color");
+			while(1) {
+				if(select("Próximo","Anterior","Digitar","Cancelar") == 4) close;
+				if(@menu == 1)
+					if(getlook(.@cor[0]) >= .@cor[2]) setlook .@cor[0],.@cor[1];
+					else setlook .@cor[0],getlook(.@cor[0])+1;
+				if(@menu == 2)
+						if(getlook(.@cor[0]) <= .@cor[1]) setlook .@cor[0],.@cor[2];
+					else setlook .@cor[0],getlook(.@cor[0])-1;
+				if(@menu == 3) {
+					input .@num,.@cor[1],.@cor[2];
+					setlook .@cor[0],.@num;
+				}
+				mes "Número ^FF0000"+getlook(.@cor[0])+"^000000/"+.@cor[2];
+				specialeffect2 339;	
+				}
+
+	case 6:
+	
+			mes @nomedonpc$;
+			mes "Tenha um bom jogo";
+			close;
+			end;
+		}
+	}

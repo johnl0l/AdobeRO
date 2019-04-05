@@ -1,0 +1,353 @@
+prontera,152,193,5	script	3rd Class Job Changer::3rdjob	459,{
+
+	set .@name$,"[Third Job Changer]";
+
+	mes .@name$;
+	mes "Hello " + strcharinfo(0) + ", i can change you to the 3rd Class.";
+	mes "So, which Class would you like to be?";
+	next;
+	if ((BaseLevel != 99) && (JobLevel != 70)) goto L_level;
+	menu "Rune Knight",-,"Guillotine Cross",L_1,"Ranger",L_2,"Warlock",L_3,"Archbishop",L_4,"Mechanic",L_5,"Royal Guard",L_6,"Shadow Chaser",L_7,"Minstrel",L_8,"Wanderer",L_9,"Sorcerer",L_10,"Sura",L_11,"Genetic",L_12,"Cancel",L_End;
+
+	mes .@name$;
+	mes "So you would like to change to an Rune Knight?";
+	next;
+	menu "Yes",-,"No",L_End;
+	
+	if (Weight > 20000) goto LWeight;
+    if ((Class == 4014) && (Class == 4022)) goto Lpeco;
+	if(SkillPoint > 0) goto LSkillPoints;
+	
+	if ((Class != 4008) && (Class != 7)) goto L_cant;
+	
+	if (class == 4008) {
+	set JobLevel, 1;
+	jobchange 4060;
+	} else if (class == 7) {
+	set JobLevel, 1;
+	jobchange 4054;
+	}
+
+	mes .@name$;
+	mes "Congratulations! You're now an Rune Knight !!";
+	close;
+
+L_1:
+	mes .@name$;
+	mes "So you would like to change to an Guillotine Cross?";
+	next;
+	menu "Yes",-,"No",L_End;
+		
+	if (Weight > 20000) goto LWeight;
+	if(SkillPoint > 0) goto LSkillPoints;
+	
+	if ((Class != 4013) && (Class != 12)) goto L_cant;
+	
+	if (class == 4013) {
+	set JobLevel, 1;
+	jobchange 4065;
+	} else if (class == 12) {
+	set JobLevel, 1;
+	jobchange 4059;
+	}
+	
+	mes .@name$;
+	mes "Congratulations! You're now an Guillotine Cross !!";
+	close;
+
+L_2:
+	mes .@name$;
+	mes "So you would like to change to an Ranger?";
+	next;
+	menu "Yes",-,"No",L_End;
+
+	if (Weight > 20000) goto LWeight;
+    if (checkfalcon() != 0) goto LFalcon;
+	if(SkillPoint > 0) goto LSkillPoints;
+	
+	if ((Class != 4012) && (Class != 11)) goto L_cant;
+	
+	if (class == 4012) {
+	set JobLevel, 1;
+	getitem 6124,1;
+	jobchange 4062;
+	} else if (class == 11) {
+	set JobLevel, 1;
+	getitem 6124,1;
+	jobchange 4056;
+	}
+
+	mes .@name$;
+	mes "Congratulations! You're now an Ranger !!";
+	close;
+
+L_3:
+	mes .@name$;
+	mes "So you would like to change to an Warlock?";
+	next;
+	menu "Yes",-,"No",L_End;
+	
+	if (Weight > 20000) goto LWeight;
+	if(SkillPoint > 0) goto LSkillPoints;
+	
+	if ((Class != 4010) && (Class != 9)) goto L_cant;
+	
+	if (class == 4010) {
+	set JobLevel, 1;
+	jobchange 4061;
+	} else if (class == 9) {
+	set JobLevel, 1;
+	jobchange 4055;
+	}
+	
+	mes .@name$;
+	mes "Congratulations! You're now an Warlock !!";
+	close;
+   
+L_4:
+	mes .@name$;
+	mes "So you would like to change to an Arc Bishop?";
+	next;
+	menu "Yes",-,"No",L_End;
+	
+	if (Weight > 20000) goto LWeight;
+	if(SkillPoint > 0) goto LSkillPoints;
+	
+	if ((Class != 4009) && (Class != 8)) goto L_cant;
+	
+	if (class == 4009) {
+	set JobLevel, 1;
+	jobchange 4063;
+	} else if (class == 8) {
+	set JobLevel, 1;
+	jobchange 4057;
+	}
+	
+	mes .@name$;
+	mes "Congratulations! You're now an Arc Bishop !!";
+	close;
+  
+L_5:
+	mes .@name$;
+	mes "So you would like to change to an Mechanic?";
+	next;
+	menu "Yes",-,"No",L_End;
+
+	if (Weight > 20000) goto LWeight;
+    if (checkcart() != 0) goto LCart;
+	if(SkillPoint > 0) goto LSkillPoints;
+	
+	if ((Class != 4011) && (Class != 5)) goto L_cant;
+	
+	if (class == 4011) {
+	set JobLevel, 1;
+	jobchange 4064;
+	} else if (class == 5) {
+	set JobLevel, 1;
+	jobchange 4058;
+	}
+
+	mes .@name$;
+	mes "Congratulations! You're now an Mechanic !!";
+	close;
+
+L_6:
+	mes .@name$;
+	mes "So you would like to change to an Royal Guard?";
+	next;
+	menu "Yes",-,"No",L_End;
+	
+	if (Weight > 20000) goto LWeight;
+    if ((Class == 4014) && (Class == 4022)) goto Lpeco;
+	if(SkillPoint > 0) goto LSkillPoints;
+	
+	if ((Class != 4015) && (Class != 14)) goto L_cant;
+	
+	if (class == 4015) {
+	set JobLevel, 1;
+	jobchange 4073;
+	} else if (class == 14) {
+	set JobLevel, 1;
+	jobchange 4066;
+	}
+
+	mes .@name$;
+	mes "Congratulations! You're now an Royal Guard !!";
+	close;
+
+L_7:
+	mes .@name$;
+	mes "So you would like to change to an Shadow Chaser?";
+	next;
+	menu "Yes",-,"No",L_End;
+		
+	if (Weight > 20000) goto LWeight;
+	if(SkillPoint > 0) goto LSkillPoints;
+	
+	if ((Class != 4018) && (Class != 17)) goto L_cant;
+	
+	if (class == 4018) {
+	set JobLevel, 1;
+	jobchange 4079;
+	} else if (class == 17) {
+	set JobLevel, 1;
+	jobchange 4072;
+	}
+
+	mes .@name$;
+	mes "Congratulations! You're now an Shadow Chaser !!";
+	close;
+
+L_8:
+	mes .@name$;
+	mes "So you would like to change to an Minstrell?";
+	next;
+	menu "Yes",-,"No",L_End;
+	
+	if (Weight > 20000) goto LWeight;
+	if(SkillPoint > 0) goto LSkillPoints;
+	
+	if ((Class != 4020) && (Class != 19)) goto L_cant;
+	
+	if (class == 4020) {
+	set JobLevel, 1;
+	jobchange 4075;
+	} else if (class == 19) {
+	set JobLevel, 1;
+	jobchange 4068;
+	}
+	
+	mes .@name$;
+	mes "Congratulations! You're now an Minstrell !!";
+	close;
+
+L_9:
+	mes .@name$;
+	mes "So you would like to change to an Wanderer?";
+	next;
+	menu "Yes",-,"No",L_End;
+
+	if (Weight > 20000) goto LWeight;
+	if(SkillPoint > 0) goto LSkillPoints;
+	
+	if ((Class != 4021) && (Class != 20)) goto L_cant;
+	
+	if (class == 4021) {
+	set JobLevel, 1;
+	jobchange 4076;
+	} else if (class == 20) {
+	set JobLevel, 1;
+	jobchange 4069;
+	}
+	
+	mes .@name$;
+	mes "Congratulations! You're now an Wanderer !!";
+	close;
+
+L_10:
+	mes .@name$;
+	mes "So you would like to change to an Sorcerer?";
+	next;
+	menu "Yes",-,"No",L_End;
+
+	if (Weight > 20000) goto LWeight;
+	if(SkillPoint > 0) goto LSkillPoints;
+	
+	if ((Class != 4017) && (Class != 16)) goto L_cant;
+	
+	if (class == 4017) {
+	set JobLevel, 1;
+	jobchange 4074;
+	} else if (class == 16) {
+	set JobLevel, 1;
+	jobchange 4067;
+	}
+
+	mes .@name$;
+	mes "Congratulations! You're now an Sorcerer !!";
+	close;
+
+L_11:
+	mes .@name$;
+	mes "So you would like to change to an Sura?";
+	next;
+	menu "Yes",-,"No",L_End;
+	
+	if (Weight > 20000) goto LWeight;
+	if(SkillPoint > 0) goto LSkillPoints;
+	
+	if ((Class != 4016) && (Class != 15)) goto L_cant;
+	
+	if (class == 4016) {
+	set JobLevel, 1;
+	jobchange 4077;
+	} else if (class == 15) {
+	set JobLevel, 1;
+	jobchange 4070;
+	}
+	
+	mes .@name$;
+	mes "Congratulations! You're now an Sura !!";
+	close;
+
+L_12:
+	mes .@name$;
+	mes "So you would like to change to an Genetic?";
+	next;
+	menu "Yes",-,"No",L_End;
+
+	if (Weight > 20000) goto LWeight;
+    if (checkcart() != 0) goto LCart;
+	if(SkillPoint > 0) goto LSkillPoints;
+	
+	if ((Class != 4019) && (Class != 18)) goto L_cant;
+	
+	if (class == 4019) {
+	set JobLevel, 1;
+	jobchange 4078;
+	} else if (class == 18) {
+	set JobLevel, 1;
+	jobchange 4071;
+	}
+	
+	mes .@name$;
+	mes "Congratulations! You're now an Genetic !!";
+	close;
+	
+L_level:
+	mes "Sorry, but make soure that you're";
+	mes "Base Lvl. 99 / Job Lvl. 70 and set all your Skillpoints.";
+	close;
+	
+L_cant:
+	mes "Sorry, but you can't change from that Class!";
+	close;
+	
+LWeight:
+	mes "Sorry, but you're overweight,";
+	mes "please put first some of yout Items into your storage.";
+	close;
+	
+Lpeco:
+	mes "Please release your Pecopeco first.";
+	close;
+	
+LCart:
+	mes "Please put your Cart off first.";
+	close;
+	
+LFalcon:
+	mes "Please release your Falcon first.";
+	close;
+	
+LSkillPoints:
+    mes "Please distribute all your Skillpoints,";
+    mes "otherweise i can't let you change.";
+    close;
+	
+L_End:
+	mes "Bye.";
+	close;
+}
+
+

@@ -1,0 +1,189 @@
+prontera,155,188,4	script	Banquet Houseman	109,{
+	goto Start; OnInit:
+
+	/*		START CONFIG		*/
+	
+	// Name of the NPC
+		set .name$, "[Banquet Houseman]";
+	// Event number to use with the Queue system
+		set .eventnum, 1;
+	// Map for the event
+		set .map$, "kh_kiehl02";
+	// Coordinates to enter at the map for the player
+		set .x, 50;
+		set .y, 7;
+	// Should GMs/donators get priority to the event?
+	// (No) 0/1 (Yes)
+		set .gmprio, 0;
+		
+	/*		 END CONFIG			*/
+	
+	goto Loop; end; Start:
+	mes .name$;
+	mes "What to do... What can I possibly do?...";
+	next;
+	select("What's the matter?");
+	mes .name$;
+	mes "It's the banquet for the king. It's my duty to prepare the hall but it has been overtaken by villains.";
+	next;
+	mes .name$;
+	mes "If I don't get it done in time, it will be my head that rolls.. not theirs.";
+	next;
+	switch(select("I can help you get rid of them?", "Good luck and keep your chin up...")){
+		case 1:
+			mes .name$;
+			mes "Thank you. Here, take this map. It will show you the way to the banquet hall. You have ^FF000010^000000 minutes, please hurry!";
+			close2;
+			set .@result, callfunc("push", 0, .eventnum, 1, .gmprio);
+			if(!.@result){
+				dispbottom "[You have been put in queue for Banquet emergency line, please hold while the other heroes are being shipped.]";
+			} else if(.@result == 7){
+				dispbottom "[You are already in the queue for Banquet emergency line, please hold while the other heroes are being shipped.]";
+			} else {
+				dispbottom "[^FF0000Banquet encountered an error adding you to the queue. Please contact a GM!^000000]";
+			}
+			close;
+		break;
+		case 2:
+			mes .name$;
+			mes "As long as it's attached to my neck...";
+		break;
+	}
+	close;
+	
+// EVENT LOOP
+	Loop:
+	while(1){
+		while(getmapusers(.map$)) sleep 1000;
+	// Get hold of a user
+		while(callfunc("pull", 1, .eventnum, 1, 1)) sleep 1000;
+		set .aid, $@queue[0];
+		attachrid(.aid);
+		mes .name$;
+		mes "It's time to go!";
+	// Get smart
+		callsub(AI, 0);
+		sleep2 3000;
+		percentheal 100,100;
+	// Bring the player
+		warp .map$,.x,.y;
+		killmonsterall .map$;
+		while(!getmapusers(.map$)) sleep2 20;
+		
+		for(set .@i, 1; .@i < 4; set .@i, .@i+1){
+			callsub(Spawn, .@i);
+			while(mobcount(.map$,"Banquet Houseman::OnDummy") && isloggedin(.aid) && getmapusers(.map$)){
+				if((gettimetick(2)-.starttime) > 600 || .dead) break;
+				callsub(AI, .@i);
+			}
+			callsub(AI, 4);
+			if((gettimetick(2)-.starttime) > 600 || .dead) break;
+		}
+		
+		if((gettimetick(2)-.starttime) > 600 || .dead){
+			set .@hp, getd("$aihp"+.d100+"["+.diff+"]");
+			set .@diffhp, (.@hp*20)/100;
+			if(!.@diffhp) set .@diffhp, 1;
+			setd("$aihp"+.d100+"["+.diff+"]", .@hp-.@diffhp);
+		} else if(isloggedin(.aid)){
+			if((gettimetick(2)-.starttime) < 300){
+				set .@hp, getd("$aihp"+.d100+"["+.diff+"]");
+				set .@diffhp, (.@hp*20)/100;
+				if(!.@diffhp) set .@diffhp, 1;
+				setd("$aihp"+.d100+"["+.diff+"]", .@hp+.@diffhp);
+			}
+			announce "Thank you for saving the Banquet!",bc_map;
+			announce "Have this item as a thanks!",bc_map;
+			set .@r, query_sql("SELECT DISTINCT `nameid`, COUNT(*) AS num FROM `inventory` GROUP BY `nameid` ORDER BY num ASC LIMIT 100", .@id, .@dummy);
+			getitem .@id[rand(.@r-1)], 1;
+			sleep2 2000;
+		}
+		if(isloggedin(.aid)) warp "Save",0,0;
+	}
+	OnPCDieEvent:
+		if(getcharid(3) == .aid) set .dead, 1;
+	end;
+	OnPCLoginEvent:
+		getmapxy(.@map$,.@x,.@y,0);
+		if(.@map$ == .map$) warp "Save", 0, 0;
+	end;
+	
+// SPAWN MONSTERS
+	Spawn:
+		if(!isloggedin(.aid)) return;
+		set .@hp, getd("$aihp"+.d100+"["+.diff+"]");
+		set .@dmg, getd("$aidmg"+.d100+"["+.diff+"]");
+		switch(getarg(0)){
+			case 1:
+				announce "Part 1: Cake's walk",bc_map;
+				set .@hp, (.@hp*80)/100;
+				set .@dmg, (.@dmg*80)/100;
+				set .@am, 10;
+				set .@n$, "Villain";
+			break;
+			case 2:
+				announce "Part 2: Stuck in the gravy",bc_map;
+				announce "Intruders! Send the soldiers...",bc_map;
+				set .@am, 6;
+				set .@n$, "Soldier";
+			break;
+			case 3:
+				announce "Part 3: Was the cake a lie?!",bc_map;
+				announce "Boss: Can't you handle a single human? I'll come myself!",bc_map;
+				set .@hp, (.@hp*120)/100;
+				set .@dmg, (.@dmg*120)/100;
+				set .@am, 1;
+				set .@n$, "Boss";
+			break;
+		}
+		if(.@dmg < 7) set .@dmg, 7;
+		if(.@hp < 30) set .@hp, 30;
+		set .@r, query_sql("SELECT `ID` FROM `mob_db` WHERE "+.@dmg+" >= `ATK2` && `ATK1` > 1 && "+.@hp+" >= `HP` && `HP` > 1 && `Mode`&129 && `DEF` < "+BaseLevel+" && `MDEF` < "+BaseLevel+" ORDER BY `ATK2` DESC LIMIT 3", .@id);
+		for(set .@j, 0; .@j < .@am; set .@j, .@j+1){
+			monster .map$, 0, 0, .@n$, .@id[rand(.@r)], 1, "Banquet Houseman::OnDummy";
+		}
+		return;
+	OnDummy:
+	end;
+	
+// Artificial Intelligence
+	AI:
+	sleep 1;
+	if(!attachrid(.aid)) return;
+	switch(getarg(0)){
+		case 0: //Start of event
+			set .starttime, gettimetick(2);
+			set .dead, 0;
+			set .hp, MaxHp;
+			set .dhp, 0;
+			set .diff, BaseLevel;
+			set .d100, 0;
+			while(.diff > 100){
+				set .diff, .diff-100;
+				set .d100, .d100+1;
+			}
+			if(!getd("$aihp"+.d100+"["+.diff+"]")) setd("$aihp"+.d100+"["+.diff+"]", BaseLevel*20);
+			if(!getd("$aidmg"+.d100+"["+.diff+"]")) setd("$aidmg"+.d100+"["+.diff+"]", BaseLevel*2);
+		break;
+		case 4: //End of event
+			if(.dhp >= 2*MaxHp || .dead){
+				set .@dmg, getd("$aidmg"+.d100+"["+.diff+"]");
+				set .@diffdmg, (.@dmg*20)/100;
+				if(!.@diffdmg) set .@diffdmg, 1;
+				setd("$aidmg"+.d100+"["+.diff+"]", .@dmg-.@diffdmg);
+			} else if(.dhp < MaxHp && !.dead){
+				set .@dmg, getd("$aidmg"+.d100+"["+.diff+"]");
+				set .@diffdmg, (.@dmg*20)/100;
+				if(!.@diffdmg) set .@diffdmg, 1;
+				setd("$aidmg"+.d100+"["+.diff+"]", .@dmg+.@diffdmg);
+			}
+			set .dhp, 0;
+		break;
+		default: //During the event
+			if(.hp > Hp){
+				set .dhp, .dhp+(.hp-Hp);
+			}
+			set .hp, Hp;
+	}
+	return;
+}

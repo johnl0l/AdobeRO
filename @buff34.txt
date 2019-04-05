@@ -1,0 +1,70 @@
+//===== brAthena Script ======================================
+//= Comando Buff > @buff = buffs+repair+identify
+//===== Por: =================================================
+//= Thyago Scott, ChampzRO [brAthena]
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatível com: ======================================
+//= Hercules/brAthena
+//===== Descrição: ===========================================
+//= Comando para Vips, e não vips 
+//	ao digitar @buff, você tem os buffs desejados 
+//	Reparo dos equipamentos
+//= Identificação dos equipamentos
+//============================================================
+-	script	Buffer	-1,{
+	OnInit:
+		bindatcmd("buff",strnpcinfo(0)+"::OnBuff",0,99);
+		end;
+	OnBuff:
+if (getgroupid()>=1 || countitem(20933) > 0){
+set .@now, gettimetick(2);
+if( .@now < bvip_delay ) { dispbottom "Aguarde "+(bvip_delay - .@now)+" segundos para se buffar e curar novamente."; end; }
+
+		specialeffect2 91;
+		skilleffect 8,0; sc_start SC_ENDURE,360000,10;
+		skilleffect 33,0; sc_start SC_ANGELUS,360000,10;
+		skilleffect 74,0; sc_start SC_MAGNIFICAT,360000,5;
+		skilleffect 75,0; sc_start SC_GLORIA,360000,5;
+		skilleffect 66,0; sc_start SC_IMPOSITIO,360000,5;
+		skilleffect 34,0; sc_start SC_BLESSING,360000,10;
+		skilleffect 29,0; sc_start SC_INC_AGI,240000,10; 
+		specialeffect2 338;
+		specialeffect2 14;
+		specialeffect2 118;
+		specialeffect2 129;
+		specialeffect2 236;
+		percentheal 100,100;
+getinventorylist;
+for (set .@i, 0; .@i < @inventorylist_count; set .@i, .@i +1){
+if ( !@inventorylist_identify[.@i] ) {
+delitem2 @inventorylist_id[.@i], 1,0,0,0,0,0,0,0;
+getitem @inventorylist_id[.@i], 1;
+set .@c, .@c+1;
+}
+}
+if (getbrokenid(1)!= 0){ atcommand "@repairall"; }
+if (.@c != 0){
+message strcharinfo(0), .@c +" Itens identificados.";
+percentheal 100,100;
+dispbottom "Prontinho, divirta-se";
+set bvip_delay, gettimetick(2) + 10;
+close;
+}
+percentheal 100,100;
+dispbottom "Prontinho, divirta-se";
+set bvip_delay, gettimetick(2) + 10;
+close;
+}
+else {
+set .@now, gettimetick(2);
+if( .@now < bvip_delay ) { dispbottom "Aguarde "+(bvip_delay - .@now)+" segundos para se buffar e curar novamente."; end; }
+skilleffect 29,0; sc_start 32, 600000, 10; // Increase Agi
+skilleffect 34,0; sc_start 30, 600000, 10; // Blessing
+skilleffect 33,0; sc_start SC_ANGELUS,360000,10; // Angelus
+skilleffect 74,0; sc_start SC_MAGNIFICAT,360000,10; // Magnificat
+percentheal 100,100;
+dispbottom "Prontinho, divirta-se";
+set bvip_delay, gettimetick(2) + 10;
+}
+}

@@ -1,0 +1,80 @@
+-	script	BUFF	-1,{
+
+	OnInit:
+	
+		.hp = 100;		// Percentual de cura do HP
+		.sp = 100;		// Percentual de cura do SP
+
+		// Addons
+		.price = 0; 	// Preço por uso (em Zeny)
+		.buff = 0;		// Buff players as well? (0: no, 1: yes)
+		.repair = 0;	// Reparar equipamentos quebrados? (0: no, 1: yes)
+		.delay = 0;		// Delay para uso (em segundos)
+		
+		bindatcmd "buff",strnpcinfo(3)+"::OnAtcommand";
+	end;
+
+	OnAtcommand:
+	if (@pdelay > gettimetick(2)) {
+		message strcharinfo(0), "Você precisa esperar "+ (@pdelay - gettimetick(2)) +" segundos.";
+		end;
+	}
+
+	if (.price) {
+		if (Zeny < .price) {
+			message strcharinfo(0), "Você não tem Zeny suficiente, O serviço custa "+ .price +"z.";
+			end;
+		}
+		
+		Zeny -= .price;
+	}
+
+	specialeffect2 EF_HEAL; percentheal .hp, .sp;
+
+	if (.buff) {
+		// Acolyte Class Buffs
+		//specialeffect2 EF_BLESSING; sc_start SC_BLESSING, 360000, 10;
+		//specialeffect2 EF_INCAGILITY; sc_start SC_INC_AGI, 360000, 10;
+		//specialeffect2 EF_ANGELUS; sc_start SC_ANGELUS, 360000, 10;
+		//specialeffect2 EF_GLORIA; sc_start SC_GLORIA, 360000, 5;
+		//specialeffect2 EF_MAGNIFICAT; sc_start SC_MAGNIFICAT, 360000, 5;
+		////specialeffect2 EF_ASSUMPTIO; sc_start SC_ASSUMPTIO, 360000, 5;
+		//specialeffect2 EF_IMPOSITIO; sc_start SC_IMPOSITIO, 360000, 5;
+		//specialeffect2 EF_SUFFRAGIUM; sc_start SC_SUFFRAGIUM, 360000, 3;
+
+		// Archer Class Buffs
+		//specialeffect2 EF_TRUESIGHT; sc_start SC_TRUESIGHT, 360000, 5;
+		//specialeffect2 EF_PORTAL4; sc_start SC_WINDWALK, 360000, 5;
+		//specialeffect2 EF_CONCENTRATION; sc_start SC_CONCENTRATION, 360000, 5;
+
+		// Merchant Class Buffs
+		//specialeffect2 EF_PERFECTION; sc_start SC_WEAPONPERFECT, 360000, 10;
+		//specialeffect2 EF_OVERTHRUST; sc_start SC_OVERTHRUST, 360000, 5;
+		//specialeffect2 EF_MAXPOWER; sc_start SC_MAXIMIZEPOWER, 360000, 5;
+		//specialeffect2 EF_MELTDOWN; sc_start SC_MELTDOWN, 360000, 5;
+		//specialeffect2 EF_LOUD; sc_start SC_LOUD, 360000, 1;
+
+		// Swordman Class Buffs
+		//specialeffect2 EF_ENDURE; sc_start SC_ENDURE, 360000, 10;
+
+		// Mage Class Buffs
+		//specialeffect2 EF_ENERGYCOAT; sc_start SC_ENERGYCOAT, 360000, 1;
+
+		// Food Buffs
+		//specialeffect2 EF_FOOD01; sc_start SC_STRFood, 360000, 10;
+		//specialeffect2 EF_FOOD03; sc_start SC_AGIFood, 360000, 10;
+		//specialeffect2 EF_FOOD02; sc_start SC_VITFood, 360000, 10;
+		//specialeffect2 EF_FOOD02; sc_start SC_INTFood, 360000, 10;
+		//specialeffect2 EF_FOOD04; sc_start SC_DEXFood, 360000, 10;
+		//specialeffect2 EF_FOOD05; sc_start SC_LUKFood, 360000, 10;
+	}
+
+	if (.repair) {
+		repairall;
+	}
+
+	if (.delay) {
+		@pdelay = gettimetick(2)+.delay;
+	}
+	end;
+}
