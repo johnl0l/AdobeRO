@@ -1,0 +1,97 @@
+// ---- MVP ARENA!!!!!! By Darkchild with 16 diff MVP's inside
+// -- Optimised The MVP arena!!!! By massdriller
+// - NPC in prontera
+
+// --- Optimising Functions
+
+function	script	Ramvp_M	{
+
+	mes "Você precisa de ajuda ?";
+
+	if(strcharinfo(3) == "pvp_n_1-2" || strcharinfo(3) == "pvp_n_1-3" || strcharinfo(3) == "pvp_n_1-4" || strcharinfo(3) == "pvp_n_1-5")
+	{  menu "Próximo Andar",L_Next,"Curar",L_Heal,"Sair",L_Leave; }
+	else menu "Próximo Andar",L_Next,"Curar",L_Heal,"Acesso Rápido",L_Acess,"Sair",L_Leave;
+
+	L_Next:
+		return;
+
+	L_Heal:
+		percentheal 100,100;
+		close;
+
+	L_Acess:
+		switch(getarg(3))
+		{
+			case 2: dispbottom "O andar foi salvo!"; set MvPMap2$,getarg(0); set MvPmIdent2$,getarg(2); set MvPAndar2,getarg(1); close;
+			case 3: dispbottom "O andar foi salvo!"; set MvPMap3$,getarg(0); set MvPmIdent3$,getarg(2); set MvPAndar3,getarg(1); close;
+			case 4: dispbottom "O andar foi salvo!"; set MvPMap4$,getarg(0); set MvPmIdent4$,getarg(2); set MvPAndar4,getarg(1); close;
+			case 5: dispbottom "O andar foi salvo!"; set MvPMap5$,getarg(0); set MvPmIdent5$,getarg(2); set MvPAndar5,getarg(1); close;
+			default: close;
+		}
+
+	L_Leave:
+		if(getarraysize($MvPRoomAttch) == 1)
+		{
+			if($MvPRoomAttch[0] == getcharid(0))
+			{ deletearray $MvPRoomAttch[0],1; }
+
+		} else {
+
+			set .@l,0;
+			while(.@l<getarraysize($MvPRoomAttch))
+			{
+				if($MvPRoomAttch[.@l] == getcharid(0)){ deletearray $MvPRoomAttch[.@l],.@l; }
+
+			set .@l,.@l+1;
+
+			}
+		}
+
+		warp "prontera",156,179;
+		end;;
+
+}
+
+function	script	Ramvp_M2	{
+
+	mes "Você precisa de ajuda ?";
+	menu "Curar",L_Heal,"Acesso Rápido",L_Acess,"Sair",L_Leave;
+
+	L_Heal:
+		percentheal 100,100;
+		close;
+
+	L_Acess:
+		switch(getarg(1))
+		{
+			case 2: dispbottom "O andar foi salvo!"; set MvPMap2$,getarg(0); set MvPmIdent2$,getarg(2); set MvPAndar2,getarg(1); close;
+			case 3: dispbottom "O andar foi salvo!"; set MvPMap3$,getarg(0); set MvPmIdent3$,getarg(2); set MvPAndar3,getarg(1); close;
+			case 4: dispbottom "O andar foi salvo!"; set MvPMap4$,getarg(0); set MvPmIdent4$,getarg(2); set MvPAndar4,getarg(1); close;
+			case 5: dispbottom "O andar foi salvo!"; set MvPMap5$,getarg(0); set MvPmIdent5$,getarg(2); set MvPAndar5,getarg(1); close;
+			default: close;
+		}
+
+		mes "O andar foi salvo!";
+		close;
+
+	L_Leave:
+		if(getarraysize($MvPRoomAttch) == 1)
+		{
+			if($MvPRoomAttch[0] == getcharid(0))
+			{ deletearray $MvPRoomAttch[0],1; }
+
+		} else {
+
+			set .@l,0;
+			while(.@l<getarraysize($MvPRoomAttch))
+			{
+				if($MvPRoomAttch[.@l] == getcharid(0)){ deletearray $MvPRoomAttch[.@l],.@l; }
+
+			set .@l,.@l+1;
+
+			}
+		}
+
+		warp "prontera",156,179;
+		end;
+}

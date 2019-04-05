@@ -1,0 +1,253 @@
+//  ________________________________________________________
+// |                     __     __ __               __      |
+// |   .---.-.----.----.|  |--.|__|  |_.-----.----.|  |_    |
+// |   |  _  |   _|  __||     ||  |   _|  -__|  __||   _|   |
+// |   |___._|__| |____||__|__||__|____|_____|____||____|   |
+// |                                                        |
+// |--------------------------------------------------------|
+// | Nome do Script: Sala de Suporte                        |
+// |--------------------------------------------------------|
+// | Criado por: Architect [archscripter@yahoo.com.br]      |
+// |--------------------------------------------------------|
+// | Versão: 1.8                                            |
+// |--------------------------------------------------------|
+// | Descrição: Pacote de NPCs de uma Sala de Suporte.      |
+// |--------------------------------------------------------|
+// | Changelog:                                             |
+// | 1.0 Script Criado [Architect]                          |
+// | 1.1 Adição da variável para determinar o número máximo |
+// | de atendimentos [Architect]                            |
+// | 1.2 Script reformulado [Architect]                     |
+// | 1.3 Removido o chamado automático para dar mais tempo  |
+// | ao GM se organizar [Architect]                         |
+// | 1.4 Removido o Whisper para melhor interação com o     |
+// | NPC/Sala de Suporte [Architect]                        |
+// | 1.5 Sistema de Espera adicionado [Architect]           |
+// | (Agradecimento especial ao Floozie pela sugestão!)     |
+// | 1.6 Adição da opção de encerrar as inscrições para     |
+// | suporte, mas continuar com a fila de atendimento, e    |
+// | avisos para indicar aguardo de atendimento e recusa de |
+// | chamadas [Architect]                                   |
+// | 1.7 Pequenas otimizações e alertas para entradas e     |
+// | saídas de jogadores da fila de atendimento [Architect] |
+// | 1.8 Script adaptado ao Novo Sistema de GM [Architect]  |
+// |--------------------------------------------------------|
+// | - Anotações                                            |
+// | A BattleFlag "lowest_gm_level" deixou de existir,      |
+// | resultando na perda de uma das funções deste script.   |
+// | Futuramente espero contar com alguma BattleFlag, mas   |
+// | Por hora, utilize a variável '$lowest_gm' na linha 248 |
+// | para "resolver" esse problema.                         |
+// |________________________________________________________|
+
+// NPC de Entrada para a Sala de Suporte
+prontera,160,185,4	script	Sala de Suporte	117,{
+
+	cutin "kafra_01",2;
+	mes "[Funcionária Kafra]";
+	mes "Olá "+strcharinfo(0)+".";
+	mes "A Sala de Suporte está "+($sup_sala$ == "fechada" ? "^FF0000":"^00DD00")+$sup_sala$+"^000000.";
+	if (getgroupid() >= $lowest_gm) {
+		if (select("Entrar na Sala de Suporte.:Cancelar.") == 1) warp "prt_in",284,126;
+		close2;
+		cutin "", 255;
+		end;		
+	}
+	if ($sup_sala$ == "aberta") {
+		next;
+		mes "[Funcionária Kafra]";
+		mes "Com a intenção organizar o nosso atendimento, pedimos para que todos aguardem o nosso chamado.";
+		next;
+		mes "[Funcionária Kafra]";
+		mes "Para ser chamado você precisa constar na nossa lista de espera.";
+		mes "Deseja por seu nome na lista de espera e aguardar alguns instantes?";
+		next;
+		if (select("Sim, por favor!:Não, obrigado.") == 2) {
+			close2;
+			cutin "", 255;
+			end;
+		}
+		mes "[Funcionária Kafra]";
+		for (set .@i,0; .@i < getarraysize($sup_espera); set .@i,.@i + 1) {
+			if ($sup_espera[.@i] == getcharid(3)) {
+				mes "O seu nome já está na lista de espera.";
+				mes "Aguarde alguns instantes e logo você será chamado!";
+				next;
+				if (select("Ok, vou esperar:Quero sair da lista de espera.") == 1) close;
+				mes "[Funcionária Kafra]";
+				deletearray $sup_espera[.@i],1;
+				mes "Pronto, o seu nome foi removido da lista de espera.";
+				close2;
+				cutin "", 255;
+				donpcevent "Sala de Suporte#gm::OnRemove";
+				end;
+			}
+		}
+		set $sup_espera[getarraysize($sup_espera)],getcharid(3);
+		mes "Certo, seu nome está na lista de espera.";
+		mes "Quando você for chamado, uma mensagem aparecerá à você sem a necessidade de permanecer esperando na sala, mas cuidado com o tempo! Após o chamado você terá apenas 60 segundos para responder.";
+		close2;
+		cutin "", 255;
+		donpcevent "Sala de Suporte#gm::OnAdd";
+		end;
+	}
+	close2;
+	cutin "", 255;
+	end;
+}
+
+// NPC da Sala de Suporte (para GMs)
+prt_in,290,137,2	script	Funcionária Kafra#SalaSupGM	117,{
+
+	cutin "kafra_01",2;
+	while (1) {
+		mes "[Funcionária Kafra]";
+		if (getgroupid() < $lowest_gm) {
+			mes "Desculpe "+strcharinfo(0)+", mas estou a serviço dos membros da equipe do servidor.";
+			close2;
+			cutin "", 255;
+			end;
+		}
+		if (($sup_sala$ == "fechada") || (@menu == 3)) {
+			mes "A sala de suporte está "+($sup_sala$ == "fechada" ? "^FF0000":"^00DD00")+$sup_sala$+"^000000, desejas realmente "+($sup_sala$ == "fechada" ? "^00DD00abrir":"^FF0000fechar")+"^000000?";
+			next;
+			if (select("Sim.:Não.") == 1) {
+				deletearray $sup_espera[0],getarraysize($sup_espera);
+				set $sup_sala$,($sup_sala$ == "fechada" ? "aberta":"fechada");
+				set $sup_salain,0;
+				announce strcharinfo(0)+": A Sala de Suporte foi "+$sup_sala$+($sup_sala$ == "fechada" ? ".":", fale com o NPC para entrar!"),bc_all;
+				close2;
+				cutin "", 255;
+				end;
+			}
+			next;
+			mes "[Funcionária Kafra]";
+		}
+		mes "O que você deseja fazer?";
+		next;
+		if(select("Chamar o próximo jogador.:Ver a lista de espera.:"+($sup_sala$ == "fechada" ? "Abrir":"Fechar")+" a Sala de Suporte.:Cancelar.") == 4) {
+			close2;
+			cutin "", 255;
+			end;
+		}
+		if (@menu <= 2) {
+			if (!getarraysize($sup_espera)) {
+				mes "[Funcionária Kafra]";
+				mes "Não há nenhum jogador na lista de espera"+(($sup_sala$ == "aberta") ? ", o que você ac	ha de fechar a Sala de Suporte?":".");
+			} else {
+				mes "[Funcionária Kafra]";
+				if ((@menu == 1) && ($sup_sala$ == "aberta")) {
+					mes "Próximo atendimento: "+$sup_espera[0];
+					mes "Atendimentos pendentes: "+(getarraysize($sup_espera)-1);
+					close2;
+					cutin "", 255;
+					goto OnCall;
+				}
+				if ((@menu == 2) && ($sup_sala$ == "aberta"))
+					for (set .@i,0; .@i < getarraysize($sup_espera); set .@i,.@i + 1) mes (.@i+1)+" "+$sup_espera[.@i];
+				mes "---------------------------";
+				mes "Atendimentos pendentes: "+getarraysize($sup_espera);
+				next;
+				mes "[Funcionária Kafra]";
+				mes "Se você acha que a fila está muito grande, posso fechar as inscrições, mas manter a sala aberta, o que você acha?";
+				next;
+				mes "[Funcionária Kafra]";
+				mes "Esta função deve ser utilizada para agilizar a finalização do serviço, pois ^FF0000não pode ser desfeita sem o fechamento da sala^000000.";
+				if (select("Sim, por favor.:Não, obrigado.") == 1) {
+					set $sup_salain,1;
+					announce strcharinfo(0)+": A Sala de Suporte continua aberta, porém as inscrições para entrar já estão encerradas.",0;
+				}
+			}
+			next;
+		}
+	}
+
+OnCall:
+	set .sup_atend,0;
+	if (!getarraysize($sup_espera)) goto OnNoService;
+	sleep 2000;
+	initnpctimer;
+	npctalk "Chamando próximo jogador...";
+	set .sup_atend,$sup_espera[0];
+	deletearray $sup_espera[0],1;
+	if (!attachrid(.sup_atend)) {
+		sleep 2000;
+		npctalk "Chamada sem resposta, jogador offline!";
+		goto OnCall;
+	}
+	attachrid(.sup_atend);
+	cutin "kafra_01",2;
+	mes "[Funcionária Kafra]";
+	mes "A Sala de Suporte já está disponível!";
+	mes "Deseja entrar para receber o seu atendimento?!";
+	mes "^ff0000( Responda em 60 segundos! )^000000";
+	if (select("Sim, por favor.:Não, obrigado.") == 2) {
+		close2;
+		cutin "", 255;
+		if (.sup_atend == getcharid(3)) {
+			npctalk "A chamada foi recusada.";
+			goto OnCall;
+		}
+		end;
+	}
+	if (.sup_atend == getcharid(3)) {
+		close2;
+		cutin "", 255;
+		npctalk "A chamada foi aceita, teleportando jogador...";
+		stopnpctimer;
+		sleep2 3000;
+		warp "prt_in",284,126;
+	}
+	next;
+	mes "[Funcionária Kafra]";
+	mes "Você demorou para responder este chamado, o seu nome foi removido da lista de espera.";
+	close2;
+	cutin "", 255;
+	end;
+
+OnTimer5000:
+	npctalk "Chamada realizada... aguardando resposta.";
+	goto OnCall;
+
+OnTimer15000:
+	npctalk "Estou aguardando a 15 segundos e ainda não obtive resposta do jogador!";
+	goto OnCall;
+	
+OnTimer30000:
+	npctalk "Estou aguardando a 30 segundos e ainda não obtive resposta do jogador!";
+	goto OnCall;
+
+OnTimer45000:
+	npctalk "Estou aguardando a 45 segundos e ainda não obtive resposta do jogador!";
+	goto OnCall;
+
+OnTimer60000:
+	stopnpctimer;
+	npctalk "Aguardei a chamada ser atendida por 60 segundos, infelizmente tive que retirá-lo da fila.";
+	goto OnCall;
+
+OnNoService:
+	stopnpctimer;
+	sleep 2000;
+	npctalk "Não há nenhum jogador na lista de espera, o que você acha de fechar a Sala de Suporte?";
+	end;
+	
+OnAdd:
+	npctalk "Um novo jogador entrou na lista de espera. ("+getarraysize($sup_espera)+" atendimento"+((getarraysize($sup_espera) == 1) ? ")":"s)");
+	end;
+
+OnRemove:
+	if (!getarraysize($sup_espera)) goto OnNoService;
+	npctalk "Um jogador removeu seu nome da lista de espera. ("+getarraysize($sup_espera)+" atendimento"+((getarraysize($sup_espera) == 1) ? ")":"s)");
+	end;
+
+OnInit:
+	set $sup_sala$,"fechada";
+	set .sup_atend,0;
+	deletearray $sup_espera[0],getarraysize($sup_espera);
+	set $lowest_gm,80;
+	end;
+}
+
+// Portal para saída
+prt_in,283,122,4	warp	Sala de Suporte#warp	1,1,prontera,156,191

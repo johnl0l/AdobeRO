@@ -1,0 +1,209 @@
+/*
+				.___  ___.  __   __  ___ 
+				|   \/   | |  | |  |/  / 
+				|  \  /  | |  | |  '  /  
+				|  |\/|  | |  | |    <   
+				|  |  |  | |  | |  .  \  
+				|__|  |__| |__| |__|\__\ 
+                         
+	= Sobrevivente v2016
+	= by Mikéias
+	= brAthena
+	= User: http://forum.brathena.org/index.php/user/11630-mikeias/
+
+*/
+
+prontera,154,174,3	script	[Sobrevivente]	4_M_DEWOLDMAN,{
+
+	mes .namenpc$;
+	mes "Olá "+strcharinfo(0);
+	mes "Deseja participar do evento Sobrevivente?";
+	next;
+	switch(select("Participar do evento", ( getgroupid() >= $@lvminGM ? ( !$sobre_status ? "Ligar":"Desligar")+" Evento":"") , "Premiação", "Não quero participar")){
+	
+		case 1:
+			// = Se evento não ativo
+			if (!$sobre_status){
+				mes .namenpc$;
+				mes "O evento não está ativo no momento!";
+				close;
+			}
+			
+			// = Verifica se o nome do personagem já está no array
+			for (set .@i,0; .@i < getarraysize($participantes$); set .@i,.@i + 1) {
+				if ( $participantes$[.@i] == strcharinfo(0) ) {
+					message strcharinfo(0), strnpcinfo(1)+" Você já está registrado. Aguarde!";
+					close;
+				}
+			}
+		
+			// = Adiciona o nome do personagem ao array
+			set $participantes$[getarraysize($participantes$)], strcharinfo(0);
+			message strcharinfo(0), strnpcinfo(1)+" Meus parabéns! Você se registrou com êxito para participar do evento.";
+			announce strnpcinfo(1)+" <"+strcharinfo(0)+"> registrou-se para participar do evento!",bc_all;
+			close;
+		
+		case 2:
+			if( agitcheck() || agitcheck2() ){
+				mes .namenpc$;
+				mes "A Guerra do Emperium está ativa!";
+				close;
+			}
+			// = Controle: Ligar e Desligar Evento
+			if ( !$sobre_status ){
+				donpcevent "Sobrevivente::OnStart";
+			}else{
+				donpcevent "Sobrevivente::OnStop";
+			}
+			close;
+			
+		case 3:
+			mes .namenpc$;
+			mes "O último a sobreviver recebe:";
+			for(set .@w, 0; .@w < getarraysize($@premiacaoITEM); set .@w, .@w + 1){
+				set .@item, $@premiacaoITEM[.@w];
+				set .@quantidade, $@premiacaoQUANT[.@w];
+				mes .@quantidade+"x "+getitemname(.@item);
+			}
+			close;
+		
+		case 4:
+		close;
+	
+	}
+	
+	OnInit:
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	set .namenpc$, strnpcinfo(1);
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	setarray $@mapevent$, "pvp_n_1-5", 99, 101;	// = Configuração do mapa do evento
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	set $@minparticipantes,2;	// = Número mínimo de participantes para iniciar o evento
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	set $@lvminGM, 60;	// = Level mínimo de GM para ligar/desligar o evento
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	// = ATENÇÃO: CADA ITEM TEM SUA QUANTIDADE
+	setarray $@premiacaoITEM, 607, 608, 609;	// = Itens
+	setarray $@premiacaoQUANT, 1, 10, 20;	// = Quantidade de cada item
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	
+	callfunc ("resetEvento", $participantes$, $@mapevent$[0]);
+	setarray .mapflag,0,1,7,8,13,22,33,34;
+	for (set .@m,0; .@m < getarraysize(.mapflag); set .@m, .@m + 1){
+		setmapflag $@mapevent$[0], .mapflag[.@m];
+	}
+	end;
+
+}
+
+-	script	Sobrevivente	-1,{
+
+	// = Início automático
+	OnClock1000:
+	OnClock1200:
+	OnClock1600:
+	OnClock1800:
+	
+	// = Início manual
+	OnStart:
+	pvpoff $@mapevent$[0];
+	set $sobre_status,1;
+	for(set .@t, 3; .@t > 0; set .@t, .@t - 1){
+	
+		// = Se variável 0 ou GDE ativa, então encerra.
+		if ( !$sobre_status || agitcheck() || agitcheck2() ) callfunc ("resetEvento", $participantes$, $@mapevent$[0]);
+		
+		announce "["+strnpcinfo(1)+"] O evento iniciará em "+(.@t*20)+" segundos!",bc_all;
+		sleep 20000;
+	}
+	
+	if ( getarraysize($participantes$) < $@minparticipantes ){
+		announce "["+strnpcinfo(1)+"] O mínimo de participantes requeridos não foi satisfeito!",bc_all;
+		callfunc ("resetEvento", $participantes$, $@mapevent$[0]);
+		end;
+	}
+	announce "["+strnpcinfo(1)+"] Começando!",bc_all;
+	
+	set $sobre_status,0;
+	for(set .@p, 0; .@p < getarraysize($participantes$); set .@p, .@p + 1){
+	
+		if ( isloggedin(getcharid(3, $participantes$[.@p])) ){
+			warpchar $@mapevent$[0], atoi($@mapevent$[1]), atoi($@mapevent$[2]), getcharid(0, $participantes$[.@p]);
+		}else{
+			deletearray $participantes$[.@p], 1;
+		}
+		
+	}
+	sleep 8000;
+	
+	mapannounce $@mapevent$[0], "["+strnpcinfo(1)+"] Comecem. O último a sobreviver será o vencedor!",bc_map;
+	pvpon $@mapevent$[0];
+	set .@timer,0;
+	while( getarraysize($participantes$) > 1 ){ // = Enquanto o total de participantes for maior que 1
+	
+		if ( .@timer == (12*3) ){	// = Caso queira aumentar o tempo de evento, modifique o número multiplicado por 12. Padrão: 3 minutos
+			mapannounce $@mapevent$[0], "["+strnpcinfo(1)+"] O tempo acabou!",bc_map;
+			callfunc ("resetEvento", $participantes$, $@mapevent$[0]);
+			end;
+		}
+		
+		sleep 5000;
+		set .@timer, .@timer+1;
+	}
+	pvpoff $@mapevent$[0];
+
+	if ( getarraysize($participantes$) ){
+		attachrid(getcharid(3, $participantes$[0]));	// = Atacha o account_id apartir do nome
+		if ( strcharinfo(3) == $@mapevent$[0] ){
+			announce "["+strnpcinfo(1)+"] Temos um vencedor: "+$participantes$[0],bc_all;
+			for(set .@w, 0; .@w < getarraysize($@premiacaoITEM); set .@w, .@w + 1){
+				set .@item, $@premiacaoITEM[.@w];
+				set .@quantidade, $@premiacaoQUANT[.@w];
+				getitem .@item, .@quantidade;
+				message strcharinfo(0), "Você recebeu: "+.@quantidade+"x "+getitemname(.@item);
+			}
+		}
+		detachrid;
+	}
+	callfunc ("resetEvento", $participantes$, $@mapevent$[0]);
+	end;
+	
+	// = Encerra o Evento
+	OnStop:
+	announce "["+strnpcinfo(1)+"] Evento encerrado!",bc_all;
+	callfunc ("resetEvento", $participantes$, $@mapevent$[0]);
+	end;
+
+}
+
+-	script	sobre_events	-1,{
+
+	// = Se o participante que deslogou ou morreu estiver no mapa do evento, seu nome será retirado do array de participantes
+	OnPCLogoutEvent:
+	OnPCDieEvent:
+	if ( strcharinfo(3) == $@mapevent$[0] ){
+		for (set .@i,0; .@i < getarraysize($participantes$); set .@i,.@i + 1) {
+			if ( $participantes$[.@i] == strcharinfo(0) ){
+				deletearray $participantes$[.@i], 1;
+			}
+		}
+		
+		mapannounce $@mapevent$[0], "[Sobrevivente] ["+strcharinfo(0)+"] não está mais entre os sobreviventes!",bc_map;
+		warp getsavepoint(0), getsavepoint(1), getsavepoint(2);
+		sleep2 2000;
+		atcommand "@alive";
+	}
+	end;
+}
+
+// = Reseta parâmetros
+function	script	resetEvento	{
+
+	// @param0 = array dos participantes
+	// @param1 = map event
+	deletearray getarg(0);
+	set $sobre_status,0;
+	mapwarp getarg(1), "prontera",150,150;
+	pvpoff getarg(1);
+	return;
+}

@@ -1,0 +1,277 @@
+//
+//												 Invocador de MvP's
+//
+//Versão 1.0
+//Versão 1.1 (adicionado função invocar ultimo mvp)
+//
+// 
+// - Scripter: Snails pRO -
+// - www.projetoro.com -
+// - Se for postar em outro lugar não esqueça de colocar os devidos créditos.
+//
+//-------------------------------- INVOCADOR MVP -----------------------------
+quiz_02,151,338,4	script	Invocador	834,{
+mes "[Invocador de MVP]";
+mes "Olá "+strcharinfo(0)+", gostaria de qual serviço meu?";
+	switch(select("Invocar um MvP:Curar HP/SP:Sair da Arena"))
+{
+
+	case 1:
+	next;
+	switch(select("Ultimo MvP:Abelha Rainha:Amon-Ra:Atroc:Bafomé:Memória de Thanatos:Cavaleiro da Tempestade:Dark Snake Lord:Detale:Drácula:Flor do Luar:Freeoni:Garm:General Tartaruga:Maya:Orc Herói:Osíris:RSX 0806:Senhor das Trevas:Senhor dos Mortos:Senhor dos Orcs:Lady Branca:Samurai Encarnado:Tao Gunka")){
+	
+	
+	
+	case 1:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o MvP";
+		next;
+		if(#mvpvip == 0) { mes "Você não invocou nenhum MvP ainda"; close; }
+		if(#mvpvip == 1) { monster "quiz_02",161,346,"Abelha Rainha",1059,1; }
+		if(#mvpvip == 2) {monster "quiz_02",161,346,"Amon-Ra",1511,1; }
+		if(#mvpvip == 3) { monster "quiz_02",161,346,"Atroce",1785,1;}
+		if(#mvpvip == 4) { monster "quiz_02",161,346,"Bafomé",1039,1;}
+		if(#mvpvip == 5) {mes "Desculpe, esse MVP está desativado até a implantação do shield."; close; }
+		if(#mvpvip == 6) {monster "quiz_02",161,346,"Cavaleiro da Tempestade",1251,1; }
+		if(#mvpvip == 7) { monster "quiz_02",161,346,"Dark Snake Lord",1418,1;}
+		if(#mvpvip == 8) {monster "quiz_02",161,346,"Detale",1719,1; }
+		if(#mvpvip == 9) {monster "quiz_02",161,346,"Dracula",1389,1; }
+		if(#mvpvip == 10) {monster "quiz_02",161,346,"Flor do Luar",1150,1; }
+		if(#mvpvip == 11) { monster "quiz_02",161,346,"Freeoni",1159,1;}
+		if(#mvpvip == 12) {monster "quiz_02",161,346,"Garm",1252,1; }
+		if(#mvpvip == 13) {monster "quiz_02",161,346,"General Tartaruga",1312,1; }
+		if(#mvpvip == 14) { monster "quiz_02",161,346,"Maya",1147,1;}
+		if(#mvpvip == 15) { monster "quiz_02",161,346,"Orc Heroi",1087,1;}
+		if(#mvpvip == 16) {monster "quiz_02",161,346,"Osíris",1038,1; }
+		if(#mvpvip == 17) { monster "quiz_02",161,346,"RSX 0806",1623,1;}
+		if(#mvpvip == 18) { monster "quiz_02",161,346,"Senhor das Trevas",1272,1;}
+		if(#mvpvip == 19) { monster "quiz_02",161,346,"Senhor dos Mortos",1373,1;}
+		if(#mvpvip == 20) {monster "quiz_02",161,346,"Senhor dos Orcs",1190,1; }
+		if(#mvpvip == 21) { monster "quiz_02",161,346,"Lady Branca",1630,1;}
+		if(#mvpvip == 22) { monster "quiz_02",161,346,"Tao Gunka",1583,1;}
+		if(#mvpvip == 23) {monster "quiz_02",161,346,"Tao Gunka",1583,1; }
+		close;
+
+		
+		case 2:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Abelha Rainha",1059,1;
+		set #mvpvip, 1;
+		close;
+
+		case 3:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Amon-Ra",1511,1;
+		set #mvpvip, 2;
+		close;
+		
+		case 4:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Atroce",1785,1;
+		set #mvpvip, 3;
+		close;
+
+		case 5:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Bafomé",1039,1;
+		set #mvpvip, 4;
+		close;
+
+		case 6:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Desculpe, esse MVP está desativado até a implantação do shield.";
+		set #mvpvip, 5;
+		close;
+
+		case 7:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Cavaleiro da Tempestade",1251,1;
+		set #mvpvip, 6;
+		close;
+
+		case 8:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Dark Snake Lord",1418,1;
+		set #mvpvip, 7;
+		close;
+
+		case 9:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Detale",1719,1;
+		set #mvpvip, 8;
+		close;
+
+		case 10:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Dracula",1389,1;
+		set #mvpvip, 9;
+		close;
+
+		case 11:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Flor do Luar",1150,1;
+		set #mvpvip, 10;
+		close;
+
+		case 12:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Freeoni",1159,1;
+		set #mvpvip, 11;
+		close;
+
+		case 13:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Garm",1252,1;
+		set #mvpvip, 12;
+		close;
+
+		case 14:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"General Tartaruga",1312,1;
+		set #mvpvip, 13;
+		close;
+
+		case 15:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Maya",1147,1;
+		set #mvpvip, 14;
+		close;
+
+		case 16:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Orc Heroi",1087,1;
+		set #mvpvip, 15;
+		close;
+
+		case 17:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Osíris",1038,1;
+		set #mvpvip, 16;
+		close;
+
+		case 18:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"RSX 0806",1623,1;
+		set #mvpvip, 17;
+		close;
+
+		case 19:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Senhor das Trevas",1272,1;
+		set #mvpvip, 18;
+		close;
+
+		case 20:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Senhor dos Mortos",1373,1;
+		set #mvpvip, 19;
+		close;
+
+		case 21:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Senhor dos Orcs",1190,1;
+		set #mvpvip, 20;
+		close;
+
+		case 22:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Lady Branca",1630,1;
+		set #mvpvip, 21;
+		close;
+
+		case 23:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Samurai Encarnado",1492,1;
+		set #mvpvip, 22;
+		close;
+
+		case 24:
+		next;
+		mes "[Invocador de MvP]";
+		mes "Bom, se prepare para matar o Mvp";
+		next;
+		monster "quiz_02",161,346,"Tao Gunka",1583,1;
+		set #mvpvip, 23;
+		close;
+	}
+
+	case 2:
+	next;
+	percentheal 100,100;
+	mes $nomedonpc$;
+	mes "Seu HP e SP foram recuperados!";
+	close;
+
+	case 3:
+	next;
+	mes $nomedonpc$;
+	mes "Ok, até mais tarde...";
+	warp "quiz_02",349,376;
+	close;
+}
+}

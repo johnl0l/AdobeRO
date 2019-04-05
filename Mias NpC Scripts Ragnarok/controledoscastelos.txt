@@ -1,0 +1,1050 @@
+//  ________________________________________________________
+// /                                                        \
+// |       _           _   _   _                            |
+// |      | |__  _ __ / \ | |_| |__   ___ _ __   __ _       |
+// |      | '_ \| '__/ _ \| __| '_ \ / _ \ '_ \ / _` |      |
+// |      | |_) | | / ___ \ |_| | | |  __/ | | | (_| |      |
+// |      |_.__/|_|/_/   \_\__|_| |_|\___|_| |_|\__,_|      |
+// |                                                        |
+// |                     brAthena Script                    |
+// |--------------------------------------------------------|
+// | Nome do Script: Controle dos Castelos                  |
+// |--------------------------------------------------------|
+// | Criado por: Neko                                       |
+// |--------------------------------------------------------|
+// | Versão eA/brA: 1.0                                     |
+// |--------------------------------------------------------|
+// | Descrição: NPC de Administração                        |
+// | - Este NPC criará portais da entrada de todos castelos |
+// | 1.0 e 2.0 sendo possível controlá-los. O Administrador |
+// | do servidor poderá então desativar/ativar os portais   |
+// | tornando trabalhos como rotação de castelos menos      |
+// | desgastantes. Tambem fornece a opcao de bloquear entrar|
+// | personagens sem cla dentro do castelo.		    |
+// |--------------------------------------------------------|
+// | Changelog:               	                            |
+// | 1.0 Script Criado [Neko]			            |
+// | 2.0 Otimizado e Adicionados Castelos 2.0 [Neko]	    |
+// |--------------------------------------------------------|
+// | - Anotações:                                           |
+// | ** NAO SE ESQUECA DE DESATIVAR OS PORTAIS DE ENTRADA **|
+// | ** DOS CASTELOS NA PASTA NPC/PORTAIS/CASTELOS.TXT    **|
+// |--------------------------------------------------------|
+// | - Qualquer problema com este NPC favor reportar a mim. |
+// | Alterem à gosto, MANTENDO OS CRÉDITOS. ^^              |
+// \________________________________________________________/
+
+// Configuracoes
+-	script	Configuracoes#CdC	-1,{
+
+OnInit:
+	set $NeedGuild, 0; //Deixe 1 se voce quiser que jogadores sem Cla sejam barrados na entrada.
+	end;
+}
+
+// NPC Acessivel pelo Admin in-game
+sec_in01,176,178,3	script	Controle dos Castelos	448,{
+
+set .npcname$, "[ Controle dos Castelos ]";
+
+	if( getgroupid() < 99 ) {
+		mes .npcname$;
+		mes "Apenas Administradores";
+		mes "podem utilizar este NPC.";
+		close;
+	}
+	mes .npcname$;
+	mes "Gostaria de ativar/desativar";
+	mes "algum castelo?";
+	if( select("Sim:Não") == 2 ) close;
+
+		next;
+		mes .npcname$;
+		mes "Qual castelo você quer mexer?";
+
+		if( select("Castelos 1.0:Castelos 2.0") == 1){
+
+			switch( select("Kriemhild - "+(($kriemOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Hrist - "+(($hristOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Brynhild - "+(($brynOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Skoegul - "+(($skoeOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Gondul - "+(($gondOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Palácio do Sol - "+(($psolOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Palácio do Lago Sagrado - "+(($plagOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Palácio das Sombras - "+(($psomOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Palácio Escarlate - "+(($pescOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Palácio da Colina - "+(($pcolOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+"	:Sirius - "+(($siriOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Astrum - "+(($astrOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Canopus - "+(($canopOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Rigel - "+(($rigelOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Acrux - "+(($acrOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Arsulf - "+(($arsulOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Trapesac - "+(($trapOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Ruaden - "+(($ruadOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Saffran - "+(($safOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Arima - "+(($arimOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Cancelar")){
+				case 1:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $kriemOn, 1;
+					else
+						set $kriemOn, 0;
+					close;
+
+				case 2:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $hristOn, 1;
+					else
+						set $hristOn, 0;
+					close;
+
+				case 3:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $brynOn, 1;
+					else
+						set $brynOn, 0;
+					close;
+
+				case 4:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $skoeOn, 1;
+					else
+						set $skoeOn, 0;
+					close;
+				case 5:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $gondOn, 1;
+					else
+						set $gondOn, 0;
+					close;
+
+				case 6:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $psolOn, 1;
+					else
+						set $psolOn, 0;
+					close;
+				case 7:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $plagOn, 1;
+					else
+						set $plagOn, 0;
+					close;
+
+				case 8:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $psomOn, 1;
+					else
+						set $psomOn, 0;
+					close;
+
+				case 9:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $pescOn, 1;
+					else
+						set $pescOn, 0;
+					close;
+
+				case 10:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $pcolOn, 1;
+					else
+						set $pcolOn, 0;
+					close;
+				case 11:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $siriOn, 1;
+					else
+						set $siriOn, 0;
+					close;
+
+				case 12:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $astrOn, 1;
+					else
+						set $astrOn, 0;
+					close;
+				case 13:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $canopOn, 1;
+					else
+						set $canopOn, 0;
+					close;
+
+				case 14:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $rigelOn, 1;
+					else
+						set $rigelOn, 0;
+					close;
+				case 15:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $acrOn, 1;
+					else
+						set $acrOn, 0;
+					close;
+
+				case 16:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $arsulOn, 1;
+					else
+						set $arsulOn, 0;
+					close;
+
+				case 17:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $trapOn, 1;
+					else
+						set $trapOn, 0;
+					close;
+
+				case 18:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $ruadOn, 1;
+					else
+						set $ruadOn, 0;
+					close;
+
+				case 19:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $safOn, 1;
+					else
+						set $safOn, 0;
+					close;
+
+				case 20:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $arimOn, 1;
+					else
+						set $arimOn, 0;
+					close;
+
+				case 21:
+					close;
+			}
+		}
+		else {
+		
+			switch( select("Himinn - "+(($himiOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Andlangr - "+(($andlOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Vidblainn - "+(($vidbOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Hljod - "+(($hjoldOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Skatyrnir - "+(($skatyOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Mardol - "+(($mardOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Syr - "+(($syrOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Horn - "+(($hornOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Gefn - "+(($gefnOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Vanadis - "+(($vanadOn)?"^0000FFAtivo^000000":"^FF0000Inativo^000000")+":Canelar")){
+
+				case 1:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $himiOn, 1;
+					else
+						set $himiOn, 0;
+					close;
+
+				case 2:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $andlOn, 1;
+					else
+						set $andlOn, 0;
+					close;
+
+				case 3:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $vidbOn, 1;
+					else
+						set $vidbOn, 0;
+					close;
+
+				case 4:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $hjoldOn, 1;
+					else
+						set $hjoldOn, 0;
+					close;
+
+				case 5:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $skatyOn, 1;
+					else
+						set $skatyOn, 0;
+					close;
+
+				case 6:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $mardOn, 1;
+					else
+						set $mardOn, 0;
+					close;
+
+				case 7:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $syrOn, 1;
+					else
+						set $syrOn, 0;
+					close;
+
+				case 8:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $hornOn, 1;
+					else
+						set $hornOn, 0;
+					close;
+
+				case 9:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $gefnOn, 1;
+					else
+						set $gefnOn, 0;
+					close;
+
+				case 10:
+					callfunc "Texto Repetitivo#CdC";
+					if($@actionCdC)
+						set $vanadOn, 1;
+					else
+						set $vanadOn, 0;
+					close;
+
+				case 11:
+					close;
+			}
+		}
+}
+
+// Portais Aldebaran
+alde_gld,48,79,0	script	::SiriusWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $siriOn ){
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "aldeg_cas01",34,248;
+		end;
+	}
+	else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+alde_gld,95,253,0	script	::AstrumWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $astrOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "aldeg_cas02",88,163;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+alde_gld,142,81,0	script	::CanopusWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $canopOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "aldeg_cas03",114,286;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+alde_gld,243,242,0	script	::RigelWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $rigelOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "aldeg_cas04",149,17;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+alde_gld,259,90,0	script	::AcruxWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $acrOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "aldeg_cas05",216,103;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+
+// Portais Prontera
+prt_gld,129,65,0	script	::KriemhildWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $kriemOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "prtg_cas01",99,32;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+prt_gld,240,124,0	script	::HristWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $hristOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "prtg_cas02",43,229;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+prt_gld,153,141,0	script	::BrynhildrWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $brynOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "prtg_cas03",168,12;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+prt_gld,107,240,0	script	::SkoegulWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $skoeOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "prtg_cas04",86,13;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+prt_gld,212,240,0	script	::GondulWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $gondOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "prtg_cas05",17,235;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+
+// Portais Geffen
+gef_fild13,150,54,0	script	::ArsulfWarp#1	45,1,1,{
+end;
+
+OnTouch:
+	if( $arsulOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "gefg_cas01",34,140;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+gef_fild13,210,75,0	script	::ArsulfWarp#2	45,1,1,{
+end;
+
+OnTouch:
+	if( $arsulOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "gefg_cas01",95,178;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+gef_fild13,308,244,0	script	::TrapesacWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $trapOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "gefg_cas02",70,143;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+gef_fild13,112,269,0	script	::RuadenWarp#1	45,1,1,{
+end;
+
+OnTouch:
+	if( $ruadOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "gefg_cas03",100,280;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+gef_fild13,139,240,0	script	::RuadenWarp#2	45,1,1,{
+end;
+
+OnTouch:
+	if( $ruadOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "gefg_cas03",125,250;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+gef_fild13,77,284,0	script	::RuadenWarp#3	45,1,1,{
+end;
+
+OnTouch:
+	if( $ruadOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "gefg_cas03",60,286;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+gef_fild13,83,185,0	script	::RuadenWarp#4	45,1,1,{
+end;
+
+OnTouch:
+	if( $ruadOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "gefg_cas03",89,159;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+gef_fild13,196,281,0	script	::SaffranWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $safOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "gefg_cas04",24,149;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+gef_fild13,256,57,0	script	::ArimaWarp#1	45,1,1,{
+end;
+
+OnTouch:
+	if( $arimOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "gefg_cas05",11,134;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+gef_fild13,305,83,0	script	::ArimaWarp#2	45,1,1,{
+end;
+
+OnTouch:
+	if( $arimOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "gefg_cas05",99,200;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+
+// Portais Payon
+pay_gld,121,238,0	script	::PalacioDoSolWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $psolOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "payg_cas01",214,48;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+pay_gld,291,116,0	script	::PalacioLagoSagradoWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $plagOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "payg_cas02",272,57;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+pay_gld,321,293,0	script	::PalacioDaSombraWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $psomOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "payg_cas03",226,26;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+pay_gld,140,156,0	script	::PalacioEscarlateWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $pescOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "payg_cas04",252,271;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+pay_gld,204,269,0	script	::PalacioDaColinaWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $pcolOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "payg_cas05",62,225;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+
+// Portais Juno
+sch_gld,293,90,0	script	::HiminnWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $himiOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "schg_cas01",119,8;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+sch_gld,288,258,0	script	::AndlangrWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $andlOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "schg_cas02",339,78;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+sch_gld,97,183,0	script	::VidblainnWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $vidbOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "schg_cas03",337,330;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+sch_gld,137,98,0	script	::HljoldWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $hjoldOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "schg_cas04",119,8;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+sch_gld,65,315,0	script	::SkatyrnirWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $skatyOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "schg_cas05",119,8;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+
+// Portais Rachel
+aru_gld,155,274,0	script	::MardolWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $mardOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "arug_cas01",275,93;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+aru_gld,78,47,0	script	::SyrWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $syrOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "arug_cas02",139,31;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+aru_gld,68,150,0	script	::HornWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $hornOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "arug_cas03",141,45;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+aru_gld,289,347,0	script	::GefnWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $gefnOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "arug_cas04",141,45;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+aru_gld,287,107,0	script	::VanadisWarp	45,1,1,{
+end;
+
+OnTouch:
+	if( $vanadOn ) {
+		if($NeedGuild && !getcharid(2))
+		{
+			mes "[ Controle dos Castelos ]";
+			mes "Você só pode entrar aqui se";
+			mes "pertencer a um clã.";
+			close;
+		}
+		warp "arug_cas05",141,45;
+		end;
+	}else{
+		mes "[ Controle dos Castelos ]";
+		mes "Este castelo não está ativo.";
+		close;
+	}
+}
+
+// Texto Repetitivo
+function	script	Texto Repetitivo#CdC	{
+
+	set .npcname$, "[ Controle dos Castelos ]";
+	next;
+	mes .npcname$;
+	mes "O que deseja fazer com o castelo?";
+	if( select("Ativar:Desativar") == 1) {
+		next;
+		mes .npcname$;
+		mes "Castelo ativado.";
+		set $@actionCdC, 1;
+	}
+	else {
+		next;
+		mes .npcname$;
+		mes "Castelo Desativado.";
+		set $@actionCdC, 0;
+	}
+	return;
+}

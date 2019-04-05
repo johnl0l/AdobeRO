@@ -1,0 +1,43 @@
+/*    ________________________________________________________
+     /                                                        \
+     |      | |__  _ __ / \ | |_| |__   ___ _ __   __ _       |
+     |      | '_ \| '__/ _ \| __| '_ \ / _ \ '_ \ / _` |      |
+     |      | |_) | | / ___ \ |_| | | |  __/ | | | (_| |      |
+     |      |_.__/|_|/_/   \_\__|_| |_|\___|_| |_|\__,_|      |
+	 |                                                        |
+     |--------------------------------------------------------|
+     | Nome do Script: Draco Buff                             |
+     |--------------------------------------------------------|
+     | Criado por: Sephir4                                    |
+     |--------------------------------------------------------|
+     | Funcionalidade:                                        |
+     | - Draco buff é um sistema buff com anunciador          |
+	 | enquanto se movimenta pelo mapa.                       |
+     |--------------------------------------------------------|
+     \________________________________________________________/*/
+prontera,156,183,5	script	Draco Buff	2013,7,7,{
+OnTouch:
+	if(.uu != getcharid(0)){
+		if(@dl < gettimetick(2)){
+			for(set .z, 0; .z < getarraysize(.id); set .z,.z+1){ sc_start .id[.z],  500000, 10;	skilleffect .id[.z],10; }
+			set .uu, getcharid(0);
+			set @dl, gettimetick(2) + 30000; // 30000 Significa a quantidade em segundos para o Delay
+		}
+	}
+end;
+OnInit:
+	setarray .id[0], 115,118,123,23,32,29,30,35,41;
+	setarray .x[0], 162,166,169,173,174,173,169,165,160,152,146,141,139,138,139,145,149,156;
+	setarray .y[0], 185,188,191,196,202,208,213,218,222,222,219,214,209,203,196,189,185,183;
+	setarray .an$[0], "Bem vindo ao Ragnarok Online.","Sistema de buff e anunciador.";
+	npcspeed 300;
+	OnTimer1000:
+		for(set .c, 0; .c < getarraysize(.x); set .c,.c+1){
+			npctalk .an$[Rand(getarraysize(.an$))];
+			npcwalkto .x[.c],.y[.c];
+			set .c,.c+1;
+			sleep 7000;
+		}
+	initnpctimer;
+end;
+}

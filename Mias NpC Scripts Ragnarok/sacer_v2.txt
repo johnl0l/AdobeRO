@@ -1,0 +1,162 @@
+//  ___________________________________________________________________________
+// /                                                                           \
+// |                 _           _   _   _                                      |
+// |                | |__  _ __ / \ | |_| |__   ___ _ __   __ _                 |
+// |                | '_ \| '__/ _ \| __| '_ \ / _ \ '_ \ / _` |                |
+// |                | |_) | | / ___ \ |_| | | |  __/ | | | (_| |                |
+// |                |_.__/|_|/_/   \_\__|_| |_|\___|_| |_|\__,_|                |
+// |                                                                            |
+// |                              brAthena Script                               |
+// |----------------------------------------------------------------------------|
+// | Nome do Script: "Emilyn, The Full Support" - sacer_v2.txt                  |
+// |----------------------------------------------------------------------------|
+// | Criado por: eA/brA Dev. Team                                               |
+// |----------------------------------------------------------------------------|
+// | Versão brA: 2.0                                                            |
+// |----------------------------------------------------------------------------|
+// | Descrição:                                                                 |
+// | A primeira e única sacerzinha disponível no centro da cidade distribuindo  |
+// | curas e buffs extamente igual a uma jogadora de verdade, e ainda, natural- |
+// | mente simpática e carismática! Muito generosa, porém incansável, Emilyn só |
+// | exige um pequeno donativo pelos benefícios do seu Portal escolhido pelo    |
+// | char, Gema Azul e 2.5k, pode remover. Para VIP's ainda mais interessante,  |
+// | pois melhora seus benefícios e caem seus custos. Não utilize outro healer/ |
+// | buffer/warper, por mais 'completo' que seja! A Emilyn supre a necessidade  |
+// | básica do seu servidor com mais naturalidade e nenhuma apelação!           |
+// |----------------------------------------------------------------------------|
+// | Changelog:                                                                 |
+// | 1.0 Modificação [brAthena]                                                 |
+// | [brA] Damascus  [NPC]                                                      |
+// | [brA] Floozie   [Desenvolvimento]                                          |
+// | - Anotações:                                                               |
+// | db/mob_avail.txt (item 1551/5074) - 1844,4009,2,21,3,15,0,38,158,0,0,1     |
+// | Link: brathena.org/forum/index.php?/topic/122-buffer-emilyn-full-support/  |
+// \___________________________________________________________________________/
+
+//===============================================================================
+// Configurações :
+//===============================================================================
+
+-	script	Emilyn#config	-1,{
+
+OnInit:
+	set $@portal,1;							// Portal: 1 tivar, 0 desativar.
+	set $@porta_price,2500;					// Preço do Portal.
+
+	// NOTA: Moscovia, Niflheim são mapas de Quest, desabilite-os caso prefira que seus
+	// jogadores cumpram missões de acesso, adicione ou remova da lista o que preferir.
+	setarray $@portal_maps$,"alberta","aldebaran","amatsu","ayothaya","brasilis","comodo",
+							"dicastes01","einbech","einbroch","geffen","gonryun","hugel",
+							"izlude","lighthalzen","louyang","manuk","morocc","moscovia",
+							"niflheim","payon","prontera","rachel","splendide","umbala",
+							"veins","xmas","yuno";
+	
+	set $@heal_type,0;						// Tipo de cura, 0 para recuperar todo o HP do jogador e 1 para curar os valores especificados na array seguinte.
+	setarray $@heal_values[1],2500,4000;	// Valores de cura de HP, respectivamente: HP para não vips, HP para vips.
+	end;
+}
+
+//===============================================================================
+// Suporte :
+//===============================================================================
+
+prontera,156,180,3	script	Emilyn::E_P	1844,{
+end;
+
+toHeal:
+	if(agitcheck() || agitcheck2()) end;
+	if(Hp == MaxHp) end;
+	npctalk "Curar !!";
+	specialeffect2 312;
+	heal(($@heal_type) ? $@heal_values[1] : MaxHp-Hp),0;
+	specialeffect2 313;
+	end;
+
+toBuff:
+	if(agitcheck() || agitcheck2()) end;
+	if(sc_check(SC_INCREASEAGI) && sc_check(SC_BLESSING)) end;
+	specialeffect 12;
+	specialeffect2 60;
+	if(!sc_check(SC_INCREASEAGI)){
+	sleep2 3000;
+	sc_start SC_INCREASEAGI,((getgmlevel()) ? 600000 : 300000),10;
+	specialeffect2 37;
+	npctalk "Agi Up !!";
+	}
+	if(!sc_check(SC_BLESSING)){
+	sleep2 1000;
+	specialeffect2 42;
+	sc_start SC_BLESSING,((getgmlevel()) ? 600000 : 300000),10;
+	npctalk "Benção !!";
+	}
+	end;
+
+toPortal:
+	if(agitcheck() || agitcheck2()) end;
+	set e_portal$, $@p2$;
+	if(!$@portal) end;
+	else if(getmapusers(e_portal$) == -1){ dispbottom "Emilyn : Não memorizei esse mapa!"; end; }
+	else if(getmapflag(e_portal$,MF_NOWARPTO) == 1){ dispbottom "Emilyn : Esse local é proibido!"; end; }
+	else if(!getgmlevel() && (!countitem(717) || (Zeny < $@porta_price))){ dispbottom "Emilyn : Eu preciso de Gema Azul e 2.5k!"; end; }
+	else {
+		for(set .@i,0; .@i < getarraysize($@portal_maps$); set .@i,.@i+1){
+			if(e_portal$ == $@portal_maps$[.@i]){
+				if(!getgmlevel()){ delitem 717,1; set Zeny,Zeny-$@porta_price; }
+				specialeffect 12;
+				specialeffect2 316;
+				sleep2 1000;
+				specialeffect2 317;
+				sleep2 1000;
+				warp e_portal$,0,0;
+			}
+		}
+	}
+	end;
+
+OnTimer60000:
+	initnpctimer;
+	callfunc("emilyn_talk");
+
+OnTimer15000:
+	npcwalkto 163+rand(-6,6),184+rand(-4,4);
+	end;
+
+OnInit:
+	defpattern 1, "([^:]+):.*cura.*", "toHeal";
+	defpattern 1, "([^:]+):.*buff.*", "toBuff";
+	defpattern 1, "([^:]+):.*heal.*", "toHeal";
+	defpattern 1, "([^:]+):.*portal\\s+(.*)", "toPortal";
+	defpattern 1, "([^:]+):.*teleporte\\s+(.*)", "toPortal";
+	activatepset 1;
+	npcspeed 220;
+	initnpctimer;
+	end;
+
+}
+
+-	script	Emilyn_Agit	-1,{
+
+OnAgitStart:
+OnAgitStart2:
+disablenpc "E_P";
+stopnpctimer "E_P";
+end;
+
+OnAgitEnd:
+OnAgitEnd2:
+enablenpc "E_P";
+startnpctimer "E_P";
+end;
+
+}
+
+function	script	emilyn_talk	{
+	set .@TFS, rand(24);
+	setarray .@talk$[0],"Abençoado sejas tú!","Que Deus o Proteja!","Buffs!","Buffs?","Eu te ajudarei!","Conte comigo, viajante!","Eu abençou os heróis!","Meu coração está contigo!","Seja forte!","Busque a imortalidade dos deuses!","Que os deuses lhe abençoem!";
+	setarray .@emotion[11],e_kis,e_kis2,e_lv,e_lv2,e_awsm,e_ok,e_go,e_ho,e_heh,e_no1,e_com,e_pat,e_brazil,e_mp;
+	if(.@TFS >= 0 && .@TFS <= 10)
+		npctalk .@talk$[.@TFS];
+	else if(.@TFS >= 11 && .@TFS <= 24)
+		emotion .@emotion[.@TFS];
+	end;
+}

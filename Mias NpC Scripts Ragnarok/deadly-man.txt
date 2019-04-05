@@ -1,0 +1,126 @@
+//----------------------------------------------------------------
+//- .___  ___.  __   __    __       ___       _______  __        -
+//- |   \/   | |  | |  |  |  |     /   \     |   ____||  |       -
+//- |  \  /  | |  | |  |__|  |    /  ^  \    |  |__   |  |       -
+//- |  |\/|  | |  | |   __   |   /  /_\  \   |   __|  |  |       -
+//- |  |  |  | |  | |  |  |  |  /  _____  \  |  |____ |  `----.  -
+//- |__|  |__| |__| |__|  |__| /__/     \__\ |_______||_______|  -
+//-                 www.cronus-emulator.com                      -
+//----------------------------------------------------------------
+//-                         (Mihael)                             -
+//----------------------------------------------------------------
+//- Por:                                                         -
+//-  Mihael                                                      -
+//----------------------------------------------------------------
+//- Compatibilidade: Cronus/eAthena/rAthena/Hercules/brAthena.   -
+//----------------------------------------------------------------
+//- Descrição:                                                   -
+//- Quest simplificada para obter as Garrafas de Veneno porem    -
+//- tem 75% de chance de sucesso.                                -
+//----------------------------------------------------------------
+//- Desenvolvimento:                                             -
+//= 1.0 - Script Inicializado. [Maluko]                          -
+//= 1.2 - Adicionado chance de erro. [Maluko]                    -
+//= 1.3 - Reorganizado o script. [Barbiroto]                     -
+//= 1.4 - Adicionado função de checagem de Sexo. [Palito]        -
+//- 1.5 - Atualização para Novas Versões de Emulador. [Mihael]   -
+//----------------------------------------------------------------
+
+prontera,164,176,3	script	Deadly Man	730,{
+
+//--- Nome do NPC
+set .@npcdeadlyman$,"^660066[Deadly Man]^000000";
+
+//--- Inicio da Script
+	mes .@npcdeadlyman$;
+	mes "Olá ^0000CD"+strcharinfo(0)+"^000000, bem vind"+(Sex?"o":"a")+" ao ^FF0000[Deadly Man]^000000!";
+	next;
+	mes .@npcdeadlyman$;
+	mes "Olá, eu sou um lendário Sin X e estou aqui para lhe falar sobre meus poderes místicos.";
+	mes "Eu posso fazer as famosas ^FF0000"+getitemname(678)+"^000000 usando poucos itens.";
+	next;
+	if(select("Quero saber mais.:I dai? Isso não me interessa!")==2){
+		mes .@npcdeadlyman$;
+		mes "Ok, já vi que você não é merecedor dos meus poderes.";
+		close;
+	}
+	mes .@npcdeadlyman$;
+	mes "Eu consigo fazer as ^FF0000"+getitemname(678)+"^000000 usando apenas esses itens:";
+	mes "^5555FF3^000000 ^FF0000"+getitemname(645)+"^000000.";
+	mes "^5555FF2^000000 ^FF0000"+getitemname(656)+"^000000.";
+	mes "^5555FF1^000000 ^FF0000"+getitemname(657)+"^000000.";
+	mes "^5555FF10,000^000000 Zenys.";
+	next;
+	mes .@npcdeadlyman$;
+	mes "E então, está interessado em fazer as ^FF0000"+getitemname(678)+"^000000?";
+	next;
+	switch(select("Só se for agora.:Quem sabe mais tarde. Agora estou sem os itens.")){
+	case 1:
+		mes .@npcdeadlyman$;
+		mes "Mas antes de começar tenho que lhe falar que ultimamente meus poderes vem falhando.";
+		mes "Não posso garantir 100% de chance de sucesso.";
+		next;
+		mes .@npcdeadlyman$;
+		mes "Deseja fazer as ^FF0000"+getitemname(678)+"^000000 mesmo assim?";
+		next;
+		if(select("Claro que sim.:Ah, Acho melhor não arriscar.")==2){
+			mes .@npcdeadlyman$;
+			mes "Tudo bem, você que manda HeheHe.";
+			close;
+		}
+		mes .@npcdeadlyman$;
+		mes "Estou vendo que você é realmente um merecedor dos meus magníficos poderes, você é muito corajoso.";
+		mes "Mais então, vamos cria a ^FF0000"+getitemname(678)+"^000000.";
+		if(countitem(645) < 3 || countitem(656) < 2 || countitem(657) < 1){
+			next;
+			mes .@npcdeadlyman$;
+			mes "Me desculpe mais está faltando alguns itens, Volte quando tiver todos.";
+			close;
+		}
+		if(Zeny < 10000){
+			next;
+			mes .@npcdeadlyman$;
+			mes "Me desculpe mais está faltando Dinheiro, volte quando tiver ^5555FF10,000 Zenys^000000.";
+			close;
+		}
+		next;
+		mes .@npcdeadlyman$;
+		mes "Vou avisar de novo não me responsabilizo por o que acontecer!!!";
+		next;
+		mes .@npcdeadlyman$;
+		mes "Lá vamos nós.";
+		next;
+		mes .@npcdeadlyman$;
+		mes "... ...";
+		next;
+		delitem 645,3;	//Poção da Concentração
+		delitem 656,2;	//Poção do Despertar
+		delitem 657,1;	//Poção da Fúria Selvagem
+		set Zeny,Zeny-10000;
+		set @var,rand(1,100);
+		next;
+		mes .@npcdeadlyman$;
+		mes "...     ...     ...";
+		if(@var>25){
+			misceffect 154;
+			next;
+			getitem 678,1;	//Garrafa de Veneno
+			mes .@npcdeadlyman$;
+			mes "Que Bom, ocorreu tudo certo, ai esta sua ^FF0000"+getitemname(678)+"^000000.";
+			emotion 21;
+			close;
+		}
+		if(@var<25){
+			misceffect 155;
+			next;
+			mes .@npcdeadlyman$;
+			mes "Ahh, que pena, estava quase pronta, mais infelizmente não deu certo.";
+			emotion 16;
+			close;
+		}
+	case 2:
+		mes .@npcdeadlyman$;
+		mes "Tudo bem, Quando pegar os itens volte aqui.";
+		close;
+	}
+}

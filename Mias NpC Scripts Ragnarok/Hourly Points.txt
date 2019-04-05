@@ -1,0 +1,214 @@
+/*
+
+				.___  ___.  __   __  ___ 
+				|   \/   | |  | |  |/  / 
+				|  \  /  | |  | |  '  /  
+				|  |\/|  | |  | |    <   
+				|  |  |  | |  | |  .  \  
+				|__|  |__| |__| |__|\__\ 
+                         
+	= Hourly Points
+	= GorthexTiger modified by Mikéias
+	= brAthena/eAthena
+	= O jogador ganha pontos enquanto online. A cada 1 minuto, se conta online adiciona +1 a variável #Check que ao chegar no valor 60
+	adiciona a quantidade de pontos definida nas configurações. O jogador só receberá o acréscimo na variável se estiver online, caso deslogue
+	a variável permanece com a mesma quantidade e ao retornar, continua até completar o valor 60.
+
+TABELA PARA O FUNCIONAMENTO DO SCRIPT --
+-- OBS.: A tabela é inserida automáticamente.
+
+CREATE TABLE IF NOT EXISTS `hourly_points` (
+`account_hourly` int( 11 ) unsigned NOT NULL auto_increment,
+`online` tinyint(2) NOT NULL default '0',
+`points` int(11) unsigned NOT NULL default '0',	
+`minute` int(11) NOT NULL DEFAULT '0' , 			     
+PRIMARY KEY ( `account_hourly` )
+) ENGINE=MyISAM AUTO_INCREMENT=1;
+
+*/
+// ===================================================================
+ 
+-	script	hourlypoints	-1,{
+	
+	OnInit:
+	deletearray $@PROIBIR_MAP$;
+	initnpctimer;
+	// =========================================================================================
+	// = Informe o level dos jogadores VIP do seu servidor:
+	set $@LevelVIP, 1;	// -> Level VIP.
+	
+	// = Se seu servidor tiver jogadores VIP's, defina a quantidade de pontos que eles receberão:
+	set $@PointVIP, 2;	// -> Jogadores VIP.
+	
+	// = Defina a quantidade de pontos que os jogadores normais receberão:
+	set $@PointN, 1;	// -> Jogadores Normais.
+	
+	// = Sobre o Sistema de Comércio dos Mercadores:
+	set $@MerchantAT, 0;	// -> Mercadores em @at/@autotrade entrarão na premiação? 0=Não / 1=Sim
+	
+	// Sala de Chat (Alt+C)
+	set $@Chatting, 0;	// -> Jogadores em chats receberam pontos? 0=Não / 1=Sim
+	
+	// = Mostrar mensagem do recebimento dos pontos hourly? 0=Não / 1=Sim
+	set .Message, 1;
+	
+	// = RESTRIÇÃO DO SISTEMA EM ALGUNS MAPAS
+	// - - - - - - - - - - - - - - - - - - - - - - - - - -
+	setarray $@PROIBIR_MAP$[0], "";	// DEFINA OS MAPAS EM QUE OS JOGADORES NÃO SERÃO PREMIADOS.
+	// - - - - - - - - - - - - - - - - - - - - - - - - - -
+	
+	// --- Não mexa ---
+	// = Cria a tabela 'hourly_points' se não existir.
+	query_sql ("CREATE TABLE IF NOT EXISTS `hourly_points` ( `account_hourly` int( 11 ) unsigned NOT NULL,`online` tinyint(2) NOT NULL default '0',`points` int(11) unsigned NOT NULL default '0',`minute` int(11) NOT NULL DEFAULT '0', PRIMARY KEY ( `account_hourly` )) ENGINE=MyISAM;");
+	end;
+
+
+		// A CADA 1 MINUTO ELE FAZ A CHECAGEM	
+		OnTimer60000:	// 1 minuto	
+		stopnpctimer;
+		query_sql ("SELECT `account_hourly` FROM `hourly_points` WHERE `online`='1'",.@HERE_ACCOUNT_HOURLYONLINE);
+
+		// ACCOUNT ONLINE - CHECK
+		for( set .@m,0; .@m <(getarraysize(.@HERE_ACCOUNT_HOURLYONLINE)); set .@m, .@m+1 ){
+		if (isloggedin(.@HERE_ACCOUNT_HOURLYONLINE[.@m])){
+		attachrid(.@HERE_ACCOUNT_HOURLYONLINE[.@m]);
+		
+		// === Checagem de Chat e Loja ===============================
+		
+		if( checkchatting() && !$@Chatting || checkvending() && !$@MerchantAT) { goto ReStart; end; }		
+		
+		// ===========================================================
+		
+		// === Checagem de Mapas =====================================
+		for( set .@n,0; .@n < (getarraysize($@PROIBIR_MAP$)); set .@n, .@n+1 ){
+			getmapxy(.@mapa$,@x,@y,0);
+			if(.@mapa$ == $@PROIBIR_MAP$[.@n]){ goto ReStart; end; }
+		}	
+		
+		query_sql "UPDATE `hourly_points` SET `minute` = `minute` + '1' WHERE `account_hourly` = '"+getcharid(3)+"'";
+		set #Check, #Check+1;
+
+		if(#Check >= 60){
+			set #Check, 0;
+			query_sql "UPDATE `hourly_points` SET `points`=`points`+'"+(getgmlevel() >= $@LevelVIP ? $@PointVIP:$@PointN)+"' WHERE `account_hourly`='"+getcharid(3)+"'";
+				if ( .Message ){ message strcharinfo(0), "[ Hourly Points Added ]"; }
+		}
+		
+		ReStart:
+		detachrid;
+		}
+	}	
+	initnpctimer;
+}
+
+-	script	EventsOnPC	-1,{
+	
+	// -> Account Online.
+	OnPCLoginEvent:
+    	query_sql "SELECT `account_hourly` FROM hourly_points WHERE `account_hourly`='"+getcharid(3)+"'",@HERE_CONFERE_ID_HOURLY;
+
+	// -> ACCOUNT_ID INEXISTENTE NA TABELA 'hourly_points'
+	if (!@HERE_CONFERE_ID_HOURLY) 
+	{
+		query_sql "INSERT INTO `hourly_points` (`account_hourly`, `online`) VALUES ( '"+getcharid(3)+"' ,  '1')"; 
+		end;
+	}
+		query_sql "UPDATE `hourly_points` SET `online`='1' WHERE `account_hourly`='"+getcharid(3)+"'";
+		end;
+	
+	// -> Account Offline.
+	OnPCLogoutEvent:
+	query_sql "UPDATE `hourly_points` SET `online`='0' WHERE `account_hourly`='"+getcharid(3)+"'";
+	end;
+}
+
+// --> OBS.: CUIDADO COM A HABILIDADE DESCONTO
+prontera,144,213,5	script	[ Hourly Points ]	960,{
+
+	function	showtimeonline	{ set .@r$, ( getarg(0) < 1? "" : "^db4b1e"+getarg(0)+"^000000 hora"+( getarg(0) > 1? "s" : "")+" e " )+"^db4b1e"+(getarg(1)%60)+"^000000 minuto"+(getarg(1)%60 < 2? "" : "s");
+		return .@r$;
+	}
+
+	function	updatePoints	{
+		query_sql "UPDATE hourly_points SET points = points-"+getarg(0)+" WHERE account_hourly = '"+getcharid(3)+"'";
+	}
+	
+	query_sql "SELECT `points` FROM `hourly_points` WHERE `account_hourly` = '"+getcharid(3)+"'", @points;
+	query_sql "SELECT `minute` FROM `hourly_points` WHERE `account_hourly` = '"+getcharid(3)+"'", .@minuto;
+	query_sql "SELECT `minute`/60 FROM `hourly_points` WHERE `account_hourly` = '"+getcharid(3)+"'", .@hora;
+
+	mes "^1E90FF"+strnpcinfo(1)+"^000000";
+	mes "Olá, "+strcharinfo(0);
+	mes "Você ganha pontos enquanto se diverte em nosso servidor!";
+	mes " ";
+	mes "Pontos: ^db4b1e"+ @points + "^000000";
+	mes "Tempo online: "+showtimeonline(.@hora, .@minuto);
+	next;
+	switch(select("Trocar pontos","Cancelar")){
+		
+		case 1:
+			close2; 
+			callshop "shop_hourly",1; 
+			end;
+		
+		case 2:
+			close;
+	}
+	
+	OnInit:
+	npcshopattach "shop_hourly",1;
+	end;
+
+	// AO COMPRAR
+	OnBuyItem:
+		for (set .@i,0; .@i < getarraysize(@bought_nameid); set .@i,.@i+1) {
+			set @cost, callfunc("hourly_for",@bought_nameid[.@i]);
+			if ( @points < @cost*@bought_quantity[.@i]){ message strcharinfo(0),"Você não tem ["+@cost*@bought_quantity[.@i]+"] pontos."; end; }
+				mes "^1E90FF"+strnpcinfo(1)+"^000000";
+				mes "Você selecionou "+@bought_quantity[.@i]+"x "+getitemname(@bought_nameid)+" com o valor de ^1E90FF["+@cost*@bought_quantity[.@i]+"]^000000 pontos. Efetuar compra?";
+				if (select ( "Não, obrigado.","Efetuar compra.") == 1 ){ close; }
+				updatePoints(@cost*@bought_quantity[.@i]);
+				getitem @bought_nameid[.@i],@bought_quantity[.@i];
+				message strcharinfo(0),"Compra efetuada com êxito.";
+				close;
+		}
+		deletearray @bought_nameid[0],getarraysize(@bought_nameid);
+		deletearray @bought_quantity[0],getarraysize(@bought_quantity);
+		close;
+	}
+
+
+function	script	hourly_for	{
+	for(set .@i,0; .@i < getarraysize( $@hourlyitens); set .@i,.@i+1) {
+		if( $@hourlyitens[.@i] == getarg(0)) {
+			return $@hourlyprice[.@i];
+		}
+	}
+return;
+}
+
+
+-	script	hourly_shop	-1,{
+
+OnInit:
+	deletearray $@hourlyitens;
+	deletearray $@hourlyprice;
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+	// ITENS
+	setarray $@hourlyitens[0],  607, 608, 609, 5319;
+								
+	// PRICE							
+	setarray $@hourlyprice[0], 30, 30, 30, 100;
+
+	npcshopdelitem "shop_hourly",512;
+	if(getarraysize( $@hourlyitens) >= 1) {
+	npcshopitem "shop_hourly", $@hourlyitens[0],$@hourlyprice[0];
+	for (set .@i,1; .@i < getarraysize( $@hourlyitens); set .@i,.@i+1) {
+		npcshopadditem "shop_hourly", $@hourlyitens[.@i],$@hourlyprice[.@i]; 
+		} 
+	}
+	end;
+}
+
+-	shop	shop_hourly	-1,512:-1	// Não altere

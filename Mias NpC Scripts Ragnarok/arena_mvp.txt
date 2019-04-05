@@ -1,0 +1,892 @@
+//==========================================================|
+//    _    _                     _     _                    |
+//   | |  | |                   | |   (_)                   |
+//   | |__| |_   _ _ __ ___  ___| |__  _ _ __ ___   __ _    |
+//   |  __  | | | | '__/ _ \/ __| '_ \| | '_ ` _ \ / _` |   |
+//   | |  | | |_| | | | (_) \__ \ | | | | | | | | | (_| |   |
+//   |_|  |_|\__, |_|  \___/|___/_| |_|_|_| |_| |_|\__,_|   |
+//           __/ |Scripter                                  |
+//          |___/                                           |
+//|   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+   |
+//*   |b|r|A|t|h|e|n|a| & |e|A|t|h|e|n|a| & |C|r|o|n|u|s|   *
+//|   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+   |
+//===========================================================
+//====== Script Name ========================================
+//= MVP Room =   					    =
+//===========================================================
+//=							    =
+//===== Descrição ===========================================
+// Sala de MvP por tempo, cada player tem um tempo de acesso=
+// por dia configurado mais abaixo!			    =
+// O mesmo está protegido sob licença CC (Creative Commons).=
+//===========================================================
+//=                      [Licença CC]                       =
+//=							   -=
+// Este trabalho está licenciado sob uma Licença Creative  -=
+//= Commons Attribution-NonCommercial-NoDerivs. Para ver   -=
+//= uma cópia desta licença, visite:			   -=
+//= http://creativecommons.org/licenses/by-nc-nd/3.0/br/   -=
+//= ou envie uma carta para:				   -=
+//= Creative Commons, 171 Second Street, Suite 300,        -=
+//= San Francisco, California 94105, USA.		    =
+//===========================================================
+//=			MvP Room 			    =
+//							    =
+//  O sistema foi criado usando uma parte do código original=
+// do npc padrão 'npc/custom/MVP_arena' abaixo os mentenho  =
+// os créditos: eAthena					    =
+//===========================================================
+// - MVP ARENA!!!!!! By Darkchild with 16 diff MVP's inside =
+// - Optimised The MVP arena!!!! By massdriller		    =
+//===========================================================
+
+//Executar comando SQL!
+//ALTER TABLE `char` ADD `ResetRoom` INT(1) NULL DEFAULT '0';
+
+prontera,162,199,3	script	MVP Room	775,{
+
+MVPMENU:
+
+	mes "[ ^0065DFMVP Room^000000 ]";
+
+	if(BaseLevel < $MvPConfig[0]){ mes "Alcance o level "+$MvPConfig[0]+" para ter acesso a sala!"; close; }
+
+	query_sql "select `ResetRoom` from `char` where `char_id`='"+getcharid(0)+"'",@charid;
+
+	if(@charid == 1)
+	{
+		set MvPTimer1,$MvPConfig[1];
+		set MvPTimer2,$MvPConfig[2];
+		dispbottom "[MVP Room] Seu tempo foi resetado!";
+		set MvPMap2$,"";
+		set MvPMap3$,"";
+		set MvPMap4$,"";
+		set MvPMap5$,"";
+		query_sql "update `char` set `ResetRoom`=0 where `char_id`='"+getcharid(0)+"'";
+	}
+
+	if(MvPTimer1 > 0 || MvPTimer2 > 0 && RoomStart >= 1){mes "Tempo de Acesso: ^32CD32[ "+MvPTimer1+"h:"+MvPTimer2+"m ]^000000"; mes ""; }
+
+	if(#MvPRoomGuia == 0){ mes "^DC143C Você precisa acessar o Guia!! ^000000"; }	
+
+	if(MvPTimerRoom == 1){ mes "   ^DC143C Seu tempo gratuíto acabou!^000000";  mes "    ^0000FF   Disponível em: "+(24-gettime(3))+"h(s) ^000000"; close; }
+
+	if(RoomStart == 0)
+	{
+		mes "Olá "+strcharinfo(0)+", esse é seu primeiro acesso a sala de mvps...";
+		next;
+
+		mes "[ ^0065DFMVP Room^000000 ]";
+		mes "Você terá "+$MvPConfig[1]+"H:"+$MvPConfig[2]+"M de acesso diário para gastar na sala mvp!";
+		mes "Caso você não use todo o tempo ele será resetado as 00:00 (meia noite)!";
+		next;
+
+		mes "[ ^0065DFMVP Room^000000 ]";
+		mes "Esse tempo é válido por Chars e não por conta, assim quanto mais personagens tiver mais tempo você terá de acesso a sala... lembrando que a sala só está dispoível para players level "+$MvPConfig[0]+"!";
+		next;
+
+		mes "[ ^0065DFMVP Room^000000 ]";
+		mes "Antes de entrar na sala acesse o tópico Guia para saber mais!";
+		set RoomStart,1;
+		set MvPTimer1,$MvPConfig[1];
+		set MvPTimer2,$MvPConfig[2];
+		next;
+		if(select("Menu Principal:Sair")==2){ close; }
+
+		goto MVPMENU;
+	}
+
+	mes "Por favor escolha uma opção!";
+	next;
+
+	switch(select("Salas MvPs:Acesso Rápido:Guia:Sair"))
+	{
+		case 1:
+			mes "[ ^0065DFMVP Room^000000 ]";
+
+			if(#MvPRoomGuia == 0){ mes "^DC143C Você precisa acessar o Guia!!^000000"; close; }
+
+			mes "^7B68EE[ATENÇÃO] 1 minuto de seu tempo será deduzido no momento em que entrar na sala!!^000000";
+			next;
+
+			switch(select("Alpha MVP:Beta MVP:Theta MVP:Epsilon MVP:Sair"))
+			{
+				case 1: callfunc "BChek"; warp "pvp_n_1-2",102,102; end;
+				case 2: callfunc "BChek"; warp "pvp_n_1-3",102,102; end;
+				case 3: callfunc "BChek"; warp "pvp_n_1-4",102,102; end;
+				case 4: callfunc "BChek"; warp "pvp_n_1-5",102,102; end;
+				case 5: close;
+			}
+
+		case 2:
+			mes "[ ^0065DFMVP Room^000000 ]";
+
+			if(#MvPRoomGuia == 0){ mes "Você precisa acessar o Guia!!"; close; }
+
+			if(MvPMap2$ == "" && MvPMap3$ == "" && MvPMap4$ == "" && MvPMap5$ == ""){ mes "Você não possui acesso rápido!"; close; }
+
+			if(MvPMap2$ != ""){ mes "ID2 - "+MvPmIdent2$+" - Nível: ["+MvPAndar2+"]"; }
+			if(MvPMap3$ != ""){ mes "ID3 - "+MvPmIdent3$+" - Nível: ["+MvPAndar3+"]"; }
+			if(MvPMap4$ != ""){ mes "ID4 - "+MvPmIdent4$+" - Nível: ["+MvPAndar4+"]"; }
+			if(MvPMap5$ != ""){ mes "ID5 - "+MvPmIdent5$+" - Nível: ["+MvPAndar5+"]"; }
+
+			mes "";
+			mes "Por favor digite o ID da sala!";
+			input @mid;
+
+			if(@mid < 2 || @mid > 5){ mes "Valor incorrteto!"; close; }
+
+			switch(@mid)
+			{
+				case 2: if(MvPMap2$ == ""){ close; } else { warp MvPMap2$,102,102; end;}
+				case 3: if(MvPMap3$ == ""){ close; } else { warp MvPMap3$,102,102; end;}
+				case 4: if(MvPMap4$ == ""){ close; } else { warp MvPMap4$,102,102; end;}
+				case 5: if(MvPMap5$ == ""){ close; } else { warp MvPMap5$,102,102; end;}
+				default: close;
+			}
+
+		case 3:
+			mes "[ ^0065DFMVP Room^000000 ]";
+			mes "A MVP Room é uma sala de montros fortes, cada sala tem 8 andares e cada andar uma quantidade maior de monstros assim como outros novos montros!";
+			next;
+
+			mes "[ ^0065DFMVP Room^000000 ]";
+			mes "Cada player terá 1h diário de acesso gratuíto a sala, quando esse tempo acabar você só poderá acessar a sala novamente a partir de 00:00 (meia-noite)!";
+			next;
+
+			mes "[ ^0065DFMVP Room^000000 ]";
+			mes "Caso você não o use todo será resetado as 00:00 (meia-noite) e não acumula, assim você terá acesso novamente a sala!";
+			next;
+
+			mes "[ ^0065DFMVP Room^000000 ]";
+			mes "Na sala em que você entrar terá um npc para subir o andar da sala assim aumentando a dificuldade e os mvps...";
+			mes "Neste npc você terá a opção de gravar o andar assim tendo acesso direto para o nível da sala na opção de acesso rápido!";
+			next;
+
+			mes "[ ^0065DFMVP Room^000000 ]";
+			mes "Apenas jogadores com level "+$MvPConfig[0]+" poderá ter acesso a sala de mvps";
+			next;
+
+			mes "[ ^0065DFMVP Room^000000 ]";
+			mes "Não existe proprietário de mvps, se alguém matar o monstro que você está atacando ignore, se ele continuar use o npc de denúncias no centro de prontera para reportar o jogador...";
+			next;
+
+			mes "[ ^0065DFMVP Room^000000 ]";
+			mes "Então o jogador será notificado imediatamente de suas ações e será investigado podendo ter seu acesso gratuíto a sala suspenso temporariamente!";
+			next;
+
+			mes "[ ^0065DFMVP Room^000000 ]";
+			mes "Agora que está ciente de toda as informações desejo uma boa caçada e bons drops!!!";
+			set #MvPRoomGuia,1;
+			close;
+		case 4:
+			mes "[ ^0065DFMVP Room^000000 ]";
+			mes "Até breve...!";
+			close;
+	}
+
+
+//Funções que irá remover o player do array caso acontece alguma das ações correspondente a label abaixo
+//caso o mesmo esteja em um dos mapas onde o script funciona!
+//#
+
+OnPCDieEvent:
+OnPCLogoutEvent:
+
+	if(getarraysize($MvPRoomAttch) == 1)
+	{
+		if($MvPRoomAttch[0] == getcharid(0))
+		{ deletearray $MvPRoomAttch[0],1; }
+
+	} else {
+
+		set .l,0;
+		while(.l<getarraysize($MvPRoomAttch))
+		{
+			if($MvPRoomAttch[.l] == getcharid(0)){ deletearray $MvPRoomAttch[.l],.l; }
+
+		set .l,.l+1;
+
+		}
+	}
+end;
+
+
+//Função responsável por adicionar players a lista de chars nos mapas do script ou verificar para não
+//ocorrer ids duplicados!
+//#
+
+OnPCLoadMapEvent:
+
+	set .exist,0;
+	for(set .i,0; .i<= getarraysize($MvPrMaps1$); set .i,.i+')
+	{
+		if($MvPrMaps1$[.i] == strcharinfo(3))
+		{
+			for(set .y,0; .y<=getarraysize($MvPRoomAttch); set .y,.y+1)
+			{ if($MvPRoomAttch[.y] == getcharid(0)){ set .exist,1; }}
+
+ 			if(.exist == 0){ setarray $MvPRoomAttch[getarraysize($MvPRoomAttch)],getcharid(0); }
+		}
+
+		set .i,.i+1;
+	}
+end;
+
+//Função responsável por ativar o reset para acréscimo de tempo de acesso a sala no horário 00:00 (meia-noite)
+//O acréscimo de tempo ficará disponível ao cessar o npc e será feito de forma silenciosa!
+//#
+
+OnClock0000:
+
+	query_sql "update `char` set `ResetRoom`= 1"; end;
+
+	for(set .i,0; .i<= getarraysize($MvPrMaps1$); set .i,.i+')
+	{
+		if(getmapusers($MvPrMaps1$[.i]) > 0)
+		{
+			mapannounce $MvPrMaps1$[.i],"[ MVP Room ] O tempo de acesso a sala MvP foi resetado!",bc_map;
+			sleep2 1000;
+			mapannounce $MvPrMaps1$[.i],"[ MVP Room ] Fale comigo para pegar seu tempo de acesso gratuíto!",bc_map;
+		}
+
+	}
+end;
+
+//Funções responsável por controlar o tempo dos players dentro da sala
+//#
+
+OnMinute01:OnMinute02:OnMinute03:OnMinute04:OnMinute05:OnMinute06:OnMinute07:OnMinute08:OnMinute09:OnMinute10:
+OnMinute11:OnMinute12:OnMinute13:OnMinute14:OnMinute15:OnMinute16:OnMinute17:OnMinute18:OnMinute19:OnMinute20:
+OnMinute21:OnMinute22:OnMinute23:OnMinute24:OnMinute25:OnMinute26:OnMinute27:OnMinute28:OnMinute29:OnMinute30:
+OnMinute31:OnMinute32:OnMinute33:OnMinute34:OnMinute35:OnMinute36:OnMinute37:OnMinute38:OnMinute39:OnMinute40:
+OnMinute41:OnMinute42:OnMinute43:OnMinute44:OnMinute45:OnMinute46:OnMinute47:OnMinute48:OnMinute49:OnMinute50:
+OnMinute51:OnMinute52:OnMinute53:OnMinute54:OnMinute55:OnMinute56:OnMinute57:OnMinute58:OnMinute59:OnMinute00:
+
+
+	if(getarraysize($MvPRoomAttch) > 0)
+	{
+		set .i,0;
+		while(.i<getarraysize($MvPRoomAttch))
+		{
+			query_sql "select `account_id` from `char` where `char_id`='"+$MvPRoomAttch[.i]+"'",.accid;
+
+			if(.accid == 0){ end; }
+
+			attachrid(.accid);
+
+			if(MvPTimer2 > 0){ set MvPTimer2,(MvPTimer2-1); } else if(MvPTimer1 >= 1){ set MvPTimer1,MvPTimer1-1; set MvPTimer2,59; }
+
+			if(MvPTimer2 == 1 && MvPTimer1 == 0){ announce "[ MVP Room ] Você só tem +1 minuto na sala!",bc_self; }
+
+			if(MvPTimer2 == 0 && MvPTimer1 == 0)
+			{
+				announce "[ MVP Room ] seu tempo acabou, você será retirado da sala!",bc_self;
+				set MvPTimerRoom,1;
+
+				if(getarraysize($MvPRoomAttch) == 1)
+				{
+					if($MvPRoomAttch[0] == getcharid(0))
+					{ deletearray $MvPRoomAttch[0],1; }
+				}
+				else
+				{
+					set .l,0;
+					while(.l<getarraysize($MvPRoomAttch))
+					{
+						if($MvPRoomAttch[.l] == getcharid(0)){ deletearray $MvPRoomAttch[.l],.l; }
+						set .l,.l+1;
+					}
+				}
+
+				sleep2 2000;
+				warp "prontera",157,202;
+				detachrid;
+				end;
+			}
+			
+			set .i,.i+1;
+		}
+
+	}
+end;
+}
+
+
+//Função responsável no momento em que o player entra na sala a mesma é chamada, assim será deduzido
+//de imediato 1 minuto de seu tempo para evitar que o player entre na sala e saia/caia antes passar 1minuto nela
+//já que o sistema funciona de acordo com o tempo interno do servidor.
+//#
+
+function	script	BChek	{
+
+	percentheal 100,100;
+	if(MvPTimer2 > 0){ set MvPTimer2,(MvPTimer2-1); } else if(MvPTimer1 >= 1){ set MvPTimer1,MvPTimer1-1; set MvPTimer2,59; }
+	if(MvPTimer2 == 1 && MvPTimer1 == 0){ announce "[ MVP Room ] Você tem menos de 1 minuto na sala!",bc_self; }
+	if(MvPTimer2 == 0 && MvPTimer1 == 0){ announce "[ MVP Room ] Você não tem tempo de acesso para usar a sala!",bc_self; sleep2 2000; atcommand "@kick "+strcharinfo(0); }
+return;
+}
+
+-	script	MVP_Room_Config	-1,{
+
+OnInit:
+//--------------------Configurações-------------------\\
+//   ==============================================   \\
+//  Para utilizar o sistema em outros mapas apenas    \\
+//  informe o mapa conforme abaixo, e adicione o      \\
+//  mapflag loadevent conforme está no final do	      \\
+//  código, recomendo não utilizar em outros mapas    \\
+//  por limite de slot onde se guarda os id de char   \\
+//  (0,126) ids, desde que o acesso ao mapa+os atuais \\
+//  não exceda esse limite não tem problema!	      \\
+//   ==============================================   \\
+
+//Mapas
+//#
+setarray $MvPrMaps1$[0],"pvp_n_1-2","pvp_n_2-2","pvp_n_3-2","pvp_n_4-2","pvp_n_5-2","pvp_n_6-2","pvp_n_7-2","pvp_n_8-2",
+			"pvp_n_1-3","pvp_n_2-3","pvp_n_3-3","pvp_n_4-3","pvp_n_5-3","pvp_n_6-3","pvp_n_7-3","pvp_n_8-3",
+			"pvp_n_1-4","pvp_n_2-4","pvp_n_3-4","pvp_n_4-4","pvp_n_5-4","pvp_n_6-4","pvp_n_7-4","pvp_n_8-4",
+			"pvp_n_1-5","pvp_n_2-5","pvp_n_3-5","pvp_n_4-5","pvp_n_5-5","pvp_n_6-5","pvp_n_7-5","pvp_n_8-5";
+
+//Remove todos os valores na array (ids de chars) na inicialização ou reboot do servidor
+//#
+if(getarraysize($MvPRoomAttch) > 0){ deletearray $MvPRoomAttch[0],getarraysize($MvPRoomAttch); }
+
+
+//Configurações Gerais
+//#
+setarray $MvPConfig[0],99,	//Level Mínimo para acessar a Sala MvP
+			1,	//Tempo em horas gratuítas diária
+			1;	//Tempo em minutos gratuítos diário (Obs: manter igual ou maior que 1, 0=erro)
+end;
+}
+
+
+// ---- Inside MVP-Arena NPC's
+// --- Alpha-MVP #1
+pvp_n_1-2,100,100,4	script	MVP-Protector#01	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M";
+
+L_Next:
+	warp "pvp_n_2-2",102,102;
+	close;
+
+}
+// --- Alpha-MVP #2
+pvp_n_2-2,100,100,4	script	MVP-Protector#02	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_2-2",2,"Sala Alpha",2;
+
+L_Next:
+	warp "pvp_n_3-2",102,102;
+	close;
+
+}
+// --- Alpha-MVP #3
+pvp_n_3-2,100,100,4	script	MVP-Protector#03	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_3-2",3,"Sala Alpha",2;
+
+L_Next:
+	warp "pvp_n_4-2",102,102;
+	close;
+
+}
+// --- Alpha-MVP #4
+pvp_n_4-2,100,100,4	script	MVP-Protector#04	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_4-2",4,"Sala Alpha",2;
+
+L_Next:
+	warp "pvp_n_5-2",102,102;
+	close;
+
+}
+// --- Alpha-MVP #5
+pvp_n_5-2,100,100,4	script	MVP-Protector#05	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_5-2",5,"Sala Alpha",2;
+
+L_Next:
+	warp "pvp_n_6-2",102,102;
+	close;
+
+}
+// --- Alpha-MVP #6
+pvp_n_6-2,100,100,4	script	MVP-Protector#06	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_6-2",6,"Sala Alpha",2;
+
+L_Next:
+	warp "pvp_n_7-2",102,102;
+	close;
+
+}
+// --- Alpha-MVP #7
+pvp_n_7-2,100,100,4	script	MVP-Protector#07	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_7-2",7,"Sala Alpha",2;
+
+L_Next:
+	warp "pvp_n_8-2",102,102;
+	close;
+}
+// --- Alpha-MVP #8
+pvp_n_8-2,100,100,4	script	MVP-Protector#08	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M2","pvp_n_8-2",8,"Sala Alpha",2;
+}
+
+// --- Beta-MVP #1
+pvp_n_1-3,100,100,4	script	MVP-Protector#09	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M";
+
+L_Next:
+	warp "pvp_n_2-3",102,102;
+	close;
+}
+// --- Beta-MVP #2
+pvp_n_2-3,100,100,4	script	MVP-Protector#10	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_2-3",2,"Sala Beta",3;
+
+L_Next:
+	warp "pvp_n_3-3",102,102;
+	close;
+}
+// --- Beta-MVP #3
+pvp_n_3-3,100,100,4	script	MVP-Protector#11	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_3-3",3,"Sala Beta",3;
+
+L_Next:
+	warp "pvp_n_4-3",102,102;
+	close;
+}
+// --- Beta-MVP #4
+pvp_n_4-3,100,100,4	script	MVP-Protector#12	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_4-3",4,"Sala Beta",3;
+
+L_Next:
+	warp "pvp_n_5-3",102,102;
+	close;
+}
+// --- Beta-MVP #5
+pvp_n_5-3,100,100,4	script	MVP-Protector#13	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_5-3",5,"Sala Beta",3;
+
+L_Next:
+	warp "pvp_n_6-3",102,102;
+	close;
+}
+// --- Beta-MVP #6
+pvp_n_6-3,100,100,4	script	MVP-Protector#14	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_6-3",6,"Sala Beta",3;
+
+L_Next:
+	warp "pvp_n_7-3",102,102;
+	close;
+}
+// --- Beta-MVP #7
+pvp_n_7-3,100,100,4	script	MVP-Protector#15	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_7-3",7,"Sala Beta",3;
+
+L_Next:
+	warp "pvp_n_8-3",102,102;
+	close;
+}
+// --- Beta-MVP #8
+pvp_n_8-3,100,100,4	script	MVP-Protector#16	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M2","pvp_n_8-3",8,"Sala Beta",3;
+}
+
+// --- Theta-MVP #1
+pvp_n_1-4,100,100,4	script	MVP-Protector#17	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M";
+
+L_Next:
+	warp "pvp_n_2-4",102,102;
+	close;
+}
+
+// --- Theta-MVP #2
+pvp_n_2-4,100,100,4	script	MVP-Protector#18	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_2-4",2,"Sala Theta",4;
+
+L_Next:
+	warp "pvp_n_3-4",102,102;
+	close;
+}
+// --- Theta-MVP #3
+pvp_n_3-4,100,100,4	script	MVP-Protector#19	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_3-4",3,"Sala Theta",4;
+
+L_Next:
+	warp "pvp_n_4-4",102,102;
+	close;
+}
+// --- Theta-MVP #4
+pvp_n_4-4,100,100,4	script	MVP-Protector#20	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_4-4",4,"Sala Theta",4;
+
+L_Next:
+	warp "pvp_n_5-4",102,102;
+	close;
+}
+// --- Theta-MVP #5
+pvp_n_5-4,100,100,4	script	MVP-Protector#21	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_5-4",5,"Sala Theta",4;
+
+L_Next:
+	warp "pvp_n_6-4",102,102;
+	close;
+}
+// --- Theta-MVP #6
+pvp_n_6-4,100,100,4	script	MVP-Protector#22	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_6-4",6,"Sala Theta",4;
+
+L_Next:
+	warp "pvp_n_7-4",102,102;
+	close;
+}
+// --- Theta-MVP #7
+pvp_n_7-4,100,100,4	script	MVP-Protector#23	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_7-4",7,"Sala Theta",4;
+
+L_Next:
+	warp "pvp_n_8-4",102,102;
+	close;
+}
+// --- Theta-MVP #8
+pvp_n_8-4,100,100,4	script	MVP-Protector#24	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M2","pvp_n_8-4",8,"Sala Theta",4;
+}
+
+// --- Epsilon-MVP #1
+pvp_n_1-5,100,100,4	script	MVP-Protector#25	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M";
+
+L_Next:
+	warp "pvp_n_2-5",102,102;
+	close;
+}
+
+// --- Epsilon-MVP #2
+pvp_n_2-5,100,100,4	script	MVP-Protector#26	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_2-5",2,"Sala Epsilon",5;
+
+L_Next:
+	warp "pvp_n_3-5",102,102;
+	close;
+}
+// --- Epsilon-MVP #3
+pvp_n_3-5,100,100,4	script	MVP-Protector#27	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_3-5",3,"Sala Epsilon",5;
+
+L_Next:
+	warp "pvp_n_4-5",102,102;
+	close;
+}
+// --- Epsilon-MVP #4
+pvp_n_4-5,100,100,4	script	MVP-Protector#28	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_4-5",4,"Sala Epsilon",5;
+
+L_Next:
+	warp "pvp_n_5-5",102,102;
+	close;
+}
+// --- Epsilon-MVP #5
+pvp_n_5-5,100,100,4	script	MVP-Protector#29	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_5-5",5,"Sala Epsilon",5;
+
+L_Next:
+	warp "pvp_n_6-5",102,102;
+	close;
+}
+// --- Epsilon-MVP #6
+pvp_n_6-5,100,100,4	script	MVP-Protector#30	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_6-5",6,"Sala Epsilon",5;
+
+L_Next:
+	warp "pvp_n_7-5",102,102;
+	close;
+}
+// --- Epsilon-MVP #7
+pvp_n_7-5,100,100,4	script	MVP-Protector#31	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M","pvp_n_7-5",7,"Sala Epsilon",5;
+
+L_Next:
+	warp "pvp_n_8-5",102,102;
+	close;
+}
+// --- Epsilon-MVP #8
+pvp_n_8-5,100,100,4	script	MVP-Protector#32	727,{
+	mes "[ ^0065DFMVP-Protector^000000 ]";
+	callfunc "Ramvp_M2","pvp_n_8-5",8,"Sala Epsilon",5;
+}
+
+// ---- Monsters for the MVP-Arena
+// --- Alpha-MVP Maps
+// --- First Alpha-MVP area
+pvp_n_1-2,0,0,0,0	monster	Eddga	1115,3,60000,66000
+pvp_n_1-2,0,0,0,0	monster	Mistress	1059,1,60000,66000
+// --- Second Alpha-MVP area
+pvp_n_2-2,0,0,0,0	monster	Mistress	1059,3,60000,66000
+pvp_n_2-2,0,0,0,0	monster	Moonlight	1150,1,60000,66000
+// --- Third Alpha-MVP area
+pvp_n_3-2,0,0,0,0	monster	Mistress	1059,1,60000,66000
+pvp_n_3-2,0,0,0,0	monster	Moonlight	1150,2,60000,66000
+pvp_n_3-2,0,0,0,0	monster	Maya	1147,1,60000,66000
+// --- Fourth Alpha-MVP area
+pvp_n_4-2,0,0,0,0	monster	Eddga	1115,1,60000,66000
+pvp_n_4-2,0,0,0,0	monster	Mistress	1059,1,60000,66000
+pvp_n_4-2,0,0,0,0	monster	Moonlight	1150,1,60000,66000
+pvp_n_4-2,0,0,0,0	monster	Maya	1147,1,60000,66000
+// --- Fifth Alpha-MVP area
+pvp_n_5-2,0,0,0,0	monster	Eddga	1115,1,60000,66000
+pvp_n_5-2,0,0,0,0	monster	Mistress	1059,2,60000,66000
+pvp_n_5-2,0,0,0,0	monster	Moonlight	1150,1,60000,66000
+pvp_n_5-2,0,0,0,0	monster	Maya	1147,2,60000,66000
+// --- Sixth Alpha-MVP area
+pvp_n_6-2,0,0,0,0	monster	Eddga	1115,2,60000,66000
+pvp_n_6-2,0,0,0,0	monster	Mistress	1059,3,60000,66000
+pvp_n_6-2,0,0,0,0	monster	Moonlight	1150,1,60000,66000
+pvp_n_6-2,0,0,0,0	monster	Maya	1147,2,60000,66000
+// --- Seventh Alpha-MVP area
+pvp_n_7-2,0,0,0,0	monster	Eddga	1115,3,60000,66000
+pvp_n_7-2,0,0,0,0	monster	Mistress	1059,3,60000,66000
+pvp_n_7-2,0,0,0,0	monster	Moonlight	1150,2,60000,66000
+pvp_n_7-2,0,0,0,0	monster	Maya	1147,2,60000,66000
+// --- Eighth Alpha-MVP area
+pvp_n_8-2,0,0,0,0	monster	Eddga	1115,3,60000,66000
+pvp_n_8-2,0,0,0,0	monster	Mistress	1059,3,60000,66000
+pvp_n_8-2,0,0,0,0	monster	Moonlight	1150,3,60000,66000
+pvp_n_8-2,0,0,0,0	monster	Maya	1147,3,60000,66000
+
+// --- Beta-MVP Maps
+// --- First Beta-MVP area
+pvp_n_1-3,0,0,0,0	monster	Phreeoni	1159,3,60000,66000
+pvp_n_1-3,0,0,0,0	monster	Turtle General	1312,1,60000,66000
+// --- Second Beta-MVP area
+pvp_n_2-3,0,0,0,0	monster	Phreeoni	1159,2,60000,66000
+pvp_n_3-3,0,0,0,0	monster	Turtle General	1312,1,60000,66000
+pvp_n_2-3,0,0,0,0	monster	Orc Hero	1087,1,60000,66000
+// --- Third Beta-MVP area
+pvp_n_3-3,0,0,0,0	monster	Phreeoni	1159,1,60000,66000
+pvp_n_3-3,0,0,0,0	monster	Turtle General	1312,1,60000,66000
+pvp_n_3-3,0,0,0,0	monster	Orc Hero	1087,1,60000,66000
+pvp_n_3-3,0,0,0,0	monster	Orc Lord	1190,1,60000,66000
+// --- Fourth Beta-MVP area
+pvp_n_4-3,0,0,0,0	monster	Phreeoni	1159,2,60000,66000
+pvp_n_4-3,0,0,0,0	monster	Turtle General	1312,1,60000,66000
+pvp_n_4-3,0,0,0,0	monster	Orc Hero	1087,1,60000,66000
+pvp_n_4-3,0,0,0,0	monster	Orc Lord	1190,1,60000,66000
+// --- Fifth Beta-MVP area
+pvp_n_5-3,0,0,0,0	monster	Phreeoni	1159,1,60000,66000
+pvp_n_5-3,0,0,0,0	monster	Turtle General	1312,2,60000,66000
+pvp_n_5-3,0,0,0,0	monster	Orc Hero	1087,2,60000,66000
+pvp_n_5-3,0,0,0,0	monster	Orc Lord	1190,1,60000,66000
+// --- Sixth Beta-MVP area
+pvp_n_6-3,0,0,0,0	monster	Phreeoni	1159,2,60000,66000
+pvp_n_6-3,0,0,0,0	monster	Turtle General	1312,1,60000,66000
+pvp_n_6-3,0,0,0,0	monster	Orc Hero	1087,2,60000,66000
+pvp_n_6-3,0,0,0,0	monster	Orc Lord	1190,2,60000,66000
+// --- Seventh Beta-MVP area
+pvp_n_7-3,0,0,0,0	monster	Phreeoni	1159,3,60000,66000
+pvp_n_7-3,0,0,0,0	monster	Turtle General	1312,1,60000,66000
+pvp_n_7-3,0,0,0,0	monster	Orc Hero	1087,2,60000,66000
+pvp_n_7-3,0,0,0,0	monster	Orc Lord	1190,3,60000,66000
+// --- Eighth Beta-MVP area
+pvp_n_8-3,0,0,0,0	monster	Phreeoni	1159,3,60000,66000
+pvp_n_8-3,0,0,0,0	monster	Turtle General	1312,3,60000,66000
+pvp_n_8-3,0,0,0,0	monster	Orc Hero	1087,3,60000,66000
+pvp_n_8-3,0,0,0,0	monster	Orc Lord	1190,3,60000,66000
+
+// --- Theta-MVP Maps
+// --- First Theta-MVP area
+pvp_n_1-4,0,0,0,0	monster	Drake	1112,3,60000,66000
+pvp_n_1-4,0,0,0,0	monster	Osiris	1038,1,60000,66000
+// --- Second Theta-MVP area
+pvp_n_2-4,0,0,0,0	monster	Drake	1112,2,60000,66000
+pvp_n_2-4,0,0,0,0	monster	Osiris	1038,1,60000,66000
+pvp_n_2-4,0,0,0,0	monster	Doppelganger	1046,1,60000,66000
+// --- Third Theta-MVP area
+pvp_n_3-4,0,0,0,0	monster	Drake	1112,1,60000,66000
+pvp_n_3-4,0,0,0,0	monster	Osiris	1038,1,60000,66000
+pvp_n_3-4,0,0,0,0	monster	Doppelganger	1046,1,60000,66000
+pvp_n_3-4,0,0,0,0	monster	Lord of Death	1373,1,60000,66000
+// --- Fourth Theta-MVP area
+pvp_n_4-4,0,0,0,0	monster	Drake	1112,2,60000,66000
+pvp_n_4-4,0,0,0,0	monster	Osiris	1038,1,60000,66000
+pvp_n_4-4,0,0,0,0	monster	Doppelganger	1046,2,60000,66000
+pvp_n_4-4,0,0,0,0	monster	Lord of Death	1373,1,60000,66000
+// --- Fifth Theta-MVP area
+pvp_n_5-4,0,0,0,0	monster	Drake	1112,3,60000,66000
+pvp_n_5-4,0,0,0,0	monster	Osiris	1038,2,60000,66000
+pvp_n_5-4,0,0,0,0	monster	Doppelganger	1046,2,60000,66000
+pvp_n_5-4,0,0,0,0	monster	Lord of Death	1373,1,60000,66000
+// --- Sixth Theta-MVP area
+pvp_n_6-4,0,0,0,0	monster	Drake	1112,3,60000,66000
+pvp_n_6-4,0,0,0,0	monster	Osiris	1038,2,60000,66000
+pvp_n_6-4,0,0,0,0	monster	Doppelganger	1046,2,60000,66000
+pvp_n_6-4,0,0,0,0	monster	Lord of Death	1373,2,60000,66000
+// --- Seventh Theta-MVP area
+pvp_n_7-4,0,0,0,0	monster	Drake	1112,3,60000,66000
+pvp_n_7-4,0,0,0,0	monster	Osiris	1038,2,60000,66000
+pvp_n_7-4,0,0,0,0	monster	Doppelganger	1046,3,60000,66000
+pvp_n_7-4,0,0,0,0	monster	Lord of Death	1373,2,60000,66000
+// --- Eighth Theta-MVP area
+pvp_n_8-4,0,0,0,0	monster	Drake	1112,3,60000,66000
+pvp_n_8-4,0,0,0,0	monster	Osiris	1038,3,60000,66000
+pvp_n_8-4,0,0,0,0	monster	Doppelganger	1046,3,60000,66000
+pvp_n_8-4,0,0,0,0	monster	Lord of Death	1373,3,60000,66000
+
+// --- Epsilon-MVP Maps
+// --- First Epsilon-MVP area
+pvp_n_1-5,0,0,0,0	monster	Incantation Samurai	1492,3,60000,66000
+pvp_n_1-5,0,0,0,0	monster	Pharoh	1157,1,60000,66000
+// --- First Epsilon-MVP area
+pvp_n_2-5,0,0,0,0	monster	Incantation Samurai	1492,2,60000,66000
+pvp_n_2-5,0,0,0,0	monster	Pharoh	1157,1,60000,66000
+pvp_n_2-5,0,0,0,0	monster	Dark Lord	1272,1,60000,66000
+// --- First Epsilon-MVP area
+pvp_n_3-5,0,0,0,0	monster	Incantation Samurai	1492,1,60000,66000
+pvp_n_3-5,0,0,0,0	monster	Pharoh	1157,1,60000,66000
+pvp_n_3-5,0,0,0,0	monster	Dark Lord	1272,1,60000,66000
+pvp_n_3-5,0,0,0,0	monster	Baphomet	1039,1,60000,66000
+// --- First Epsilon-MVP area
+pvp_n_4-5,0,0,0,0	monster	Incantation Samurai	1492,3,60000,66000
+pvp_n_4-5,0,0,0,0	monster	Pharoh	1157,1,60000,66000
+pvp_n_4-5,0,0,0,0	monster	Dark Lord	1272,1,60000,66000
+pvp_n_4-5,0,0,0,0	monster	Baphomet	1039,1,60000,66000
+// --- First Epsilon-MVP area
+pvp_n_5-5,0,0,0,0	monster	Incantation Samurai	1492,2,60000,66000
+pvp_n_5-5,0,0,0,0	monster	Pharoh	1157,2,60000,66000
+pvp_n_5-5,0,0,0,0	monster	Dark Lord	1272,2,60000,66000
+pvp_n_5-5,0,0,0,0	monster	Baphomet	1039,1,60000,66000
+// --- First Epsilon-MVP area
+pvp_n_6-5,0,0,0,0	monster	Incantation Samurai	1492,2,60000,66000
+pvp_n_6-5,0,0,0,0	monster	Pharoh	1157,2,60000,66000
+pvp_n_6-5,0,0,0,0	monster	Dark Lord	1272,2,60000,66000
+pvp_n_6-5,0,0,0,0	monster	Baphomet	1039,1,60000,66000
+// --- First Epsilon-MVP area
+pvp_n_7-5,0,0,0,0	monster	Incantation Samurai	1492,2,60000,66000
+pvp_n_7-5,0,0,0,0	monster	Pharoh	1157,2,60000,66000
+pvp_n_7-5,0,0,0,0	monster	Dark Lord	1272,2,60000,66000
+pvp_n_7-5,0,0,0,0	monster	Baphomet	1039,2,60000,66000
+// --- First Epsilon-MVP area
+pvp_n_8-5,0,0,0,0	monster	Incantation Samurai	1492,3,60000,66000
+pvp_n_8-5,0,0,0,0	monster	Pharoh	1157,2,60000,66000
+pvp_n_8-5,0,0,0,0	monster	Dark Lord	1272,2,60000,66000
+pvp_n_8-5,0,0,0,0	monster	Baphomet	1039,2,60000,66000
+
+
+// ---- Mapflags
+pvp_n_1-5	mapflag	loadevent
+pvp_n_2-5	mapflag	loadevent
+pvp_n_3-5	mapflag	loadevent
+pvp_n_4-5	mapflag	loadevent
+pvp_n_5-5	mapflag	loadevent
+pvp_n_6-5	mapflag	loadevent
+pvp_n_7-5	mapflag	loadevent
+pvp_n_8-5	mapflag	loadevent
+
+pvp_n_1-4	mapflag	loadevent
+pvp_n_2-4	mapflag	loadevent
+pvp_n_3-4	mapflag	loadevent
+pvp_n_4-4	mapflag	loadevent
+pvp_n_5-4	mapflag	loadevent
+pvp_n_6-4	mapflag	loadevent
+pvp_n_7-4	mapflag	loadevent
+pvp_n_8-4	mapflag	loadevent
+
+pvp_n_1-3	mapflag	loadevent
+pvp_n_2-3	mapflag	loadevent
+pvp_n_3-3	mapflag	loadevent
+pvp_n_4-3	mapflag	loadevent
+pvp_n_5-3	mapflag	loadevent
+pvp_n_6-3	mapflag	loadevent
+pvp_n_7-3	mapflag	loadevent
+pvp_n_8-3	mapflag	loadevent
+
+pvp_n_1-2	mapflag	loadevent
+pvp_n_2-2	mapflag	loadevent
+pvp_n_3-2	mapflag	loadevent
+pvp_n_4-2	mapflag	loadevent
+pvp_n_5-2	mapflag	loadevent
+pvp_n_6-2	mapflag	loadevent
+pvp_n_7-2	mapflag	loadevent
+pvp_n_8-2	mapflag	loadevent
+
+//pvp_n_1-1	mapflag	loadevent
+//pvp_n_2-1	mapflag	loadevent
+//pvp_n_3-1	mapflag	loadevent
+//pvp_n_4-1	mapflag	loadevent
+//pvp_n_5-1	mapflag	loadevent
+//pvp_n_6-1	mapflag	loadevent
+//pvp_n_7-1	mapflag	loadevent
+//pvp_n_8-1	mapflag	loadevent
+
+// ---- Mapflags for the MVP-Arena
+pvp_n_1-1	mapflag	pvp_nightmaredrop	off
+pvp_n_2-1	mapflag	pvp_nightmaredrop	off
+pvp_n_3-1	mapflag	pvp_nightmaredrop	off
+pvp_n_4-1	mapflag	pvp_nightmaredrop	off
+pvp_n_5-1	mapflag	pvp_nightmaredrop	off
+pvp_n_6-1	mapflag	pvp_nightmaredrop	off
+pvp_n_7-1	mapflag	pvp_nightmaredrop	off
+pvp_n_8-1	mapflag	pvp_nightmaredrop	off
+pvp_n_1-2	mapflag	pvp_nightmaredrop	off
+pvp_n_2-2	mapflag	pvp_nightmaredrop	off
+pvp_n_3-2	mapflag	pvp_nightmaredrop	off
+pvp_n_4-2	mapflag	pvp_nightmaredrop	off
+pvp_n_5-2	mapflag	pvp_nightmaredrop	off
+pvp_n_6-2	mapflag	pvp_nightmaredrop	off
+pvp_n_7-2	mapflag	pvp_nightmaredrop	off
+pvp_n_8-2	mapflag	pvp_nightmaredrop	off
+pvp_n_1-3	mapflag	pvp_nightmaredrop	off
+pvp_n_2-3	mapflag	pvp_nightmaredrop	off
+pvp_n_3-3	mapflag	pvp_nightmaredrop	off
+pvp_n_4-3	mapflag	pvp_nightmaredrop	off
+pvp_n_5-3	mapflag	pvp_nightmaredrop	off
+pvp_n_6-3	mapflag	pvp_nightmaredrop	off
+pvp_n_7-3	mapflag	pvp_nightmaredrop	off
+pvp_n_8-3	mapflag	pvp_nightmaredrop	off
+pvp_n_1-4	mapflag	pvp_nightmaredrop	off
+pvp_n_2-4	mapflag	pvp_nightmaredrop	off
+pvp_n_3-4	mapflag	pvp_nightmaredrop	off
+pvp_n_4-4	mapflag	pvp_nightmaredrop	off
+pvp_n_5-4	mapflag	pvp_nightmaredrop	off
+pvp_n_6-4	mapflag	pvp_nightmaredrop	off
+pvp_n_7-4	mapflag	pvp_nightmaredrop	off
+pvp_n_8-4	mapflag	pvp_nightmaredrop	off
+pvp_n_1-5	mapflag	pvp_nightmaredrop	off
+pvp_n_2-5	mapflag	pvp_nightmaredrop	off
+pvp_n_3-5	mapflag	pvp_nightmaredrop	off
+pvp_n_4-5	mapflag	pvp_nightmaredrop	off
+pvp_n_5-5	mapflag	pvp_nightmaredrop	off
+pvp_n_6-5	mapflag	pvp_nightmaredrop	off
+pvp_n_7-5	mapflag	pvp_nightmaredrop	off
+pvp_n_8-5	mapflag	pvp_nightmaredrop	off
