@@ -1,0 +1,145 @@
+//===== Ragnarok Script ========================================
+//= Evento Novice vs Zombie
+//===== By: ==================================================
+//= Sanasol [ Criação]
+//= DOdO    [Tradução]
+//===== Compatible With: =====================================
+//= eAthena & Cronus
+//===== Description: =========================================
+//= Um evento exclusivamente para a classe aprendiz.
+
+-	script	announce_nvz	-1,{
+
+
+// beginning Time
+OnClock0330:
+
+announce "O evento Novice Vs. Zombie vai começar em 3 minutos",0;
+killmonsterall "quiz_01";
+sleep 5000;
+announce "Em Prontera apareceu o Npc ' Novice Vs. Zombie '!",0;
+enablenpc "Novice vs. Zombie";
+sleep 55000;
+announce "O evento Novice Vs. Zombie vai começar em 2 minutos!",0;
+sleep 60000;
+announce "O evento Novice Vs. Zombie vai começar em 1 minuto!",0;
+sleep 30000;
+mapannounce "quiz_01","O evento vai começar em 30 segundos!",0;
+sleep 25000;
+announce "O evento Novice Vs. Zombie vai começar em ~5~",0;
+sleep 1000;
+announce "O evento Novice Vs. Zombie vai começar em ~4~",0;
+sleep 1000;
+announce "O evento Novice Vs. Zombie vai começar em ~3~",0;
+sleep 1000;
+announce "O evento Novice Vs. Zombie vai começar em ~2~",0;
+sleep 1000;
+announce "O evento Novice Vs. Zombie vai começar em ~1~",0;
+sleep 1000;
+announce "O evento Novice Vs. Zombie já começou!!",0,0x00FF00;
+
+monster "quiz_01",42,369,"Zombie",1015,1;
+disablenpc "Novice vs. Zombie";
+sleep 10000;
+monster "quiz_01",42,369,"Zombie-2",1015,1;
+sleep 10000;
+monster "quiz_01",42,369,"Zombie-3",1015,1;
+sleep 10000;
+monster "quiz_01",42,369,"Zombie-4",1015,1;
+initnpctimer;
+end;
+
+OnTimer5000:
+if ( getmapusers("quiz_01") == 0 )
+{
+killmonsterall "quiz_01";
+announce "O evento Novice Vs. Zombie terminou, todos os Novice morreram",0;
+disablenpc "Prize";
+stopnpctimer;
+end;
+}
+else if ( getmapusers("quiz_01") > 1 )
+{
+
+mapannounce "quiz_01",getmapusers("quiz_01") +"O jogador ainda está no evento.",0,0x00FF00;;
+initnpctimer;
+end;
+}
+
+initnpctimer;
+end;
+
+OnPCDieEvent:
+getmapxy .@mapnvz$,.@xnvz,.@ynvz,0;
+if ( .@mapnvz$ == "quiz_01") {
+sleep2 1;
+warp "prontera",156,223;
+atcommand "@alive "+ strcharinfo(0);
+dispbottom "Você perdeu...";
+}
+sleep2 1000;
+if ( .@mapnvz$ == "quiz_01" && getmapusers("quiz_01") == 1 ) {
+killmonsterall "quiz_01";
+mapannounce "quiz_01","Você ganhou, Vá para o npc Prize.",0;
+enablenpc "Prize";
+stopnpctimer;
+end;
+}
+end;
+}
+
+quiz_01,42,369,3	script	Prize	72,{
+if (sex == 1) {
+announce "O jogador" + strcharinfo (0) + " ganhou o evento Novice Vs. Zombie, Parabéns a ele!",0;
+}
+else {
+announce "A jogadora" + strcharinfo (0) + " ganhou o evento Novice Vs. Zombie, Parabéns a ela!",0;
+};
+getitem 677,1;
+warp "prontera",156,223;
+sleep2 250;
+disablenpc "Prize";
+end;
+}
+
+prontera,147,163,5	script	Novice vs. Zombie	1015,{
+
+if (BaseLevel > 1) goto NO;
+if (class == 0) goto event;
+if (class > 0) goto NO;
+
+event:
+
+mes "[^0000FFZombie Vs. Novice^000000]";
+mes "Quer entrar no evento Novice Vs. Zombie?";
+next;
+switch(select("Si","No")) {
+
+case 1:
+sc_end SC_ALL;
+sc_start SC_DECREASEAGI,300000,10;
+percentheal 100,100;
+warp "quiz_01",42,369;
+end;
+break;
+
+case 2:
+
+mes "[^0000FFZombie Vs. Novice^000000]";
+mes "Está bem, volte quando estiver interessado.";
+close;
+break;
+
+NO:
+mes "[^0000FFZombie Vs. Novice^000000]";
+mes "Para participar do evento você precisa ser Aprendiz e ter o level de base 1";
+close;
+}
+
+OnInit:
+
+disablenpc "Novice vs. Zombie";
+disablenpc "Prize";
+end;
+}
+

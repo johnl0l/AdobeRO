@@ -1,0 +1,96 @@
+//  ________________________________________________________
+// /		 ____    	                            \
+// |		|  __|					    |
+// |		| |_ _  _  __ _ _ __  _  __ 		    |
+// |		|  _| || |/ _` | '_ \| |/ _ \		    |
+// |		| |__ \/ | (_| | | | | | (_) |		    |
+// |		|____|__/ \__,_|_| |_|_|\___/ 		    |
+// |                                                        |
+// |                   			                    |
+// |--------------------------------------------------------|
+// | Name of Script: Narrator PvP                           |
+// |--------------------------------------------------------|
+// | By: Evanio (SynGates)                                  |
+// |--------------------------------------------------------|
+// | Version 1.0		                            |
+// |--------------------------------------------------------|
+// | Description: Narrator PvP System, where the player has |
+// | more than one choice of narrators.			    |
+// |--------------------------------------------------------|
+// | Changelog:               	                            |
+// | 1.0 Script maked  (18/02/2014) [Evanio]                |
+// \________________________________________________________/
+// ----------------------------------------------------------
+lhz_in01,252,267,5	script	Narrator PvP	833,{
+
+	Locutor:
+		mes "[Narrator PvP]";
+		mes "We have available four types of PvP narrators. Choose one of your own.";
+		next;
+		switch(select("UnrealTournament","Badass","Flamboyant","Pimp")) {
+
+			case 1: set @loc,0; soundeffect "locutor0.wav",0; goto Loc;
+			case 2: set @loc,1; soundeffect "locutor1.wav",0; goto Loc;
+			case 3: set @loc,2; soundeffect "locutor2.wav",0; goto Loc;
+			case 4: set @loc,3; soundeffect "locutor3.wav",0;
+				Loc:
+				mes "[Narrator PvP]";
+				mes "You want to select this narrator?";
+				next;
+				if(select("Yes","No")==2) { goto Locutor; }
+				set #ST,@loc;
+				mes "[Narrator PvP]";
+				mes "Narrator selected.";
+				close;
+	}
+}
+
+-	script	CtrlLoc	-1,{
+
+OnPcKillEvent:
+	getmapxy @map$,@x,@y,0;
+		for(set .@a,0;.@a<getarraysize($@MapName$);set .@a,.@a+1)
+			if($@MapName$[.@a]==@map$) {
+	set @Killer,getcharid(0);
+	set @Morto$,rid2name(killedrid);
+	set @Killed,getcharid(0,rid2name(killedrid));
+		if(@Killed==@Killer) end;;
+	set @WD2,@WD2+1;
+		if(#ST==0) { set @WD,@WD2; }
+		if(#ST==0 && @WD2>12) { set @WD,0; set @Tocar$,"";}
+			if(#ST==1) { set @WD,@WD2+12;} 
+			if(#ST==1 && @WD2>12) { set @WD,0; set @Tocar$,"";} 
+				if(#ST==2) { set @WD,@WD2+24; }
+				if(#ST==2 && @WD2>12) { set @WD,0; set @Tocar$,"";}
+					if(#ST==3) { set @WD,@WD2+36; }
+					if(#ST==3 && @WD2>12) { set @WD,0; set @Tocar$,"";}
+	if($@Sounds$[@WD]!="") { set @Tocar$,$@Sounds$[@WD]; }
+		mapannounce @map$,"The Player [ "+strcharinfo(0)+" ] killed [ "+@Morto$+" ] | "+@Tocar$,bc_map;
+			if($@Sounds$[@WD]!="") { soundeffectall $@Sounds$[@WD]+".wav",0; }
+				if(#ST==1) { soundeffectall $@SoundsE$[1]+".wav",0; }
+					if(#ST==3) { soundeffectall $@SoundsE$[3]+".wav",0; soundeffectall $@SoundsE$[4]+".wav",0; }
+	}
+			end;
+
+OnPcDieEvent:
+	getmapxy @map$,@x,@y,0;
+		for(set .@a,0;.@a<getarraysize($@MapName$);set .@a,.@a+1)
+			if($@MapName$[.@a]==@map$) {
+				set @WD2,0;
+				set @WD,0;
+	}
+end;
+
+OnInit:
+	deletearray $@Sounds$;
+	deletearray $@MapName$;
+// ---------------   Add here the pvp maps   ------------
+	setarray $@MapName$[0],"pvp_n_3-3","pvp_n_3-4","guild_vs3","guild_vs1","pvp_y_8-1","1@orcs","pvp_y_1-2","guild_vs2","guild_vs5","guild_vs4","guild_vs1-2";
+//-------------------------------------------------------
+	setarray $@Sounds$[1],"First Blood","Double Kill","Triple Kill","Killing Spree","Mega Kill","Ultra Kill","Monster Kill","Unstoppable","WhickedSick","GodLike","HolyShit","Rampage";
+	setarray $@Sounds$[13],"First of Many","Too Easy","No Chance","Who's next","Five kill stud","Not today dirtbag","Kiss my ass","Damn I'm good","Who's your daddy","Hell yeah","Unbelievable","Champion";
+	setarray $@Sounds$[25],"Cherry Popper","Fabulous","It's a three way","Rainbow Warrior","Homicidal","Big Bear","Macho","Savage","Domination","Superstar","Yey","Like OMG";
+	setarray $@Sounds$[37],"First Time","Double D's","The juice is loose","It's a four-gy","It's the 5-O","What's my name","Say my name","Mo money","One Bad Mother","Pimpin is easy","Bitch please","Big Pimpin";
+	setarray $@SoundsE$[1],"bullet","bullet_glass","bling","chainin";
+	end;
+}

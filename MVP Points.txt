@@ -1,0 +1,51 @@
+//===============================
+//======== Loja MvP==============
+//========by:  Hold =============
+//===============================
+ 
+prontera,147,173,6 script MVP Points#1 561,{
+ 
+// Estrutura da loja:
+// ID,preço, Id,preço, ID,preço...;
+setarray .items[0],12210﻿﻿,10,12208,5,12214,25﻿;
+ 
+set .npcname$, "[ ^cf7500Trocador de MVP﻿ Points^000000 ]";
+ 
+mes .npcname$;
+mes "Olá ^0000FF"+strcharinfo (0)+"^000000, eu posso trocar seus MVP Points por items especiais o catálogo de items é o seguinte.";
+next;
+switch (select ("- Goma de Mascar:- Manual de Combate:- Espelho Convexo")) {
+case 1: set @buying, 0; set @qt, 1; break;
+case 2: set @buying, 2; set @qt, 1; break;
+case 3: set @buying, 4; set @qt, 1; break;
+case 4: set @buying, 6; set @qt, 1; break;
+case 5: set @buying, 8; set @qt, 1; break;
+}
+set @prize, .items[@buying+1];
+mes .npcname$;
+mes "Você escolheu comprar o item ^FF0000"+getitemname (.items[@buying])+"^000000, irá lhe custar ^FF0000"+@prize+"^000000 MVP Points.";
+mes "Deseja prosseguir?";
+next;
+if (select ("- Sim, claro!:- Não, muito caro.") == 2) {
+mes .npcname$;
+mes "Está bem, volte quando quiser negociar seus MVP Points.";
+close;
+} else {
+if (mvp_points < @prize) { //Verificação da quantidade de MVP Points
+mes .npcname$;
+mes "Você não possui MVP Points suficientes.";
+close;
+}
+if (checkweight(.items[@buying],@qt) == 0) { //Verificação de peso
+mes .npcname$;
+mes "Você está muito pesado para receber o item, por favor livre-se de um pouco de seu peso.";
+close;
+}
+getitem .items[@buying],@qt;
+set mvp_points, mvp_points - @prize;
+mes .npcname$;
+mes "Aqui está seu item, muito obrigado por utilizar nosso serviço de trocas.";
+dispbottom "Você gastou "+@prize+" MVP Points, lhe restam "+mvp_points+" MVP Points.";
+close;
+}
+}

@@ -1,0 +1,72 @@
+//= ---
+//= MvP Rank Improved v1.0
+//= ---
+//= This Rank will count every MvP you kill,
+//= to be more clear, will count every mob
+//= defined inside the array ".mobid[0]",
+//= so, if you add the poring ID will count in the rank
+//= you can modify and ad miniBoss because this array
+//= only have all MvPs, that's the idea, only MvPs...
+//= ---
+-	script	Rank MvP	-1,{
+OnInit: // Script Configuration
+setarray .mobid[0],1511,1647,1785,1630,1399,1039,1874,2068,1272,1719,1046,1389,1112,1115,1957,1418,1871,1252,1768,1086,1688,1646,
+				1373,1147,1059,1150,1956,2022,1087,1190,1038,1157,1159,1502,1623,1650,1583,1708,1312,1751,1685,1648,1917,1658; // MvP Ids
+set .a, 0; // Broadcast who killed the MvP and wich MvP and wick Map [0 Off - 1 On]
+set $@top, 10; // Max. Top Rank (Hihgly recommended between 5~10, more maybe bug the server (limited variables)
+end;
+
+OnNPCKillEvent: // Script execution
+for (set .@c, 0; .@c < getarraysize(.mobid); set .@c, .@c + 1)
+	if (killedrid == .mobid[.@c])
+		set .@s, 1; // If a MvP
+if (!.@s) end;
+if (.a) // If announce On
+	announce "El usuario [" +strcharinfo(0) +"] ha matado un [" +getmonsterinfo(killedrid,0) +"] en el mapa [" +strcharinfo(3) +"]",bc_blue|bc_all;
+set MvP, MvP + 1;
+callfunc ("MvPRank",MvP,strcharinfo(0));
+end;
+} // End Script
+
+//prontera,147,171,5	script	MvP Rank	405,{ // NPC that will show the ranking
+mes "[^FF0000MvP ^0000FFRank ^00FF00Top ^FF0000" +$@top +"^000000]";
+for (set .@c, 0; .@c < $@top; set .@c, .@c + 1)
+	mes "Top ^FF0000" +(.@c + 1) +"^000000 ^0000FF" +getd("$topmvp" +.@c +"$") +"^000000 with ^FF0000" +getd("$topmvp" +.@c) +"^000000 MvP killed.";
+close;
+} // End if
+
+function	script	MvPRank	{
+set @mvptotal, getarg(0);
+set @nomb$, getarg(1);
+for (set .@c, 0; .@c < $@top; set .@c, .@c + 1) {
+	if (@mvptotal >= getd("$topmvp" +.@c)) {
+		if (strcharinfo(0) == getd("$topmvp" +.@c +"$")) {
+			setd "$topmvp" +.@c, @mvptotal;
+			setd "$topmvp" +.@c +"$", @nomb$;
+			return;
+		} else {
+			if (getd("$topmvp" +(.@c + 1) +"$") == "") {
+				setd "$topmvp" +.@c, @mvptotal;
+				setd "$topmvp" +.@c +"$", @nomb$;
+				return;
+			} else {
+				setd "$topmvp" +(.@c + 1), getd("$topmvp" +.@c);
+				setd "$topmvp" +(.@c + 1) +"$", getd("$topmvp$" +.@c);
+				setd "$topmvp" +.@c, @mvptotal;
+				setd "$topmvp" +.@c +"$", @nomb$;
+				return;
+			} // End if
+		} // End if
+	} // End if
+} // End loop
+return;
+} // End function
+
+
+
+//CREATE TABLE IF NOT EXISTS `E-MVPRank` (
+//`char_id` int(11) unsigned NOT NULL default '0',
+//`name` varchar(30) NOT NULL DEFAULT '',
+//`Count` int(11) unsigned NOT NULL default '0',
+//PRIMARY KEY  (`char_id`)
+//) ENGINE=MyISAM;

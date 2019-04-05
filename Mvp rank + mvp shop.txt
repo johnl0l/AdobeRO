@@ -1,0 +1,133 @@
+//= ---
+//= MvP Rank Improved v1.0
+//= ---
+//= This Rank will count every MvP you kill,
+//= to be more clear, will count every mob
+//= defined inside the array ".mobid[0]",
+//= so, if you add the poring ID will count in the rank
+//= you can modify and ad miniBoss because this array
+//= only have all MvPs, that's the idea, only MvPs...
+//= ---
+
+// --- Re-coded by Cookie ---
+
+// ===== Functions =====
+function    script    mvp_rank    {
+    set @mvptotal, getarg(0);
+    set @nomb$, getarg(1);
+    for (set .@c, 0; .@c < $@top; set .@c, .@c + 1)
+    {
+        if (@mvptotal >= getd("$topmvp" +.@c))
+        {
+            if (strcharinfo(0) == getd("$topmvp" +.@c +"$"))
+            {
+                setd "$topmvp" +.@c, @mvptotal;
+                setd "$topmvp" +.@c +"$", @nomb$;
+                return;
+            }
+            else
+            {
+                if (getd("$topmvp" +(.@c + 1) +"$") == "")
+                {
+                    setd "$topmvp" +.@c, @mvptotal;
+                    setd "$topmvp" +.@c +"$", @nomb$;
+                    return;
+                }
+                else
+                {
+                    setd "$topmvp" +(.@c + 1), getd("$topmvp" +.@c);
+                    setd "$topmvp" +(.@c + 1) +"$", getd("$topmvp"+.@c+"$");
+                    setd "$topmvp" +.@c, @mvptotal;
+                    setd "$topmvp" +.@c +"$", @nomb$;
+                    return;
+                }
+            }
+        }
+    }
+    return;
+}
+
+// ===== Script ======
+-    script    Rank MvP    -1,{
+    OnInit:
+        // Set npc-specific variables
+        setarray .mobid[0],1511,1647,1785,1630,1399,1039,1874,2068,1272,1719,1046,1389,1112,1115,1957,1418,1871,1252,1768,1086,1688,1646,
+        1373,1147,1059,1150,1956,2022,1087,1190,1038,1157,1159,1502,1623,1650,1583,1708,1312,1751,1685,1648,1917,1658; // MvP Ids
+        set .a, 0; // Broadcast who killed the MvP and wich MvP and wick Map [0 Off - 1 On]
+        set $@top, 5; // Max. Top Rank (Hihgly recommended between 5~10, more maybe bug the server (limited variables)
+        end;
+
+    OnNPCKillEvent: // Script execution
+        for (set .@c, 0; .@c < getarraysize(.mobid); set .@c, .@c + 1)
+        {
+            if (killedrid == .mobid[.@c])
+            {
+                set .@s, 1; // If a MvP
+            }
+        }
+        if (!.@s) // Indicates if not a MVP; if so, end script execution.
+            end;
+        if (.a) // If announcement is toggled, execute broadcast.
+            announce "The user [" +strcharinfo(0) +"] has killed a [" +getmonsterinfo(killedrid,0) +"] in the map [" +strcharinfo(3) +"]",bc_blue|bc_all;
+        set MvP, MvP + 1;
+        mvp_rank(MvP,strcharinfo(0));
+        end;
+}
+
+prontera,141,180,7    script    MvP Rank    404,{
+    
+    function    checkPerm;
+    // Check GM level;
+    if (checkPerm())
+    {
+        set .@sel, select ("Show Ranking:^FF0000Reset MVP Ranking^000000");
+        if (.@sel == 2)
+        { // Reset Ranking
+            mes .npcname$;
+            mes "Are you sure you would like to reset the MVP Ranking?";
+            next;
+            set .@confirm, select ("Confirm:Cancel");
+            if (.@confirm == 1)
+            {
+                for (set .@i, 0; .@i < $@top; set .@i, .@i + 1)
+                {
+                    setd "$topmvp" +.@i, 0;
+                    setd "$topmvp" +.@i +"$", "";
+                }
+                mes .npcname$;
+                mes "The Ranking has been reset.";
+                close;
+                end;
+            }
+            else
+            {
+                close;
+                end;
+            }
+        }
+    }
+    mes .npcname$;
+    for (set .@c, 0; .@c < $@top; set .@c, .@c + 1)
+    {
+        mes "#^FF0000" +(.@c + 1) +"^000000 [ ^0000FF" +getd("$topmvp" +.@c +"$") +"^000000 ] with ^FF0000" +getd("$topmvp" +.@c) +"^000000 MvP killed.";
+    }
+    close;
+    end;
+    
+    // =========================
+    // ===== Configuration =====
+    // =========================
+    OnInit:
+        set .npcname$, "[ MvP Rankings ]";
+        setarray .gm_perm[0],99; // Set all of the GMs that can access this
+        end;
+    
+    function    checkPerm    {
+        for (set .@i, 0; .@i < getarraysize(.gm_perm); set .@i, .@i + 1)
+        {
+            if (getgmlevel() >= .gm_perm[.@i]) // Change this to >= or == dependent on if you're specifically wanting to set individual GM levels (==) or hierarchy (>=)
+                return 1;
+        }
+        return 0;
+    }
+}

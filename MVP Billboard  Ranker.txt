@@ -1,0 +1,86 @@
+//===== eAthena Script =======================================
+//= Super Convex Mirror
+//===== By: ==================================================
+//= Brian
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= eAthena SVN
+//===== Description: =========================================
+//= Detects if every MVP is alive or dead.
+//===== Additional Comments: =================================
+//= http://www.eathena.ws/board/index.php?showtopic=242050
+//============================================================
+ 
+invek,141,144,0 script  Super Convex Mirror::convex     46,{
+        for( .@i = 0; .@i < getarraysize( .mvp_name$ ); .@i++ ) {
+                switch (.@i) {
+                        case 9:
+                                .@alive = mobcount( "lhz_dun03", "summon_boss_lt::OnMyMvPDead" );
+                        break;
+                        case 26:
+                                .@alive = ( $ktullanux_summon < 4 || mobcount( "ice_dun03","ice_boss#on::OnMyMobDead" ) );
+                        break;
+                        case 28:
+                                .@alive = mobcount( "niflheim", "NifInvasion::OnLoDDead" );
+                        break;
+                        case 42:
+                                .@alive = ( $@thana_summon < 6 || mobcount( "thana_boss", "#Death::OnThanaDead" ) );
+                        break;
+                        default:
+                                .@alive = mobcount( .mvp_map$[.@i], "convex::OnMyMvPDead" );
+                        break;
+                }
+               
+                if ( .display_type == 2 )
+                        .@menu$ = .@menu$ + ( ( .@alive ) ? "^008000" : "^FF0000" ) + .mvp_name$[.@i] + "^000000 (" + .mvp_map$[.@i] + "):";
+                else if ( .display_type == 1 )
+                        mes ( ( .@alive ) ? "^008000" : "^FF0000" ) + .mvp_name$[.@i] + "^000000 (" + .mvp_map$[.@i] + ")";
+        }
+       
+        if ( .display_type == 1 ) close;
+       
+        .@num = select( .@menu$ ) - 1;
+       
+        if (.warp_to_mvp == 1)
+                warp .mvp_map$[.@num],0,0;
+        else if(.warp_to_mvp == 2) {
+                sleep2 1000;
+                sc_start SC_BOSSMAPINFO,600000,0;
+        }
+        end;
+ 
+        OnInit:
+                 // 0 = disabled, 1 = enabled, 2 = enabled + SC_BOSSMAPINFO
+                .warp_to_mvp = 0;
+               
+                setarray .mvp_map$,
+                        "moc_pryd06","ra_fild02","ra_fild03","ra_fild04","ve_fild01",
+                        "ve_fild02","lou_dun03","prt_maze03","abbey03","lhz_dun03",
+                        "gl_chyard","abyss_03","gef_dun02","gef_dun01","treasure02",
+                        "pay_fild11","gon_dun03","abbey02","xmas_fild01","ra_san05",
+                        "prt_sewb4","mosk_dun03","man_fild03","thor_v03","ama_dun03",
+                        "kh_dun02","ice_dun03","ayo_dun02","niflheim","anthell02",
+                        "mjolnir_04","pay_dun04","gef_fild02","gef_fild14","gef_fild10",
+                        "moc_pryd04","in_sphinx5","moc_fild17","ein_dun02","xmas_dun02",
+                        "beach_dun","spl_fild03","thana_boss","tur_dun04","odin_tem03",
+                        "jupe_core","lhz_dun02";
+ 
+                setarray .mvp_name$,
+                        "AmonRa","Atroce","Atroce","Atroce","Atroce",
+                        "Atroce","Bacsojin","Baphomet","Beelzebub","Bio3",
+                        "DarkLord","Detale","Doppelganger","Dracula","Drake",
+                        "Eddga","EvilSnakeLord","FallenBishop","Garm","GloomUnderNight",
+                        "GoldenThiefBug","Gopinich","HardrockMammoth","Ifrit","IncantationSamurai",
+                        "KielD01","Ktullanux","LadyTanee","LordofDeath","Maya",
+                        "Mistress","MoonlightFlower","OrcHero","OrcHero","OrcLord",
+                        "Osiris","Pharaoh","Phreeoni","RSX0806","StormyKnight",
+                        "TaoGunka","TendrilLion","Thanatos","TurtleGeneral","ValkyrieRandgris",
+                        "Vesper","Ygnizem";
+               
+                .display_type = 1;
+               
+                if( .warp_to_mvp > 0 )
+                        .display_type = 2;
+        end;
+}

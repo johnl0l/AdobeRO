@@ -1,0 +1,45 @@
+sec_in02,166,153,2	script	MVP Points	505,{
+	if (#MVPPoint < 1){
+		mes "You don't have any MVP Points.";
+		close;
+	}
+	mes "You have "+#MVPPoint+" MVP Points.";
+	mes "Would you like to purchase items?";
+	switch(select("No thanks:Yes please")){
+	case 1:
+		close;
+	case 2:
+		switch(select("Cancel:1 Bloody Branch (20 pts):Old Card Album (10 pts):50k Zeny (1 pt)")){
+		case 1:
+			close;
+		case 2:
+			if (#MVPPoint >= 20) {
+				#MVPPoint = #MVPPoint - 20;
+				getitem 12103,1;  //Bloody Branch
+				end;
+			}
+			else { mes "You don't have enough points"; close; }
+		case 3:
+			if (#MVPPoint >= 10) {
+				#MVPPoint = #MVPPoint - 10;
+				getitem 616,1;  //OLD CARD ALB
+				end;
+			}
+			else { mes "You don't have enough points"; close; }
+		case 4:
+			if (#MVPPoint >= 1) {
+				#MVPPoint = #MVPPoint - 1;
+				Zeny = Zeny + 50000;
+				end;
+			}
+			else { mes "You don't have enough points"; close; }
+		}
+	}
+}
+-	script	MonsterKill	-1,{
+OnNPCKillEvent:
+	if( getmonsterinfo(killedrid, MOB_MVPEXP) ){
+	set #MVPPoint,#MVPPoint+1;
+	dispbottom "Gained 1 MVP Points. Total : "+ #MVPPoint +" MVP Points.";
+	}
+}
