@@ -1,0 +1,192 @@
+guild_vs2-1,50,50,5	script	Stage Game	437,{
+
+// Monster ID / Amount Initiating ( Check db/Mob_db.txt || db/Mob_db2.txt )
+setarray .Stage[0],
+			1272,2,			// Stage 1 + Amount
+			1719,2,			// Stage 2 + Amount
+			1373,2,			// Stage 3 + Amount
+			1785,3,			// Stage 4 + Amount
+			1768,2,			// etc......
+			1734,2,			// 
+			1917,1;			// Final Stage ( Max. ~64 Rounds )
+
+// Reward ID / Amount Initiating ( Check db/Item_db.txt || db/Item_db2.txt )						
+setarray .Reward[0],
+			607,20,				// Reward 1 + Amount
+			608,10,				// Reward 2 + Amount
+			12109,1,			// Reward 3 + Amount
+			7227,3,				// etc......
+			7539,4;				// Last Reward 1 ( Max. ~64 Items )
+		
+// MapFlags Initiating ( Check db/Cont.txt )		
+setarray .MapFlags[0],0,1,2,3,4,5,11,13,14,15,22,29,30,31,32,33,34,35,38,41,43,44,47,49;
+
+for( set .@mf,0; .@mf < getarraysize( .MapFlags ); set .@mf,.@mf + 1 ){
+	setmapflag strcharinfo(3),.MapFlags[.@mf];
+	}
+	
+if( getmapmobs( strcharinfo(3) ) > 0 || .Level > 0){
+dispbottom "Just Kill All the Monster to Win the Game...";
+end;
+}
+set .Level,0;
+announce "[Level "+( (.Level/2)+1 )+"] : [ "+.Stage[.Level+1]+" x "+getmonsterinfo( .Stage[.Level],0)+" ]",bc_all,0x37FDFC;
+monster strcharinfo(3),0,0,"[Slave] "+getmonsterinfo( .Stage[.Level],0)+"",.Stage[.Level],.Stage[.Level+1],strnpcinfo(0)+"::OnMobKill";
+delwaitingroom;
+waitingroom "Left ["+mobcount( strcharinfo(3),strnpcinfo(0)+"::OnMobKill" )+"] Monster",0;
+end;
+
+OnMobKill:
+delwaitingroom;
+if( mobcount( strcharinfo(3),strnpcinfo(0)+"::OnMobKill" ) == 0 && .Level < ( getarraysize( .Stage ) - 5 ) ){
+	set .Level,.Level + 2;
+	waitingroom "["+((( getarraysize( .Stage )/2 ) - .Level/2) - 1)+"] Rounds to Go.",0;
+	for( set .@t,5; .@t > 0; set .@t,.@t - 1 ){
+		announce "[Level "+( (.Level/2)+1 )+"] in "+.@t+" Seconds",bc_map,0x4EEE94,0,35;
+		sleep2 1000;
+		}
+announce "[Level "+( (.Level/2)+1 )+"] : [ "+.Stage[.Level+1]+" x "+getmonsterinfo( .Stage[.Level],0)+" ]",bc_all,0x37FDFC;
+monster strcharinfo(3),0,0,"[Slave] "+getmonsterinfo( .Stage[.Level],0)+"",.Stage[.Level],.Stage[.Level+1],strnpcinfo(0)+"::OnMobKill";
+}else if( mobcount( strcharinfo(3),strnpcinfo(0)+"::OnMobKill" ) == 0 && .Level >= ( getarraysize( .Stage ) - 5 ) ){
+	set .Level,.Level + 2;
+	announce "BOSS Stage",bc_map,0xFF0000,0,90;
+	specialeffect 563;
+	sleep2 2000;
+	for( set .@t,5; .@t > 0; set .@t,.@t - 1 ){
+		specialeffect 563;
+		announce "BOSS STAGE in "+.@t+" Seconds",bc_map,0xFF0000,0,60;
+		sleep2 1000;
+		}
+announce "[Level "+( (.Level/2)+1 )+"] : [ "+.Stage[.Level+1]+" x "+getmonsterinfo( .Stage[.Level],0)+" ]",bc_all,0x37FDFC;
+monster strcharinfo(3),0,0,"[BOSS] "+getmonsterinfo( .Stage[.Level],0)+"",.Stage[.Level],.Stage[.Level+1],strnpcinfo(0)+"::OnBossKill";
+}
+delwaitingroom;
+waitingroom "Left ["+mobcount( strcharinfo(3),strnpcinfo(0)+"::On"+( ( .Level-2 ) > ( getarraysize( .Stage ) - 5 ) ? "BossKill":"MobKill") )+"] Monster",0;
+end;
+
+OnBossKill:
+delwaitingroom;
+if( mobcount( strcharinfo(3),strnpcinfo(0)+"::OnBossKill" ) > 0 ){
+waitingroom "Left ["+mobcount( strcharinfo(3),strnpcinfo(0)+"::OnBossKill")+"] Monster",0;
+end;
+}else{
+delwaitingroom;
+waitingroom "REWARD TIME",0;
+specialeffect 709;
+announce "Congratulation to Team [ "+getpartyname( getcharid(1) )+" ] who had just finished the Stage Game. ",0;
+getpartymember getcharid(1),1;
+getpartymember getcharid(1),2;
+set @Location$,strcharinfo(3);
+for ( set .@i, 0; .@i < $@partymembercount; set .@i, .@i +1 ){
+	if ( isloggedin($@partymemberaid[.@i]) ){
+		attachrid $@partymemberaid[.@i];
+			if( strcharinfo(3) == @Location$ ){
+			unittalk getcharid(3),"Yeehaaa !! We Beat ALL the Monster  !!!";
+			unitemote getcharid(3),e_heh;
+				specialeffect2 709;
+					for( set .@a,0; .@a < getarraysize( .Reward ); set .@a,.@a + 2 ){
+						getitem .Reward[.@a],.Reward[.@a+1], $@partymemberaid[.@i];
+						}
+				dispbottom "Gained those items as Reward for Finishing Stage Game";
+			}
+		}
+	}
+sleep2 5000;
+mapwarp strcharinfo(3),"prontera",155,180;
+set .Level,0;
+delwaitingroom;
+}
+OnInit:
+waitingroom "    Click Me",0;
+end;
+
+}
+
+
+prontera,182,169,5	script	Stage Game#Register	794,{
+
+while(1){
+mes "Hello, i am ^FF0000Stage Game Manager^000000. How can i help you ?";
+mes "^0000FFRegistration Status^000000 : "+( getmapusers(.Map$) > 0 ?"^FF0000OFF":"^00FF00ON")+"^000000";
+mes "(^FF0000Only Leader can Register^000000)";
+mes "";
+mes "It is In ^FF0000BETA Test^000000.";
+next;
+switch(select("^00FF00Stage Game Information^000000",
+			( getmapusers(.Map$) > 0 || getcharid(0) != getpartyleader( getcharid(1),2 ) )?"":"^0000FFRegister for Stage Game^000000",
+			( getmapusers(.Map$) < 1 || getgmlevel() < 60 )?"":"^FF0000Reset Stage Game^000000")) {
+			
+	Case 1:
+		mes "^FF0000Stage Game^000000 is a small game that have alot of monster to be kill from round to round.";
+		mes "With every increase or round you manage to reach, the monster could be stronger than before.";
+		next;
+		mes "You could win up some ^0000FFUnique^000000 prize upon you finished the whole ^FF0000Stage Game^000000";
+		next;
+		mes "In order to ^0000FFRegister^000000 for ^FF0000Stage Game^000000, all your party member must meet the ^0000FFRequirements^000000";
+		next;
+		mes "[  ^00FF00Requirements^000000  ]";
+		mes "^0000FFBase Level^000000 : "+.Level+" Level";
+		mes "^0000FFZeny^000000 : "+.Zeny+" Zeny ";
+		mes "^0000FFParty Members^000000 : "+.PartyMember+" Members";
+		mes "(^FF0000Level / Zeny only Applied on Leader ^000000 )";
+		next;
+		break;
+	Case 2:
+	//	if( getgmlevel() < 80 ){
+	//	mes "Stage Game is under Debugging Development. Simple Game but Hard ";
+	//	close;
+	//	}
+		getpartymember getcharid(1),1;
+		getpartymember getcharid(1),2;
+		set @Count,0;
+		for ( set .@i, 0; .@i < $@partymembercount; set .@i, .@i +1 ){
+			if ( isloggedin($@partymemberaid[.@i]) ){
+				set @Count,@Count+1;
+				}
+			}
+		if( @Count < .PartyMember || BaseLevel < .Level || Zeny < .Zeny ){
+		mes "[  ^00FF00Requirements^000000  ]";
+		mes "^0000FFBase Level^000000 : "+.Level+" Level";
+		mes "^0000FFZeny^000000 : "+.Zeny+" Zeny ";
+		mes "^0000FFParty Members^000000 : "+.PartyMember+" Members";
+		mes "(^FF0000Level / Zeny only Applied on Leader ^000000 )";
+		close;
+		}else{
+		set Zeny, Zeny - .Zeny;
+		mes "Your party will now be warped into the Destination to start the Game.";
+		dispbottom "Click on the NPC inside to start the game.";
+		delwaitingroom "Stage Game";
+		close2;
+		announce "Team [ "+getpartyname( getcharid(1) )+"] has joined STAGE GAME.",0;
+		warpparty .Map$,0,0,getcharid(1);
+		killmonster .Map$,"All";
+		set getvariableofnpc(.Level,"Stage Game"),0;
+		end;
+		}
+	Case 3:
+		mes "The Game has been Reset.";
+		killmonster .Map$,"All";
+		mapwarp .Map$,"prontera",155,180;
+		announce "A GM has RESET the Stage Game, Sorry for the Incovenience.",0;
+		set getvariableofnpc(.Level,"Stage Game"),0;
+		delwaitingroom "Stage Game";
+		next;
+		break;
+	}
+}
+close;
+
+OnInit:
+OnWhisperGlobal:
+set .Level,99;
+set .Zeny,200000;
+set .PartyMember,12;
+set .Map$,"guild_vs2-1";
+
+while( 1 ){
+delwaitingroom;
+waitingroom ( getmapusers(.Map$) > 0 ? "  NOT":"   " )+" Available",0;
+sleep 1000;
+}
+end;
+}

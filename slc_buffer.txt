@@ -1,0 +1,99 @@
+prontera,150,150,5	script	Buffer	100,{
+	if( @h_last > gettimetick(2) || !slc_bufs ) goto Set_Buffs;
+	set @h_last, gettimetick(2)+5;
+	
+	.@total = callsub(Sub_PriceCheck);
+	
+	if( .@total > Zeny ) {
+		message strcharinfo(0), "You don't have enough zeny to buff double click the buffer to modify your selection.";
+		end;
+	}
+	
+	for( .@a = 0; .@a < .len; .@a++ )
+		if( ( slc_bufs & pow( 2, .@a ) ) ) {
+			skilleffect .skil_num[.@a], .levels[.@a];
+			sc_start .sc_effect[.@a], .ticks[.@a], .levels[.@a];
+			message strcharinfo(0),"Buff "+.skil_txt$[.@a]+" Added!";
+		}
+	Zeny = Zeny - .@total;
+	end;
+	
+Sub_PriceCheck:
+	for( .@a = 0; .@a < .len; .@a++ )
+		if( ( slc_bufs & pow( 2, .@a ) ) )
+			.@total = .@total + .price[.@a];
+	return .@total;
+	
+Set_Buffs:
+	.@slc_bufs = slc_bufs;
+	.@total = callsub(Sub_PriceCheck);
+
+	function sf {
+		function s;
+		.@a = getarg(2);
+		.@len = getarg(3);
+		return (
+			sprintf( getarg(0),
+				s(.@a, .@len, getarg(1), getarg(4), getarg(5)), s(.@a++, .@len, getarg(1), getarg(4), getarg(5)),
+				s(.@a++, .@len, getarg(1), getarg(4), getarg(5)), s(.@a++, .@len, getarg(1), getarg(4), getarg(5)),
+				s(.@a++, .@len, getarg(1), getarg(4), getarg(5)), s(.@a++, .@len, getarg(1), getarg(4), getarg(5)), 
+				s(.@a++, .@len, getarg(1), getarg(4), getarg(5)), s(.@a++, .@len, getarg(1), getarg(4), getarg(5)), 
+				s(.@a++, .@len, getarg(1), getarg(4), getarg(5)), s(.@a++, .@len, getarg(1), getarg(4), getarg(5))
+			)
+			+(( .@a+1 < .@len )?":Next":":")
+			+(( .@a-11 > 0 )?":Back":":")
+			+":Done:Cancel"
+		);
+		function s {
+			if( getarg(0) >= getarg(1) ) return "";
+			else {
+				.@name$ = getelementofarray( getarg(2), getarg(0) );
+				return .@name$==""?"":"Buff [ ^0054ff"+.@name$+"^000000 ] Lv"+getelementofarray( getarg(4), getarg(0) )+" [ "+(getarg(3)&pow(2,getarg(0))?"^35a100On":"^FF0000Off")+"^000000 ]";
+			}
+		};
+	};
+	function nex { return((getarg(0)+10)<getarg(1)?getarg(0)+10:getarg(1)-(getarg(1)%10)); };
+	function bac { return((getarg(0)-10)>=0?getarg(0)-10:0); };
+	
+	mes .npc_nm$;
+	mes "Select your buffs!";
+	next;
+	.@a = 0;
+	while( 1 ) {
+		select( sf( .format$, .skil_txt$, .@a, .len, .@slc_bufs, .levels ) );
+		switch( @menu ) {
+			case 11: .@a = nex( .@a, .len ); break;
+			case 12: .@a = bac( .@a ); break;
+			case 13: 
+				mes .npc_nm$;
+				mes "Alright, your current total will be "+.@total+"z each time you use my buffing service. Is that ok?";
+				next;
+				if( select("Yes:No") == 1 )
+					slc_bufs = .@slc_bufs;
+			case 14: end;
+			
+			default:
+				.@select = .@a+@menu-1;
+				if( ( .@slc_bufs & pow( 2, .@select ) ) ) {
+					.@slc_bufs = .@slc_bufs - pow( 2, .@select );
+					.@total = .@total - .price[.@select];
+				} else {
+					.@slc_bufs = .@slc_bufs + pow( 2, .@select );
+					.@total = .@total + .price[.@select];
+				}
+		}
+	}
+	end;
+	
+OnInit:
+	.npc_nm$ = "[ "+strnpcinfo(1)+" ]";
+	setarray .sc_effect, SC_INCREASEAGI, SC_BLESSING, SC_ASSUMPTIO, SC_IMPOSITIO, SC_ANGELUS, SC_MAGNIFICAT, SC_GLORIA;
+	setarray .skil_txt$, "Increase Agi", "Blessing",  "Assumptio",  "Impositio",  "Angelus",  "Magnificat",  "Gloria";
+	setarray .ticks,     300000,         300000,      300000,       300000,       300000,     300000,        300000;
+	setarray .price,     1000,           1000,        5000,         5000,         5000,       10000,         10000;
+	setarray .skil_num,  29,             34,          361,          66,           33,         74,            75;
+	setarray .levels,    10,             10,          5,            5,            10,         5,             5;
+	.format$ = "%s:%s:%s:%s:%s:%s:%s:%s:%s:%s";
+	.len = getarraysize(.sc_effect);
+	end;
+}

@@ -1,0 +1,185 @@
+prontera,149,194,5	script	3rd Jobs Reward	100,{
+
+// ================= Configuration ==============================
+set .@n$,"^0000FF[ 3rd Jobs Reward ]^000000";
+// ============== Configuration end =============================
+if(gotitem==1) {
+mes .@n$;
+mes "You already have got your Headgear!";
+close;
+}
+mes .@n$;
+mes "Hello "+strcharinfo(0)+",I'm";
+mes "here to give Players,who";
+mes "already turned into a 3rd";
+mes "Jobclass a little reward";
+mes "Headgear.Here is the list";
+mes ",which Headgear is given out";
+mes "to which class.";
+next;
+mes .@n$;
+mes "Rune Knight - Rune Circlet";
+mes "Arch Bishop - Mitra";
+mes "Ranger - Sniper Googles";
+mes "Mechanic - Driver Band";
+mes "Shadow Chaser - Shadow Crown";
+mes "Minstrel - Minstre Sond Hat";
+mes "Genetic - Midas Whispers";
+mes "Warlock - Magic Stone Hat";
+mes "Sura - Burning Spirit";
+mes "Guilottine Cross - Silent Enforcer";
+mes "Sorcerer - Wispers of Wind";
+mes "Royal Guard - Reissue Schmitz Helm";
+mes "Wanderer - Resting Swan";
+next;
+mes .@n$;
+mes "Which one do you want to have?";
+mes "Remember that you have to be";
+mes "the required 3rd Jobclass!";
+next;
+switch(select("Rune Circlet:Mitra:Sniper Googles:Driver Band:Shadow Crown:Minstre Sond Hat:Midas Whispers:Magic Stone Hat:Burning Spirit:Silent Enforcer:Wispers of Wind:Reissue Schmitz Helm:Resting Swan")) {
+case 1:
+	if( Class == 4054 || Class == 4060 ) {
+	mes .@n$;
+	mes "You're a Rune Knight";
+	getitem 5746,1;
+	set gotitem,1;
+	close;
+	}
+	mes .@n$;
+	mes "You're not a Rune Knight!";
+	close;
+case 2:
+	if( Class == 4057 || Class == 4063 ) {
+	mes .@n$;
+	mes "You're an Arch Bishop!";
+	getitem 5747,1;
+	set gotitem,1;
+	close;
+	}
+	mes .@n$;
+	mes "You're not an Arch Bishop!";
+	close;
+case 3:
+	if( Class == 4056 || Class == 4062 ) {
+	mes .@n$;
+	mes "You're a Ranger!";
+	getitem 5748,1;
+	set gotitem,1;
+	close;
+	}
+	mes .@n$;
+	mes "You're not a Ranger!";
+	close;
+case 4:
+	if( Class == 4058 || Class == 4064 ) {
+	mes .@n$;
+	mes "You're a Mechanic!";
+	getitem 5749,1;
+	set gotitem,1;
+	close;
+	}
+	mes .@n$;
+	mes "You're not a Mechanic!";
+	close;
+case 5:
+	if( Class == 4072 || Class == 4079 ) {
+	mes .@n$;
+	mes "You're a Shadow Chaser!";
+	getitem 5750,1;
+	set gotitem,1;
+	close;
+	}
+	mes .@n$;
+	mes "You're not a Shadow Chaser!";
+	close;
+case 6:
+	if( Class == 4068 || Class == 4075 ) {
+	mes .@n$;
+	mes "You're a Minstrel!";
+	getitem 5751,1;
+	set gotitem,1;
+	close;
+	}
+	mes .@n$;
+	mes "You're not a Minstrel!";
+	close;
+case 7:
+	if( Class == 4071 || Class == 4078 ) {
+	mes .@n$;
+	mes "You're a Genetic!";
+	getitem 5752,1;
+	set gotitem,1;
+	close;
+	}
+	mes .@n$;
+	mes "You're not a Genetic!";
+	close;
+case 8:
+	if( Class == 4055 || Class == 4061 ) {
+	mes .@n$;
+	mes "You're a Warlock!";
+	getitem 5753,1;
+	set gotitem,1;
+	close;
+	}
+	mes .@n$;
+	mes "You're not a Warlock!";
+	close;
+case 9:
+	if( Class == 4070 || Class == 4077 ) {
+	mes .@n$;
+	mes "You're a Sura!";
+	getitem 5754,1;
+	set gotitem,1;
+	close;
+	}
+	mes .@n$;
+	mes "You're not a Sura!";
+	close;
+case 10:
+	if( Class == 4059 || Class == 4065 ) {
+	mes .@n$;
+	mes "You're a Guillotine Cross!";
+	getitem 5755,1;
+	set gotitem,1;
+	close;
+	}
+	mes .@n$;
+	mes "You're not a Guillotine Cross!";
+	close;
+case 11:
+	if( Class == 4067 || Class == 4074 ) {
+	mes .@n$;
+	mes "You're a Sorcerer!";
+	getitem 5756,1;
+	set gotitem,1;
+	close;
+	}
+	mes .@n$;
+	mes "You're not a Sorcerer!";
+	close;
+case 12:
+	if( Class == 4066 || Class == 4073 ) {
+	mes .@n$;
+	mes "You're a Royal Guard!";
+	getitem 5757,1;
+	set gotitem,1;
+	close;
+	}
+	mes .@n$;
+	mes "You're not a Royal Guard!";
+	close;
+case 13:
+	if( Class == 4069 || Class == 4076 ) {
+	mes .@n$;
+	mes "You're a Wanderer!";
+	getitem 5758,1;
+	set gotitem,1;
+	close;
+	}
+	mes .@n$;
+	mes "You're not a Wanderer!";
+	close;
+	}
+}

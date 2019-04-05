@@ -1,0 +1,33 @@
+-	script	SLBuff	-1,{
+	
+	set .@slPrice,0;	// Zeny required for heal
+	set .@slBuffs,0;	// Also buff players? (1: yes / 0: no)
+	set .@slDelay,0;	// Heal delay, in seconds
+
+	callfunc "F_ClearGarbage",0;
+	if (@slHD > gettimetick(2)) end;
+	if (.@slPrice) {
+		message strcharinfo(0),"Healing costs "+.@slPrice+" Zeny.";
+		if (Zeny < .@slPrice) end;
+		if(select("^0055FFHeal^000000:^777777Cancel^000000")==2) close;
+		set Zeny, Zeny-.@Price;
+	}
+		specialeffect2 313; percentheal 100,100;
+		specialeffect2 313; sc_start SC_KAIZEL,14440000,7;
+		//specialeffect2 42; sc_start SC_KAAHI,4440000,7;
+		//specialeffect2 42; sc_start SC_KAITE,4440000,7;
+		//specialeffect2 42; sc_start SC_KAINA,4440000,7;
+		//specialeffect2 42; sc_start SC_STIN,4440000,7;
+		//specialeffect2 42; sc_start SC_STUN,4440000,7;
+		//specialeffect2 42; sc_start SC_SMA,4440000,7;
+		specialeffect2 313; sc_start SC_KAUPE,14440000,3;
+		end;
+	if (.@slBuffs) {
+		specialeffect2 37; sc_start SC_INCREASEAGI,240000,10;
+		specialeffect2 42; sc_start SC_BLESSING,240000,10;
+	}
+	if (.@slDelay) set @HD, gettimetick(2)+.@Delay;
+	close;
+}
+
+prontera,152,197,5	duplicate(SLBuff)	Soul Link#pront	800

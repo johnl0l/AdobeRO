@@ -1,0 +1,8 @@
+prontera,155,181,5       script     SLBuff      2035,{
+if ( Class == 4065 || Class == 12 || Class == 4013 ) end;
+sc_start SC_SPIRIT,9000000,5;
+dispbottom "YOu has been Soul Linked.";
+specialeffect 424;
+specialeffect2 503;
+end;
+}

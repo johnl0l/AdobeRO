@@ -1,0 +1,40 @@
+MAP,X,Y,0	script	Soul Menhir	SPRITE,{
+
+	end;
+
+OnRefill:
+	getmapxy(.@map$, .@x, .@y, UNITTYPE_PC);
+
+	if (.@map$ != .map$ || distance(.x, .y, .@x, .@y) > .refill_distance || !(issit())) {
+		end;
+	}
+
+	heal(0, .refill_rate);
+	end;
+
+
+OnTimer500:
+	.@count = getunits(BL_PC, .@units[0], false, .map$, (.x - .refill_distance),
+		(.y - .refill_distance), (.x + .refill_distance), (.y + .refill_distance));
+
+	for (.@i = 0; .@i < .@count; ++.@i)
+	{
+		if (!(issit(strcharinfo(PC_NAME, "", .@units[.@i])))) {
+			continue;
+		}
+
+		addtimer(rand(.refill_timer), .name$ + "::OnRefill", .@units[.@i]);
+	}
+
+	initnpctimer();
+	end;
+
+OnInit:
+	.refill_rate = 1; // number of SP to give every refill
+	.refill_distance = 7; // max distance
+	.refill_timer = 200; // wait rand(X) ms before refill
+
+	.name$ = strnpcinfo(NPC_NAME);
+	getmapxy(.map$, .x, .y, UNITTYPE_NPC);
+	initnpctimer();
+}

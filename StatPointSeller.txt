@@ -1,0 +1,46 @@
+//===== rAthena Script =======================================
+//= Stat Point Seller
+//===== By: ==================================================
+//= Bahmut
+//===== Current Version: =====================================
+//= 1.0
+//===== Description: =========================================
+//= Sells Stat Points to Players
+//=  - 1 Stat Point for 300.000 zeny
+//=  - 10 Stat Points for 3.000.000 zeny
+//============================================================
+
+prontera,146,174,4	script	Stat Point Seller	727,{
+	mes "[Stat Point Seller]";
+	mes "How many Stat Points do you want to buy?";
+	switch(select("1 Stat Point for 300.000 zeny","10 Stat Points for 3.000.000 zeny")) {
+		case 1:
+			mes "[Stat Point Seller]";
+			mes "This will cost you 300.000 zeny. Is this ok?";
+			next;
+			if (select("Yes:No") == 2) close;
+			mes "[Stat Point Seller]";
+			if (Zeny < 300000) {
+				mes "You do not have enough zeny!";
+                close;
+			}
+			set StatusPoint,StatusPoint + 1;
+			set Zeny,Zeny - 300000;
+			mes "Thank you for your purchase.";
+			close;
+		
+		case 2:
+			mes "[Stat Point Seller]";
+			mes "This will cost you 3.000.000 zeny. Is this ok?";
+			next;
+			if (select("Yes:No") == 2) close;
+			mes "[Stat Point Seller]";
+			if (Zeny < 3000000) {
+				mes "You do not have enough zeny!";
+                close;			}
+			set StatusPoint,StatusPoint + 10;
+			set Zeny,Zeny - 3000000;
+			mes "Thank you for your purchase.";
+			close;
+	}
+}

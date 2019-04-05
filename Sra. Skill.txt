@@ -1,0 +1,73 @@
+sec_in02,153,153,2	script	Sra. Skill	430,{
+
+set @skprice, 1000000;
+set @sksellprice, 500000;
+mes "[^CC0000Skill Point Merchant^000000]";
+mes "Hello "+strcharinfo(0)+"!";
+mes "Each point will cost [^ff0000" +@skprice+ "z^000000] zeny.";
+mes "and I can buy it for [^ff0000" +@sksellprice+ "z^000000] zeny.";
+mes  "What do you want to do?";
+next;
+menu "Buy skill points!",L_skill,"Sell skill points!",L_sellskill,"No, thanks.",L_decline;
+L_decline:
+mes "[^CC0000Skill Point Merchant^000000]";
+mes "Please come back soon.";
+close;
+
+L_skill:
+if(Zeny<@skprice){
+emotion 17;
+mes "[^CC0000Skill Point Merchant^000000]";
+mes "Sorry. You don't have enough money";
+close;
+}
+else {
+mes "[^CC0000Skill Point Merchant^000000]";
+mes "How many skill points do you want to buy?";
+input @skpoints;
+next;
+if(Zeny<@skpoints*@skprice){
+mes "[^CC0000Skill Point Merchant^000000]";
+mes"I'm sorry you don't have enough money for that...";
+close;}
+else{
+set Zeny, Zeny-(@skpoints*@skprice);
+set skillpoint, skillpoint+ @skpoints;
+mes "[^CC0000Skill Point Merchant^000000]";
+mes "There you go! Have a nice day.";
+emotion 15;
+close;
+end;
+}}
+
+L_sellskill:
+if(skillpoint<1){
+emotion 17;
+mes "[^CC0000Skill Point Merchant^000000]";
+mes "Sorry. You don't have any skillpoint.";
+close;
+}
+else {
+mes "[^CC0000Skill Point Merchant^000000]";
+mes "How many skill points do you want to sell?";
+input @skpoints;
+next;
+if(@skpoints>skillpoint){
+mes "[^CC0000Skill Point Merchant^000000]";
+mes"I'm sorry you don't have enough skillpoints for that...";
+close;}
+if(@skpoints<1){
+mes "[^CC0000Skill Point Merchant^000000]";
+mes"Huh?!";
+close;}
+else{
+set Zeny, Zeny+(@skpoints*@sksellprice);
+set skillpoint, skillpoint- @skpoints;
+mes "[^CC0000Skill Point Merchant^000000]";
+mes "There you go! Have a nice day.";
+emotion 15;
+close;
+end;
+}
+}
+}
