@@ -1,0 +1,24 @@
+//===== Hercules Script ======================================
+//= Healing Salve
+//===== By: ==================================================
+//= Shiro
+//===== Current Version: =====================================
+//= 10
+//===== Compatible With: =====================================
+//= Hercules Project
+//===== Description: =========================================
+//= Healing Salve Function Script.
+//============================================================
+function	script	HealingSalve	{
+while(.healcount < 20){
+percentheal 5, 5;
+specialeffect2 320;
+sleep2(500);
+set (.healcount,.healcount+1);
+}
+set (.healcount,0);
+end;
+}
+
+//Item Script for the custom item
+//callfunc("HealingSalve");
