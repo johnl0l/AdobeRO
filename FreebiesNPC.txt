@@ -1,0 +1,50 @@
+//================= Freebies NPC ================//
+// by : pajodex
+prontera,160,190,4	script	Freebies NPC	100,{
+
+If(GetFree) { 
+		npctalk "Sorry yo! No more freebies available for yo!";
+		end;
+		 }
+	else {
+	mes "[ ^FF0000System^000000 ]";
+	mes "Welcome ^FF0000"+strcharinfo(0)+"^000000 !";
+	next;
+	mes "[ ^FF0000System^000000 ]";
+	mes "Let me help you start your adventure!";
+	next;
+	mes "[ ^FF0000System^000000 ]";
+	mes "Here you go!";
+	if(.char_bound) {
+	for(.@i = 0; .@i<getarraysize(.char_reward); .@i++)
+		getitem .char_reward[.@i],.char_reward_amt[.@i];
+		}
+	GetFree = 1;
+	if(#freebies == 0 && .account_bound == 1) {
+	next;
+	mes "[ ^FF0000System^000000 ]";
+	mes "It seems to be your first, here!";
+	mes "~ Special Freebies from the [ ^FF0000GM Team^000000 ]";
+	for(.@i = 0; .@i<getarraysize(.acc_reward); .@i++)
+		getitem .acc_reward[.@i],.acc_reward_amt[.@i];
+	#freebies = 1;
+	}
+	next;
+	mes "[ ^FF0000System^000000 ]";
+	mes "Goodluck! Enjoy your Adventure ~";
+	close;
+	}
+	
+OnInit:
+	// settings
+	.char_bound = 1; // enable character bound rewards (1 = on || 0 = off)
+	.account_bound = 1; // enable account bound rewards (1 = on || 0 = off)
+	// set item (char bound)
+	setarray .char_reward, 501, 502, 503; // item
+	setarray .char_reward_amt, 1, 2, 4; // amount
+	// set item (acc bound)
+	setarray .acc_reward, 501, 502, 503; // item
+	setarray .acc_reward_amt, 1, 2, 4; // amount
+	end;
+	
+}

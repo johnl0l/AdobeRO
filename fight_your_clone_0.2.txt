@@ -1,0 +1,62 @@
+prontera,150,180,0	script	fight your clone	123,{
+	mes "want to fight your clones ";
+	next;
+	select "yeah";
+	if ( !getcharid(1) ) {
+		mes "you must form a party of yourself";
+		close;
+	}
+	getpartymember getcharid(1), 2;
+	if ( $@partymembercount > 1 ) {
+		mes "your party must only have 1 person and that's must be you";
+		close;
+	}
+	if ( getstrlen( instance_mapname("guild_vs2") ) ) {
+		if ( instance_mapname("guild_vs2") != "guild_vs2" ) {
+			instance_destroy;
+			end;
+		}
+		else {
+			mes "your party is running another instance";
+			close;
+		}
+	}
+	if ( instance_create( "Fight Your Clone" ) < 0 ) {
+		mes "failed to create instance";
+		close;
+	}
+	instance_enter "Fight Your Clone";
+	end;
+OnPCDieEvent:
+	if ( getstrlen( instance_mapname("guild_vs2") ) && strcharinfo(3) == instance_mapname("guild_vs2") ) {
+		announce strcharinfo(0) +" die at killing "+ 'evil_clone_killed +" clones", bc_map;
+		.@inst = instance_id();
+		sleep 5000;
+		instance_destroy .@inst;
+	}
+	end;
+}
+
+guild_vs2,0,0,0	script	FYC_instance_npc	-1,{
+Onaa:
+	'evil_clone_killed++;
+	getpartymember instance_partyid(), 1;
+	clone instance_mapname("guild_vs2"), 0,0, instance_npcname( "FYC_instance_npc" )+"::Onaa", $@partymembercid, 0, 0x8D;
+	clone instance_mapname("guild_vs2"), 0,0, instance_npcname( "FYC_instance_npc" )+"::Onaa", $@partymembercid, 0, 0x8D;
+	end;
+OnInstanceInit:
+	getpartymember instance_partyid(), 1;
+	clone instance_mapname("guild_vs2"), 0,0, instance_npcname( "FYC_instance_npc" )+"::Onaa", $@partymembercid, 0, 0x8D;
+	end;
+}
+
+guild_vs2	mapflag	nosave	SavePoint
+guild_vs2	mapflag	nowarp
+guild_vs2	mapflag	nowarpto
+guild_vs2	mapflag	noteleport
+guild_vs2	mapflag	nomemo
+guild_vs2	mapflag	nopenalty
+guild_vs2	mapflag	nobranch
+guild_vs2	mapflag	noicewall
+guild_vs2	mapflag	partylock
+guild_vs2	mapflag	nochangeequip

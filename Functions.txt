@@ -1,0 +1,357 @@
+/*	Creates a menu with the specified item ids.
+	create_menu <item ids>.
+
+	Example:
+	getitem create_menu(512,513,514,515),10;
+
+	create_menu(1,x,y,z);
+	If the first parameter is 1, it creates the menu with the ids between x and y with z pages.
+	Example:
+
+	getitem create_menu(1,512,530),1; will create a menu with the ids between 512~530.
+
+	Also you can avoid certain items with the next parameters.
+
+	getitem create_menu(1,512,540,10,515),1; will avoid the id 515 for example.
+
+	So, if the first parameter is 1, the structure is like this:
+
+	create_menu(1,<start id>,<end id>,<amount of items per page>,<exclusion 1>,<exclusion 2[...]>.
+	The amount of items per page and exclusion parameters are optional. But, take in account, that if you want to set a exclusion, you have to use the page parameter as well.
+
+	This command is useful (I guess) to create a list of items with the same requirement (with some touching [like getd("."+.@id+"["+.@i+"]")] even different requirements).
+
+	Example:
+
+		if(Zeny >= 100000) {
+			mes "Which item do you want to make?";
+			mes "Price: 100,000z.";
+			next;
+			.@item = create_menu(1,30000,30100,5);
+			if(Zeny < 100000) {
+				mes "You don't have the required zeny.";
+			} else {
+				Zeny-= 100000;
+				getitem .@item,1;
+				mes "Enjoy your "+getitemname(.@item)+".";
+			}
+		}
+		close;
+
+*/
+
+function	script	create_menu	{
+
+	.@args = getargcount();
+
+	if(getarg(0) != 1) {
+		for(;.@i < .@args;.@i++)
+			.@menu$+= getitemname(getarg(.@i))+":";
+	} else {
+		.@start = getarg(1);
+		.@end   = getarg(2);
+		if(.@end < .@start) {
+			.@tmp   = .@start;
+			.@start = .@end;
+			.@end   = .@tmp;
+		}
+		.@page_size = getarg(3,30);
+		if(getarg(4,0) != 0) {
+			.@args-= 4;
+			.@str$ = ":";
+			for(;.@i < .@args;.@i++)
+				.@str$+= getarg(.@i + 4)+":";
+		}
+		freeloop 1;
+		for(.@i = .@start;.@i <= .@end;.@i++) {
+			if(getiteminfo(.@i,0) >= 0 && !compare(.@str$,":"+.@i+":")) {
+				.@menu$[.@index]+= ":"+getitemname(.@i);
+				.@id[.@j++] = .@i;
+				if(!(.@j%.@page_size) && .@i < .@end) {
+					.@menu$[.@index]+= ":^b80e1aNext^000000";
+					.@index++;
+					.@menu$[.@index] = "^143097Back^000000";
+				}
+			}
+		}
+		freeloop 0;
+		.@index = 0;
+		do {
+			if(.@index/2 && !.@s)
+				.@index-= 2;
+			.@s = select(.@menu$[.@index]) - 1;
+			.@index++;
+		} while(.@s > .@page_size || (.@index/2 && !.@s));
+		return .@id[.@s + (.@index - 1)*.@page_size - 1];
+	}
+
+	return getarg(select(.@menu$) - 1);
+
+}
+
+/*	Returns the instance name the player is in.
+
+	Examples:
+
+	if(which_instance() != "Endless Tower") {
+		mes "I'm sorry but you are in another instance right now.";
+	}
+
+	if(instance_id()) {
+		.@ins$ = which_instance();
+		mes "You are in the "+.@ins$+" instance right now.";
+		mes "And that instance expires if you're not inside for "+(instance_info(.@ins$,IIT_IDLE_TIMEOUT)/60)+" mins.";
+	}
+
+*/
+
+function	script	which_instance	{
+
+	.@ins_id = instance_id();
+	if(!.@ins_id)
+		return "";
+
+	// Add here your custom instances.
+	setarray .@instances$[0],
+				"1@tower","Endless Tower",
+				"1@cata","Sealed Catacomb",
+				"1@orcs","Orc's Memory",
+				"1@nyd","Nidhoggur's Nest",
+				"1@mist","Mistwood Maze",
+				"1@pump","Culvert",
+				"1@cash","Octopus Cave",
+				"1@ma_h","Bangungot Hospital 2F",
+				"1@ma_c","Buwaya Cave",
+				"1@ma_b","Bakonawa Lake",
+				"1@lhz","Wolfchev's Laboratory",
+				"1@gl_k","Old Glast Heim",
+				"1@ecl","Eclage Interior",
+				"1@sara","Sara's Memories",
+				"1@gef","Geffen Magic Tournament",
+				"1@xm_d","Horror Toy Factory",
+				"1@face","Faceworm's Nest";
+
+	for(.@size = getarraysize(.@instances$);.@i < .@size;.@i+= 2) {
+		if(instance_mapname(.@instances$[.@i],.@ins_id) != "")
+			return .@instances$[.@i + 1];
+	}
+
+	return "";
+
+}
+
+
+/*	Returns a random account id from the specified party with players on the specified map.
+	party_randomid(<party id(?)>,"<map(?)>");
+	Examples:
+
+In this script partys will have a bonus of items, but with 50% of the original chance, when there're 3 or more members in the same map.
+
+OnNPCKillEvent:
+
+	.@party  = getcharid(1);
+	if(.@party) {
+		.@map$   = strcharinfo(3);
+		.@mob_id = killedrid;
+		if(party_getonline(.@party,.@map$) >= 3) {
+			getmobdrops .@mob_id;
+			.@n = $@MobDrop_count;
+			copyarray .@items[0],$@MobDrop_item[0],.@n;
+			copyarray .@rates[0],$@MobDrop_rate[0],.@n;
+			.@drop = getbattleflag("item_rate_common")/100;
+			.@r = rand(.@n);
+			if(rand(10000) < .@rates[.@r]*.@drop/2)
+				getitem .@items[.@r],1,party_randomid(.@party,.@map$);
+		}
+	}
+	end;
+
+OnNPCKillEvent:
+
+	if(!rand(10) && getcharid(1))
+		getitem 512,1,party_randomid();
+	end;
+
+*/
+	
+function	script	party_randomid	{
+
+	.@party = getarg(0,getcharid(1));
+	.@map$  = getarg(1,""); 
+	
+	if(.@party) {
+		getpartymember .@party,1,.@party_cid;
+		getpartymember .@party,2,.@party_aid;
+		.@n = $@partymembercount;
+		while(.@n--) {
+			if(isloggedin(.@party_aid[.@n],.@party_cid[.@n])) {
+				if(.@map$ == "" || .@map$ == strcharinfo(3,.@party_cid[.@n])) {
+					.@size++;
+					continue;
+				}
+			}
+			// Uncomment the party_delmember if you use this funcion on a loop and you want to save some iterations on the future use, something like:
+			/*
+			for(.@i = 0;.@i < 5;.@i++)
+				getitem 512,10,party_randomid();
+			*/
+			//party_delmember .@party_cid[.@n],.@party;
+			deletearray .@party_aid[.@n],1;
+			deletearray .@party_cid[.@n],1;
+		}
+		return .@party_aid[rand(.@size)];
+	}
+
+	return 0;
+
+}
+
+/*	Returns the online members of the specified party id in the specified map.
+	Parameters work the same way as party_randomid
+	party_getonline(<party id(?)>,<"map(?)">;
+*/
+function	script	party_getonline	{
+
+	.@party = getarg(0,getcharid(1));
+	.@map$  = getarg(1,"");
+
+	if(.@party) {
+		getpartymember .@party,1,.@party_cid;
+		getpartymember .@party,2,.@party_aid;
+		.@n = $@partymembercount;
+		while(.@n--) {
+			if(isloggedin(.@party_aid[.@n],.@party_cid[.@n])) {
+				if(.@map$ == "" || .@map$ == strcharinfo(3,.@party_cid[.@n]))
+					.@on++;
+			}
+		}
+	}
+
+	return .@on;
+
+}
+
+/*
+	effect_xy(<effect>,<"map">,<x>,<y>);
+	Does a special effect in specified map, x, and y zone.
+
+	Example:
+
+OnMinute00:
+	if(!rand(500)) {
+		setarray .@maps$[0],"prontera","geffen","alberta","morocc","izlude","payon","aldebaran","yuno";
+		setarray .@xy[0],   155,183,   119,59,  28,234,   156,93,  128,146, 179,100, 140,131,    157,51;
+		announce "THE APOCALYPSIS HAS BEGUN!",bc_all;
+		freeloop 1;
+		for(.@size = getarraysize(.@maps$);.@i < .@size;.@i++) {
+			monster .@maps$[.@i],0,0,"--ja--",1373,4;
+			monster .@maps$[.@i],0,0,"--ja--",1109,100;
+			monster .@maps$[.@i],0,0,"--ja--",1143,100;
+			monster .@maps$[.@i],0,0,"--ja--",1292,70;
+			monster .@maps$[.@i],0,0,"--ja--",1382,50;
+			.@n = 50;
+			.@x0 = .@xy[.@i*2];
+			.@y0 = .@xy[.@i*2 + 1];
+			donpcevent strnpcinfo(0)+"::OnParalel";
+			while(.@n--) {
+				getfreecell .@maps$[.@i],.@x,.@y,.@x0,.@y0,20,20;
+				effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x,.@y);
+				sleep 320;
+				effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x - 2,.@y);
+				sleep 320;
+				effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x,.@y - 2);
+				sleep 320;
+				effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x + 2,.@y);
+				sleep 320;
+				effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x,.@y + 2);
+				sleep 320;
+				effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x - 2,.@y - 2);
+				sleep 320;
+				effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x + 2,.@y + 2);
+				sleep 320;
+				effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x - 2,.@y + 2);
+				sleep 320;
+				effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x + 2,.@y - 2);
+				getfreecell .@maps$[.@i],.@x,.@y,.@x0,.@y0,15,15;
+				effect_xy(EF_LORD,.@maps$[.@i],.@x,.@y);
+				sleep 1800;
+			}
+		}
+		freeloop 0;
+	}
+	end;
+
+OnParalel:
+
+	setarray .@maps$[0],"prontera","geffen","alberta","morocc","izlude","payon","aldebaran","yuno";
+	setarray .@xy[0],   155,183,   119,59,  28,234,   156,93,  128,146, 179,100, 140,131,    157,51;
+	for(.@size = getarraysize(.@maps$);.@i < .@size;.@i++) {
+		.@n = 30;
+		.@x0 = .@xy[.@i*2];
+		.@y0 = .@xy[.@i*2 + 1];
+		sleep 180;
+		while(.@n--) {
+			getfreecell .@maps$[.@i],.@x,.@y,.@x0,.@y0,20,20;
+			effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x,.@y);
+			sleep 320;
+			effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x - 2,.@y);
+			sleep 320;
+			effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x,.@y - 2);
+			sleep 320;
+			effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x + 2,.@y);
+			sleep 320;
+			effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x,.@y + 2);
+			sleep 320;
+			effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x - 2,.@y - 2);
+			sleep 320;
+			effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x + 2,.@y + 2);
+			sleep 320;
+			effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x - 2,.@y + 2);
+			sleep 320;
+			effect_xy(EF_METEORSTORM,.@maps$[.@i],.@x + 2,.@y - 2);
+		}
+	}
+	end;
+
+	
+*/
+
+function	script	effect_xy	{
+
+	.@effect = getarg(0);
+	.@map$   = getarg(1);
+	.@x      = getarg(2);
+	.@y      = getarg(3);
+
+	if(checkcell(.@map$,.@x,.@y,cell_chkpass)) {
+		if(.@effect >= 0 && .@effect <= 967) {
+			// by GmOcean.
+			if(!compare(":19:105:156:157:161:164:165:167:168:184:185:198:228:229:230:243:264:299:340:357:382:416:427:428:443:474:489:490:504:506:511:517:541:545:552:556:591:605:629:657:658:659:660:662:663:664:667:697:698:704:705:706:707:714:735:736:737:738:819:833:846:849:850:855:894:914:931:933:945:",":"+.@effect+":")) {
+				$@effect_xy = .@effect;
+				unitwarp $@effectxy_gid,.@map$,.@x,.@y;
+				sleep 100;
+				donpcevent "Effect_XY::OnEffect";
+			}
+		}
+	}
+
+	return;
+
+}
+
+prontera,1,1,4	script	Effect_XY	139,{
+
+	end;
+
+OnEffect:
+
+	specialeffect $@effect_xy;
+	$@effect_xy = 0;
+	end;
+
+OnInit:
+
+	$@effectxy_gid = getnpcid(0);
+	end;
+
+}

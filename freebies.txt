@@ -1,0 +1,43 @@
+new_1-1,58,114,5	script	John	718,{
+	
+	if(#freebie_quest == 0){
+	mes "[John]";
+	mes "Prazer em conhecê-lo "+ strcharinfo ( 0 ) +", meu nome é John";
+	mes "Bem-vindo ao ^E066FFAdobe-Ro!^000000";
+	mes "Vejo que você é novo aqui, então para ajudá-lo eu gostaria de dar-lhe estas";
+	mes "itens como um presente para mostrar o quanto nós apreciamos aqui!";
+next;
+	mes "[John]";
+	mes "Divertir-se!";
+	sc_start SC_EXPBOOST,3600000,100;
+	sc_start SC_ITEMBOOST,3600000,0;
+	skilleffect 34,0; sc_start SC_BLESSING,3600000,20;
+	skilleffect 29,0; sc_start SC_INCREASEAGI,3600000,20;
+	skilleffect 361,0; sc_start SC_ASSUMPTIO,3600000,5;
+	getitem	569,501;
+	getitem	12324,15;
+	getitem	12323,100;
+	getitem	12325,10;
+	getitem	2352,1;
+	getitem	2112,1;
+	getitem	13041,1;
+	getitem	2414,1;
+	getitem	2510,1;
+	getitem	5055,1;
+	set Zeny,Zeny+25000;
+	set #freebie_quest,1;
+	savepoint "prontera",156,191;
+next;
+	warp "prontera",156,191;
+	close;
+	}
+
+if(#freebie_quest == 1) {
+	mes "[John]";
+	mes "Divista-se no ^E066FFAdobe-Ro!^000000";
+next;
+	warp "prontera",156,191;
+	close;
+	}
+	
+}

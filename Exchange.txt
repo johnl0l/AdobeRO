@@ -1,0 +1,209 @@
+//===== Cronus Script ========================================
+//= Encantamento ID
+//===== Por: =================================================
+//= blastin
+//===== Versão Atual: ========================================
+//= BETA - 1.0.2c
+//===== Compatibilidade: =====================================
+//= 3312 Revision - Renewal
+//===== Descrição: ===========================================
+//= Encanta qualquer tipo de equipamento e armamento
+//= Será apenas necessário saber a ID do equipamento
+//===== Comentários Adicionais: ==============================
+//= Versão Beta, teste  e reporte bugs
+//============================================================
+//= (Local no mapa)
+        jawaii.gat,228,111,2    script  Exchange        73,{
+//============================================================
+//= (Variavéis)
+               
+                set .@bool,1;
+                set .@switch_exchange$,"";
+//============================================================
+ 
+if (getgmlevel() == .ADM_LVL){
+        mes .name$;
+        mes "O que deseja fazer [ADM] : "+strcharinfo(0);
+        mes " ";
+        mes "MOD USE : "+._MODE_USE;
+        mes "Limite exchange :"+.limite_exchange;
+        next;
+        switch(select("Modificar Limite:Modificar Level de uso:Continuar")){
+                case 1:mes .name$;
+                        mes "Qual Novo Limite para o encantamento";
+                        input .@exchange;
+                        next;
+                        if (.@exchange != .limite_exchange && .@exchange && ! (.@exchange > 10)){
+                                if(select("Confirmar:Sair") == 1){
+                                        set .limite_exchange,.@exchange;
+                                        mes "Modificação realizada com sucesso";
+                                }
+                        }else mes "Modificação não pode ser realizada";
+                       
+                        close;
+                       
+                case 2:mes .name$;
+                        mes "Qual Novo Level de uso";
+                        input .@levelnew;
+                        next;
+                        if (.@levelnew != ._MODE_USE  && .@levelnew && ! (.@levelnew >= .ADM_LVL)){
+                                if(select("Confirmar:Sair") == 1){
+                                        set ._MODE_USE,.@levelnew;
+                                        mes "Modificação realizada com sucesso";
+                                }
+                        }else mes "Modificação não pode ser realizada";
+                       
+                        close;
+                       
+                default : break;
+        }
+       
+}else if(getgmlevel() < ._MODE_USE ) { mes .name$;mes "Acesso negado";close; }
+ 
+ 
+switch("Continuar:Sair"){
+       
+        case 1: next;mes .name$;mes "Bem Vindo ao sistema de encantamento de equipamentos :";break;
+        case 2: close;
+}
+ 
+ 
+       
+do{
+                        set .@id_equipamento,0;
+                        set .@id_encantamento,0;// id da carta de encantamento 
+                        set .@switch_exchange$,"";
+                        do {
+                                next;
+                                mes .name$;
+                                mes "Insira a ID do equipamento :";
+                               
+                                input .@id_equipamento;
+                               
+                                if (! .@id_equipamento) close;  
+                                callfunc("_mes",.@id_equipamento,@id_encantamento);
+                                if (getitemname(.@id_equipamento) != "null" && select("Confirmar","Voltar") == 1 )  break;
+                               
+                        }while(1);  
+                       
+                        do{
+                               
+                                next;
+                                mes .name$;mes " ";mes "Qual tipo de bônus ? ";
+                                next;
+                                switch(select("Força:Inteligência:Destreza:Agilidade:Vitalidade:Sorte")){
+                               
+                                        case 1 : // str
+                                                set .@id_encantamento,callfunc("_switch_element",.limite_exchange,1);
+                                                break;
+                                       
+                                        case 2 : // int
+                                                set .@id_encantamento,callfunc("_switch_element",.limite_exchange,2);
+                                                break;
+                                       
+                                        case 3://des
+                                                set .@id_encantamento,callfunc("_switch_element",.limite_exchange,3);
+                                                break;
+                                       
+                                        case 4://agi
+                                                set .@id_encantamento,callfunc("_switch_element",.limite_exchange,4);
+                                                break;
+                                       
+                                        case 5://vit
+                                                set .@id_encantamento,callfunc("_switch_element",.limite_exchange,5);
+                                                break;
+                                       
+                                        case 6://luk
+                                                set .@id_encantamento,callfunc("_switch_element",.limite_exchange,6);
+                                                break;
+                       
+                                }callfunc("_mes",.@id_equipamento,.@id_encantamento);
+                               
+                                set .@switch_exchange$,"";
+                               
+                                if(select("Confirmar","Voltar") == 1 ) break;
+                               
+                        }while(1);
+                        next;
+                        callfunc("_mes",.@id_equipamento,.@id_encantamento);
+ 
+                        switch(select("Finalizar Modificação","Voltar","Sair")) {
+                                case 1:
+                                        dispbottom "Modificação realizada com sucesso.";
+                                        set .@bool,0;
+                                        getitem2 .@id_equipamento, 1, 1, 0, 0, 0, 0, 0, .@id_encantamento;
+                                        break;
+                                case 2: break;
+                                case 3: set .@bool,0;
+                                default: break;
+                        }
+        }while(.@bool);
+       
+        close;
+       
+OnInit:
+ 
+        //modifique
+        set .limite_exchange,5;
+        set .ADM_LVL,99;//level para gm
+        set ._MODE_USE,50;//level para uso
+        set .name$,"^7BB3F8[exchange]^000000";
+       
+       
+       
+        end;
+       
+}function       script  _mes    {
+        mes "Equipamento : ^AD5F50"+(getitemname(getarg(0)))+"^000000";
+        mes "Carta       : ^AD5F50"+(getitemname(getarg(1)))+"^000000";
+        return 0;
+}function       script  _switch_element {if(! getarg(0)) return -1; else {
+ 
+/*     
+    **não modifique***/
+        setarray .@switch_name$[0],"Null","Força","Inteligência","Destreza","Agilidade","Vitalidade","Sorte";
+        set .@switch_exchange$,"";/*
+    **não modifique**
+ 
+getarg(0) -> .limite_exchange
+getarg(1) -> str=1,int=2,dex=3,agi=4,vit=5,luk=6
+*/
+                for(set .@temp,1;.@temp <= getarg(0);set .@temp,.@temp + 1) set .@switch_exchange$, .@switch_exchange$ + .@switch_name$[getarg(1)] + "+ " + .@temp+":";
+                switch(select(.@switch_exchange$)){
+                                                       
+                        case 1: set .@ide,4700;
+                                break;
+                       
+                        case 2: set .@ide,4701;
+                                break;
+                       
+                        case 3: set .@ide,4702;
+                                break;
+                       
+                        case 4: set .@ide,4703;
+                                break;
+                       
+                        case 5: set .@ide,4704;
+                                break;
+                       
+                        case 6: set .@ide,4705;
+                                break;
+                       
+                        case 7: set .@ide,4706;
+                                break;
+                       
+                        case 8: set .@ide,4707;
+                                break;
+                       
+                        case 9: set .@ide,4708;
+                                break;
+                       
+                   case 10: set .@ide,4709;
+                                break;
+                                                       
+                }
+                if(getarg(1) > 1) set .@ide, .@ide + (getarg(1) == 2 ? 10 : getarg(1) == 3 ? +20 : getarg(1) == 4 ?
+                30 : getarg(1) == 5 ? 40 : 50 );
+               
+        }return .@ide;
+}

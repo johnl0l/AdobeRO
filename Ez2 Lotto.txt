@@ -1,0 +1,607 @@
+//===== eAthena Script =======================================
+
+//= Ez2 Lottery Script
+
+//===== By: ==================================================
+
+//= chan - teamcars1broglobal.blogspot.com
+
+//===== Current Version: =====================================
+
+//= 1.1.1a
+
+//===== Compatible With: =====================================
+
+//= Any Hercules Version
+
+//===== Description: =========================================
+
+//= Ez2 lottery draw. 
+
+//= Just like in Ez2 Lotto in the Philippines
+
+//===== Additional Comments: =================================
+
+//= Numbers drawn daily every hour
+
+//= this is from acky Lottery Script
+
+//= I just modify it
+
+//============================================================
+
+ 
+
+prontera,162,194,5      script  ezlotterygenerator      817,{
+
+ 
+
+OnInit:
+
+waitingroom "Let's Play Ez2 Lotto",0;
+
+set $L_TicketPrice,10; // TICKET COST
+
+set $L_Prize_Money,1000000; // JACKPOT AMOUNT
+
+set $L_Prize_Money_Small,500000; // SECONDARY PRIZE
+
+if ($LID == 0) goto L_GenID;
+
+end;
+
+ 
+
+//Modify for own time
+
+        OnClock0000:
+
+        OnClock0100:
+
+        OnClock0200:
+
+        OnClock0300:
+
+        OnClock0400:
+
+        OnClock0500:
+
+        OnClock0600:
+
+        OnClock0700:
+
+        OnClock0800:
+
+        OnClock0900:
+
+        OnClock1000:
+
+        OnClock1100:
+
+        OnClock1200:
+
+        OnClock1300:
+
+        OnClock1400:
+
+        OnClock1500:
+
+        OnClock1600:
+
+        OnClock1700:
+
+        OnClock1800:
+
+        OnClock1900:
+
+        OnClock2000:
+
+        OnClock2100:
+
+        OnClock2200:
+
+        OnClock2300:
+
+set $S_LastDr$,gettimestr("%H:%M",21);
+
+goto C_Ez2;
+
+ 
+
+C_Ez2:
+
+// CHECKS IF LOTTERY IS RIGGED
+
+if ($L_Rigged == 1) goto L_Rigged_Draw;
+
+// GENERATES RANDOM NUMBERS 1-31
+
+Pick1:
+
+set $LW1,rand (1,31);
+
+Pick2:
+
+set $LW2,rand (1,31);
+
+ 
+
+ 
+
+ 
+
+// BROADCASTS DRAW
+
+L_Broadcast:
+
+announce "Welcome to Ez2 Lotto " + $S_LastDr$ + " Draw!",8;
+
+announce "The numbers are as follows: [" + $LW1 + "] [" + $LW2 + "]",8;
+
+announce "Congratulations to the winners of Ez2 Lotto!",8;
+
+ 
+
+ 
+
+// GENERATES DRAW ID CODE
+
+L_GenID:
+
+set $LID2,$LID;
+
+// setS Next ID NUMBER
+
+set $LID,rand (100000,999999);
+
+end;
+
+ 
+
+// setS DRAW TO RIGGED NUMBERS
+
+L_Rigged_Draw:
+
+ 
+
+set $LW1,$LR1;
+
+set $LW2,$LR2;
+
+set $L_Rigged,0;
+
+goto L_Broadcast;
+
+ 
+
+}
+
+ 
+
+// BEGIN LOTTERY SCRIPT
+
+-       script  ezlottery       76,{
+
+L_Begin:
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "Winning EZ2 Lotto Numbers ("+$LID2+"):";
+
+mes "The Last Draw ^0000FF[" + $S_LastDr$ + "]^000000";
+
+mes "^0000FF[" + $LW1 + "] [" + $LW2 + "]^000000";
+
+if ($LID > 99999) mes "Your Ticket ("+#LID+"):";
+
+if ($LID > 99999) mes "^FF0000[" + #LW1 + "] [" + #LW2 + "]^000000";
+
+mes "Next Draw-ID: ^FF0000" + $LID + "^000000.";
+
+next;
+
+if (getgmlevel() > 2) goto L_GM;
+
+menu "Claim Prize",L_Claim,"Buy New Ticket",L_Buy,"Cancel",L_Cancel;
+
+ 
+
+// PURCHASE TICKET
+
+L_Buy:
+
+if (#LID == $LID && #LW1 != 0) goto L_DoubleTicket;
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "Tickets cost ^0000FF" + $L_TicketPrice + "z^000000.";
+
+mes "The Jackpot is ^FF0000" + $L_Prize_Money + "z^000000.";
+
+next;
+
+menu "Buy Ticket",-,"Cancel",L_Cancel;
+
+if (Zeny < $L_TicketPrice) goto L_NoZeny;
+
+set Zeny,Zeny-$L_TicketPrice;
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "Would you like your numbers Hand Picked or Lucky Picked?";
+
+next;
+
+menu "Lucky Picked",L_ComputerGen,"Hand Picked",L_HandPick,"Renew Ticket",L_Renew;
+
+ 
+
+// RENEW LAST TICKET
+
+L_Renew:
+
+if ($LID < 99999) goto L_Invalid;
+
+set #LID,$LID;
+
+goto L_Confirm2;
+
+ 
+
+L_ComputerGen:
+
+// SELECTS RANDOM NUMBERS
+
+set @L1,0;
+
+set @L2,0;
+
+ 
+
+Pick1:
+
+set @L1,rand (1,31);
+
+Pick2:
+
+set @L2,rand (1,31);
+
+ 
+
+ 
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "The computer has selected the following numbers:";
+
+mes "^0000FF" + @L1 + " " + @L2 + "^000000";
+
+next;
+
+menu "Confirm",L_Confirm,"Re-Generate",L_ComputerGen;
+
+ 
+
+// HAND PICK LOTTERY NUMBERS
+
+L_HandPick:
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "Please pick your numbers (1-31):";
+
+set @L1,0;
+
+set @L2,0;
+
+ 
+
+input1:
+
+input @L1;
+
+if (@L1 < 1 || @L1 > 31) goto input1;
+
+mes @L1;
+
+input2:
+
+input @L2;
+
+if (@L2 < 1 || @L2 > 31) goto input2;
+
+ 
+
+mes @L2;
+
+ 
+
+next;
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "Your numbers are:";
+
+mes "^0000FF" + @L1 + " " + @L2 + "^000000";
+
+next;
+
+menu "Confirm",L_Confirm,"Re-Pick",L_HandPick;
+
+ 
+
+L_Confirm:
+
+set #LW1,@L1;
+
+set #LW2,@L2;
+
+set #LID,$LID;
+
+L_Confirm2:
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "The live broadcasted draw are at 11am, 4pm and 9pm";
+
+mes "You can claim your ticket between then and the next draw.";
+
+next;
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "Good luck!";
+
+close;
+
+ 
+
+L_Claim:
+
+// CHECKS TICKET VALIDILITY
+
+if (#LID != $LID2) goto L_Invalid;
+
+// CHECKS HOW MANY NUMBERS MATCHED
+
+set @LPrize,0;
+
+if (#LW1 == $LW1) set @LPrize,@LPrize+1;
+
+if (#LW2 == $LW2) set @LPrize,@LPrize+1;
+
+if (@LPrize == 2) goto LWinBig;
+
+if (#LW1 == $LW2) set @LPrize,@LPrize+2;
+
+if (#LW2 == $LW1) set @LPrize,@LPrize+2;
+
+if (@LPrize == 4) goto LWinSmall;
+
+ 
+
+// NO WINNER
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "Bad luck, it appears you do not hold a winning ticket.";
+
+next;
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "Better luck next time!.";
+
+set #LID,0;
+
+close;
+
+ 
+
+// MATCHED TWO IN EXACT ORDER
+
+LWinBig:
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "You have matched Two Numbers in Exact Order";
+
+mes "Jackpot!";
+
+mes "You've won ^0000FF" + $L_Prize_Money + "z^000000.";
+
+set Zeny,Zeny+$L_Prize_Money;
+
+announce "Ez2 Teller: " + strcharinfo(0) + " has won the JACKPOT of " + $L_Prize_Money + "z!",8;
+
+set #LID,0;
+
+close;
+
+ 
+
+// MATCHED TWO I RANDOM ORDER
+
+LWinSmall:
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "You have matched Two numbers in Random Order";
+
+mes "You've won ^0000FF" + $L_Prize_Money_Small + "z^000000.";
+
+set Zeny,Zeny+$L_Prize_Money_Small;
+
+announce "Ez2 Teller: " + strcharinfo(0) + " has won a prize of " + $L_Prize_Money_Small + "z!",8;
+
+set #LID,0;
+
+close;
+
+ 
+
+// NO Zeny
+
+L_NoZeny:
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "You can't afford a Ez2 Lottery ticket.";
+
+close;
+
+ 
+
+// INVALID TICKET
+
+L_Invalid:
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "I'm sorry but it appears that you have an invalid ticket.";
+
+close;
+
+ 
+
+// DOUBLE TICKET
+
+L_DoubleTicket:
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "It appears that you already have a ticket for today.";
+
+mes "You may only purchase one ticket per draw.";
+
+close;
+
+ 
+
+L_Cancel:
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "Come back soon!";
+
+close;
+
+ 
+
+// GM MENU (Lets you manually do draws)
+
+L_GM:
+
+menu "Claim Prize",L_Claim,"Buy New Ticket",L_Buy,"[GM]Do Draw Now",-,"[GM]Rig the Ez2 Lottery",L_GM_Rig,"Cancel",L_Cancel;
+
+ 
+
+// CHECKS IF Lottery IS RIGGED
+
+if ($L_Rigged == 1) goto L_Rigged_Draw;
+
+// GENERATES RANDOM NUMBERS 1-31
+
+GMPick1:
+
+set $LW1,rand (1,31);
+
+ 
+
+GMPick2:
+
+set $LW2,rand (1,31);
+
+ 
+
+ 
+
+ 
+
+// BROADCASTS DRAW
+
+L_Broadcast:
+
+announce "Ez2 Teller: Welcome to the Special GM's Ez2 Lotto draw!",8;
+
+announce "The numbers are as follows: [" + $LW1 + "] [" + $LW2 + "]",8;
+
+announce "Congratulations to the Ez2 Lotto winners!",8;
+
+ 
+
+// GENERATES DRAW ID CODE
+
+L_GenID:
+
+set $LID2,$LID;
+
+// setS Next ID NUMBER
+
+set $LID,rand (100000,999999);
+
+set $S_LastDr$,"Special GM's draw!";
+
+close;
+
+ 
+
+// setS DRAW TO RIGGED NUMBERS
+
+L_Rigged_Draw:
+
+set $LW1,$LR1;
+
+set $LW2,$LR2;
+
+set $L_Rigged,0;
+
+goto L_Broadcast;
+
+ 
+
+// ALLOWS GM TO DO A RIGGED DRAW
+
+L_GM_Rig:
+
+mes "[Lottery]";
+
+mes "Please pick your numbers (1-31):";
+
+set $LR1,0;
+
+set $LR2,0;
+
+GMinput1:
+
+input $LR1;
+
+if ($LR1 < 1 || $LR1 > 31) goto GMinput1;
+
+mes $LR1;
+
+GMinput2:
+
+input $LR2;
+
+if ($LR2 < 1 || $LR2 > 31) goto GMinput2;
+
+ 
+
+mes $LR2;
+
+next;
+
+mes "[^008800Ez2 Teller^000000]";
+
+mes "Lottery rigged for next draw.";
+
+set $L_Rigged,1;
+
+close;
+
+}
+
+ 
+
+prontera,162,194,5      duplicate(ezlottery)    Ez2 Lotto Teller        817

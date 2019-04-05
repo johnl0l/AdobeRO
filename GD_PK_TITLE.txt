@@ -1,0 +1,94 @@
+//
+//	Author		Goddameit
+//	Version		2013/10/23
+//	Web__		http://goo.gl/igS14r
+//
+-	script	GD_PK_TITLE	-1,{
+	function	SETTILE	;
+	function	GETTILE	{
+		switch(getarg(0,0))
+		{
+			case 1: return "[MVP]";
+			default: return "";
+		}
+	}
+OnPCLoginEvent:
+	for(set .@i,0; .@i<.SP_RANK; set .@i,.@i+1 )
+	{
+		if( getcharid(0) == .SP_RN_CID[.@i] )
+		{
+			set .@N$,GETTILE(.@i+1);
+			if( .@N$ != "" )
+				atcommand "@fakename "+.@N$+""+strcharinfo(0);
+			break;
+		}
+	}
+	end;
+OnPCKillEvent:
+	if( killedrid == getcharid(3) || !isloggedin(killedrid) )
+		end;
+	set @GDCID,getcharid(0);
+	query_sql "SELECT `char_id` FROM `GD_PK_TITLE` WHERE `char_id` = "+@GDCID+"",@GDTID;
+	if( !@GDTID )
+		query_sql "INSERT `GD_PK_TITLE` VALUES("+@GDCID+",1)";
+	else
+		query_sql "UPDATE `GD_PK_TITLE` SET `var` = `var`+1 WHERE `char_id` = "+@GDCID+"";
+	set @GDTID,0;
+	set @GDCID,0;
+	end;
+OnInit:
+	bindatcmd "delpktitle","GD_PK_TITLE::OnGMFActive1",99,99,0;
+	bindatcmd "refhpktile","GD_PK_TITLE::OnGMFActive3",99,99,0;
+	set .SP_RANK,2;
+OnGMFActive3:
+	if( playerattached() )
+	{
+		dispbottom "All date was refresh.";
+		detachrid;
+	}
+OnTimer60000:
+	Stopnpctimer;
+	SETTILE(0);
+	deletearray .SP_RN_CID[0],128;
+	deletearray .SP_RN_VAR[0],128;
+	query_sql "SELECT `char_id`,`var` FROM `GD_PK_TITLE` ORDER BY `var` DESC LIMIT "+.SP_RANK,.SP_RN_CID,.SP_RN_VAR;
+	SETTILE(1);
+	Initnpctimer;
+	end;
+OnGMFActive1:
+	query_sql "TRUNCATE TABLE  `GD_PK_TITLE`";
+	dispbottom "All date was cleaned.";
+	end;
+	function	SETTILE	{
+		for(set .@i,0; .@i<.SP_RANK; set .@i,.@i+1 )
+		{
+			query_sql "SELECT `account_id` FROM `char` WHERE `char_id` = "+.SP_RN_CID[.@i]+"",.@SP_RN_AID;
+			if( attachrid(.@SP_RN_AID) )
+			{
+				atcommand "@fakename";
+				if( getarg(0,0) == 1 )
+				{
+					set .@N$,GETTILE(.@i+1);
+					if( .@N$ != "" )
+						atcommand "@fakename "+.@N$+""+strcharinfo(0);
+				}
+				detachrid;
+			}
+		}
+		return;
+	}
+}
+prontera,150,180,4	script	Rank	100,{
+	mes "[Rank]";
+	set .@SP_RANK,getvariableofnpc(.SP_RANK,"GD_PK_TITLE");
+	for(set .@i,0; .@i<.@SP_RANK; set .@i,.@i+1 )
+	{
+		set .@SP_RN_CID,getvariableofnpc(.SP_RN_CID[.@i],"GD_PK_TITLE");
+		set .@SP_RN_VAR,getvariableofnpc(.SP_RN_VAR[.@i],"GD_PK_TITLE");
+		if( !.@SP_RN_CID || !.@SP_RN_VAR )
+			break;
+		query_sql "SELECT `name` FROM `char` WHERE `char_id` = "+.@SP_RN_CID+"",.@SP_RN_NAME$;
+		mes "[#"+(.@i+1)+"] "+.@SP_RN_NAME$+" "+.@SP_RN_VAR+"p";
+	}
+	close;
+}

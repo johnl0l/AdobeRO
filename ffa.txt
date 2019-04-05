@@ -1,0 +1,105 @@
+// -----------------------------//
+// ------- Free For All --------//
+// -------- By : Butch ---------//
+// A simple Free for all script //
+// -----------------------------//
+
+guild_vs5,48,51,6	script	FFA Master	999,{
+if(getmapusers("guild_vs5") != 1) 
+	{
+		mes "[^FF0000FFA Master^000000]";
+		mes "Current players - ^FF0000"+ getmapusers("guild_vs5") +"^000000.";
+		close;
+	}
+	else if(getmapusers("guild_vs5") == 1)
+	{
+		
+		dispbottom "You are a winner of Event Free for all. Congratz!";
+		donpcevent "Free For All::OnStopEvent";
+		announce "Free for all winner : "+ strcharinfo(0) +"", bc_all, "0xFFCE00";
+		getitem 25002,1; // Reward
+		warp "prontera", 156,149;
+		end;
+	}
+}
+
+// ------ FFA Warper -------//
+		
+prontera,147,149,6	script	Free For All	999,{
+
+	if (.start != 1) {
+	mes "[^FF0000Agent Mil^000000]";
+	mes "Free for all is not available at the moment";
+	close;
+	}
+		mes "[^FF0000Agent Mil^000000]";
+		mes "What do you want?";
+		switch(select("Free for all")) {
+			case 1:
+				if( getcharid(1) ) { mes "Please leave your party."; close; }
+				if( getcharid(2) ) { mes "Please leave your guild."; close; }
+					else switch(rand(3)) {
+						case 0: .@x = 18; .@y = 50; break;
+						case 1: .@x = 50; .@y = 77; break;
+						case 2: .@x = 81; .@y = 49; break;
+						case 3: .@x = 49; .@y = 22; break; 
+					}
+					warp "guild_vs5", .@x,.@y;
+				break;				
+		}
+	close;
+	
+OnStartEvent:	
+OnClock1245:
+OnClock1645:
+OnClock2045:
+OnClock0045:
+OnClock0445:
+OnClock0845:
+	.start = 1;
+	disablenpc "FFA Master";
+	announce "Free for all will start in 5 minutes.", bc_all, "0x00b89d";
+	sleep 120000;
+	announce "Free for all will start in 3 minutes.", bc_all, "0x00b89d";
+	sleep 120000;
+	announce "Free for all will start in 1 minute.", bc_all, "0x00b89d";
+	sleep 60000;
+	announce "Free for all has started!", bc_all, "0x00b89d";
+	.start = 2;
+	enablenpc "FFA Master";
+	sleep 2000;
+	if ( !getmapusers("guild_vs5") ) goto OnStopEvent;
+	mapannounce "guild_vs5", "FFA starts in 5", bc_map;
+	sleep 1000;
+	mapannounce "guild_vs5", "FFA starts in 4", bc_map;
+	sleep 1000;
+	mapannounce "guild_vs5", "FFA starts in 3", bc_map;
+	sleep 1000;
+	mapannounce "guild_vs5", "FFA starts in 2", bc_map;
+	sleep 1000;
+	mapannounce "guild_vs5", "FFA starts in 1", bc_map;
+	sleep 1000;
+	mapannounce "guild_vs5", "GO! Kill all!", bc_map;
+	setmapflag "guild_vs5", mf_gvg;
+	removemapflag "guild_vs5", mf_noskill;
+	end;
+	
+OnStopEvent:
+	.start = 0;
+	disablenpc "FFA Master";
+	removemapflag "guild_vs5", mf_gvg;
+	setmapflag "guild_vs5", mf_noskill;
+	end;
+		
+OnInit:
+	waitingroom "[Free For All]",0;
+	end;
+}
+
+guild_vs5	mapflag	partylock
+guild_vs5	mapflag	guildlock
+guild_vs5	mapflag	notrade
+guild_vs5	mapflag	nodrop
+
+
+

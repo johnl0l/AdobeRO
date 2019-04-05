@@ -1,0 +1,272 @@
+//===== rAthena Script =======================================
+//= Fortress Battleground ( Original )
+//===== By: ==================================================
+//= pajodex 
+//===== Current Version: =====================================
+//= 1.0
+//============================================================
+// Last team who will gain controll over the main fort
+// will win the match.. personally, much fun that way.
+//============================================================
+// If there's any thing you need, dont hesitate to PM me.
+//============================================================
+
+function	script	F_ShuffleNumbers	{
+	deletearray getarg(2);
+	.@static = getarg(0);
+	.@range = getarg(1) +1 - .@static;
+	.@count = getarg(3, .@range);
+	if (.@range <= 0 || .@count <= 0)
+		return 0;
+	if (.@count > .@range)
+		.@count = .@range;
+	for (.@i = 0; .@i < .@range; ++.@i)
+		.@temparray[.@i] = .@i;
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		.@rand = rand(.@range);
+		set getelementofarray( getarg(2), .@i ), .@temparray[.@rand] + .@static;
+		.@temparray[.@rand] = .@temparray[--.@range];
+	}
+	return .@count;
+}
+
+prontera,150,180,0	script	Fortress Register	100,{
+	.@name$ = strcharinfo(0);
+	.@minplayer2start = getvariableofnpc(.minplayer2start, "fortress#bg"); 
+	.@start = getvariableofnpc(.start, "fortress#bg"); 
+	if(.@start == 1) {
+		mes "Sorry, event is on-going.";
+		close;
+	}
+	mes "Do you want to join the queue?";
+	next;
+	while ( .aid[.@i] != getcharid(3) && .@i < .size ) ++.@i;
+	if ( .@i < .size ) {
+		mes "You already join the queue.";
+		close;
+	}
+	select "join";
+	mes "you have to stick to this map";
+	close2;
+	.aid[ .size++ ] = getcharid(3);
+	for ( .@i = 0; .@i < .size; ++.@i ) {
+		if ( !isloggedin( .aid[.@i] ) ) {
+			deletearray .aid[.@i], 1;
+			--.@i;
+			--.size;
+		}
+		else {
+			attachrid .aid[.@i];
+			if ( strcharinfo(3) != strnpcinfo(4) ) {
+				deletearray .aid[.@i], 1;
+				--.@i;
+				--.size;
+			}
+		}
+	}
+	detachrid;
+	if ( .size == .@minplayer2start * 2 ) {
+		copyarray getvariableofnpc( .aid_, "fortress#bg" ), .aid, .size;
+		donpcevent "fortress#bg::OnStart";
+		deletearray .aid;
+		.size = 0;
+	}
+	else
+		announce .@name$ +" has  joined Fortress... needs "+ .size +"/"+ .@minplayer2start * 2 +" to start.", bc_npc | bc_area;
+	end;
+
+}
+
+bat_c01,0,0,0	script	fortress#bg	100,{
+OnInit:
+	// =============
+	// Game Settings
+	// =============
+	
+	// Minimum players per team to start
+	// default : 5 ( 5v5 )
+	.minplayer2start = 1;
+	
+	// Event duration in minutes..
+	// default : 5 mins
+	.duration = 5; 
+	
+	// Reward settings
+	setarray .rwd[0],
+		501, 10,	// win team reward
+		501, 5;		// lose team reward
+	
+	end;
+	
+OnStart:
+	.start = 1;
+	.red = bg_create ( strnpcinfo(4), 58, 123, strnpcinfo(0)+"::OnRedQuit", strnpcinfo(0)+"::OnRedDie" );
+	.blue =  bg_create ( strnpcinfo(4), 141, 60, strnpcinfo(0)+"::OnBlueQuit", strnpcinfo(0)+"::OnBlueDie" ); 
+	callfunc "F_ShuffleNumbers", 0, .minplayer2start *2 -1, .@r;
+	for ( .@i = 0; .@i < .minplayer2start * 2; ++.@i ) {
+		attachrid .aid_[.@r[.@i]];
+		bg_join ( .@i % 2 )? .red : .blue;
+	}
+	detachrid;
+	sleep 1000;
+	announce "announce game mechanics", bc_npc | bc_map | bc_blue;
+	sleep 1000;
+	announce "Start battle!", bc_npc | bc_map | bc_blue;
+	
+	bg_monster 0, "bat_c01", 99, 92, "Main Fortress", 1911, strnpcinfo(3)+"::OnEmpDown";
+	
+	sleep .duration * 60000;
+	
+		
+	if(.owner)
+		callsub L_reward, (.owner == .red) ? .red : .blue, (.owner == .red) ? .blue : .red, (.owner == .red) ? "Red" : "Blue";
+	else
+		announce "Battle ended up with a tie!", bc_npc | bc_map | bc_blue;
+	.owner = .start = 0;
+	bg_destroy .red;
+	bg_destroy .blue;
+	mapwarp strnpcinfo(4),"prontera",150,180,0;
+	end;
+	
+L_reward:
+	announce getarg(2) +" team has won!", bc_npc | bc_map | bc_blue;
+	bg_get_data getarg(0), 1;
+	for ( .@i = 0; .@i < $@arenamemberscount; ++.@i )
+		getitem .rwd[0],.rwd[1], $@arenamembers[.@i];
+	sleep 1;
+	bg_get_data getarg(1), 1;
+	for ( .@i = 0; .@i < $@arenamemberscount; ++.@i )
+		getitem .rwd[2],.rwd[3], $@arenamembers[.@i];
+	return;
+	
+OnEmpDown:
+	.owner = getcharid(4);
+	announce ((getcharid(4) == .red) ? "Red": "Blue") +" team has gained control over the Main Fortress!", bc_npc | bc_map | bc_blue;
+	bg_warp .red, strnpcinfo(4), 58, 123;
+	bg_warp .blue, strnpcinfo(4), 141, 60;
+	bg_monster .owner, "bat_c01", 99, 92, "Main Fortress", (getcharid(4) == .red) ? 1912 : 1913, strnpcinfo(3)+"::OnEmpDown";
+	//setnpcdisplay("#mainfort", "Main Fortress", (getcharid(4) == .red) ? 1912 : 1913 );
+	end;
+	
+	
+OnRedQuit: callsub L_Quit, .red, "Red";
+OnBlueQuit: callsub L_Quit, .blue, "Blue";
+L_Quit:
+	if ( bg_get_data( getarg(0), 0 ) ) end;
+	announce "All "+ getarg(2) +" team members has Quit!", bc_npc | bc_map | bc_blue;
+	sleep 1000;
+	callsub L_reward, ( getarg(0) == .red ) ? .red : .blue, ( getarg(0) == .red ) ? .blue : .red, ( getarg(0) == .red ) ? "Red" : "Blue";
+	awake instance_npcname( strnpcinfo(0) );
+	end;
+
+OnRedDie:
+OnBlueDie:
+	sleep2 1250;
+	percentheal 100, 100;
+	end;
+
+}
+
+bat_c01,99,92,0	script	#mainfort	-1,5,5,{
+end;
+OnTouch:
+	getmapxy(.@mapname$, .@mapx, .@mapy, BL_NPC, strnpcinfo(3));
+	setarray .@n_mapx[0], .@mapx-5, .@mapx+5;
+	setarray .@n_mapy[0], .@mapy-5, .@mapy+5;
+	
+	@ontouch = 1;
+	.@owner = getvariableofnpc( .owner, "fortress#bg" );
+	
+	while ( @ontouch && strcharinfo(3) == strnpcinfo(4) ) {
+	if( .@owner != getcharid(4) ) {
+		if ( Hp > 1 )
+			percentheal -10, 0;
+		else
+			percentheal -100, 0;
+		specialeffect2 49;
+	} 
+	else if ( .@owner == getcharid(4) ) {
+		if ( Hp != MaxHP ) 
+			specialeffect2 EF_HEAL;
+		percentheal 10, 10;		
+	}		  
+	sleep2 1000;
+		getmapxy(@mapname$, @mapx, @mapy, BL_PC);
+		if ( @mapx < .@n_mapx[0] || @mapx > .@n_mapx[1] || @mapy < .@n_mapy[0] || @mapy > .@n_mapy[1]) {
+			@ontouch = 0;
+		}
+	}
+	end;	
+}
+
+bat_c01,55,126,0	script	#redminifort	1915,5,5,{
+end;
+OnTouch:
+	getmapxy(.@mapname$, .@mapx, .@mapy, BL_NPC, strnpcinfo(3));
+	setarray .@n_mapx[0], .@mapx-5, .@mapx+5;
+	setarray .@n_mapy[0], .@mapy-5, .@mapy+5;
+	
+	.@owner = getvariableofnpc( .red, "fortress#bg" );
+	@ontouch = 1;
+	
+	while ( @ontouch && strcharinfo(3) == strnpcinfo(4) ) {
+	if ( .@owner != getcharid(4) ) {
+		if ( Hp > 10 )
+			percentheal rand(-20,-40), 0;
+		else
+			percentheal -100, 0;
+		specialeffect2 49;
+	} else {
+		if( HP != MaxHP )
+			specialeffect2 EF_HEAL;
+		percentheal 10, 10;
+	}
+	sleep2 1000;
+		getmapxy(@mapname$, @mapx, @mapy, BL_PC);
+		if ( @mapx < .@n_mapx[0] || @mapx > .@n_mapx[1] || @mapy < .@n_mapy[0] || @mapy > .@n_mapy[1]) {
+			@ontouch = 0;
+		}
+	}
+	end;	
+}
+
+bat_c01,144,57,0	script	#blueminifort	1914,5,5,{
+end;
+OnTouch:
+	getmapxy(.@mapname$, .@mapx, .@mapy, BL_NPC, strnpcinfo(3));
+	setarray .@n_mapx[0], .@mapx-5, .@mapx+5;
+	setarray .@n_mapy[0], .@mapy-5, .@mapy+5;
+	
+	.@owner = getvariableofnpc( .blue, "fortress#bg" );
+	@ontouch = 1;
+	
+	while ( @ontouch && strcharinfo(3) == strnpcinfo(4) ) {
+	if ( .@owner != getcharid(4) ) {
+		if ( Hp > 10 )
+			percentheal rand(-20,-40), 0;
+		else
+			percentheal -100, 0;
+		specialeffect2 49;
+	} else {
+		if( HP != MaxHP )
+			specialeffect2 EF_HEAL;
+		percentheal 10, 10;
+	}
+	sleep2 1000;
+		getmapxy(@mapname$, @mapx, @mapy, BL_PC);
+		if ( @mapx < .@n_mapx[0] || @mapx > .@n_mapx[1] || @mapy < .@n_mapy[0] || @mapy > .@n_mapy[1]) {
+			@ontouch = 0;
+		}
+	}
+	end;	
+}
+
+bat_c01	mapflag	battleground	2
+bat_c01	mapflag	nosave	SavePoint
+bat_c01	mapflag	nowarp
+bat_c01	mapflag	nowarpto
+bat_c01	mapflag	noteleport
+bat_c01	mapflag	nomemo
+bat_c01	mapflag	nopenalty
+bat_c01	mapflag	nobranch
+bat_c01	mapflag	noicewall
