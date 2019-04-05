@@ -1,0 +1,74 @@
+//===== rAthena Script =======================================
+//= Core Feature: Show which GMs are online/offline
+//= Special Features:
+//=   - cache the result to prevent spam to the DB
+//=   - show when a GM was online the last time
+//=   - shows the GM's position in front of the name
+//===== By: ==================================================
+//= ~De@dly Silence~ <rathena@deadly-silence.de>
+//===== Current Version: =====================================
+//= 2.1
+//===== Additional Comments: =================================
+//= 1.0 Initial Version
+//= 2.0 added group name and dispbottom option
+//= 2.1 fixed bug with last online time
+//============================================================
+prontera,160,180,4	script	GMs Online	857,{
+	// check if caching is enabled AND caching time is over OR caching is disabled
+	if ((.caching && (.onlineCachingTime + .cachingTime <= gettimetick(2))) || !.caching) {
+		query_sql(
+			"SELECT `l`.`group_id`, DATE_FORMAT( `l`.`lastlogin`, '" + .dateString$ + "') as date, DATE_FORMAT(`l`.`lastlogin`, '" + .timeString$ + "') as time, `c`.`name`, `c`.`online` FROM `login` l "
+			+ "JOIN (`char` c) "
+			+ "ON (`l`.`account_id` = `c`.`account_id`) "
+			+ "WHERE `l`.`group_id` >= " + .minLevel + " "
+			+ "ORDER BY `c`.`online` DESC, `l`.`group_id` DESC, `c`.`name` ASC"
+			, .group, .date$, .time$, .name$, .online$
+		);
+		
+		.onlineCachingTime = gettimetick(2);
+	}
+
+	// if .msgToChat is enabled, send the list directly to the chat
+	if (.msgToChat) {
+		
+		dispbottom "GM List:";
+		for (.@i = 0; .@i < getarraysize(.online$); .@i += 1) {
+			dispbottom "[" + groupIdToName(.group[.@i]) + "] " +.name$[.@i] + ": " + (("0" != .online$[.@i]) ? "online" : "offline" + ((.showLastOnline) ? ", last online at " + .date$[.@i] + " " + .time$[.@i] : ""));
+		}
+		end;
+	}
+	
+	mes "[GM List]", "";
+	for (.@i = 0; .@i < getarraysize(.online$); .@i += 1) {
+		
+		mes "[" + groupIdToName(.group[.@i]) + "] " +.name$[.@i] + ": " + ("0" != .online$[.@i] ? "^00AA00online^000000" : "^FF0000offline^000000");
+		if ((.showLastOnline) && ("0" == .online$[.@i])) {
+			mes "last online at " + .date$[.@i] + " " + .time$[.@i];
+		}
+		mes "———————————————————";
+	}
+	
+	close;
+	
+	OnInit:	
+		// cache the results to prevent spam
+		.caching = 0;
+		
+		// caching time in seconds
+		.cachingTime = 30;
+		
+		// minimum level to be recognized as a GM
+		.minLevel = 0;
+		
+		// if activated, show when the GM was online the last time (account based)
+		.showLastOnline = 1;
+		
+		// format the date string (%Y for year, %m for month, %d for day)
+		.dateString$ = "%m/%d/%Y";
+		
+		// format the time string (%H for hour (24 hour format), %h for hour (12 hour format), %i for minute)
+		.timeString$ = "%H:%i";
+		
+		// show GM list directly to chat rather than in an NPC window
+		.msgToChat = 0;
+}

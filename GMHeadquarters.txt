@@ -1,0 +1,275 @@
+//**********************************************************************************
+// ____                    _                                            _   _  ____ 
+//|  _ \ ___   ___   ____ | |  ___   ____   ___   ___   __  ___   _  _ | |_| |/ __ |
+//| |__// _ \ / _ \ |  _ \| | / _ \ |  _ \ / _ \ /  _| / _)/ _ \ | \| ||___  |\__  |
+//| |  |  __/ ||_|| | |__/| ||  __/ | |__/|  __/ | |  _\ \ ||_|| | \\ |    | |   | |
+//|_|___\___|_\___/_| |___|_|_\___|_| |____\___|_|_|_(___/ \___/_|_|\_|____|_|___|_|
+//------------------|_|-------------|_|---------------------------------------------
+//**********************************************************************************
+//===== rAthena Script =============================================================
+//= GameMaster's Headquarters
+//===== By: ========================================================================
+//= Peopleperson49 (Eddie)
+//===== Start Date: ================================================================
+//= 23DEC2011
+//===== Current Version: ===========================================================
+//= 1.3
+//===== Compatible With: ===========================================================
+//= rAthena SVN
+//===== Description: ===============================================================
+//= Allows access to a part of the sec_in01 map that doesn't have any warps anyway.
+//=	This is a nice areas to setup special NPC's or events. Whatever anybody
+//=	wants to do with it. However the secutiry code is fun for everybody to try
+//=	to crack. This script currently has shops that be used once a day as a
+//=	reward for cracking code. It's my intent to eventually add a full warp
+//=	script that can be used one a day also.
+//===== Version Control: ===========================================================
+//= 1.0 First Version.
+//= 1.1 Removed unnessary goto commands.
+//= 1.2 Added security system to script.
+//= 1.3 Added secutiry code 8675309 to script to allow access with the code. Code
+//=	can easily be changed code to whatever you want to use or just allow GM's
+//=	to skip the code completely. This way still allows them to play if they
+///=	want.
+//===== Additional Comments:========================================================
+//= Shops at the bottom of the script contain some custom items that need to be
+//=	replaced with your items.
+//==================================================================================
+prontera,165,167,4	script	GameMaster's HQ#GM1-1::GameMaster's HQ	723,-1,-1,{
+
+mes "[GM Team]";
+mes "Here within lies the access point to the GameMaster's Headquarters.";
+mes " ";
+mes " ";
+mes "Access beyond this point is considered a great honor.";
+next;
+mes "This doorway seems to be a switch locked with some kind of hightech security system.";
+	next;
+	PBDigetPick1:
+	set .@PBComputerDiget1,rand(1,9);
+	set .@PBDiget1,(.@PBComputerDiget1*1000);
+	PBDigetPick2:
+	set .@PBComputerDiget2,rand(0,9);
+	if(.@PBComputerDiget2==.@PBComputerDiget1) { goto PBDigetPick2; }
+	set .@PBDiget2,(.@PBComputerDiget2*100);
+	PBDigetPick3:
+	set .@PBComputerDiget3,rand(0,9);
+	if(.@PBComputerDiget3==.@PBComputerDiget1) { goto PBDigetPick3; }
+	if(.@PBComputerDiget3==.@PBComputerDiget2) { goto PBDigetPick3; }
+	set .@PBDiget3,(.@PBComputerDiget3*10);
+	PBDigetPick4:
+	set .@PBComputerDiget4,rand(0,9);
+	if(.@PBComputerDiget4==.@PBComputerDiget1) { goto PBDigetPick4; }
+	if(.@PBComputerDiget4==.@PBComputerDiget2) { goto PBDigetPick4; }
+	if(.@PBComputerDiget4==.@PBComputerDiget3) { goto PBDigetPick4; }
+	set .@PBDiget4,(.@PBComputerDiget4*1);
+	mes "[MicroHard Security 1.0]";
+	mes "Exiting PowerSave Mode...";
+	next;
+	mes "[MicroHard Security 1.0]";
+	mes "Running startup dianogistics... System Check...";
+	next;
+	mes "[MicroHard Security 1.0]";
+	mes "System Online... Security Check...";
+	next;
+	mes "[MicroHard Security 1.0]";
+	mes "Detecting... Unauthorized Program Changes...";
+	next;
+	mes "[MicroHard Security 1.0]";
+	mes "New Parameters Accepted... Loading Changes...";
+	next;
+	mes "[MicroHard Security 1.0]";
+	mes "Loading Update 1...Indicate as Pig if you match a diget that is not in the correct place.";
+	next;
+	mes "[MicroHard Security 1.0]";
+	mes "Loading Update 2...Indicate as Bull if you match a diget in the correct place.";
+	next;
+	mes "[MicroHard Security 1.0]";
+	mes "Loading Update 3...No diget will ever repeat.";
+	next;
+	mes "[MicroHard Security 1.0]";
+	mes "Loading Update 4...Modified help menu.";
+	InputStart:
+	next;
+	mes "[MicroHard Security 1.0]";
+	mes "Interface Loaded... Main menu...";
+	switch(prompt("Press Input Code:Press Help:Exit Console")) {
+	case 1:
+		next;
+		mes "[MicroHard Security 1.0]";
+		mes "Input Security Code...";
+		set .@PBPigMatch,0;
+		set .@PBBullMatch,0;
+		input .@PBInputCode;
+		if(.@PBInputCode==8675309) { next; mes "[MicroHard Security 1.0]"; mes "Security code accepted... Welcome back Jenny!"; close2; warp "sec_in01",170,99; end; }
+		if(.@PBInputCode<1000||.@PBInputCode>9999) { next; mes "[MicroHard Security 1.0]"; mes "Error code 265: Invalid Input. Security Codes must be 4 digets in length."; goto InputStart; close; }
+		set .@PBPlayerDiget1,.@PBInputCode/1000;
+		set .@PBPlayerDiget2,(.@PBInputCode-(.@PBPlayerDiget1*1000))/100;
+		set .@PBPlayerDiget3,(.@PBInputCode-(.@PBPlayerDiget1*1000)-(.@PBPlayerDiget2*100))/10;
+		set .@PBPlayerDiget4,.@PBInputCode-(.@PBPlayerDiget1*1000)-(.@PBPlayerDiget2*100)-(.@PBPlayerDiget3*10);
+		if(.@PBPlayerDiget1==.@PBPlayerDiget2||.@PBPlayerDiget1==.@PBPlayerDiget3||.@PBPlayerDiget1==.@PBPlayerDiget4) { next; mes "[MicroHard Security 1.0]"; mes "Error code 264: Invalid Input. No security code can repeat."; goto InputStart; close; }
+		if(.@PBPlayerDiget2==.@PBPlayerDiget1||.@PBPlayerDiget2==.@PBPlayerDiget3||.@PBPlayerDiget2==.@PBPlayerDiget4) { next; mes "[MicroHard Security 1.0]"; mes "Error code 264: Invalid Input. No security code can repeat."; goto InputStart; close; }
+		if(.@PBPlayerDiget3==.@PBPlayerDiget1||.@PBPlayerDiget3==.@PBPlayerDiget2||.@PBPlayerDiget3==.@PBPlayerDiget4) { next; mes "[MicroHard Security 1.0]"; mes "Error code 264: Invalid Input. No security code can repeat."; goto InputStart; close; }
+		if(.@PBPlayerDiget4==.@PBPlayerDiget1||.@PBPlayerDiget4==.@PBPlayerDiget2||.@PBPlayerDiget4==.@PBPlayerDiget3) { next; mes "[MicroHard Security 1.0]"; mes "Error code 264: Invalid Input. No security code can repeat."; goto InputStart; close; }
+		if(.@PBComputerDiget1==.@PBPlayerDiget1) { set .@PBBullMatch,.@PBBullMatch+1; }
+		if(.@PBComputerDiget1==.@PBPlayerDiget2) { set .@PBPigMatch,.@PBPigMatch+1; }
+		if(.@PBComputerDiget1==.@PBPlayerDiget3) { set .@PBPigMatch,.@PBPigMatch+1; }
+		if(.@PBComputerDiget1==.@PBPlayerDiget4) { set .@PBPigMatch,.@PBPigMatch+1; }
+		if(.@PBComputerDiget2==.@PBPlayerDiget1) { set .@PBPigMatch,.@PBPigMatch+1; }
+		if(.@PBComputerDiget2==.@PBPlayerDiget2) { set .@PBBullMatch,.@PBBullMatch+1; }
+		if(.@PBComputerDiget2==.@PBPlayerDiget3) { set .@PBPigMatch,.@PBPigMatch+1; }
+		if(.@PBComputerDiget2==.@PBPlayerDiget4) { set .@PBPigMatch,.@PBPigMatch+1; }
+		if(.@PBComputerDiget3==.@PBPlayerDiget1) { set .@PBPigMatch,.@PBPigMatch+1; }
+		if(.@PBComputerDiget3==.@PBPlayerDiget2) { set .@PBPigMatch,.@PBPigMatch+1; }
+		if(.@PBComputerDiget3==.@PBPlayerDiget3) { set .@PBBullMatch,.@PBBullMatch+1; }
+		if(.@PBComputerDiget3==.@PBPlayerDiget4) { set .@PBPigMatch,.@PBPigMatch+1; }
+		if(.@PBComputerDiget4==.@PBPlayerDiget1) { set .@PBPigMatch,.@PBPigMatch+1; }
+		if(.@PBComputerDiget4==.@PBPlayerDiget2) { set .@PBPigMatch,.@PBPigMatch+1; }
+		if(.@PBComputerDiget4==.@PBPlayerDiget3) { set .@PBPigMatch,.@PBPigMatch+1; }
+		if(.@PBComputerDiget4==.@PBPlayerDiget4) { set .@PBBullMatch,.@PBBullMatch+1; }
+		if(.@PBBullMatch==4) { next; mes "[MicroHard Security 1.0]"; mes "Security code accepted..."; close2; warp "sec_in01",170,99; end; }
+		if(.@PBPigMatch>=1&&.@PBBullMatch>=1) { next; mes "[MicroHard Security 1.0]"; mes "You inputed "+.@PBInputCode+" and got "+.@PBPigMatch+" Pig(s) and "+.@PBBullMatch+" Bull(s)."; goto InputStart; end; }
+		if(.@PBPigMatch>=1&&.@PBBullMatch==0) { next; mes "[MicroHard Security 1.0]"; mes "You inputed "+.@PBInputCode+" and got "+.@PBPigMatch+" Pig(s)."; goto InputStart; end; }
+		if(.@PBPigMatch==0&&.@PBBullMatch>=1) { next; mes "[MicroHard Security 1.0]"; mes "You inputed "+.@PBInputCode+" and got "+.@PBBullMatch+" Bull(s)."; goto InputStart; end; }
+		next;
+		mes "[MicroHard Security 1.0]";
+		mes "You inputed "+.@PBInputCode+" and got no Pigs or Bulls.";
+		goto InputStart;
+		end;
+	case 2:
+		next;
+		mes "[MicroHard Security 1.0]";
+		mes "Uses complex computer algerithms based on a random modular code that constantly rotates while the system is in PowerSave Mode.";
+		next;
+		mes "[MicroHard Security 1.0]";
+		mes "Indicate as Pig if you match a diget that is not in the correct place.";
+		next;
+		mes "[MicroHard Security 1.0]";
+		mes "Indicate as Bull if you match a diget in the correct place.";
+		next;
+		mes "[MicroHard Security 1.0]";
+		mes "No diget will ever repeat.";
+		next;
+		mes "[MicroHard Security 1.0]";
+		mes "Modified help menu.";
+		goto InputStart;
+		end;
+	case 3:
+		next;
+		mes "[MicroHard Security 1.0]";
+		mes "Returning to PowerSave Mode...";
+		close;
+	case 255:
+		mes "[MicroHard Security 1.0]";
+		mes "Returning to PowerSave Mode...";
+		close;
+	}
+}
+
+prontera,165,168,4	duplicate(GameMaster's HQ)	GameMaster's HQ#GM1-2	723
+
+//==================================================================================
+//--------|GameMaster's Headquarter Store #1|---------------------------------------
+//==================================================================================
+sec_in01,175,85,8	script	GM Trevor#RoUG	706,{
+
+mes "[GM Trevor]";
+if(#gmhqday==gettime(5)) { mes "You have already made a purchase for today."; close; }
+mes "Welecome to the GameMaster's Headquarters!";
+next;
+goto GMHQStart;
+end;
+GMHQStart:
+mes "[GM Trevor]";
+mes "Items here are discounted, but you can make one purchase here per day.";
+next;
+switch(prompt("100x Refining Concentrate - 300z:Red Potion Case - 1,824z:Orange Potion Case - 7,296z:Yellow Potion Case - 20,064z:White Potion Case - 43,776z")) {
+case 1: callsub GMHQ_Func,28378,300,100; break;	//100x Refining Concentrate
+case 2: callsub GMHQ_Func,28272,1824,1; break;	//Red Potion Case
+case 3: callsub GMHQ_Func,28273,7296,1; break;	//Orange Potion Case
+case 4: callsub GMHQ_Func,28274,20064,1; break;	//Yellow Potion Case
+case 5: callsub GMHQ_Func,28275,43776,1; break;	//White Potion Case
+case 255:
+	mes "[GM Trevor]";
+	mes "Please come again!";
+	close;
+}
+GMHQ_Func:
+if(zeny<getarg(1)) { mes "[GM Trevor]"; mes "You don't have enough zeny."; close; }
+if(checkweight(getarg(0),getarg(2))==0) { mes "[GM Trevor]"; mes "You can't hold what you have requested to purchase."; close; }
+mes "[GM Trevor]";
+mes "You want to purchase ^0000FF"+getarg(2)+"^000000 ^FF0000"+getitemname(getarg(0))+"^000000. That'll be ^008800"+getarg(1)+"z^000000.";
+next;
+if(select("Purchase:Nevernimd")==1) {
+	set zeny,zeny-getarg(1);
+	getitem getarg(0),getarg(2);
+	set #gmhqday,gettime(5);
+	mes "[GM Trevor]";
+	mes "Thank you for playing Ragnarok Underground!";
+	close2;
+	warp "prontera",163,167;
+	end;
+}
+mes "[GM Trevor]";
+mes "Thank you!";
+close;
+}
+
+//==================================================================================
+//--------|GameMaster's Headquarter Store #2|---------------------------------------
+//==================================================================================
+sec_in01,182,93,8	script	GM Rascal#RoUG	118,{
+
+mes "[GM Rascal]";
+if(#gmhqday==gettime(5)) { mes "You have already made a purchase for today."; close; }
+mes "Welecome to the GameMaster's Headquarters!";
+next;
+goto GMHQStart;
+end;
+GMHQStart:
+mes "[GM Rascal]";
+mes "Items here are discounted, but you can make one purchase here per day.";
+next;
+switch(prompt("500x Empty Bottle - 500z:25x Holy Water - 500z:10x Oridecon - 150,000z:10x Elunium - 450,000z")) {
+case 1: callsub GMHQ_Func,713,2500,500; break;	//500x Empty Bottle
+case 2: callsub GMHQ_Func,523,500,25; break;	//25x Holy Water
+case 3: callsub GMHQ_Func,984,150000,10; break;	//10x Oridecon
+case 4: callsub GMHQ_Func,985,450000,10; break;	//10x Elunium
+case 255:
+	mes "[GM Rascal]";
+	mes "Please come again!";
+	close;
+}
+GMHQ_Func:
+if(zeny<getarg(1)) { mes "[GM Rascal]"; mes "You don't have enough zeny."; close; }
+if(checkweight(getarg(0),getarg(2))==0) { mes "[GM Rascal]"; mes "You can't hold what you have requested to purchase."; close; }
+mes "[GM Rascal]";
+mes "You want to purchase ^0000FF"+getarg(2)+"^000000 ^FF0000"+getitemname(getarg(0))+"^000000. That'll be ^008800"+getarg(1)+"z^000000.";
+next;
+if(select("Purchase:Nevernimd")==1) {
+	set zeny,zeny-getarg(1);
+	getitem getarg(0),getarg(2);
+	set #gmhqday,gettime(5);
+	mes "[GM Rascal]";
+	mes "Thank you for playing Ragnarok Underground!";
+	close2;
+	warp "prontera",163,167;
+	end;
+}
+mes "[GM Rascal]";
+mes "Thank you!";
+close;
+}
+
+//=====================================================================================
+//--------|GameMaster's Headquarter Portal|--------------------------------------------
+//=====================================================================================
+
+sec_in01,166,100,4	script	Exit#E1-1::Exit	723,-1,-1,{
+
+warp "prontera",163,167;
+close;
+
+}
+
+sec_in01,166,99,4	duplicate(Exit)	Exit#E1-2	723

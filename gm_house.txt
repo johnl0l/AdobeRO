@@ -1,0 +1,749 @@
+//=================================================================\\
+//  __                  ____                                       \\
+// /\ \                /\  _`\   __                                \\
+// \ \ \____  __  __   \ \,\L\_\/\_\    ___ ___     ___     ___    \\
+//  \ \ '__`\/\ \/\ \   \/_\__ \\/\ \ /' __` __`\  / __`\ /' _ `\  \\
+//   \ \ \L\ \ \ \_\ \    /\ \L\ \ \ \/\ \/\ \/\ \/\ \L\ \/\ \/\ \ \\
+//    \ \_,__/\/`____ \   \ `\____\ \_\ \_\ \_\ \_\ \____/\ \_\ \_\\\
+//     \/___/  `/___/> \   \/_____/\/_/\/_/\/_/\/_/\/___/  \/_/\/_/\\
+//               /\___/                                            \\          
+//=================================================================\\
+//===== eAthena Script ============================================\\
+//= GM House Script												  =\\
+//=================================================================\\
+//===== By ========================================================\\
+//= [Simon]                       								  =\\
+//===== Version ===================================================\\
+//= 1.3 BETA RELAISE											  =\\
+//===== Compatible With ===========================================\\
+//= eAthena SVN SQL												  =\\
+//===== Description ===============================================\\
+//= Ein GM Haus Script mit einigen Funktionen wie z.B.:			  =\\
+//= GM Haus Schließen/Öffnen									  =\\
+//= Spieler aus GM Haus bannen									  =\\
+//= Helper und GM Liste mit Online und Offline Anzeige			  =\\
+//= Ausruf um Helper oder GMs ins GM Haus zu holen				  =\\
+//===== Version Info ==============================================\\
+//= 1.0 - Erster Beta Test                      	[Simon]		  =\\
+//= 1.1 - Guild Add Funktion hinzugefügt          	[Simon]		  =\\
+//= 1.2 - Paar kleine Sicherheitsabfragn eingebaut 	[Simon]		  =\\
+//= 1.3 - Helper Item Funktionen geaddet          	[Simon]		  =\\
+//===== Todo ======================================================\\
+//= Nix ^^														  =\\
+//===== Thanks to =================================================\\
+//= Kaio <3														  =\\
+//= Kaze <3														  =\\
+//= Koibito <3													  =\\
+//= Für ihre Hilfe =)											  =\\
+//=================================================================\\
+
+
+kh_vila.gat,20,102,0	warp	vila09	1,1,kh_vila.gat,34,63
+kh_vila.gat,47,54,0	warp	vila09	1,1,prontera.gat,151,183
+
+//*************\\
+//  MAPFLAGS   \\
+//=============\\
+
+kh_vila.gat	mapflag	nosave SavePoint
+kh_vila.gat	mapflag	noteleport
+kh_vila.gat	mapflag	nowarpto
+kh_vila.gat	mapflag	nowarp
+kh_vila.gat	mapflag	noskill
+kh_vila.gat	mapflag	noreturn
+kh_vila.gat	mapflag	nodrop
+kh_vila.gat	mapflag	novending
+
+
+//*************\\
+//   WARPER    \\
+//=============\\
+
+prontera.gat,165,163,2	script	GM House Warper	720,{
+ if ($gmhouse == 1 || getgmlevel() >= 40) {
+  if (!$gmhouse) { mes "The GM House is ^FF0000closed^000000."; } else { mes "The GM House is ^00FF00opened^000000."; }
+  mes "Do you want into the GM House?";
+  if (select("No:Yes") != 1) {
+   query_sql "SELECT `acc_id` FROM `gmhouse_banned` WHERE `acc_id` = '"+getcharid(3,strcharinfo(0))+"'", @acc_id;
+   if (@acc_id[0] != getcharid(3,strcharinfo(0))) {
+    warp "kh_vila.gat",43,54;
+	dispbottom "Welcome in the GM House";
+	close;
+   } else {
+    mes "You was banned from the GM House.";
+	mes "Maybe you need a relog to enter again.";
+	close;
+   }
+  } else {
+   close;
+  }
+ } else {
+   mes "Sorry the GM House is ^FF0000closed^000000.";
+  close;
+ }
+}
+ 
+ 
+
+//*************\\
+//   HELPER    \\
+//=============\\
+
+kh_vila.gat,16,55,6	script	GM House Helper	703,{
+
+set @n$,"[^0000FFGM House Helper^000000]";
+set @gm$,"[^0000FFGM Menu^000000]";
+set @admin$,"[^0000FFAdmin Menu^000000]";
+//Mindest GM lvl um ins GM Menü zu kommen
+set @gmlvl,40;
+//Mindest Admin lvl um ins Admin Menü zu kommen
+set @adminlvl,90;
+//Helper Item ID
+set @hlp_item_id,15094;
+//Helper Item Name
+set @hlp_item_name$,"Helper Wings";
+
+if ($player_name$ == strcharinfo(0) && $player_allow == 1) goto L_Get_Hlp_Item;
+if (getgmlevel() >= @adminlvl) goto L_Admin_Menu;
+if (getgmlevel() >= @gmlvl) goto L_GM_Menu;
+
+L_Start:
+ query_sql "SELECT `char_id` FROM `helper_list` WHERE `char_id` = '"+getcharid(0,strcharinfo(0))+"'", @char_id;
+ if (@char_id[0] == getcharid(0,strcharinfo(0)) || getgmlevel() >= @gmlvl) {
+ if (getgmlevel() >= @adminlvl) { mes @admin$; } else if (getgmlevel() >= @gmlvl) { mes @gm$; } else { mes @n$; }
+   mes "Hello Helper";
+   mes "What do you want to do?";
+   switch(select("^0000FFC^000000alling more Helper in the GM House","^0000FFS^000000how Lists","Get your Helper Item","^FF0000N^000000othing")) {
+    case 1:
+     next;
+     if (getgmlevel() >= @adminlvl) { mes @admin$; } else if (getgmlevel() >= @gmlvl) { mes @gm$; } else { mes @n$; }
+     mes "I'll call some Helper...";
+     announce "There are to less Helper in the GM House.",bc_all,0xFF0000; 
+     announce "Please some Helper in the GM House",bc_all,0xFF0000;
+     close;
+   case 2:
+    goto L_Lists;
+   case 3:
+    next;
+    if (getgmlevel() >= @adminlvl) { mes @admin$; } else if (getgmlevel() >= @gmlvl) { mes @gm$; } else { mes @n$; }
+	mes "Do you want your ^FF0000"+@hlp_item_name$+"^000000?";
+	if (select("Yes:No") == 1) {
+	 if (countitem(@hlp_item_id) > 1 || got_hlp_item == 1) { mes "Sorry, but you already have your item.";	close; }
+	 mes "Ok, here it is.";
+	 getitem @hlp_item_id,1;
+	 set got_hlp_item,1;
+	 close;
+	} else {
+	 close;
+	}
+   default:	close;
+	}
+ } else {
+  goto L_Lists; 
+ }
+
+ 
+L_GM_Menu:
+ if (getgmlevel() >= @adminlvl) { mes @admin$; } else { mes @gm$; }
+ mes "Hi GM, what do you want?";
+ if ($gmhouse) { mes "The GM House is ^00FF00opened^000000."; } else { mes "GM House is ^FF0000closed^000000."; }
+ switch(select("^0000FFB^000000an a player from the GM House","^0000FFU^000000nban a player from the GM House","^0000FFC^000000lose the GM House","^0000FFO^000000pen the GM House","^0000FFT^000000o the Helper Menu","^0000FFS^000000how Lists","^FF0000N^000000othing")) {
+  case 1:
+   next;
+   if (getgmlevel() >= @adminlvl) { mes @admin$; } else { mes @gm$; }
+   mes "Which player do you want kick and ban from the GM House?";
+   next;
+   input @ban_name$;
+   if (getmapxy(@mapname$,@mapx,@mapy,0,@ban_name$) != 0) {
+    if (getgmlevel() >= @adminlvl) { mes @admin$; } else { mes @gm$; }
+	mes "The player isn't online";
+	close;
+   } else if (@mapname$ == "kh_vila.gat") {
+    if (getgmlevel() >= @adminlvl) { mes @admin$; } else { mes @gm$; }
+	mes "I will ban ^0000FF"+@ban_name$+"^000000";
+	mes "Is this OK?";
+	if (select("No:Yes") != 1) {
+	 query_sql "INSERT INTO `gmhouse_banned` (`acc_id` , `char_name`) VALUES ('"+getcharid(3,@ban_name$)+"' , '"+@ban_name$+"')";
+	 mes "The player was banned";
+	 close2;
+	 announce @ban_name$+", was banned from the GM House",bc_map,0xFF0000;
+	 warpchar "prontera.gat",150,100,getcharid(0,@ban_name$);	end;
+	} else {
+	 close;
+	}
+   } else {
+    if (getgmlevel() >= @adminlvl) { mes @admin$; } else { mes @gm$; }
+	mes "The player isn't on the map";
+	close;
+   }
+  case 2:
+   next;
+   if (getgmlevel() >= @adminlvl) { mes @admin$; } else { mes @gm$; }
+   mes "Type the name of the character, who you want to unban.";
+   next;
+   input @banned_name$;
+   query_sql "SELECT `acc_id` FROM `gmhouse_banned` WHERE `char_name` = '"+@banned_name$+"'", @name$;
+   if (@name$[0] == "") { 
+    if (getgmlevel() >= @adminlvl) { mes @admin$; } else { mes @gm$; }
+	mes "Sorry, but the player isn't in the list";
+	close;
+   } else { 
+    query_sql "DELETE FROM `gmhouse_banned` WHERE `gmhouse_banned`.`acc_id` = '"+getcharid(3,@banned_name$)+"'";
+	if (getgmlevel() >= @adminlvl) { mes @admin$; } else { mes @gm$; }
+	mes "The character ^0000FF"+@banned_name$+"^000000 was unbanned";
+	close;
+   }
+  case 3:
+   next;
+   if (getgmlevel() >= @adminlvl) { mes @admin$; } else { mes @gm$; }
+   if ($gmhouse) {
+    set $gmhouse,0;
+    mes "The GM House is now ^FF0000closed^000000.";
+	close;
+   } else {
+    mes "The GM House is already closed";
+	close;
+   }
+  case 4:
+   next;
+   if (getgmlevel() >= @adminlvl) { mes @admin$; } else { mes @gm$; }
+   if (!$gmhouse) {
+    set $gmhouse,1;
+    mes "The GM House is now ^00FF00opened^000000.";
+	close;
+   } else {
+    mes "The GM House is already opened";
+	close;
+   }
+  case 5:
+   goto L_Start;
+   
+  case 6:
+   goto L_Lists;
+  
+  default:	close;
+ }
+
+L_Admin_Menu:
+ mes @admin$;
+ mes "Hi Admin, what do you want?";
+ switch(select("^0000FFC^000000reating SQL Tables","^0000FFD^000000elete SQL Tables","^0000FFA^000000dding a GM to the list","^0000FFA^000000dding a Helper to the list","^0000FFD^000000elete a GM from the list","^0000FFD^000000elete a Helper from the list","^0000FFC^000000lear GM House Banned List","^0000FFC^000000lear GM list","^0000FFC^000000lear Helper list","^0000FFG^000000oto GM Menu","^0000FFS^000000how Lists","^0000FFA^000000dd a Helper Guild","^0000FFA^000000llow a Player to get the Helper item","^FF0000N^000000othing")) {
+  case 1:
+   next;
+   mes @admin$;
+   if (!$tables_created) {
+    query_sql "CREATE TABLE `gmhouse_banned` ( `acc_id` INT( 11 ) , `char_name` CHAR( 255 ))";
+    query_sql "CREATE TABLE `gm_list` ( `acc_id` INT( 11 ) , `char_name` CHAR( 255 ))";
+    query_sql "CREATE TABLE `helper_list` ( `char_id` INT( 11 ) , `char_name` CHAR( 255 ))";
+    set $tables_created,1;
+    mes "I have created the Tables";
+    close;
+   } else {
+    mes "The tables were already created";
+	close;
+   }
+  case 2:
+   next;
+   mes @admin$;
+   if ($tables_created) {
+    query_sql "DROP TABLE `gmhouse_banned`";
+	query_sql "DROP TABLE `gm_list`";
+	query_sql "DROP TABLE `helper_list`";
+	set $tables_created,0;
+   } else {
+    mes "The tables are already deleted";
+	close;
+   }
+  case 3:
+   next;
+   mes @admin$;
+   mes "Which GM do you want to add?";
+   mes "Please enter the name.";
+   next;
+   input @gm_name$;
+   query_sql "SELECT `char_id` FROM `char` WHERE `char_id` = '"+getcharid(0,@gm_name$)+"'", @char_id;
+   if (@char_id[0] != getcharid(0,@gm_name$)) { mes "Sorry, but this Char doesn't exist";	close; } else {
+    query_sql "INSERT INTO `gm_list` (`acc_id` , `char_name`) VALUES ('"+getcharid(3,@gm_name$)+"' , '"+@gm_name$+"')";
+    mes @admin$;
+	mes "The GM ^0000FF"+@gm_name$+"^000000 was added";
+	close;
+   }
+  case 4:
+   next;
+   mes @admin$;
+   mes "Which HELPER do you want to add?";
+   mes "Please enter the name.";
+   next;
+   input @helper_name$;
+   query_sql "SELECT `char_id` FROM `char` WHERE `char_id` = '"+getcharid(0,@helper_name$)+"'",@char_id,@found;
+   if (@char_id[0] != getcharid(0,@helper_name$)) { mes "Sorry, but this Char doesn't exist";	close; } else {
+    query_sql "INSERT INTO `helper_list` (`char_id` , `char_name`) VALUES ('"+getcharid(0,@helper_name$)+"' , '"+@helper_name$+"')";
+    mes @admin$;
+	mes "The GM ^0000FF"+@helper_name$+"^000000 was added";
+	close;
+   }
+  case 5:
+   next;
+   mes @admin$;
+   mes "Which GM do you want to remove from the list?";
+   next;
+   input @gm_name$;
+   query_sql "SELECT `acc_id` FROM `gm_list` WHERE `acc_id` = '"+getcharid(3,@gm_name$)+"'", @name$;
+   if (@name$[0] == "") { 
+    mes "Sorry, but the GM isn't in the list";
+	close;
+   } else { 
+    query_sql "DELETE FROM `gm_list` WHERE `gm_list`.`char_name` = '"+@gm_name$+"'";
+	mes @admin$;
+	mes "The GM ^0000FF"+@gm_name$+"^000000 was deleted";
+	close;
+   }
+  case 6:
+   next;
+   mes @admin$;
+   mes "Which HELPER do you want to remove from the list?";
+   next;
+   input @helper_name$;
+   query_sql "SELECT `char_id` FROM `helper_list` WHERE `char_id` = '"+getcharid(0,@helper_name$)+"'", @name$;
+   if (@name$[0] == "") { 
+    mes "Sorry, but the HELPER isn't in the list";
+	close;
+   } else { 
+    query_sql "DELETE FROM `helper_list` WHERE `helper_list`.`char_name` = '"+@helper_name$+"'";
+	mes @admin$;
+	mes "The helper ^0000FF"+@helper_name$+"^000000 was deleted";
+	close;
+   }
+  case 7:
+   next;
+   mes @admin$;
+   mes "Are you sure that you want to clear the GM HOUSE BANNED list?";
+   if (select("No:Yes") != 1) {
+    query_sql "TRUNCATE TABLE `gmhouse_banned`";
+	mes "The GM HOUSE BANNED list was cleared";
+	close;
+   } else {
+    close;
+   }
+  case 8:
+   next;
+   mes @admin$;
+   mes "Are you sure that you want to clear the GM list?";
+   if (select("No:Yes") != 1) {
+    query_sql "TRUNCATE TABLE `gm_list`";
+	mes "The GM list was cleared";
+	close;
+   } else {
+    close;
+   }
+  case 9:
+   next;
+   mes @admin$;
+   mes "Are you sure that you want to clear the HELPER list?";
+   if (select("No:Yes") != 1) {
+    query_sql "TRUNCATE TABLE `helper_list`";
+	mes "The HELPER list was cleared";
+	close;
+   } else {
+    close;
+   }
+  case 10:
+   goto L_GM_Menu;
+  case 11:
+   goto L_Lists;
+  case 12:
+   next;
+   mes @admin$;
+   mes "Hi, please tell me a member of this guild, which you want to add.";
+   mes "^FF0000!!!^000000 The person must be online";
+   mes "INFO: All Members of the Guild will add to the Helper list.";
+   next;
+   input @guild_member_name$;
+   if((getmapxy(@mapname$,@mapx,@mapy,0,@guild_member_name$)!=0)) { mes "Sorry, but the char you typed seems to be offline or doesn't exist";	close; }
+   set @hlp_guild_id,getcharid(2,@guild_member_name$);
+   mes "The Guildname is:^FF0000 "+getguildname(@hlp_guild_id);
+   mes "^000000Is this correct?";
+   if (select("No:Yes") != 1) {
+    query_sql "SELECT `guild_id` , `char_id` , `name` FROM `guild_member` WHERE `guild_id` = '"+@hlp_guild_id+"'", @guild_id , @guild_char_id , @guild_char_name$;
+    for ( set @i,0; @i <= getarraysize ( @guild_id ) ; set @i, @i +1){
+	 query_sql "INSERT INTO `helper_list` (`char_id` , `char_name`) VALUES ('"+@guild_char_id[@i]+"' , '"+@guild_char_name$[@i]+"')";
+	}
+	mes "The Guildmembers from the ^0000FF"+getguildname(@hlp_guild_id)+"^000000 guild, were written in the Helper List.";
+	close;
+   } else {
+    close;
+   }
+  case 13:
+   next;
+   if ($player_allow != 1) {
+    mes @admin$;
+    mes "Here you can allow a Player to get the Helper Item, who isn't on the Helper List.";
+    mes "Please enter the name.";
+    next;
+    input $player_name$;
+    mes @admin$;
+    mes "I'll allow the player ^FF0000"+$player_name$+"^000000 to get the Helper item.";
+    mes "OK?";
+    if (select("No:Yes") != 1) {
+     set $player_allow,1;
+     mes "Allright!";
+     close;
+    } else {
+     close;
+    }
+    } else {
+     mes @admin$;
+	 mes "You allready allowed a player to get the Helper item.";
+	 mes "It seems, that the player didn't get the item yet";
+	 mes "Do you want to cancel it?";
+	 if (select("No:Yes") != 1) {
+	  set $player_allow,0;
+      set $player_name$,"";
+	  mes "It's cancled";
+	  close;
+    } else {
+     close;
+    }	 
+    }
+   default:	close;
+} 
+ 
+L_Lists:
+ if (getgmlevel() >= @adminlvl) { mes @admin$; } else if (getgmlevel() >= @gmlvl) { mes @gm$; } else { mes @n$; }
+ mes "Hi, what can I do for you?";
+ switch(select("^0000FFB^000000anned Player","^0000FFH^000000elper List","^0000FFG^000000M List","^FF0000N^000000othing")) {
+  case 1:
+   query_sql "SELECT `char_name` FROM `gmhouse_banned`", @ban_char_name$;
+   for ( set @i,0; @i < 50 ; set @i, @i+1 ){
+    if(@ban_char_name$[@i] != ""){
+	 if((getmapxy(@mapname$,@mapx,@mapy,0,@ban_char_name$[@i])!=0)) { set @status$,"^FF0000Off^000000"; } else { set @status$,"^00FF00On^000000"; }
+	 setarray @banned_total$[@i],""+(@i + 1)+"."+@ban_char_name$[@i]+" "+@status$+""; 
+	}
+   }
+   if (getgmlevel() >= @adminlvl) { mes @admin$; } else if (getgmlevel() >= @gmlvl) { mes @gm$; } else { mes @n$; }
+   mes "Here is the list:";
+   next;
+   mes "^FF0000~ Banned ~^000000";
+   for ( set @i,0; @i <= getarraysize ( @banned_total$ ) ; set @i, @i +1){
+   	mes @banned_total$[@i];
+   }
+   close;
+   
+  case 2:
+   query_sql "SELECT `char_name` FROM `helper_list`", @hlp_char_name$;
+   for ( set @i,0; @i < 50 ; set @i, @i+1 ){
+   if(@hlp_char_name$[@i] != ""){
+	 if((getmapxy(@mapname$,@mapx,@mapy,0,@hlp_char_name$[@i])!=0)) { set @status$,"^FF0000Off^000000"; } else { set @status$,"^00FF00On^000000"; }
+	 setarray @helper_total$[@i],""+(@i + 1)+"."+@hlp_char_name$[@i]+" "+@status$+""; 
+	}
+   }
+   if (getgmlevel() >= @adminlvl) { mes @admin$; } else if (getgmlevel() >= @gmlvl) { mes @gm$; } else { mes @n$; }
+   mes "Here is the list:";
+   next;
+   mes "^FF0000~ Helper ~^000000";
+   for ( set @i,0; @i <= getarraysize ( @helper_total$ ) ; set @i, @i +1){
+    mes @helper_total$[@i];
+   }
+   close;
+   
+  case 3:
+   query_sql "SELECT `char_name` FROM `gm_list`", @gm_char_name$;
+   for ( set @i,0; @i < 50 ; set @i, @i+1 ){
+    if(@gm_char_name$[@i] != ""){
+	 if((getmapxy(@mapname$,@mapx,@mapy,0,@gm_char_name$[@i])!=0)) { set @status$,"^FF0000Off^000000"; } else { set @status$,"^00FF00On^000000"; }
+	 setarray @gm_total$[@i],""+(@i + 1)+"."+@gm_char_name$[@i]+" "+@status$+""; 
+	}
+   }
+   if (getgmlevel() >= @adminlvl) { mes @admin$; } else if (getgmlevel() >= @gmlvl) { mes @gm$; } else { mes @n$; }
+   mes "Here is the list:";
+   next;
+   mes "^FF0000~ GMs ~^000000";
+   for ( set @i,0; @i <= getarraysize ( @gm_total$ ) ; set @i, @i +1){
+    mes @gm_total$[@i];
+   }
+   close;    
+  default:	close;
+ }
+
+L_Get_Hlp_Item:
+ if (getgmlevel() >= @adminlvl) { mes @admin$; } else if (getgmlevel() >= @gmlvl) { mes @gm$; } else { mes @n$; }
+ mes "Hi, an Admin allowed you to get the Helper Item";
+ mes "Do you want it?";
+ if (select("Yes:No") == 1) {
+  getitem @hlp_item_id,1;
+  set $player_allow,0;
+  set $player_name$,"";
+  close;
+ } else {
+  close;
+ } 
+}
+
+
+//*******************\\
+//   GM ROOM WARP    \\
+//===================\\
+
+kh_vila.gat,34,67,6	script	warp	45,1,1{
+
+end;
+
+OnTouch:
+ if (getgmlevel() >= 10) {
+  warp "kh_vila.gat",20,106;	end;
+ } else {
+  mes "You are not allowed to enter this room.";
+  close;
+ }
+}
+
+//*******************\\
+//   xDDDDDDDDDDD    \\
+//===================\\
+
+kh_vila.gat,19,66,4	script	Simon's Sweet Girl	862,1,1,{
+
+//Der NPC war nich meine Idee ^^
+
+end;
+
+OnTouch:
+
+if ( strcharinfo(0) == "Admin Simon" ){
+ callfunc "Simon";
+} else {
+set @rnd,rand(1,62);
+ switch(@rnd) {
+  case 1:
+   npctalk "Simon is the best....";
+   end;
+  case 2:
+   npctalk "Dont watch me.... -.-";
+   end;
+  case 3:
+   npctalk "EEEEEYYYY dont look on my boobs MAAAAAAAAN!!!";
+   end;
+  case 4:
+   npctalk "Hey sweety.... grrrrrrrr...You think, eh?!";
+   end;
+  case 5:
+   npctalk "I miss Simon.... =(";
+   end;
+  case 6:
+   npctalk "I miss my cute Simon....";
+   end;
+  case 7:
+   npctalk "Pray to Simon!!";
+   end;
+  case 8:
+   npctalk "Who has the biggest? SIMON! Who is the best? SIMON! *sing*";
+   end;
+  case 9:
+   npctalk "And again a fuckwit....";
+   end;
+  case 10:
+   npctalk "Dont touch me you sucker!"; 
+   end;
+  case 11:
+   npctalk "Why do you looking at me??";
+   end;
+  case 12:
+   npctalk "Your mother is pulling trucks on eurosport!";
+   end;
+  case 13:
+   npctalk "Your mother is the fatest boss.";
+   end;
+  case 14:
+   npctalk "Your mother has a full beard, her name is Jon and she's a bus driver.";
+   end;
+  case 15:
+   npctalk "If your mother turns around, she has birthday again....";
+   end;
+  case 16:
+   npctalk "Your mother is like a mustard glas, everybody may put his sausage in it.";
+   end;
+  case 17:
+   npctalk "Do you want go outside with me? Heeee?!";
+   end;
+  case 18:
+   npctalk "They are big, hm?!";
+   end;
+  case 19:
+   npctalk "MUUUUUUUUUUH~";
+   end;
+  case 20:
+   npctalk "Simon RUUUUULEEEZ!!!!";
+   end;
+  case 21:
+   npctalk "MUUUUUUUUUUHHHH!!!";
+   end;
+  case 22:
+   npctalk "Drink more milk!!!";
+   end;
+  case 23:
+   npctalk "Do you know somebody with the name Christoff Smaul?!";
+   end;
+  case 24:
+   npctalk "Do you someone with the name Christian Harten?!";
+   end;
+  case 25:
+   npctalk "LaLaLa.... I'm naked under my clothes... o.O";
+   end;
+  case 26:
+   npctalk "Call me!!! 0900666666";
+   end;
+  case 27:
+   npctalk "Press ALT+F4 for free Zeny!!";
+   end;
+  case 28:
+   npctalk "My name is Anna Machslochoff!.";
+   end;
+  case 29:
+   npctalk "Ey does your dad have a full beard? No? Oh sorry then I saw your mum...";
+   end;
+  case 30:
+   npctalk "Kaze is gay....";
+   end;
+  case 31:
+   npctalk "You stink go away!!";
+   end;
+  case 32:
+   npctalk "Black has a small ******.";
+   end;
+  case 33:
+   npctalk "I always think Black has a very small ******.";
+   end;
+  case 34:
+   npctalk "No I dont take off my clothers if you pay me...";
+   end;
+  case 35:
+   npctalk "I tried to drive around your mum, but my gas gone out.";
+   end;
+  case 36:
+   npctalk "Your mother is sitting next to each other in the cinema.";
+   end;
+  case 37:
+   npctalk "Your mother uses sheeps as OB.";
+   end;
+  case 38:
+   npctalk "Your mother is pushing small kids from the bike and smelling on the saddle.";
+   end;
+  case 39:
+   npctalk "If you see Simon, tell him he's hot...hrrrrrrrrrr.";
+   end;
+  case 40:
+   npctalk "MÖÖÖÖP!";
+   end;
+  case 41:
+   npctalk "FU!!!";
+   end;
+  case 42:
+   npctalk "I hate noobs like you...";
+   end;
+  case 43:
+   npctalk "(>'')>";
+   end;
+  case 44:
+   npctalk "If you think this NPC dont make sense, write a letter to DHRO ";
+   end;
+  case 45:
+   npctalk "I hate you all....";
+   end;
+  case 46:
+   npctalk "Koibito sucks *cough*";
+   end;
+  case 47:
+   npctalk "Dont get in my nervs...";
+   end;
+  case 48:
+   npctalk "You are only envious -__________-";
+   end;
+  case 49:
+   npctalk "Do you want to stroke my pussy? GRRRRR~";
+   end;
+  case 50:
+   npctalk "You are so ugly....";
+   end;
+  case 51:
+   npctalk "I dont know what I should say else.....";
+   end;
+  case 52:
+   npctalk "You are all stupid!";
+   end;
+  case 52:
+   npctalk "What do you have there in your pants? Are you happy to se me ?";
+   end;
+  case 53:
+   npctalk "-.-";
+   end;   
+  case 54:
+   npctalk "Go Home!!!";
+   end;
+  case 55:
+   npctalk "You are still here?! >.<";
+   end;
+  case 56:
+   npctalk "...bla bla bla....";
+   end;
+  case 57:
+   npctalk "I qoute Kaze: PENIS";
+   end;
+  case 58:
+   npctalk "I just stay here.";
+   end;
+  case 59:
+   npctalk "Where's the loo?!";
+   end;
+  case 60:
+   npctalk "Can somebody change my OB?!.";
+   end;
+  case 61:
+   npctalk "Drugs are bad...HMKAY?!";
+   end;
+  case 62:
+   npctalk "MAKLA!!!";
+   end;   
+  }
+ }
+}
+
+
+
+
+function	script	Simon	{
+
+set @rnd2,rand(1,10);
+ switch(@rnd2) {
+  case 1:
+   npctalk "AAAHHH~ Simon is here!!!!!!!";
+   end;
+  case 2:
+   npctalk "All go out Simon is here!";
+   end;
+  case 3:
+   npctalk "I love you darling <3";
+   end;
+  case 4:
+   npctalk "Dont touch Simon >_<!!";
+   end;
+  case 5:
+   npctalk "I missed you honey...";
+   end;
+  case 6:
+   npctalk "Simon s here and my vertical smile is happy.";
+   end;
+  case 7:
+   npctalk "Simon kill you all!!";
+   end;
+  case 8:
+   npctalk "You sucker, pray to your god Simon!!";
+   end;
+  case 9:
+   npctalk "Come to me hony and kiss me!!";
+   emotion 31;
+   end;
+  case 10:
+   npctalk "I want children from you Simon!!";
+   end;
+ }
+}

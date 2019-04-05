@@ -1,0 +1,31 @@
+// Gold Poring Island ===================
+alb2trea	mapflag	noskill
+
+prontera,147,168,6	script	Jakk Housend	813,{
+	mes "[Gold Room Warper]";
+	mes "Welcome.";
+	next;
+	mes "I am the Gold Room Warper";
+	mes "With me you can go to the gold poring island";
+	mes "you know in there you can find many more gold";
+	next;
+	mes "You Want Go To Gold Poring Island....?";
+	next;
+	menu "Yes",-,"No",L_NO;
+
+	shop:	warp "alb2trea",82,47;
+L_NO:
+	mes "[Gold Room Warper]";
+	mes "Ok Nevermind";
+	mes "Come Back If you change your Mind";
+	close;
+}	
+
+//The Exit to Prontera
+
+alb2trea,83,46,6	script	Exit	864,{
+	warp "prontera.gat" ,155,176;
+}
+
+//Monster Summon
+alb2trea,0,0,0,0	monster	Gold Poring	2248,100,0,0,0

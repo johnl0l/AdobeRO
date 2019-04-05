@@ -1,0 +1,389 @@
+prontera,170,169,4	script	Guild Buffer	4_F_ARUNA_POP,{
+	mes "[Guild Buffs]";
+	if(getcharid(2)==0){
+	mes "I'm sorry, I can only help you, if you're in a guild.";
+	close;
+	}
+	mes "Hello, I offer buffs for guilds.";
+	mes "Please select the buff you want to buy for your guild.";
+	mes "The buffs you bought will be permanently available for your guild.";
+	next;
+	mes "[Guild Buffs]";
+	mes "Guild Leaders can remove buffs by selecting to buy them and then confirming.";
+	next;
+	switch(select("Assumptio:Magnificat:Angelus:Gloria:Impositio Manus:Spirits")){
+	case 1:
+			set buff$, "Assumptio Level 5";
+			set .@price, 1200000;
+			set buffon$, "assu";
+			goto L_selectassumptio;
+	case 2:
+			set buff$, "Magnificat Level 5";
+			set .@price, 1000000;
+			set buffon$, "magni";
+			goto L_selectmagnificat;
+	case 3:
+			set buff$, "Angelus Level 10";
+			set .@price, 100000;
+			set buffon$, "angelus";
+			goto L_selectangelus;
+	case 4:
+			set buff$, "Gloria Level 5";
+			set .@price, 100000;
+			set buffon$, "gloria";
+			goto L_selectgloria;
+	case 5:
+			set buff$, "Impositio Manus Level 5";
+			set .@price, 100000;
+			set buffon$, "impo";
+			goto L_selectimpositio;
+	case 6:
+			set buff$, "Spirits Level 4 (excluding Rebirth Spirit and Soul Linker Spirit)";
+			set .@price, 150000;
+			set buffon$, "spirit";
+			goto L_selectspirit;
+	}
+L_buffselect:
+	mes "[Guild Buffs]";
+	mes "So, you want to buy " + buff$ + " for " + .@price + " Zeny?";
+	next;
+	switch(select("Yes, please:No, thank you")){
+	case 1:
+		if (.@price) {
+			if (Zeny < .@price) goto L_nobuffs;
+			Zeny -= price;
+				if (buffon$=="assu"){
+					set z, getarraysize($guildassumptio);
+					set $guildassumptio[z+1], getcharid(2);
+					goto L_buffbought;
+				}
+				if (buffon$=="magni"){
+					set z, getarraysize($guildmagnificat);
+					set $guildmagnificat[z+1], getcharid(2);
+					goto L_buffbought;
+				}
+				if (buffon$=="angelus"){
+					set z, getarraysize($guildangelus);
+					set $guildangelus[z+1], getcharid(2);
+					goto L_buffbought;
+				}
+				if (buffon$=="gloria"){
+					set z, getarraysize($guildgloria);
+					set $guildgloria[z+1], getcharid(2);
+					goto L_buffbought;
+				}
+				if (buffon$=="impo"){
+					set z, getarraysize($guildimpositio);
+					set $guildimpositio[z+1], getcharid(2);
+					goto L_buffbought;
+				}
+				if (buffon$=="spirit"){
+					set z, getarraysize($guildspirit);
+					set $guildspirit[z+1], getcharid(2);
+					goto L_buffbought;
+				}
+		}
+	case 2:
+			mes "[Guild Buffs]";
+			mes "As you wish.";
+			close;
+	}
+L_buffbought:
+		mes "[Guild Buffs]";
+		mes "Transaction complete, the buff is now available for your guild.";
+		close;
+
+L_nobuffs:
+		mes "[Guild Buffs]";
+		mes "I'm sorry, you don't have enough money.";
+		close;
+
+L_selectassumptio:
+	if ($guildassumptio[y]==getcharid(2)) goto L_available;
+	if (y>=getarraysize($guildassumptio)){
+	set y, 0;
+	goto L_buffselect;
+	}
+	if (y<=getarraysize($guildassumptio)) set y,y+1;
+	goto L_selectassumptio;
+	end;
+
+L_selectimpositio:
+	if ($guildimpositio[y]==getcharid(2)) goto L_available;
+	if (y>=getarraysize($guildimpositio)){
+	set y, 0;
+	goto L_buffselect;
+	}
+	if (y<=getarraysize($guildimpositio)) set y,y+1;
+	goto L_selectimpositio;
+	end;
+
+L_selectspirit:
+	if ($guildspirit[y]==getcharid(2)) goto L_available;
+	if (y>=getarraysize($guildspirit)){
+	set y, 0;
+	goto L_buffselect;
+	}
+	if (y<=getarraysize($guildspirit)) set y,y+1;
+	goto L_selectspirit;
+	end;
+
+L_selectmagnificat:
+	if ($guildmagnificat[y]==getcharid(2)) goto L_available;
+	if (y>=getarraysize($guildmagnificat)){
+	set y, 0;
+	goto L_buffselect;
+	}
+	if (y<=getarraysize($guildmagnificat)) set y,y+1;
+	goto L_selectmagnificat;
+	end;
+
+L_selectangelus:
+	if ($guildangelus[y]==getcharid(2)) goto L_available;
+	if (y>=getarraysize($guildangelus)){
+	set y, 0;
+	goto L_buffselect;
+	}
+	if (y<=getarraysize($guildangelus)) set y,y+1;
+	goto L_selectangelus;
+	end;
+
+L_selectgloria:
+	if ($guildgloria[y]==getcharid(2)) goto L_available;
+	if (y>=getarraysize($guildgloria)){
+	set y, 0;
+	goto L_buffselect;
+	}
+	if (y<=getarraysize($guildgloria)) set y,y+1;
+	goto L_selectgloria;
+	end;
+
+L_available:
+	mes "[Guild Buffs]";
+	mes "You already bought " + buff$ + ".";
+	if(getguildmasterid(getcharid(2))==getcharid(0)) {
+		mes "Do you want to remove it?";
+		next;
+		switch(select("No:Yes")){
+		case 1:
+			close;
+			break;
+		case 2:
+			mes "^FF0000Keep in mind that you won't get any refund!^000000";
+			mes "So, are you sure you want to take out that action?";
+			next;
+			switch(select("No:Yes")) {
+			case 1:
+				close;
+			case 2:
+				if (buffon$=="assu"){
+					set $guildassumptio[y], 0;
+					goto L_buffdeleted;
+				}
+				if (buffon$=="magni"){
+					set $guildmagnificat[y], 0;
+					goto L_buffdeleted;
+				}
+				if (buffon$=="angelus"){
+					set $guildangelus[y], 0;
+					goto L_buffdeleted;
+				}
+				if (buffon$=="gloria"){
+					set $guildgloria[y], 0;
+					goto L_buffdeleted;
+				}
+				if (buffon$=="impo"){
+					set $guildimpositio[y], 0;
+					goto L_buffdeleted;
+				}
+				if (buffon$=="spirit"){
+					set $guildspirit[y], 0;
+					goto L_buffdeleted;
+				}
+			}
+		}
+	close;
+	}
+L_buffdeleted:
+	mes "[Guild Buffs]";
+	mes "Transaction completed. " + buff$ + " has been deleted from your Guildbuffs.";
+	close;
+}
+
+prontera,170,172,3	script	Healergu	4_F_GELKA,{
+emotion 27;
+
+while (getbrokenid(1)) {
+repair(1);
+set .@i, .@i +1;
+}
+if (.@i) dispbottom .@i + " items repaired.";
+
+sc_end SC_STONE;
+sc_end SC_FREEZE;
+sc_end SC_STUN;
+sc_end SC_SLEEP;
+sc_end SC_POISON;
+sc_end SC_CURSE;
+sc_end SC_SILENCE;
+sc_end SC_CONFUSION;
+sc_end SC_BLIND;
+sc_end SC_BLEEDING;
+sc_end SC_SLOWCAST;
+sc_end SC_CRITICALWOUND;
+specialeffect(EF_INCAGILITY, AREA, playerattached()); sc_start SC_INC_AGI,240000,10;
+specialeffect(EF_BLESSING, AREA, playerattached()); sc_start SC_BLESSING,240000,10;
+
+if($woe_on==1){
+percentheal 100,100;
+end;
+}
+
+if(getcharid(2)==0){
+percentheal 100,100;
+end;
+}
+
+set y, 0;
+goto L_guildassumptio;
+end;
+
+L_guildassumptio:
+		if ($guildassumptio[y]==getcharid(2)) goto L_buffassumptio;
+			if (y>=getarraysize($guildassumptio)){
+				set y, 0;
+				goto L_guildmagnificat;
+			}
+		if (y<=getarraysize($guildassumptio)) set y,y+1;
+		goto L_guildassumptio;
+		end;
+
+L_buffassumptio:
+		specialeffect(EF_ASSUMPTIO, AREA, playerattached()); sc_start SC_ASSUMPTIO,0,5;
+		set y, 0;
+		goto L_guildmagnificat;
+		end;
+
+L_guildmagnificat:
+		if ($guildmagnificat[y]==getcharid(2)) goto L_buffmagnificat;
+			if (y>=getarraysize($guildmagnificat)){
+				set y, 0;
+				goto L_guildangelus;
+			}
+		if (y<=getarraysize($guildmagnificat)) set y,y+1;
+		goto L_guildmagnificat;
+		end;
+
+L_buffmagnificat:
+		specialeffect(EF_MAGNIFICAT, AREA, playerattached()); sc_start SC_MAGNIFICAT,0,5;
+		set y, 0;
+		goto L_guildangelus;
+		end;
+
+L_guildangelus:
+		if ($guildangelus[y]==getcharid(2)) goto L_buffangelus;
+			if (y>=getarraysize($guildangelus)){
+				set y, 0;
+				goto L_guildgloria;
+			}
+		if (y<=getarraysize($guildangelus)) set y,y+1;
+		goto L_guildangelus;
+		end;
+
+L_buffangelus:
+		specialeffect(EF_ANGELUS, AREA, playerattached()); sc_start SC_ANGELUS,0,10;
+		set y,0;
+		goto L_guildgloria;
+		end;
+
+L_guildgloria:
+		if ($guildgloria[y]==getcharid(2)) goto L_buffgloria;
+			if (y>=getarraysize($guildgloria)){
+				set y, 0;
+				goto L_guildimpositio;
+			}
+		if (y<=getarraysize($guildgloria)) set y,y+1;
+		goto L_guildgloria;
+		end;
+
+L_buffgloria:
+		specialeffect(EF_GLORIA, AREA, playerattached()); sc_start SC_GLORIA,0,5;
+		set y,0;
+		goto L_guildimpositio;
+		end;
+
+L_guildimpositio:
+		if ($guildimpositio[y]==getcharid(2)) goto L_buffimpositio;
+			if (y>=getarraysize($guildimpositio)){
+				set y, 0;
+				goto L_guildspirit;
+			}
+		if (y<=getarraysize($guildimpositio)) set y,y+1;
+		goto L_guildimpositio;
+		end;
+
+L_buffimpositio:
+		specialeffect(EF_IMPOSITIO, AREA, playerattached()); sc_start SC_IMPOSITIO,0,5;
+		set y,0;
+		goto L_guildspirit;
+		end;
+
+L_guildspirit:
+		if ($guildspirit[y]==getcharid(2)) goto L_buffspirit;
+			if (y>=getarraysize($guildspirit)){
+				set y, 0;
+				goto L_heal;
+			}
+		if (y<=getarraysize($guildspirit)) set y,y+1;
+		goto L_guildspirit;
+		end;
+
+L_buffspirit:
+		set y,0;
+		percentheal 100,100;
+		switch( Class ) {
+		case Job_Star_Gladiator:
+		case Job_Star_Gladiator2:
+		set .@skill_id, 448; break;
+		case Job_SuperNovice:
+		set .@skill_id, 451; break;
+		case Job_Soul_Linker:
+		set .@skill_id, 461; break;
+		case Job_Novice_High:
+		case Job_Swordman_High:
+		case Job_Mage_High:
+		case Job_Archer_High:
+		case Job_Acolyte_High:
+		case Job_Merchant_High:
+		case Job_Thief_High:
+		set .@skill_id, 494; break;
+default:
+		switch( BaseJob ) {
+		case Job_Alchemist:    set .@skill_id, 445; break;
+		case Job_Monk:        set .@skill_id, 447; break;
+		case Job_Sage:        set .@skill_id, 449; break;
+		case Job_Crusader:    set .@skill_id, 450; break;
+		case Job_Knight:    set .@skill_id, 452; break;
+		case Job_Wizard:    set .@skill_id, 453; break;
+		case Job_Priest:    set .@skill_id, 454; break;
+		case Job_Bard:
+		case Job_Dancer:    set .@skill_id, 455; break;
+		case Job_Rogue:        set .@skill_id, 456; break;
+		case Job_Assassin:    set .@skill_id, 457; break;
+		case Job_Blacksmith:    set .@skill_id, 458; break;
+		case Job_Hunter:    set .@skill_id, 460; break;
+		}
+		break;
+}
+if (.@skill_id) {
+sc_start4 SC_SOULLINK,350000,5,.@skill_id,0,0;        
+specialeffect(EF_SOULLINK, AREA, playerattached());
+}
+
+goto L_heal;
+end;
+
+L_heal:
+percentheal 100,100;
+end;
+}

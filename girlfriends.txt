@@ -1,0 +1,1358 @@
+/*
+  ________  __________________ 
+ /  _____/ /  _____/\______   \
+/   \  ___/   \  ___ |    |  _/
+\    \_\  \    \_\  \|    |   \
+ \______  /\______  /|______  /
+        \/        \/        \/ 
+
+Good German Bread
+*>>by Sim0n
+=============================================
+*>>Kommentar:
+=============================================
+- Ne Freundin für alle GMs xDD
+=============================================
+*/
+
+-	script	gf	-1,{
+
+
+
+OnWhisperGlobal:
+
+	if (getgmlevel() < 81) end;
+	
+	if (@whispervar0$ == "enable") {
+					
+		set .@i,rand(1,10);
+		
+		while (getvariableofnpc(.enabled,"gf#" + .@i)) set .@i,rand(1,10);
+		
+		set $@gf_name$,strcharinfo(0);		
+		
+		dispbottom ($gf_debug) ? "Set Displayname of gf#" + .@i : "";
+
+		if(setnpcdisplay("gf#" + .@i,$@gf_name$ + "'s Sweet Girl#" + .@i )) {
+			
+			dispbottom "NPC doesn't exist....";
+			end;
+			
+		}
+		
+		dispbottom "Enable: gf#" + .@i;
+				
+		donpcevent "gf#" + .@i + "::OnEnable";
+				
+	} else if (@whispervar0$ == "disable") {
+		
+		set .@i,1;
+		
+		while (getvariableofnpc(getd(".gf_name" + .@i + "$"),"gf#" + .@i) != strcharinfo(0)) set .@i,.@i + 1;
+		
+		if (.@i > 10) {
+			
+			dispbottom "NPC doesn't exist...";
+			end;
+			
+		}
+		
+		dispbottom ($gf_debug) ? "Name: " + getvariableofnpc(getd(".gf_name" + .@i + "$"),"gf#" + .@i) : "";
+		
+		dispbottom "Disable: gf#" + .@i;
+		
+		donpcevent "gf#" + .@i + "::OnDisable";
+		
+		disablenpc "gf#" + .@i;	
+		
+	} else if (@whispervar0$ == "load") {	
+	
+		donpcevent "girlfriend::OnInit";
+		dispbottom "loaded...";
+		
+	} else if (@whispervar0$ == "defpattern" && @whispervar1$ != "") {	
+		
+		set .@i,1;
+		
+		while (getvariableofnpc(getd(".gf_name" + .@i + "$"),"gf#" + .@i) != strcharinfo(0)) set .@i,.@i + 1;
+		
+		dispbottom ($gf_debug) ? "Name: " + getvariableofnpc(getd(".gf_name" + .@i + "$"),"gf#" + .@i) : "";
+		
+		if (.@i > 10) {
+			
+			dispbottom "NPC doesn't exist...";
+			end;
+			
+		}
+		
+		if (@whispervar1$ == "on") {
+			
+			donpcevent "gf#" + .@i + "::OnDefpatternOn";
+			
+			dispbottom "Defpattern ON";
+			
+		} else if (@whispervar1$ == "off") {
+		
+			donpcevent "gf#" + .@i + "::OnDefpatternOff";
+
+			dispbottom "Defpattern OFF";	
+		
+		} else 
+			
+			dispbottom "Write 'on' or 'off' to enable or disable defpattern support.";
+			
+		
+		
+	} else {  
+				
+		dispbottom "usage: enable - to enable the girlfriend";
+		dispbottom "usage: disable - to disable the girlfriend";
+		dispbottom "usage: load - to load the OnInit vars";
+		dispbottom "usage: defpattern#on/off - to turn defpattern support on and off";
+	
+	}	
+	
+	
+	end;
+
+}
+
+prontera,0,0,4	script	gf::girlfriend	862,{
+
+dispbottom ($gf_debug) ? strnpcinfo(0) + "," + strnpcinfo(1) + "," + strnpcinfo(2) + "," + strnpcinfo(3) : "";
+	
+//Nichts passiert wenn nicht enabled
+if (!getd(".enabled" + strnpcinfo(2))) end;
+
+set .@rnd,rand(getarraysize(getd(".names" +strnpcinfo(2)+ "$")));
+
+while (getd(".names" + strnpcinfo(2)+ "$[" + .@rnd + "]") == getd(".gf_name" + strnpcinfo(2)+ "$")) set .@rnd,rand(getarraysize(getd(".names" +strnpcinfo(2)+ "$")));
+
+if ( strcharinfo(0) == getd(".gf_name" + strnpcinfo(2)+ "$") )
+
+	callfunc "func_gf",getd(".gf_name" + strnpcinfo(2)+ "$");
+ 
+else {
+
+switch(rand(1,66)) {
+ 
+	case 1:
+  
+		npctalk getd(".gf_name" +strnpcinfo(2)+ "$") + " is the best!!";
+		emotion e_lv;
+		end;
+   
+	case 2:
+  
+		npctalk "Dont watch me.... -.-";
+		emotion e_dots;
+		end;
+   
+	case 3:
+	  
+		npctalk "EEEEEYYYY dont look on my boobs MAAAAAAAAN!!!";
+		emotion e_an;
+		end;
+   
+	case 4:
+    
+		npctalk "Hey sweety.... grrrrrrrr...You think, eh?!";
+		emotion e_gg;
+		end;
+   
+	case 5:
+	
+		npctalk "I miss " + getd(".gf_name" +strnpcinfo(2)+ "$") + ".... =(";
+		emotion e_sob;
+		end;
+		
+	case 6:
+	
+		npctalk "I miss my cute " + getd(".gf_name" +strnpcinfo(2)+ "$") + "....";
+		emotion e_lv;
+		end;
+   
+	case 7:
+  
+		npctalk "Pray to " + getd(".gf_name" +strnpcinfo(2)+ "$") + "!!";
+		emotion e_gg;
+		end;
+   
+	case 8:
+  
+		npctalk "Who has the biggest? " + getd(".gf_name" +strnpcinfo(2)+ "$") + "! Who is the best? " + getd(".gf_name" +strnpcinfo(2)+ "$") + "! *sing*";
+		emotion e_ho;
+		end;
+   
+	case 9:
+  
+		npctalk "And again a fuckwit....";
+		emotion e_virgin;
+		end;
+   
+	case 10:
+  
+		npctalk "Dont touch me you sucker!";
+		emotion e_pif;	
+		end;
+   
+	case 11:
+  
+		npctalk "Why do you looking at me??";
+		emotion e_dots;
+		end;
+   
+	case 12:
+  
+		npctalk "Your mother is pulling trucks on eurosport!";
+		emotion e_gg;
+		end;
+   
+	case 13:
+  
+		npctalk "Your mother is the fatest boss.";
+		emotion e_gg;
+		end;
+   
+	case 14:
+  
+		npctalk "Your mother has a full beard, her name is Jon and she's a bus driver.";
+		emotion e_gg;
+		end;
+   
+	case 15:
+  
+		npctalk "If your mother turns around, she has birthday again....";
+		emotion e_gg;
+		end;
+   
+	case 16:
+  
+		npctalk "Your mother is like a mustard glas, everybody may put his sausage in it.";
+		emotion e_gg;
+		end;
+   
+	case 17:
+  
+		npctalk "Do you want go outside with me? Heeee?!";
+		emotion e_an;
+		end;
+   
+	case 18:
+  
+		npctalk "They are big, hm?!";
+		emotion e_dots;
+		end;
+   
+	case 19:
+  
+		npctalk "MUUUUUUUUUUH~";
+		emotion e_panic;
+		end;
+   
+	case 20:
+  
+		npctalk getd(".gf_name" +strnpcinfo(2)+ "$") + " RUUUUULEEEZ!!!!";
+		emotion e_heh;
+		end;
+   
+	case 21:
+  
+		npctalk "MUUUUUUUUUUHHHH!!!";
+		emotion e_panic;
+		end;
+   
+	case 22:
+  
+		npctalk "Drink more milk!!!";
+		emotion e_wah;
+		end;
+   
+	case 23:
+  
+		npctalk "Do you know somebody with the name Christoff Smaul?!";
+		emotion e_omg;
+		end;
+   
+	case 24:
+  
+		npctalk "Do you someone with the name Christian Harten?!";
+		emotion e_omg;
+		end;
+   
+	case 25:
+  
+		npctalk "LaLaLa.... I'm naked under my clothes... o.O";
+		emotion e_omg;
+		end;
+   
+	case 26:
+  
+		npctalk "Call me!!! 0900666666";
+		emotion e_ho;
+		end;
+   
+	case 27:
+  
+		npctalk "Press ALT+F4 for free Zeny!!";
+		emotion e_bzz;
+		end;
+   
+	case 28:
+  
+		npctalk "My name is Anna Machslochoff!.";
+		end;
+   
+	case 29:
+  
+		npctalk "Ey does your dad have a full beard? No? Oh sorry then I saw your mum...";
+		end;
+   
+	case 30:
+  
+		npctalk getd(".names" +strnpcinfo(2)+ "$[" + .@rnd + "]") + " is gay....";
+		end;
+   
+	case 31:
+  
+		npctalk "You stink go away!!";
+		end;
+   
+	case 32:
+  
+		npctalk getd(".names" +strnpcinfo(2)+ "$[" + .@rnd + "]") + " has a small ******.";
+		end;
+   
+	case 33:
+  
+		npctalk "I always think " + getd(".names" +strnpcinfo(2)+ "$[" + .@rnd + "]") + " has a very small ******.";
+		end;
+   
+	case 34:
+  
+		npctalk "No I dont take off my clothers if you pay me...";
+		end;
+   
+	case 35:
+  
+		npctalk "I tried to drive around your mum, but my gas gone out.";
+		end;
+   
+	case 36:
+  
+		npctalk "Your mother is sitting next to each other in the cinema.";
+		end;
+   
+	case 37:
+  
+		npctalk "Your mother uses sheeps as OB.";
+		end;
+   
+	case 38:
+  
+		npctalk "Your mother is pushing small kids from the bike and smelling on the saddle.";
+		end;
+   
+	case 39:
+  
+		npctalk "If you see " + getd(".gf_name" +strnpcinfo(2)+ "$") + ", tell him he's hot...hrrrrrrrrrr.";
+		end;
+   
+	case 40:
+  
+		npctalk "MÖÖÖÖP!";
+		end;
+   
+	case 41:
+  
+		npctalk "FU!!!";
+		end;
+   
+	case 42:
+  
+		npctalk "I hate noobs like you...";
+		end;
+   
+	case 43:
+  
+		npctalk "(>'')>";
+		end;
+   
+	case 44:
+  
+		npctalk "If you think this NPC dont make sense, write a letter to DHRO ";
+		end;
+   
+	case 45:
+  
+		npctalk "I hate you all....";
+		end;
+   
+	case 46:
+  
+		npctalk getd(".names" +strnpcinfo(2)+ "$[" + .@rnd + "]") + " sucks *cough*";
+		end;
+   
+	case 47:
+  
+		npctalk "Dont get in my nervs...";
+		end;
+   
+	case 48:
+  
+		npctalk "You are only envious -__________-";
+		end;
+   
+	case 49:
+  
+		npctalk "Do you want to stroke my pussy? GRRRRR~";
+		end;
+   
+	case 50:
+  
+		npctalk "You are so ugly....";
+		end;
+   
+	case 51:
+  
+		npctalk "I dont know what I should say else.....";
+		end;
+   
+	case 52:
+  
+		npctalk "You are all stupid!";
+		end;
+   
+	case 53:
+  
+		npctalk "What do you have there in your pants? Are you happy to se me ?";
+		end;
+   
+	case 54:
+  
+		npctalk "-.-";
+		emotion e_dots;
+		end;
+   
+	case 55:
+  
+		npctalk "Go Home!!!";
+		emotion e_go;
+		end;
+   
+	case 56:
+  
+		npctalk "You are still here?! >.<";
+		emotion e_pif;
+		end;
+   
+	case 57:
+  
+		npctalk "...bla bla bla....";
+		emotion e_dots;
+		end;
+   
+	case 58:
+  
+		npctalk "I qoute " + getd(".gf_name" +strnpcinfo(2)+ "$") + ": 'I'm god'";
+		end;
+   
+	case 59:
+  
+		npctalk "I just stay here.";
+		emotion e_dots;
+		end;
+   
+	case 60:
+  
+		npctalk "Where's the loo?!";
+		emotion e_what;
+		end;
+   
+	case 61:
+  
+		npctalk "Can somebody change my tampon?!.";
+		emotion e_what;
+		end;
+   
+	case 62:
+  
+		npctalk "Drugs are bad...HMKAY?!";
+		emotion e_swt2;
+		end;
+   
+	case 63:
+  
+		npctalk "MAKLA!!!";
+		end;
+
+	case 64:
+		
+		npctalk "Where the hell is Mike Litoris?";
+		emotion e_what;
+		end;	
+		
+	case 65:
+		
+		npctalk "I really like SM, you know?!";
+		emotion e_gg;
+		end;
+		
+	case 66:	
+	
+		npctalk "Congratulations... you are stupid!";
+		emotion e_grat;
+		end;
+		
+	case 67:
+
+		npctalk "Your momma is so stupid she climbed over a glass wall just to see whats on the other side!";
+		emotion e_heh;
+		end;
+		
+	case 68:
+
+		npctalk "Yo momma so fat, scientists have declared her ass to be the 10th planet.";
+		emotion e_heh;
+		end;	
+			
+	case 69:
+
+		npctalk "Yo momma's so stupid, she got hit by a parked car.";
+		emotion e_heh;
+		end;	
+			
+	case 70:
+
+		npctalk "Your momma's so poor she can't even pay attention!";
+		emotion e_heh;
+		end;	
+			
+	case 71:
+
+		npctalk "Your mamma is so fat she's on both sides of the family.";
+		emotion e_heh;
+		end;	
+			
+	case 72:
+
+		npctalk "Yo momma so ugly your Grandma threw her on the street and was charged for littering.";
+		emotion e_heh;
+		end;	
+			
+	case 73:
+
+		npctalk "Yo momma so fat the last time she saw 90210 was on the scale!";
+		emotion e_heh;
+		end;	
+			
+	case 74:
+
+		npctalk "Yo momma so ugly, she walked into Taco Bell and everyone ran for the border.";
+		emotion e_heh;
+		end;	
+			
+	case 75:
+
+		npctalk "Yo momma is like a toilet; fat, white, and smells like shit !!";
+		emotion e_heh;
+		end;	
+			
+	case 76:
+
+		npctalk "Yo momma is like a bowling ball, gets picked up fingered, thrown in the gutter and bitch comes back for more.";
+		emotion e_heh;
+		end;	
+			
+	case 77:
+
+		npctalk "Your mamma is so poor she was kicking a can down the street, asked what she was doing and she said moving.";
+		emotion e_heh;
+		end;	
+			
+	case 78:
+
+		npctalk "Yo momma is like a bottle of ketchup, she gets turned around, banged, and then she comes out slow.";
+		emotion e_heh;
+		end;	
+			
+	case 79:
+
+		npctalk "";
+		emotion e_heh;
+		end;	
+			
+	case 80:
+
+		npctalk "Your mother is like a doorknob.... everyone gets a turn!";
+		emotion e_heh;
+		end;	
+		
+	case 81:
+
+		npctalk "Your mom is like a race car driver, she burns 50 rubbers a day.";
+		emotion e_heh;
+		end;		
+		
+	case 82:
+
+		npctalk "Your momma is like a vacuum cleaner, she sucks, blows and gets laid in the closet.";
+		emotion e_heh;
+		end;		
+		
+	case 83:
+
+		npctalk "Your mothers so fat, they tie a rope around her shoulders and drag her through a tunnel when they want to clean it.";
+		emotion e_heh;
+		end;	
+		
+	case 84:
+
+		npctalk "Yo momma's so stupid she thought a quarterback is a refund.";
+		emotion e_heh;
+		end;	
+		
+	case 85:
+
+		npctalk "Yo momma's glasses are so thick when she looks at a map she sees people waving.";
+		emotion e_heh;
+		end;	
+		
+	case 86:
+
+		npctalk "Yo momma's glasses are so thick when she looks at a map she sees people waving.";
+		emotion e_heh;
+		end;	
+		
+	case 87:
+
+		npctalk "Yo momma is a carpenter's dream...she's flat as a board and she's never been screwed.";
+		emotion e_heh;
+		end;	
+		
+	case 88:
+
+		npctalk "Yo momma is so fat she has more chins than a Chinese phonebook.";
+		emotion e_heh;
+		end;	
+		
+	case 89:
+
+		npctalk "Yo momma is so fat her blood type is rocky road.";
+		emotion e_heh;
+		end;	
+		
+	case 90:
+
+		npctalk "Yo momma is so fat when God said let there be light, he said move your fat butt out of the way.";
+		emotion e_heh;
+		end;	
+		
+	case 91:
+
+		npctalk "Yo momma is so dumb she got hit by a park car.";
+		emotion e_heh;
+		end;	
+		
+	case 92:
+
+		npctalk "Yo momma is so dumb she tripped over a cordless phone.";
+		emotion e_heh;
+		end;	
+		
+	case 93:
+
+		npctalk "Yo momma is so fat she uses a mattress as a tampon.";
+		emotion e_heh;
+		end;	
+		
+	case 94:
+
+		npctalk "Yo momma is so fat she put on a pair of Guess Jeans and the answer popped out.";
+		emotion e_heh;
+		end;	
+		
+	case 95:
+
+		npctalk "Yo momma's so fat, she irons her clothes on the drive way!";
+		emotion e_heh;
+		end;	
+		
+	case 96:
+
+		npctalk "Yo momma's glasses are so thick, when she looks at a map she sees people waving.";
+		emotion e_heh;
+		end;	
+		
+	case 97:
+
+		npctalk "Yo momma's so fat, she was floating in the ocean and Spain claimed her for the new world!";
+		emotion e_heh;
+		end;	
+		
+	case 98:
+
+		npctalk "Yo momma's so ugly, when you look up 'ugly' in the dictionary, there's a picture of her!";
+		emotion e_heh;
+		end;	
+		
+	case 99:
+
+		npctalk "Yo momma's so short, she does back flips under the bed!";
+		emotion e_heh;
+		end;	
+		
+	case 100:
+
+		npctalk "Yo momma's so fat she can't even fit in the chat room.";
+		emotion e_heh;
+		end;	
+		
+	case 101:
+
+		npctalk "Yo Momma's so fat she gets her toenails painted at Lucky's Auto Body.";
+		emotion e_heh;
+		end;	
+																																														
+	}
+		
+}
+
+end;
+
+OnInit:	
+	
+	announce ($gf_debug) ? "GELADEN" : "",0;
+	setd ".names" + strnpcinfo(2) + "$[0]","Midu","Deme","Arg0n","Icescope";
+	setd ".gf_name" + strnpcinfo(2) + "$","";
+	setd ".enabled" +  strnpcinfo(2),0;
+	
+	//DEBUG MODE on/off
+	set $gf_debug,0;
+	
+	//own
+	
+	defpattern 2, "([^:]+):.*\\sMietzi.*", "L_quote42";
+	defpattern 2, "([^:]+):.*\\si\\s+joke\\s+(.*)", "L_quote43";
+	
+	defpattern 2, "([^:]+):.*\\shello.*", "L_quote0";
+	defpattern 2, "([^:]+):.*\\scomputer.*", "L_quote1";
+	defpattern 2, "([^:]+):.*\\sname.*", "L_quote2";
+	defpattern 2, "([^:]+):.*\\ssorry.*", "L_quote3";
+	defpattern 2, "([^:]+):.*\\si\\s+remember\\s+(.*)", "L_quote4";
+	defpattern 2, "([^:]+):.*\\sdo\\s+you\\s+remember\\s+(.*)", "L_quote5";
+	defpattern 2, "([^:]+):.*\\sif\\s+(.*)", "L_quote6";
+	defpattern 2, "([^:]+):.*\\si\\s+dreamt\\s+(.*)", "L_quote7";
+	defpattern 2, "([^:]+):.*\\sdream\\s+about\\s+(.*)", "L_quote8";
+	defpattern 2, "([^:]+):.*\\sdream\\s+(.*)", "L_quote9";
+	defpattern 2, "([^:]+):.*\\smy\\s+mother\\s+(.*)", "L_quote10";
+	defpattern 2, "([^:]+):.*\\smy\\s+father\\s+(.*)", "L_quote11";
+	defpattern 2, "([^:]+):.*\\si\\s+want\\s+(.*)", "L_quote12";
+	defpattern 2, "([^:]+):.*\\si\\s+am\\s+glad\\s+(.*)", "L_quote13";
+	defpattern 2, "([^:]+):\\s+(.*)\\s+i\\s+am\\s+sad\\s+(.*)", "L_quote14";
+	defpattern 2, "([^:]+):\\s+(.*)\\s+are\\s+like\\s+(.*)", "L_quote15";
+	defpattern 2, "([^:]+):\\s+(.*)\\s+is\\s+like\\s+(.*)", "L_quote16";
+	defpattern 2, "([^:]+):.*\\salike\\s+(.*)", "L_quote17";
+	defpattern 2, "([^:]+):.*\\ssame\\s+(.*)", "L_quote18";
+	defpattern 2, "([^:]+):.*\\si\\s+was\\s+(.*)", "L_quote19";
+	defpattern 2, "([^:]+):.*\\swas\\s+i\\s+(.*)", "L_quote20";
+	defpattern 2, "([^:]+):.*\\si\\s+am\\s+(.*)", "L_quote21";
+	defpattern 2, "([^:]+):.*\\sam\\s+i\\s+(.*)", "L_quote22";
+	defpattern 2, "([^:]+):.*\\sam\\s+(.*)", "L_quote23";
+	defpattern 2, "([^:]+):.*\\sare\\s+you\\s+(.*)", "L_quote24";
+	defpattern 2, "([^:]+):.*\\syou\\s+are\\s+(.*)", "L_quote25";
+	defpattern 2, "([^:]+):.*\\sbecause\\s+(.*)", "L_quote26";
+	defpattern 2, "([^:]+):.*\\swere\\s+you\\s+(.*)", "L_quote27";
+	defpattern 2, "([^:]+):.*\\si\\s+(cant|can't|cannot)\\s+(.*)", "L_quote28";
+	defpattern 2, "([^:]+):.*\\si\\s+feel\\s+(.*)", "L_quote29";
+	defpattern 2, "([^:]+):.*\\si\\s+felt\\s+(.*)", "L_quote30";
+	defpattern 2, "([^:]+):.*\\si\\s+(.*)\\s+you\\s+(.*)", "L_quote31";
+	defpattern 2, "([^:]+):.*\\swhy\\s+(don't|dont)\\s+you\\s+(.*)", "L_quote32";
+	defpattern 2, "([^:]+):.*\\syes\\s+(.*)", "L_quote33";
+	defpattern 2, "([^:]+):.*\\sno\\s+(.*)", "L_quote34";
+	defpattern 2, "([^:]+):.*\\ssomeone\\s+(.*)", "L_quote35";
+	defpattern 2, "([^:]+):.*\\severyone\\s+(.*)", "L_quote36";
+	defpattern 2, "([^:]+):.*\\salways\\s+(.*)", "L_quote37";
+	defpattern 2, "([^:]+):.*\\swhat\\s+(.*)", "L_quote38";
+	defpattern 2, "([^:]+):.*\\s(perhaps|maybe)\\s+(.*)", "L_quote39";
+	defpattern 2, "([^:]+):.*\\sare\\s+(.*)", "L_quote40";
+	defpattern 2, "([^:]+):(.*)", "L_quote41";
+	
+
+
+	activatepset 2;
+		
+end;	
+
+OnEnable:
+
+	announce ($gf_debug) ? strnpcinfo(3) + " AKTIV" : "",0;
+	
+	enablenpc strnpcinfo(3);
+	
+	setd ".enabled" + strnpcinfo(2),1;	
+	setd ".gf_name" + strnpcinfo(2) + "$",$@gf_name$;
+	set $@gf_name$,"";
+		
+	//unitwarp getnpcid(),.@map$,.@x + 2,.@y + 2;	
+	
+	while (!getmapxy(.@map$,.@x,.@y,0,getd(".gf_name" +strnpcinfo(2)+ "$")) && getd(".enabled" + strnpcinfo(2))) {
+		
+		getmapxy(.@map_npc$,.@y_npc,.@x_npc,1);
+		
+		if (.@map_npc$ == .@map$) {
+			
+			announce ($gf_debug) ? "Gehen -> " + .@map_npc$ + "(" + .@x_npc + "," + .@y_npc + ")" : "",0;
+			
+			npcwalkto .@x + 1,.@y + 1;
+			
+			//unitwalk getnpcid(),.@x + 1,.@y + 1;
+			
+		} else {
+		
+			//npcmove2 strnpcinfo(3),.@map$,.@x + 1,.@y + 1;
+
+			announce ($gf_debug) ? "Warpen -> " + .@map$ + "(" + .@x + "," + .@y + ")" : "",0;
+			
+			unitwarp getnpcid(),.@map$,.@x + 1,.@y + 1;
+			
+			sleep 1000;
+			
+		}	
+		
+		sleep 1000;
+		
+	}
+	
+	announce ($gf_debug) ? "Unter der WHILE" : "",0;
+	
+end;
+
+OnDisable:
+	
+	unitwarp getnpcid(),.@map$,0,0;
+	
+	setd ".enabled" + strnpcinfo(2),0;
+	setd ".gf_name" + strnpcinfo(2) + "$","";
+	setd ".defpattern" + strnpcinfo(2),0;	
+
+end;	
+
+//DEFPATTERN
+
+OnDefpatternOn:
+
+	announce ($gf_debug) ? "Defpattern ON" : "",0;
+	
+	setd ".defpattern" + strnpcinfo(2),1;
+	
+end;	
+
+OnDefpatternOff:
+	
+	announce ($gf_debug) ? "Defpattern OFF" : "",0;
+
+	setd ".defpattern" + strnpcinfo(2),0;
+	
+end;
+
+
+
+
+// hello
+L_quote0:
+		if (!getd(".defpattern" + strnpcinfo(2))) end;
+        npctalk "How do you do.  Do you want to talk?";
+        end;
+
+// computer
+L_quote1:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+    switch(rand(4)) {
+		case 0: npctalk "Do computers worry you?"; break;
+		case 1: npctalk "What do you think about machines?"; break;
+		case 2: npctalk "Why do you mention computers?"; break;
+		case 3: npctalk "What do you think machines have to do with your problem?"; break;
+	}
+        end;
+
+// name
+L_quote2:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	npctalk "I am not interested in names";
+	end;
+
+// sorry
+L_quote3:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(4)) {
+		case 0: npctalk "Please don't apologize"; break;
+		case 1: npctalk "Apologies are not necessary"; break;
+		case 2: npctalk "What feelings do you have when you apologize?"; break;
+		case 3: npctalk "Yaya..."; break;
+	}
+        end;
+
+// I remember $@p2$
+L_quote4:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(6)) {
+		case 0: npctalk "Do you often think of "+$@p2$+"?"; break;
+		case 1: npctalk "Does thinking of "+$@p2$+" bring anything else to mind?"; break;
+		case 2: npctalk "What else do you remember?"; break;
+		case 3: npctalk "Why do you recall "+$@p2$+" right now?"; break;
+		case 4: npctalk "What in the present situation reminds you of "+$@p2$+"?"; break;
+		case 5: npctalk "What is the connection between me and "+$@p2$+"?"; break;
+	}
+        end;
+
+//    do you remember
+L_quote5:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch (rand(4)) {
+		case 0: npctalk "Did you think I would forget "+$@p2$+" ?"; break;
+		case 1: npctalk "Why do you think I should recall "+$@p2$+" now"; break;
+		case 2: npctalk "What about "+$@p2$+""; break;
+		case 3: npctalk "You mentioned "+$@p2$+""; break;
+	}
+        end;
+
+// if
+L_quote6:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(4)) {
+		case 0: npctalk "Do you really think its likely that "+$@p2$+""; break;
+		case 1: npctalk "Do you wish that "+$@p2$+"?"; break;
+		case 2: npctalk "What do you think about "+$@p2$+"?"; break;
+		case 3: npctalk "Really-- if "+$@p2$+"?"; break;
+	}
+        end;
+
+//  i dreamt
+L_quote7:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(3)) {
+		case 0: npctalk "Really-- "+$@p2$+""; break;
+		case 1: npctalk "Have you ever fantasized "+$@p2$+" while you were awake?"; break;
+		case 2: npctalk "Have you dreamt "+$@p2$+" before?"; break;
+	}
+        end;
+
+//   dream about
+L_quote8:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	npctalk "How do you feel about "+$@p2$+" in reality?";
+	end;
+
+//  dream
+L_quote9:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(5)) {
+		case 0: npctalk "What does this dream suggest to you?"; break;
+		case 1: npctalk "Do you dream often?"; break;
+		case 2: npctalk "What persons appear in your dreams?"; break;
+		case 3: npctalk "Don't you believe that dream has to do with your problem?"; break;
+		case 4: npctalk "Did you ever had a wet dream?";
+	}
+        end;
+
+//   my mother
+L_quote10:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(3)) {
+		case 0: npctalk "Who else in your family "+$@p2$+""; break;
+		case 1: npctalk "Tell me more about your family"; break;
+		case 2: npctalk "Yo mamma, eh?"; break;
+	}
+        end;
+
+//   my father
+L_quote11:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(4)) {
+		case 0: npctalk "Your father"; break;
+		case 1: npctalk "Does he influence you strongly?"; break;
+		case 2: npctalk "What else comes to mind when you think of your father?"; break;
+		case 3: npctalk "Does he looks good?"; break;
+	}
+        end;
+
+//   I want
+L_quote12:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(3)) {
+		case 0: npctalk "What would it mean if you got "+$@p2$+""; break;
+		case 1: npctalk "Why do you want "+$@p2$+""; break;
+		case 2: npctalk "Suppose you got "+$@p2$+" soon"; break;
+	}
+        end;
+
+//    I am glad 
+L_quote13:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(3)) {
+		case 0: npctalk "How have I helped you to be "+$@p2$+""; break;
+		case 1: npctalk "What makes you happy just now"; break;
+		case 2: npctalk "Can you explain why you are suddenly "+$@p2$+""; break;
+	}
+        end;
+
+//    I am sad 
+L_quote14:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(2)) {
+		case 0: npctalk "I am sorry to hear you are depressed"; break;
+		case 1: npctalk "I'm sure its not pleasant to be sad"; break;
+	}
+        end;
+
+//   $@p2 are like "+$@p3$+"
+L_quote15:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	npctalk "What resemblance do you see between "+$@p2$+" and "+$@p3$+"";
+	end;
+
+//   "+$@p2$+" is like "+$@p3$+"
+L_quote16:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(4)) {
+		case 0: npctalk "In what way is it that "+$@p2$+" is like "+$@p3$+""; break;
+		case 1: npctalk "What resemblance do you see?"; break;
+		case 2: npctalk "Could there really be some connection?"; break;
+		case 3: npctalk "How?"; break;
+	}
+        end;
+
+//   alike
+L_quote17:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(2)) {
+		case 0: npctalk "In what way?"; break;
+		case 1: npctalk "What similarities are there?"; break;
+	}
+        end;
+
+//    same 
+L_quote18:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	npctalk "What other connections do you see?";
+	end;
+
+//   I was "+$@p2$+"
+L_quote19:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(3)) {
+		case 0: npctalk "Were you really?"; break;
+		case 1: npctalk "Perhaps I already knew you were "+$@p2$+""; break;
+		case 2: npctalk "Why do you tell me you were "+$@p2$+" now?"; break;
+	}
+        end;
+
+//    was I
+L_quote20:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(3)) {
+		case 0: npctalk "What if you were "+$@p2$+" ?"; break;
+		case 1: npctalk "Do you thin you were "+$@p2$+""; break;
+		case 2: npctalk "What would it mean if you were "+$@p2$+""; break;
+	}
+        end;
+
+//    I am
+L_quote21:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(2)) {
+		case 0: npctalk "In what way are you "+$@p2$+""; break;
+		case 1: npctalk "Do you want to be "+$@p2$+" ?"; break;
+	}
+        end;
+
+//   am I
+L_quote22:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(4)) {
+		case 0: npctalk "Do you believe you are "+$@p2$+""; break;
+		case 1: npctalk "Would you want to be "+$@p2$+""; break;
+		case 2: npctalk "You wish I would tell you you are "+$@p2$+""; break;
+		case 3: npctalk "What would it mean if you were "+$@p2$+""; break;
+	}
+        end;
+
+//   am
+L_quote23:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(2)) {
+		case 0: npctalk "Why do you say AM?"; break;
+		case 1: npctalk "I don't understand that"; break;
+	}
+        end;
+
+//    are you
+L_quote24:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(3)) {
+		case 0: npctalk "Why are you interested in whether I am "+$@p2$+" or not?"; break;
+		case 1: npctalk "Would you prefer if I weren't "+$@p2$+""; break;
+		case 2: npctalk "Perhaps I am "+$@p2$+" in your fantasies"; break;
+	}
+        end;
+
+//   you are 
+L_quote25:	
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(3)) {
+		case 0: npctalk "What makes you think I am "+$@p2$+" ?";
+		case 1: npctalk "Do you really think I am "+$@p2$+" ?";
+		case 2: npctalk "I am what?";
+	}	
+		end;
+
+//   because
+L_quote26:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(3)) {
+		case 0: npctalk "Is that the real reason?"; break;
+		case 1: npctalk "What other reasons might there be?"; break;
+		case 2: npctalk "Does that reason seem to explain anything else?"; break;		
+	}
+        end;
+
+//    were you 
+L_quote27:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(3)) {
+		case 0: npctalk "Perhaps I was "+$@p2$+""; break;
+		case 1: npctalk "What do you think?"; break;
+		case 2: npctalk "What if I had been "+$@p2$+""; break;
+	}
+        end;
+
+//   I can't 
+L_quote28:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(2)) {
+		case 0: npctalk "Maybe you could "+$@p3$+" now"; break;
+		case 1: npctalk "What if you could "+$@p3$+" ?"; break;
+	}
+        end;
+
+//    I feel 
+L_quote29:	
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	npctalk "Do you often feel "+$@p2$+" ?";
+	end;
+
+//    I felt
+L_quote30:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	npctalk "What other feelings do you have?";
+	end;
+
+//   $@p1$ I $@p2$ you $@p3$
+L_quote31:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	npctalk "Perhaps in your fantasy we "+$@p3$+" each other?";
+	end;
+
+//   why don't you 
+L_quote32:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(3)) {
+		case 0: npctalk "Should you "+$@p3$+" yourself?"; break;
+		case 1: npctalk "Do you believe I don't "+$@p3$+""; break;
+		case 2: npctalk "Perhaps I will "+$@p3$+" in good time"; break;
+	}
+        end;
+
+//   yes 
+L_quote33:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(3)) {
+		case 0: npctalk "You seem quite positive"; break;
+		case 1: npctalk "You are sure?"; break;
+		case 2: npctalk "I understand"; break;
+	}
+        end;
+
+//    no
+L_quote34:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(3)) {
+		case 0: npctalk "Why not?"; break;
+		case 1: npctalk "You are being a bit negative"; break;
+		case 2: npctalk "Are you saying NO just to be negative?"; break;
+	}
+        end;
+
+//    someone
+L_quote35:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	npctalk "Can you be more specific?";
+	end;
+
+//    everyone 
+L_quote36:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(4)) {
+		case 0: npctalk "surely not everyone"; break;
+		case 1: npctalk "Can you think of anyone in particular?"; break;
+		case 2: npctalk "Who for example?"; break;
+		case 3: npctalk "You are thinking of a special person?"; break;
+	}
+        end;
+
+//  always 
+L_quote37:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(4)) {
+		case 0: npctalk "Can you think of a specific example?"; break;
+		case 1: npctalk "When?"; break;
+		case 2: npctalk "What incident are you thinking of?"; break;
+		case 3: npctalk "Really-- always?"; break;
+	}
+        end;
+
+//   what
+L_quote38:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(5)) {
+		case 0: npctalk "Why do you ask?"; break;
+		case 1: npctalk "Does that question interest you?"; break;
+		case 2: npctalk "What is it you really want to know?"; break;
+		case 3: npctalk "What do you think?"; break;
+		case 4: npctalk "What comes to your mind when you ask that?"; break;
+	}
+        end;
+
+//   perhaps 
+L_quote39:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	npctalk "You do not seem quite certain";
+	end;
+
+//   are
+L_quote40:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(3)) {
+		case 0: npctalk "Did you think they might not be "+$@p2$; break;
+		case 1: npctalk "Possibly they are "+$@p2$; break;
+		case 3: npctalk "What are "+$@p2$+"?";
+	}
+        end;
+
+//   default
+L_quote41:
+	if (!getd(".defpattern" + strnpcinfo(2))) { announce ($gf_defpattern) ? "TEST" : "",0; end; }
+	switch(rand(9)) {
+		case 0: npctalk "Very interesting"; break;
+		case 1: npctalk "I am not sure I understand you fully"; break;
+		case 2: npctalk "What does that suggest to you?"; break;
+		case 3: npctalk "Please continue"; break;
+		case 4: npctalk "Go on"; break;
+		case 5: npctalk "Do you feel strongly about discussing such things?"; break;
+		case 6: npctalk "Oooh..."; break;
+		case 7: npctalk "Hmmm...?"; break;
+		case 8: npctalk "Sorry what was it again?"; break;
+	}
+        end;
+
+//  Mietzi		
+L_quote42:
+	if (!getd(".defpattern" + strnpcinfo(2)) && strcharinfo(0) != "Arg0n") end;
+	switch(rand(6)) {
+		case 0: npctalk "Mietzekater"; break;
+		case 1: npctalk "Miiiiieeeetzeeekater *-*"; break;
+		case 2: npctalk "*-*"; break;
+		case 3: npctalk "*knuddel*"; break;
+		case 4: npctalk "*schmuuuusiiii*"; break;
+		case 5: npctalk "*kusssiiii*"; break;
+	}	
+
+//  joke	
+L_quote43:
+	if (!getd(".defpattern" + strnpcinfo(2))) end;
+	switch(rand(3)) {		
+		case 0: npctalk "You are a joke..."; break;
+		case 1: npctalk "Do you know a good joke?"; break;
+		case 2: npctalk "Thahaha... whatever."; break;		
+	}
+
+}
+
+function	script	func_gf	{
+
+announce ($gf_debug) ? "Func" : "",0;
+
+switch(rand(1,11)) {
+ 
+	case 1:
+	
+		npctalk "AAAHHH~ " + getarg(0) + " is here!!!!!!!";
+		end;
+		
+	case 2:
+	
+		npctalk "All go out " + getarg(0) + " is here!";
+		end;
+		
+	case 3:
+	
+		npctalk "I love you darling <3";
+		end;
+		
+	case 4:
+	
+		npctalk "Dont touch " + getarg(0) + " >_<!!";
+		end;
+		
+	case 5:
+	
+		npctalk "I missed you honey...";
+		end;
+		
+	case 6:
+	
+		npctalk getarg(0) + " is here and my vertical smile is happy.";
+		end;
+		
+	case 7:
+	
+		npctalk getarg(0) + " kill you all!!";
+		end;
+		
+	case 8:
+	
+		npctalk "You sucker, pray to your god " + getarg(0) + "!!";
+		end;
+		
+	case 9:
+	
+		npctalk "Come to me hony and kiss me!!";
+		emotion 31;
+		end;
+		
+	case 10:
+	
+		npctalk "I want children from you " + getarg(0) + "!!";
+		end;
+		
+	case 11:	
+	
+		npctalk "Give it to me " + getarg(0) + "!!";
+		end;
+}
+
+end;
+
+}
+
+splendide,0,0,4	duplicate(girlfriend)	gf#1	725
+geffen,0,0,4	duplicate(girlfriend)	gf#2	862
+ayothaya,0,0,4	duplicate(girlfriend)	gf#3	485
+izlude,0,0,4	duplicate(girlfriend)	gf#4	724
+payon,0,0,4	duplicate(girlfriend)	gf#5	864
+comodo,0,0,4	duplicate(girlfriend)	gf#6	911
+alberta,0,0,4	duplicate(girlfriend)	gf#7	905
+aldebaran,0,0,4	duplicate(girlfriend)	gf#8	894
+yuno,0,0,4	duplicate(girlfriend)	gf#9	861
+umbala,0,0,4	duplicate(girlfriend)	gf#10	726

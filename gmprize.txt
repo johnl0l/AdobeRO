@@ -1,0 +1,118 @@
+//======Name========================================
+// Event Reward Giver
+//======Version=====================================
+// 0.9 (Untested)
+// Authors: UnoDelta, Sandbox
+//======Comments====================================
+// In loving memory of AstralRO
+//==================================================
+
+
+auction_01,195,72,3	script	Event Reward	563,{
+
+set .npcname$,"[ Event Reward ]";
+if (getgroupid() < 4){end;}
+
+mes .npcname$;
+mes "Hello "+strcharinfo(0)+", How can I help you?";
+menu "-Give Reward",N_Name,"-Nothing",-;
+next;
+mes .npcname$;
+mes "Alright! See you soon.";
+close;
+
+N_Name:
+next;
+mes .npcname$;
+mes "Please tell me the name of the player:";
+input .@Rew_Name$;
+next;
+query_sql "SELECT `online` FROM `char` WHERE `name`='"+.@Rew_Name$+"'",.@charstatus; //STATUS CHECK (ONLINE/OFFLINE)
+if (.@charstatus == 0) {
+mes .npcname$;
+mes "Char Name: "+.@Rew_Name$+".";
+mes "Char Status: ^FF0000OFFLINE^000000";
+mes "";
+mes "You cannot proceed.";
+menu "-Try Again",N_Name,"-Cancel",-;
+next;
+mes .npcname$;
+mes "Your action was canceled.";
+set .@loop,0;
+close;}
+
+if (.@charstatus == 1) {
+mes .npcname$;
+mes "Char Name: "+.@Rew_Name$+".";
+mes "Char Status: ^009F00ONLINE^000000";
+mes "";
+mes "You may proceed.";
+if (.@loop == 1) {goto N_End;}
+goto N_Item;}
+
+N_Item:
+next;
+mes .npcname$;
+mes "Please input the item ID to be given:";
+mes "^FF0000*Note that only item ID's will be accepted.^000000";
+input .@Rew_Item;
+if (.@Rew_Item <= 500) {goto N_Item;}
+set .@itemname$,getitemname(.@Rew_Item);
+if (.@loop == 1) {goto N_End;}
+goto N_Amt;
+
+N_Amt:
+next;
+mes .npcname$;
+mes "Please input the amount of the reward.";
+input .@Rew_Amt;
+if (.@Rew_Amt == 0) {goto N_Amt;}
+goto N_End;
+
+N_End:
+next;
+query_sql "SELECT `online` FROM `char` WHERE `name`='"+.@Rew_Name$+"'",.@charstatus; //STATUS CHECK (ONLINE/OFFLINE)
+if (.@charstatus == 0) {
+mes .npcname$;
+mes "Char Name: "+.@Rew_Name$+".";
+mes "Char Status: ^FF0000OFFLINE^000000";
+mes "Item Name: "+.@itemname$+".";
+mes "Item Amount: "+.@Rew_Amt+".";
+mes "";
+mes "You cannot proceed. Character is Offline.";
+menu "-Try Again",N_Name,"-Cancel",-;
+next;
+mes .npcname$;
+mes "Your action was canceled.";
+set .@loop,0;
+close;}
+
+if (.@charstatus == 1) {
+mes .npcname$;
+mes "Char Name: "+.@Rew_Name$+".";
+mes "Char Status: ^009F00ONLINE^000000";
+mes "Item Name: "+.@itemname$+".";
+mes "Item Amount: "+.@Rew_Amt+".";
+mes "";
+mes "You may proceed. Confirm Reward?";
+set .@loop,1;
+menu "-Confirm",R_Proc,"-Change Name",N_Name,"-Change Item",N_Item,"-Change Amount",N_Amt,"-Cancel",-;
+next;
+mes .npcname$;
+mes "Your action was cancelled.";
+set .@loop,0;
+close;}
+
+R_Proc:
+next;
+set .@Rew_GM$,strcharinfo(0);
+set .@Rew_Time$,gettimestr("%Y-%m/%d %H:%M:%S",21);
+query_sql "INSERT INTO `evt_prize` VALUES('"+.@Rew_Time$+"','"+.@Rew_Name$+"','"+.@Rew_Item+"','"+.@Rew_Amt+"','"+.@Rew_GM$+"')";
+getitem .@Rew_Item, .@Rew_Amt,getcharid(3, .@Rew_Name$);
+announce "[Event GM] "+strcharinfo(0)+" has rewarded "+.@Rew_Amt+" "+.@itemname$+" to "+.@Rew_Name$+".",bc_all,0xFF8080;
+mes .npcname$;
+mes "You have given your reward.";
+set .@loop,0;
+close;
+}
+

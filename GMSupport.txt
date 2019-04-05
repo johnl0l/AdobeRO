@@ -1,0 +1,65 @@
+// -------------------------------------------------------------------------------------------------
+// Original Script by: greenmagic469
+// Modified by: Panda - GM Kazehaya
+// - Knights Ragnarok Online -
+// v1.0(Original) - Simple @request sent to GMs
+// v1.1 - Added Delay and Number of GMs online
+// v1.2 - Added changing waitingroom title and check if there are available GMs
+// - Modification End -
+// -------------------------------------------------------------------------------------------------
+
+prontera,146,160,5	script	GM Support Assistant	469,{
+if(.GM_Online < 1  ){ mes "[ ^FF55FFGM Support Assistant^000000; ]"; mes "No available GMs."; close; }
+mes "[ ^FF55FFGM Support Assistant^000000; ]";
+mes "Number of GM(s) online: "+.GM_Online;
+mes "Would you like to contact them?";
+menu "Send a help request.",P_1,"Quit.",P_2;
+
+P_1:
+if(gettimetick(2) < #HelpDelay) {
+		mes "You may only send a message every 5 minutes!";
+		close;
+}
+atcommand "@request This player is in need of assistance.";
+dispbottom "Notified the Game Masters.";
+set #HelpDelay,gettimetick(2)+300;
+emotion e_hlp;
+close;
+end;
+
+P_2:
+close;
+
+OnInit:
+set .MinGMLevel,10;
+	reload:
+	delwaitingroom;
+	waitingroom "Number of online GMs: "+.GM_Online+"",0;
+	sleep2 3000;
+	delwaitingroom;
+	waitingroom "Do you want to contact GMs?",0;
+	sleep2 3000;
+	delwaitingroom;
+	waitingroom "If you need assistance, please click me.",0;
+	sleep2 3000;
+	goto reload;
+end;
+
+
+OnPCLoginEvent:
+if( getgmlevel() >= .MinGMLevel ){
+set .GM_Online,.GM_Online+1;
+end;
+}
+else
+end;
+
+OnPCLogoutEvent:
+if( getgmlevel() >= .MinGMLevel ){
+set .GM_Online,.GM_Online-1;
+end;
+}
+else
+end;
+
+}

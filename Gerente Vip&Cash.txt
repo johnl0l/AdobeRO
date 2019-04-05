@@ -1,0 +1,218 @@
+/*    ________________________________________________________
+     /                                                        \
+     |      | |__  _ __ / \ | |_| |__   ___ _ __   __ _       |
+     |      | '_ \| '__/ _ \| __| '_ \ / _ \ '_ \ / _` |      |
+     |      | |_) | | / ___ \ |_| | | |  __/ | | | (_| |      |
+     |      |_.__/|_|/_/   \_\__|_| |_|\___|_| |_|\__,_|      |
+	 |                                                        |
+     |--------------------------------------------------------|
+     | Nome do Script: Gerente Vip&Cash                       |
+     |--------------------------------------------------------|
+     | Criado por: Sephir4                                    |
+     |--------------------------------------------------------|
+	 | Funcionalidade:                                        |
+	 | - Adiciona e remove vip.                               |
+     | - Adiciona e remove cash.                              |
+     | - Aviso automatico ao adicionar cash ou vip as contas. |
+     | - Desloga o player ao remover cash ou vip.             |
+     | - Lista todas as contas do servidor para obter         |
+     |   informações.                                         |
+     | - Loja que vende vip por cash inclusa no npc.          |
+     \________________________________________________________/*/
+
+function	script	nmes	{
+	next;
+	mes getarg(0);
+	return;
+}
+
+prontera,157,175,5	script	Gerente	833,{
+	mes .n$;
+	if(getgmlevel() >= 90){
+		mes "Painel administrador de Vip e Cash.";
+		if(select("- Adicionar Login:- Listar contas")==1){
+			while(1){
+				nmes(.n$);
+				mes "Informe o login da conta que sera administrada: ";
+				deletearray @lac$;
+				deletearray @vfc;
+				input @lac$;
+				query_sql "SELECT `account_id` FROM `login` WHERE `userid` = '"+@lac$+"'",@vfc;
+				if(@vfc){
+					nmes(.n$);
+					switch(select("- Adicionar Vip:- Remover Vip:- Adicionar Cash:- Remover Cash")){
+						case 1:
+						while(1){
+							nmes(.n$);
+							mes "Quantos dias vip serão adicionados a conta [^0000FF"+@lac$+"^000000] : ";
+							input .qv;
+							if(.qv > 0){
+								nmes(.n$);
+								mes "Foram adicionados [^0073a2"+.qv+"^000000] dias vip a conta [^0000FF"+@lac$+"^000000]";
+								query_sql "UPDATE `login` SET `dvip` = `dvip`+'"+.qv+"', `group_id` = '1' WHERE `account_id` = '"+@vfc+"'";
+								close2;
+								attachrid(@vfc);
+								if(isloggedin(@vfc)){
+									dispbottom "Foram adicionados ["+.qv+"] dias vip em sua conta, relogue para evitar problemas.";
+								}
+								end;
+							}
+						}
+						case 2:
+						while(1){
+							nmes(.n$);
+							query_sql "SELECT `dvip` FROM `login` WHERE `userid` = '"+@lac$+"'",.dv;
+							mes "A conta [^0000FF"+@lac$+"^000000] tem [^0073a2"+.dv+"^000000] dias vip.";
+							mes " ";
+							mes "Quantos dias vip serão removidos da conta [^0000FF"+@lac$+"^000000] : ";
+							input .qv;
+							nmes(.n$);
+							if(.dv >= .qv){
+								mes "Foram removidos [^0073a2"+.qv+"^000000] dias vip a conta [^0000FF"+@lac$+"^000000]";
+								query_sql "UPDATE `login` SET `dvip` = `dvip`-'"+.qv+"' WHERE `account_id` = '"+@vfc+"'";
+								close2;
+								if(isloggedin(@vfc)){
+									attachrid(@vfc);
+									dispbottom "Foram removidos ["+.qv+"] dias vip de sua conta, você sera deslogado.";
+									sleep2 5000;
+									atcommand "@kick "+strcharinfo(0);
+								}
+								end;
+							}
+							nmes(.n$);
+							mes "A conta conta [^0000FF"+@lac$+"^000000] não tem dias vip suficientes para a remoção.";
+							if(select("- Tentar novamente:- Cancelar")==2)close;
+							
+						}
+						case 3:
+						while(1){
+							nmes(.n$);
+							mes "Quantos cash serão creditados a conta [^0000FF"+@lac$+"^000000] : ";
+							input .qc;
+							if(.qc > 0){
+								nmes(.n$);
+								query_sql "SELECT `account_id` FROM `acc_reg_num_db` WHERE `account_id` = '"+@vfc+"'",.vf;
+								if(.vf == @vfc){
+									mes "Foram adicionados [^0073a2"+.qc+"^000000] cash a conta [^0000FF"+@lac$+"^000000].";
+									query_sql "UPDATE `acc_reg_num_db` SET `value` = `value`+'"+.qc+"' WHERE `account_id` = '"+.vf+"'";
+									close2;
+									if(isloggedin(.vf)){
+										attachrid(.vf);
+										dispbottom "Foram creditados ["+.qc+"] cash em sua conta, relogue para evitar problemas.";
+									}
+									end;
+								}
+									mes "Foram adicionados [^0073a2"+.qc+"^000000] cash a conta [^0000FF"+@lac$+"^000000].";
+									query_sql "INSERT INTO `acc_reg_num_db` (`key` ,`value` ,`index` ,`account_id`)VALUES ('#CASHPOINTS', '"+.qc+"', '0', '"+@vfc+"')";
+									close2;
+									if(isloggedin(@vfc)){
+										attachrid(@vfc);
+										dispbottom "Foram creditados ["+.qc+"] cash em sua conta, relogue para evitar problemas.";
+									}
+									end;
+							}
+						}
+						case 4:
+						nmes(.n$);
+						query_sql "SELECT `account_id`,`value` FROM `acc_reg_num_db` WHERE `account_id` = '"+@vfc+"'",.vf,.vl;
+						if(.vf == @vfc){
+							while(1){
+								mes "A conta [^0000FF"+@lac$+"^000000] tem [^FF0099"+.vl+"^000000] cash.";
+								mes " ";
+								mes "Quantos cash serão debitados a conta [^0000FF"+@lac$+"^000000] : ";
+								input .qc;
+								if(.vl >= .qc){
+									nmes(.n$);
+									mes "Foram debitados [^FF0099"+.qc+"^000000] cash a conta [^0000FF"+@lac$+"^000000].";
+									query_sql "UPDATE `acc_reg_num_db` SET `value` = `value`-'"+.qc+"' WHERE `account_id` = '"+.vf+"'";
+									close2;
+									if(isloggedin(.vf)){
+										attachrid(.vf);
+										dispbottom "Foram debitados ["+.qc+"] cash de sua conta, você sera deslogado.";
+										sleep2 5000;
+										atcommand "@kick "+strcharinfo(0);
+									}
+									end;
+								}
+								mes " ";
+								mes "A conta conta [^0000FF"+@lac$+"^000000] não tem cash suficiente para remoção.";
+								if(select("- Tentar novamente:- Cancelar")==2)close;
+								nmes(.n$);
+							}
+						}
+						mes " ";
+						mes "[^FF0000Essa conta não contem cash.^000000]";
+						close;
+					}
+				}
+				mes " ";
+				mes "[^FF0000Conta não encontrada.^000000]";
+				if(select("Tentar novamente:Cancelar")==2)close;
+			}
+		}
+		query_sql "SELECT `account_id`,`userid`,`dvip`,`group_id`,`last_ip` FROM `login` WHERE `group_id` = '1' OR `group_id` = '0' ORDER BY `userid` ASC",.accid,.usi$, .dv, .gid, .lip$;
+		deletearray .mn$;
+		for(set .i,0; .i < getarraysize(.usi$); set .i,.i+1) set .mn$,.mn$+":- [^FF0000"+.usi$[.i]+"^000000] [^0000FF"+.gid[.i]+"^000000]";
+		mes " ";
+		mes "[^FF0000< Login >^000000] [^0000FF< Level >^000000]";
+		select(.mn$);
+		for(set .i,0; .i < getarraysize(.usi$); set .i,.i+1){
+			if((@menu -2) == .i){
+				deletearray @cash;
+				query_sql "SELECT `value` FROM `acc_reg_num_db` WHERE `account_id` = '"+.accid[.i]+"'",@cash;
+				nmes(.n$);
+				mes "Login:     [^AA0000"+.usi$[.i]+"^000000]";
+				mes "Level:     [^AA00CC"+.gid[.i]+"^000000]";
+				mes "D.Vip:     [^0000AA"+.dv[.i]+"^000000]";
+				mes "Cash:     [^0000AA"+@cash+"^000000]";
+				mes "IP:          [^CC00AA"+.lip$[.i]+"^000000]";
+				close;
+			}
+		}
+		mes " ";
+		mes "[^FF0000Não a contas no servidor.^000000]";
+		close;
+	}
+	mes "Você tem [^BB0000"+#CASHPOINTS+"^000000] cash.";
+	if(select("- Comprar Vip:- Cancelar")==2)close;
+		while(1){
+			nmes(.n$);
+			mes "Cada dia vip custa [^FFCCCC"+.pv+"^000000] Cash.";
+			mes " ";
+			mes "Quantos dias vip deseja comprar ?";
+			input .qtv;
+			if(#CASHPOINTS >= (.qtv*.pv)){
+				if(.qtv > 0){
+					nmes(.n$);
+					mes "Você comprou [^00CC00"+.qtv+"^000000] dias vip.";
+					query_sql "UPDATE `login` SET `dvip` = `dvip`+'"+.qtv+"' WHERE `account_id` = '"+getcharid(3)+"'";
+					set #CASHPOINTS,#CASHPOINTS-(.qtv*.pv);
+					dispbottom "Relogue para que os dias vip possam ser creditados sem erro.";
+					close;
+				}				
+			}
+			mes " ";
+			mes "[^FF0000Você não tem cash suficiente.^000000]";
+			if(select("- Tentar novamente:- Cancelar")==2)close;
+			
+		}
+end;
+OnInit:
+	set .n$, "                       [^AA0000Gerente^000000]";
+	set .pv, 100;
+	if(!$DBV){
+		query_sql "ALTER TABLE  `login` ADD  `dvip` INT NOT NULL";
+		set $DBV,1;
+	}
+end;
+OnPCLoginEvent:
+	if (getgmlevel() == 1 || getgmlevel() == 0){
+		query_sql "SELECT `dvip` FROM `login` WHERE `account_id` = '"+getcharid(3)+"'",.dv;
+		if(#CASHPOINTS > 0)	dispbottom "Você tem ["+#CASHPOINTS+"] cash.";
+		if(.dv > 0) dispbottom "Você tem ["+.dv+"] dias vip.";
+	}
+end;
+
+OnClock0001: query_sql "UPDATE `login` SET `dvip`=`dvip` -1 WHERE `group_id`= 1"; end;
+OnClock0002: query_sql "UPDATE `login` SET `group_id`= 0 WHERE `dvip` <= 0 AND `level`= 1"; end;
+}
