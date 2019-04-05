@@ -1,0 +1,2642 @@
+/* Drek'Arthas --------------------------------------------------------------------------------
+|                                 __                                                          |
+|                                /\ \              ____________                               |
+|  ________               __   __\ \ \  ________  /\_____  ____\ __                           |
+| /\  ____ \             /\ \ /\ \\ \_\/\  ____ \ \/____ \ \___//\ \                          |
+| \ \ \__/\ \  ____    __\ \ \\_\ \\/_/\ \ \___\ \  ____\ \ \   \ \ \_____     __     ____    |
+|  \ \ \ \ \ \/\  _\ /'__`\ \  ___:     \ \  ____ \/\  _\\ \ \   \ \  ___ \  /'__`\  /\  _|   |
+|   \ \ \_\_\ \ \ \//\  __/\ \ \_/\\_    \ \ \__/\ \ \ \/ \ \ \   \ \ \_/\ \/\ \L\.\_\ \__ \  |
+|    \ \______/\ \_\\ \____\\ \_\\ \_\    \ \_\ \ \ \ \_\  \ \_\   \ \_\\ \ \ \__/.\_\\/\___\ |
+|     \/_____/  \/_/ \/____/ \/_/ \/_/     \/_/  \/_/\/_/   \/_/    \/_/ \/_/\/__/\/_/ \/___/ |
+|                                                                       DrekArthas@hotmail.com|
+|----------------------------------------------------------------------------------------------
+|--- eAthena Script ---------------------------------------------------------------------------
+|----------------------------------------------------------------------------------------------
+|--- Criado por -------------------------------------------------------------------------------
+|- DrekArthas
+|--- Verção -----------------------------------------------------------------------------------
+|- 2.20
+|---- Descrição -------------------------------------------------------------------------------
+|- Teleporta você pra qualquer lugar.
+|---- Chargelog -------------------------------------------------------------------------------
+|- 1.00 Scrit Criado                                                                   [Banned]
+|- 2.00 Novas funções adicionadas e novos warps                        [19/11/2009[Drek'Arthas]
+|- 2.10 warps adicionados ate 13.2 Encontro com Desconhecido           [17/05/2010[Drek'Arthas]
+|- 2.20 warps adicionados ate 13.3 El Dicastes (Faltam as cordenadas)  [21/05/2010[Drek'Arthas]
+|- 2.25 warps adicionados ate 13.3 El Dicastes (cordenadas adicionadas)[10/06/2010[Drek'Arthas]
+|- 2.50 Novas funções adicionadas (Pagamento pelo teleporte)           [02/07/2010[Drek'Arthas]
+|- 2.60 Opção de voltar ao ultimo mapa adcionada                       [15/08/2010[Drek'Arthas]
+|- 2.65 Bug na ultima opção corrigido                                  [15/08/2010[Drek'Arthas]
+---------------------------------------------------------------------------------------------*/
+prontera.gat,164,168,2	script	Teleportadora#00::Teleportadora	117,{
+if ($CONF1  == 0){set $CONF1 ,-1;}//Porta
+if ($CONF2  == 0){set $CONF2 ,0;}//Campos
+if ($CONF3  == 0){set $CONF3 ,0;}//feudos
+if ($CONF4  == 0){set $CONF4 ,0;}//Curar
+if ($CONF5  == 0){set $CONF5 ,1;}//Buff
+if ($CONF6  == 0){set $CONF6 ,60;}//T. Buff 
+if ($CONF7  == 0){set $CONF7 ,60;}//Prisão
+if ($CONF8  == 0){set $CONF8 ,0;}//Cabrar
+if ($CONF9  == 0){set $CONF9 ,2000;}//Preço
+if ($CONF10 == 0){set $CONF10,7060;}//Item
+if ($CONF11 == 0){set $CONF11,0;}//Ultimo
+if ($CONF12 == 0){set $CONF12,0;}
+if ($CONF13 == 0){set $CONF13,0;}
+if ($CONF14 == 0){set $CONF14,0;}
+if ($CONF15 == 0){set $CONF15,90;}//GM MENU
+if(getgmlevel() >= $CONF4) {percentheal 100,100;specialeffect2 313;}
+if(getgmlevel() >= $CONF5) {sc_start 30,$CONF6+"000",10;specialeffect2 42;		sc_start 32,$CONF6+"000",10;specialeffect2 37;}
+L_PRIN:
+	mes "[Teleportadora]";
+	mes "Olá ^0000CD"+strcharinfo(0)+"^000000!";
+	mes "Seja bem vindo ao meu serviço de Teleporte!";
+	mes "Esse serviço teleporta qualquer player ao lugar que queira.";
+	mes "Por favor selecione o serviço:";
+	next;
+	if (getgmlevel() >= $CONF15){
+	menu "Teleporte para o meu ultimo mapa",  L_Ultimo,
+		 "Teleporte para as Cidades",         L_Citys,
+		 "Teleporte para as Cavernas",        L_Dungeon,
+		 "Teleporte para os Campos",          L_Fields,
+		 "Guildas^0000CD [GLD]",              L_GLD,
+		 "Configurar NPC",			          L_CONF;}
+
+	if (getgmlevel() >= $CONF2 && getgmlevel() >= $CONF3 && getgmlevel() >= $CONF11){
+	menu "Teleporte para o meu ultimo mapa",  L_Ultimo,
+		 "Teleporte para as Cidades",         L_Citys,
+		 "Teleporte para as Cavernas",        L_Dungeon,
+		 "Teleporte para os Campos",          L_Fields,
+		 "Guildas^0000CD [GLD]",              L_GLD;}
+		 
+	if (getgmlevel() >= $CONF2 && getgmlevel() >= $CONF3){
+	menu "Teleporte para as Cidades",  L_Citys,
+		 "Teleporte para as Cavernas", L_Dungeon,
+		 "Teleporte para os Campos",   L_Fields,
+		 "Guildas^0000CD [GLD]",       L_GLD;}
+
+	if (getgmlevel() >= $CONF2 && getgmlevel() >= $CONF11){
+	menu "Teleporte para o meu ultimo mapa",  L_Ultimo,
+		 "Teleporte para as Cidades",         L_Citys,
+		 "Teleporte para as Cavernas",        L_Dungeon,
+		 "Teleporte para os Campos",          L_Fields;}
+
+		 if (getgmlevel() >= $CONF2){
+	menu "Teleporte para as Cidades",  L_Citys,
+		 "Teleporte para as Cavernas", L_Dungeon,
+		 "Teleporte para os Campos",   L_Fields;}
+
+	if (getgmlevel() >= $CONF3 && getgmlevel() >= $CONF11){
+	menu "Teleporte para o meu ultimo mapa",  L_Ultimo,
+		 "Teleporte para as Cidades",         L_Citys,
+		 "Teleporte para as Cavernas",        L_Dungeon,
+		 "Guildas^0000CD [GLD]",              L_GLD;}
+
+	if (getgmlevel() >= $CONF3){
+	menu "Teleporte para as Cidades",  L_Citys,
+		 "Teleporte para as Cavernas", L_Dungeon,
+		 "Guildas^0000CD [GLD]",       L_GLD;}
+
+	menu "Teleporte para as Cidades",  L_Citys,
+		 "Teleporte para as Cavernas", L_Dungeon;
+
+
+L_Ultimo:
+		if (ultimomapa$ != ""){
+		 if (maptip == 0                          ){close2; warp ultimomapa$,ultx,ulty;end;}
+		 if (maptip == 1 && getgmlevel() >= $CONF1){close2; warp ultimomapa$,ultx,ulty;end;}
+		 if (maptip == 2 && getgmlevel() >= $CONF2){close2; warp ultimomapa$,ultx,ulty;end;}
+		 if (maptip == 3 && getgmlevel() >= $CONF3){close2; warp ultimomapa$,ultx,ulty;end;}
+		}
+		mes "Você não tem um ultimo mapa registrado ou valido!";
+		next;
+		goto L_PRIN;
+		
+
+L_Citys:
+	mes "[Teleportadora]";
+	mes "Escolha a cidade:";
+	next;
+	menu 	"00: Prontera ^FF0000["+                  (getmapusers("prontera"))    + "]^000000",	wprt,
+			"01: Morroc ^FF0000["+                    (getmapusers("morocc"))      + "]^000000",	wmoc,
+			"02: Geffen ^FF0000["+                    (getmapusers("geffen"))      + "]^000000",	wgef,
+			"03: Payon ^FF0000["+                     (getmapusers("payon"))       + "]^000000",	wpay,
+			"04: Alberta ^FF0000["+                   (getmapusers("alberta"))     + "]^000000",	walb,
+			"05: Izlude ^FF0000["+                    (getmapusers("izlude"))      + "]^000000",	wizl,
+			"06: Aldebaran ^FF0000["+                 (getmapusers("aldebaran"))   + "]^000000",	wadb,
+			"07: Lutie ^FF0000["+                     (getmapusers("xmas"))        + "]^000000",	wxmas,
+			"08: Comodo ^FF0000["+                    (getmapusers("comodo"))      + "]^000000",	wcom,
+			"09: Juno ^FF0000["+                      (getmapusers("yuno"))        + "]^000000",	wyu,
+			"10: Amatsu ^FF0000["+                    (getmapusers("amatsu"))      + "]^000000",	wama,
+			"11: Kunlun ^FF0000["+                    (getmapusers("gonryun"))     + "]^000000",	wgon,
+			"12: Umbala ^FF0000["+                    (getmapusers("umbala"))      + "]^000000",	wumb,
+			"13: Niflheim ^FF0000["+                  (getmapusers("niflheim"))    + "]^000000",	wnif,
+			"14: Louyang ^FF0000["+                   (getmapusers("louyang"))     + "]^000000",	wlou,
+			"15: Campo de Treinamento [GM]^FF0000["+  (getmapusers("new_1-1"))     + "]^000000",	wnew,
+			"16: Prisão [GM]^FF0000["+                (getmapusers("sec_pri"))     + "]^000000",	wpri,
+			"17: Jawaii ^FF0000["+                    (getmapusers("jawaii"))      + "]^000000",	wjaw,
+			"18: Ayothaya ^FF0000["+                  (getmapusers("ayothaya"))    + "]^000000",	wayo,
+			"19: Einbroch ^FF0000["+                  (getmapusers("einbroch"))    + "]^000000",	weinbr,
+			"20: Lightalzen ^FF0000["+                (getmapusers("lighthalzen")) + "]^000000",	wlhz,
+			"21: Einbech ^FF0000["+                   (getmapusers("einbech"))     + "]^000000",	weinb,
+			"22: Hugel ^FF0000["+                     (getmapusers("hugel"))       + "]^000000",	whug,
+			"23: Rachel ^FF0000["+                    (getmapusers("rachel"))      + "]^000000",	wrach,
+			"24: Veins ^FF0000["+                     (getmapusers("veins"))       + "]^000000",	wvei,
+			"25: Moscovia ^FF0000["+                  (getmapusers("moscovia"))    + "]^000000",    wmosc,
+			"26: Brasilis ^FF0000["+                  (getmapusers("brasilis"))    + "]^000000",    wbra,
+			"  : Acamp. Novo Mundo ^FF0000["+         (getmapusers("mid_camp"))    + "]^000000",    wcamp,
+			"  : Esplendor ^FF0000["+                 (getmapusers("splendide"))   + "]^000000",    wspl,
+			"  : Vila Manuk ^FF0000["+                (getmapusers("manuk"))       + "]^000000",    wmanu,
+			"  : El Discastes ^FF0000["+              (getmapusers("dicastes01"))  + "]^000000",    wdic,
+			"Voltar ao menu anterior",											L_PRIN;
+
+
+			
+
+
+walb:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"alberta";set ultx,27; set ulty,236;}
+		warp "alberta",		 27,	236;	end;
+wadb:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"aldebaran";set ultx,145; set ulty,120;}
+		warp "aldebaran",	145,	120;	end;
+wama:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"amatsu";set ultx,197; set ulty,86;}
+		warp "amatsu",		197,	 86;	end;
+wayo:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"ayothaya";set ultx,149; set ulty,118;}
+		warp "ayothaya",	149,	118;	end;
+wcom:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"comodo";set ultx,188; set ulty,161;}
+		warp "comodo",		188,	161;	end;
+weinbr:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"einbroch";set ultx,64; set ulty,200;}
+		warp "einbroch",	 64,	200;	end;
+weinb:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"einbech";set ultx,138; set ulty,245;}
+		warp "einbech",		138,	245;	end;
+wgef:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"geffen";set ultx,119; set ulty,66;}
+		warp "geffen",		119,	 66;	end;
+wgon:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"gonryun";set ultx,150; set ulty,130;}
+		warp "gonryun",		150,	130;	end;
+whug:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"hugel";set ultx,96; set ulty,145;}
+		warp "hugel",		 96,	145;	end;
+wizl:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"izlude";set ultx,128; set ulty,111;}
+		warp "izlude",		128,	111;	end;
+wjaw:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"jawaii";set ultx,175; set ulty,170;}
+		warp "jawaii",		175,	170;	end;
+wjupe:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"jupe_gate";set ultx,49; set ulty,26;}
+		warp "jupe_gate",	 49,	 26;	end;
+wlhz:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"lighthalzen";set ultx,163; set ulty,99;}
+		warp "lighthalzen",	163,	 99;	end;
+wlou:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"louyang";set ultx,210; set ulty,108;}
+		warp "louyang",		210,	108;	end;
+wxmas:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"xmas";set ultx,148; set ulty,131;}
+		warp "xmas",		148,	131;	end;
+wmoc:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"morocc";set ultx,156; set ulty,93;}
+		warp "morocc",		156,	 93;	end;
+wnif:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"niflheim";set ultx,35; set ulty,161;}
+		warp "niflheim",	 35,	161;	end;
+wpay:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"payon";set ultx,152; set ulty,75;}
+		warp "payon",		152,	 75;	end;
+wprt:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"prontera";set ultx,156; set ulty,191;}
+		warp "prontera",	156,	191;	end;
+wrach:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"rachel";set ultx,130; set ulty,25;}
+		warp "rachel",		130,	 25;	end;
+wumb:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"umbala";set ultx,130; set ulty,130;}
+		warp "umbala",		130,	130;	end;
+wvalk:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"valkyrie";set ultx,50; set ulty,36;}
+		warp "valkyrie",	 50,	 36;	end;
+wvei:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"veins";set ultx,196; set ulty,239;}
+		warp "veins",		196,	239;	end;
+wyu:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"yuno";set ultx,160; set ulty,168;}
+		warp "yuno",		160,	168;	end;
+wmosc:  callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"moscovia";set ultx,223; set ulty,184;}
+		warp "moscovia",	223,	184;	end;
+wbra:   callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"brasilis";set ultx,197; set ulty,220;}
+		warp "brasilis",	197,	220;	end;
+wspl:   callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"splendide";set ultx,198; set ulty,163;}
+		warp "splendide",   198,    163;    end;
+wmanu:  callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"manuk";set ultx,264; set ulty,161;}
+		warp "manuk",       264,    161;    end;
+wcamp:  callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"mid_camp";set ultx,203; set ulty,231;}
+		warp "mid_camp",    203,    231;    end;
+wdic:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"dicastes01";set ultx,200; set ulty,193;}
+		warp "dicastes01",  200,    193;    end;
+wnew:   if(getgmlevel() >= $CONF7) {callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"new_1-1";set ultx,197; set ulty,220;}
+		warp "new_1-1",	197,	220;	end;}
+wpri:   if(getgmlevel() >= $CONF7) {callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,0; set ultimomapa$,"sec_pri";set ultx,197; set ulty,220;}
+		warp "sec_pri",	197,	220;	end;}
+mes "Você não pode entrar neste mapa";
+next;
+goto L_Citys;
+
+// Cavernas
+L_Dungeon:
+	mes "[Teleportadora]";
+	mes "Selecione a caverna:";
+	next;
+	menu 	"Caverna do Abismo ^FF0000["+ ( getmapusers("abyss_01")+
+											getmapusers("abyss_02")+
+											getmapusers("abyss_03") )+ "]^000000",			dabs,
+			"Caverna de Amatsu ^FF0000["+ ( getmapusers("ama_dun01")+
+											getmapusers("ama_dun02")+
+											getmapusers("ama_dun03") )+ "]^000000",			dama,
+			"Caverna de Ayothaya ^FF0000["+ ( getmapusers("ayo_dun01")+
+											  getmapusers("ayo_dun02") )+ "]^000000",		dayo,
+			"Caverna de Brasilis ^FF0000["+ ( getmapusers("bra_dun01")+
+											  getmapusers("bra_dun02") )+ "]^000000",		dbra,
+			"Caverna de Comodo ^FF0000["+ ( getmapusers("beach_dun")+
+											getmapusers("beach_dun2")+
+											getmapusers("beach_dun3") )+ "]^000000",		dbea,
+			"Caverna de Einbech ^FF0000["+ ( getmapusers("ein_dun01")+
+											 getmapusers("ein_dun02") )+ "]^000000",		dein,
+			"Caverna de El Dicastes ^FF0000["+ ( getmapusers("dic_dun01")+
+											     getmapusers("dic_dun02") )+ "]^000000",	ddic,	
+			"Caverna de Geffen ^FF0000["+ ( getmapusers("gef_dun00")+
+											getmapusers("gef_dun01")+
+											getmapusers("gef_dun02")+
+											getmapusers("gef_dun03") )+ "]^000000",			dgeff,
+			"Caverna de Geffenia ^FF0000["+ ( getmapusers("gefenia01")+
+											  getmapusers("gefenia02")+
+											  getmapusers("gefenia03")+
+											  getmapusers("gefenia04") )+ "]^000000",		dgef,
+			"Caverna de Gelo ^FF0000["+ ( getmapusers("ice_dun01")+
+										  getmapusers("ice_dun02")+
+										  getmapusers("ice_dun03") )+ "]^000000",			dice,
+			"Caverna de Kunlun ^FF0000["+ ( getmapusers("gon_dun01")+
+											getmapusers("gon_dun02")+
+											getmapusers("gon_dun03") )+ "]^000000",			dgon,
+			"Caverna de Juperos ^FF0000["+ ( getmapusers("juperos_01")+
+											 getmapusers("juperos_02")+
+											 getmapusers("jupe_cave") )+ "]^000000",		djuperos,
+			"Caverna de Kiel ^FF0000["+ ( getmapusers("kh_dun01")+
+										  getmapusers("kh_dun02")+
+										  getmapusers("kh_kiehl01")+
+										  getmapusers("kh_kiehl02") )+ "]^000000",			dkiel,
+			"Caverna de Louyang ^FF0000["+ ( getmapusers("lou_dun01")+
+											 getmapusers("lou_dun02")+
+											 getmapusers("lou_dun03") )+ "]^000000",		dlou,
+			"Caverna de Magma ^FF0000["+ ( getmapusers("mag_dun01")+
+										   getmapusers("mag_dun02") )+ "]^000000",			dmag,
+			"Caverna de Payon ^FF0000["+ ( getmapusers("pay_dun00")+
+										   getmapusers("pay_dun01")+
+										   getmapusers("pay_dun02")+
+										   getmapusers("pay_dun03")+
+										   getmapusers("pay_dun04") )+ "]^000000",			dpay,
+			"Caverna de Rachel ^FF0000["+ ( getmapusers("ra_san01")+
+											getmapusers("ra_san02")+
+											getmapusers("ra_san03")+
+											getmapusers("ra_san04")+
+											getmapusers("ra_san05") )+ "]^000000",			drach,
+			"Caverna de Umbala ^FF0000["+ ( getmapusers("um_dun01")+
+											getmapusers("um_dun02")+
+											getmapusers("yggdrasil01") )+ "]^000000",		dumb,
+			"Calabouço dos Orcs ^FF0000["+ ( getmapusers("orcsdun01")+
+											 getmapusers("orcsdun02") )+ "]^000000",		dorc,
+			"Calabouço de Yggdrasil ^FF0000["+ ( getmapusers("nyd_dun01")+
+												 getmapusers("nyd_dun02") )+ "]^000000",			dnyd,
+			"Esfinge ^FF0000["+ ( getmapusers("in_sphinx1")+
+								  getmapusers("in_sphinx2")+
+								  getmapusers("in_sphinx3")+
+								  getmapusers("in_sphinx4")+
+								  getmapusers("in_sphinx5") )+ "]^000000",					dsph,
+			"Esgotos de Prontera ^FF0000["+ ( getmapusers("prt_sewb1")+
+											  getmapusers("prt_sewb2")+
+											  getmapusers("prt_sewb3")+
+											  getmapusers("prt_sewb4") )+ "]^000000",		dcul,
+			"Fábrica de Brinquedos ^FF0000["+ ( getmapusers("xmas_dun01")+
+												getmapusers("xmas_dun02") )+ "]^000000",	dtoy,
+			"Floresta Encantada ^FF0000["+ ( getmapusers("mosk_fild02")+
+											 getmapusers("mosk_dun01")+
+											 getmapusers("mosk_dun02")+
+											 getmapusers("mosk_dun03") )+ "]^000000",		dmosc,
+			"Formigueiro Infernal ^FF0000["+ ( getmapusers("anthell01")+
+											   getmapusers("anthell02") )+ "]^000000",		dant,
+			"Glast Heim ^FF0000["+ ( getmapusers("gl_cas01")+
+									 getmapusers("gl_cas02")+
+									 getmapusers("gl_knt01")+
+									 getmapusers("gl_knt02")+
+									 getmapusers("gl_chyard")+
+									 getmapusers("gl_sew01")+
+									 getmapusers("gl_sew02")+
+									 getmapusers("gl_sew03")+
+									 getmapusers("gl_sew04")+
+									 getmapusers("gl_church")+
+									 getmapusers("gl_step")+
+									 getmapusers("gl_dun01")+
+									 getmapusers("gl_dun02")+
+									 getmapusers("gl_prison")+
+									 getmapusers("gl_prison1")+
+									 getmapusers("glast_01") )+ "]^000000",					dgla,
+			"Ilha Byalan ^FF0000["+ ( getmapusers("iz_dun00")+
+									  getmapusers("iz_dun01")+
+									  getmapusers("iz_dun02")+
+									  getmapusers("iz_dun03")+
+									  getmapusers("iz_dun04") )+ "]^000000",				dbylan,
+			"Ilha da Tartaruga ^FF0000["+ ( getmapusers("tur_dun01")+
+											getmapusers("tur_dun02")+
+											getmapusers("tur_dun03")+
+											getmapusers("tur_dun04")+
+											getmapusers("tur_dun05") )+ "]^000000",			dtur,
+			"Labirinto da Floresta ^FF0000["+ ( getmapusers("prt_maze01")+
+												getmapusers("prt_maze02")+
+												getmapusers("prt_maze03") )+ "]^000000",	dlab,
+			"Laboratório Biológico ^FF0000["+ ( getmapusers("lhz_dun01")+
+												getmapusers("lhz_dun02")+
+												getmapusers("lhz_dun03") )+ "]^000000",		dlight,
+			"Mina de Carvão ^FF0000["+ ( getmapusers("mjo_dun01")+
+										 getmapusers("mjo_dun02")+
+										 getmapusers("mjo_dun03") )+ "]^000000",			dcoa,
+			"Navio Fantasma ^FF0000["+ ( getmapusers("treasure01")+
+										 getmapusers("treasure02")+
+										 getmapusers("alb2trea") )+ "]^000000",				dsun,
+			"Piramide ^FF0000["+ ( getmapusers("moc_pryd01")+
+								   getmapusers("moc_pryd02")+
+								   getmapusers("moc_pryd03")+
+								   getmapusers("moc_pryd04")+
+								   getmapusers("moc_pryd05")+
+								   getmapusers("moc_pryd06") )+ "]^000000",					dpyr,
+			"Templo de Odin ^FF0000["+ ( getmapusers("odin_tem01")+
+										 getmapusers("odin_tem02")+
+										 getmapusers("odin_tem03") )+ "]^000000",			dodin,
+			"Torre do Relógio ^FF0000["+ ( getmapusers("alde_dun01")+
+										   getmapusers("alde_dun02")+
+										   getmapusers("alde_dun03")+
+										   getmapusers("alde_dun04")+
+										   getmapusers("c_tower1")+
+										   getmapusers("c_tower2")+
+										   getmapusers("c_tower3")+
+										   getmapusers("c_tower4") )+ "]^000000",			dclo,
+			"Torre de Thanatos ^FF0000["+ ( getmapusers("tha_t01")+
+											getmapusers("tha_t02")+
+											getmapusers("tha_t03")+
+											getmapusers("tha_t04")+
+											getmapusers("tha_t05")+
+											getmapusers("tha_t06")+
+											getmapusers("tha_t07")+
+											getmapusers("tha_t08")+
+											getmapusers("tha_t09")+
+											getmapusers("tha_t10")+
+											getmapusers("tha_t11")+
+											getmapusers("tha_t12")+
+											getmapusers("thana_boss") )+ "]^000000",		dtha,
+			"Vulcão de Thor ^FF0000["+ ( getmapusers("thor_v01")+
+										  getmapusers("thor_v02")+
+										  getmapusers("thor_v03")+
+										  getmapusers("thor_v03") )+ "]^000000",			dnyd,
+			"Voltar ao menu anterior",	L_PRIN;
+
+
+// Caverna do Abismo
+dabs:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"hu_fild05";set ultx,189; set ulty,207; warp "hu_fild05",189,207;	end;}
+if(getgmlevel() <= $CONF1) {warp "hu_fild05",189,207;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("abyss_01"))+ "]^000000",wabs1,
+	     "Level 2 ^FF0000["+ (getmapusers("abyss_02"))+ "]^000000",wabs2,
+	     "Level 3 ^FF0000["+ (getmapusers("abyss_03"))+ "]^000000",wabs3,
+"Voltar ao menu anterior",L_Dungeon;
+
+wabs1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"abyss_01";set ultx,264; set ulty,272;}
+		warp "abyss_01",264,272;	end;
+wabs2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"abyss_02";set ultx,274; set ulty,269;}
+		warp "abyss_02",274,269;	end;
+wabs3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"abyss_03";set ultx,116; set ulty,27;}
+		warp "abyss_03",116,27;	end;
+
+
+// Caverna de Amatsu
+dama:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"ama_dun01";set ultx,229; set ulty,12; warp "ama_dun01",229,12;	end;}
+if(getgmlevel() <= $CONF1) {warp "ama_dun01",229,12;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("ama_dun01"))+ "]^000000",wama1,
+	     "Level 2 ^FF0000["+ (getmapusers("ama_dun02"))+ "]^000000",wama2,
+	     "Level 3 ^FF0000["+ (getmapusers("ama_dun03"))+ "]^000000",wama3,
+"Voltar ao menu anterior",L_Dungeon;
+
+wama1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"ama_dun01";set ultx,228; set ulty,11;}
+		warp "ama_dun01",228,11;	end;
+wama2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"ama_dun02";set ultx,34; set ulty,41;}
+		warp "ama_dun02",34,41;	end;
+wama3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"ama_dun03";set ultx,119; set ulty,14;}
+		warp "ama_dun03",119,14;	end;
+
+
+// Caverna de Ayothaya
+dayo:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"ayo_dun01";set ultx,11; set ulty,149; warp "ayo_dun01",11,149;	end;}
+if(getgmlevel() <= $CONF1) {warp "ayo_dun01",11,149;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("ayo_dun01"))+ "]^000000",wayo1,
+	     "Level 2 ^FF0000["+ (getmapusers("ayo_dun02"))+ "]^000000",wayo2,
+"Voltar ao menu anterior",L_Dungeon;
+
+wayo1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"ayo_dun01";set ultx,11; set ulty,149;}
+		warp "ayo_dun01",11,149; 	end;
+wayo2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"ayo_dun02";set ultx,77; set ulty,239;}
+		warp "ayo_dun02",77,239; 	end;
+
+// Caverna de Comodo
+dbea:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"beach_dun";set ultx,266; set ulty,67; warp "beach_dun",266,67;	end;}
+if(getgmlevel() <= $CONF1) {warp "beach_dun",266,67;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("beach_dun"))+ "]^000000",wbeach1,
+	     "Level 2 ^FF0000["+ (getmapusers("beach_dun2"))+ "]^000000",wbeach2,
+	     "Level 3 ^FF0000["+ (getmapusers("beach_dun3"))+ "]^000000",wbeach3,
+"Voltar ao menu anterior",L_Dungeon;
+
+wbeach1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"beach_dun";set ultx,266; set ulty,67;}
+		warp "beach_dun",266,67;	end;
+wbeach2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"beach_dun2";set ultx,255; set ulty,244;}
+		warp "beach_dun2",255,244;	end;
+wbeach3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"beach_dun3";set ultx,23; set ulty,260;}
+		warp "beach_dun3",23,260;	end;
+
+// Caverna de Einbech
+dein:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"einbech";set ultx,135; set ulty,249; warp "einbech",135,249;	end;}
+if(getgmlevel() <= $CONF1) {warp "einbech",135,249;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu 	"Level 1 ^FF0000["+ (getmapusers("ein_dun01"))+ "]^000000",weinbech1,
+			"Level 2 ^FF0000["+ (getmapusers("ein_dun02"))+ "]^000000",weinbech2,
+"Voltar ao menu anterior",L_Dungeon;
+
+weinbech1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"ein_dun01";set ultx,22; set ulty,18;}
+		warp "ein_dun01",22,18;	end;
+weinbech2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"ein_dun02";set ultx,292; set ulty,290;}
+		warp "ein_dun02",292,290;	end;
+
+// Caverna de Geffen
+dgeff:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"gef_tower";set ultx,153; set ulty,35; warp "gef_tower",153,35;	end;}
+if(getgmlevel() <= $CONF1) {warp "gef_tower",153,35;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("gef_dun00"))+ "]^000000",wgeffen1,
+	     "Level 2 ^FF0000["+ (getmapusers("gef_dun01"))+ "]^000000",wgeffen2,
+	     "Level 3 ^FF0000["+ (getmapusers("gef_dun02"))+ "]^000000",wgeffen3,
+	     "Level 4 ^FF0000["+ (getmapusers("gef_dun03"))+ "]^000000",wgeffen4,
+"Voltar ao menu anterior",L_Dungeon;
+
+wgeffen1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gef_dun00";set ultx,104; set ulty,99;}
+		warp "gef_dun00",104,99;	end;
+wgeffen2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gef_dun01";set ultx,115; set ulty,236;}
+		warp "gef_dun01",115,236;	end;
+wgeffen3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gef_dun02";set ultx,106; set ulty,132;}
+		warp "gef_dun02",106,132;	end;
+wgeffen4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gef_dun03";set ultx,203; set ulty,200;}
+		warp "gef_dun03",203,200;	end;
+
+// Caverna de Gefenia
+dgef:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"gefenia01";set ultx,59; set ulty,167; warp "gefenia01",59,167;	end;}
+if(getgmlevel() <= $CONF1) {warp "gefenia01",59,167;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu 	"Level 1 ^FF0000["+ (getmapusers("gefenia01"))+ "]^000000",wgefenia1,
+			"Level 2 ^FF0000["+ (getmapusers("gefenia02"))+ "]^000000",wgefenia2,
+			"Level 3 ^FF0000["+ (getmapusers("gefenia03"))+ "]^000000",wgefenia3,
+			"Level 4 ^FF0000["+ (getmapusers("gefenia04"))+ "]^000000",wgefenia4,
+"Voltar ao menu anterior",L_Dungeon;
+
+wgefenia1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gefenia01";set ultx,59; set ulty,167;}
+		warp "gefenia01",59,167;	end;
+wgefenia2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gefenia02";set ultx,201; set ulty,35;}
+		warp "gefenia02",201,35;	end;
+wgefenia3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gefenia03";set ultx,264; set ulty,236;}
+		warp "gefenia03",264,236;	end;
+wgefenia4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gefenia04";set ultx,33; set ulty,270;}
+		warp "gefenia04",33,270;	end;
+
+// Caverna de Gelo
+dice:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"ra_fild01";set ultx,233; set ulty,327; warp "ra_fild01",233,327;	end;}
+if(getgmlevel() <= $CONF1) {warp "ra_fild01",233,327;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu 	"Level 1 ^FF0000["+ (getmapusers("ice_dun01"))+ "]^000000",wice1,
+			"Level 2 ^FF0000["+ (getmapusers("ice_dun02"))+ "]^000000",wice2,
+			"Level 3 ^FF0000["+ (getmapusers("ice_dun03"))+ "]^000000",wice3,
+"Voltar ao menu anterior",L_Dungeon;
+
+wice1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"ice_dun01";set ultx,157; set ulty,15;}
+		warp "ice_dun01",157,15;	end;
+wice2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"ice_dun02";set ultx,150; set ulty,155;}
+		warp "ice_dun02",150,155;	end;
+wice3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"ice_dun03";set ultx,149; set ulty,24;}
+		warp "ice_dun03",149,24;	end;
+
+// Caverna de Gonryun
+dgon:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"gon_dun01";set ultx,153; set ulty,53; warp "gon_dun01",153,53;	end;}
+if(getgmlevel() <= $CONF1) {warp "gon_dun01",153,53;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("gon_dun01"))+ "]^000000",wgon1,
+	     "Level 2 ^FF0000["+ (getmapusers("gon_dun02"))+ "]^000000",wgon2,
+	     "Level 3 ^FF0000["+ (getmapusers("gon_dun03"))+ "]^000000",wgon3,
+"Voltar ao menu anterior",L_Dungeon;
+
+wgon1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gon_dun01";set ultx,153; set ulty,53;}
+		warp "gon_dun01",153,53;	end;
+wgon2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gon_dun02";set ultx,28; set ulty,113;}
+		warp "gon_dun02",28,113;	end;
+wgon3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gon_dun03";set ultx,68; set ulty,16;}
+		warp "gon_dun03",68,16;	end;
+
+// Caverna de Juperos
+djuperos:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"yuno_fild07";set ultx,218; set ulty,176; warp "yuno_fild07",218,176;	end;}
+if(getgmlevel() <= $CONF1) {warp "yuno_fild07",218,176;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu 	"Level 1 ^FF0000["+ (getmapusers("juperos_01"))+ "]^000000",wjuperos1,
+			"Level 2 ^FF0000["+ (getmapusers("juperos_02"))+ "]^000000",wjuperos2,
+			"Level 3 ^FF0000["+ (getmapusers("juperos_03"))+ "]^000000",wjuperos3,
+"Voltar ao menu anterior",L_Dungeon;
+
+wjuperos1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"juperos_01";set ultx,99; set ulty,92;}
+		warp "juperos_01",99,92;	end;
+wjuperos2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"juperos_02";set ultx,34; set ulty,59;}
+		warp "juperos_02",34,59;	end;
+wjuperos3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"jupe_cave";set ultx,77; set ulty,50;}
+		warp "jupe_cave",77,50;	end;
+
+// Caverna de Kiel
+dkiel:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"kh_dun01";set ultx,4; set ulty,228; warp "kh_dun01",4,228;	end;}
+if(getgmlevel() <= $CONF1) {warp "kh_dun01",4,228;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu 	"Level 1 ^FF0000["+ (getmapusers("kh_dun01"))+ "]^000000",wkiel1,
+			"Level 2 ^FF0000["+ (getmapusers("kh_dun02"))+ "]^000000",wkiel2,
+			"Level 3 ^FF0000["+ (getmapusers("kh_kiehl01"))+ "]^000000",wkiel3,
+			"Level 4 ^FF0000["+ (getmapusers("kh_kiehl02"))+ "]^000000",wkiel4,
+"Voltar ao menu anterior",L_Dungeon;
+
+wkiel1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"kh_dun01";set ultx,4; set ulty,228;}
+		warp "kh_dun01",4,228;	end;
+wkiel2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"kh_dun02";set ultx,44; set ulty,195;}
+		warp "kh_dun02",44,195;	end;
+wkiel3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"kh_kiehl01";set ultx,170; set ulty,20;}
+		warp "kh_kiehl01",170,20;	end;
+wkiel4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"kh_kiehl02";set ultx,50; set ulty,50;}
+		warp "kh_kiehl02",50,50;	end;
+
+// Caverna de Louyang
+dlou:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"lou_dun01";set ultx,218; set ulty,196; warp "lou_dun01",218,196;	end;}
+if(getgmlevel() <= $CONF1) {warp "lou_dun01",218,196;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu 	"Level 1 ^FF0000["+ (getmapusers("lou_dun01"))+ "]^000000",wlou1,
+			"Level 2 ^FF0000["+ (getmapusers("lou_dun02"))+ "]^000000",wlou2,
+			"Level 3 ^FF0000["+ (getmapusers("lou_dun03"))+ "]^000000",wlou3,
+"Voltar ao menu anterior",L_Dungeon;
+
+wlou1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"lou_dun01";set ultx,218; set ulty,196;}
+		warp "lou_dun01",218,196;	end;
+wlou2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"lou_dun02";set ultx,282; set ulty,20;}
+		warp "lou_dun02",282,20;	end;
+wlou3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"lou_dun03";set ultx,165; set ulty,37;}
+		warp "lou_dun03",165,37;	end;
+
+// Caverna de Magma
+dmag:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"yuno_fild03";set ultx,36; set ulty,139; warp "yuno_fild03",36,139;	end;}
+if(getgmlevel() <= $CONF1) {warp "yuno_fild03",36,139;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("mag_dun01"))+ "]^000000",wmagma1,
+	     "Level 2 ^FF0000["+ (getmapusers("mag_dun02"))+ "]^000000",wmagma2,
+"Voltar ao menu anterior",L_Dungeon;
+
+wmagma1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"mag_dun01";set ultx,126; set ulty,68;}
+		warp "mag_dun01",126,68;	end;
+wmagma2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"mag_dun02";set ultx,47; set ulty,30;}
+		warp "mag_dun02",47,30;	end;
+
+// Caverna de Payon
+dpay:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"pay_arche";set ultx,43; set ulty,132; warp "pay_arche",43,132;	end;}
+if(getgmlevel() <= $CONF1) {warp "pay_arche",43,132;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("pay_dun00"))+ "]^000000",wpayon1,
+	     "Level 2 ^FF0000["+ (getmapusers("pay_dun01"))+ "]^000000",wpayon2,
+	     "Level 3 ^FF0000["+ (getmapusers("pay_dun02"))+ "]^000000",wpayon3,
+	     "Level 4 ^FF0000["+ (getmapusers("pay_dun03"))+ "]^000000",wpayon4,
+	     "Level 5 ^FF0000["+ (getmapusers("pay_dun04"))+ "]^000000",wpayon5,
+"Voltar ao menu anterior",L_Dungeon;
+
+wpayon1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"pay_dun00";set ultx,21; set ulty,183;}
+		warp "pay_dun00",21,183;	end;
+wpayon2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"pay_dun01";set ultx,19; set ulty,33;}
+		warp "pay_dun01",19,33;	end;
+wpayon3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"pay_dun02";set ultx,19; set ulty,63;}
+		warp "pay_dun02",19,63;	end;
+wpayon4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"pay_dun03";set ultx,155; set ulty,159;}
+		warp "pay_dun03",155,159;	end;
+wpayon5:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"pay_dun04";set ultx,201; set ulty,204;}
+		warp "pay_dun04",201,204;	end;
+
+// Caverna de Rachel
+drach:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"ra_san01";set ultx,140; set ulty,275; warp "ra_san01",140,275;	end;}
+if(getgmlevel() <= $CONF1) {warp "ra_san01",140,275;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu 	"Level 1 ^FF0000["+ (getmapusers("ra_san01"))+ "]^000000",wrach1,
+			"Level 2 ^FF0000["+ (getmapusers("ra_san02"))+ "]^000000",wrach2,
+			"Level 3 ^FF0000["+ (getmapusers("ra_san03"))+ "]^000000",wrach3,
+			"Level 4 ^FF0000["+ (getmapusers("ra_san04"))+ "]^000000",wrach4,
+			"Level 5 ^FF0000["+ (getmapusers("ra_san05"))+ "]^000000",wrach5,
+"Voltar ao menu anterior",L_Dungeon;
+
+wrach1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"ra_san01";set ultx,140; set ulty,275;}
+		warp "ra_san01",140,275;	end;
+wrach2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"ra_san02";set ultx,215; set ulty,5;}
+		warp "ra_san02",215,5;	end;
+wrach3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"ra_san03";set ultx,5; set ulty,150;}
+		warp "ra_san03",5,150;	end;
+wrach4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"ra_san04";set ultx,120; set ulty,110;}
+		warp "ra_san04",120,110;	end;
+wrach5:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"ra_san05";set ultx,150; set ulty,285;}
+		warp "ra_san05",150,285;	end;
+
+// Vulcão de Thor
+dthor:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"ve_fild03";set ultx,168; set ulty,235; warp "ve_fild03",168,235;	end;}
+if(getgmlevel() <= $CONF1) {warp "ve_fild03",168,235;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu 	"Level 1 ^FF0000["+ (getmapusers("thor_v01"))+ "]^000000",wthor1,
+			"Level 2 ^FF0000["+ (getmapusers("thor_v02"))+ "]^000000",wthor2,
+			"Level 3 ^FF0000["+ (getmapusers("thor_v03"))+ "]^000000",wthor3,
+"Voltar ao menu anterior",L_Dungeon;
+
+wthor1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"thor_v01";set ultx,140; set ulty,275;}
+		warp "thor_v01",140,275;	end;
+wthor2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"thor_v02";set ultx,80; set ulty,205;}
+		warp "thor_v02",80,205;	end;
+wthor3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"thor_v03";set ultx,30; set ulty,275;}
+		warp "thor_v03",30,275;	end;
+
+// Caverna de Umbala
+dumb:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"um_dun01";set ultx,42; set ulty,32; warp "um_dun01",42,32;	end;}
+if(getgmlevel() <= $CONF1) {warp "um_dun01",42,32;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Lojas em arvores ^FF0000["+ (getmapusers("um_dun01"))+ "]^000000",wum1,
+	     "Passagem a um outro mundo ^FF0000["+ (getmapusers("um_dun02"))+ "]^000000",wum2,
+	     "Fonte ^FF0000["+ (getmapusers("yggdrasil01"))+ "]^000000",wygg1,
+"Voltar ao menu anterior",L_Dungeon;
+
+wum1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"um_dun01";set ultx,205; set ulty,16;}
+		warp "um_dun01",205,16;	end;
+wum2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"um_dun02";set ultx,48; set ulty,30;}
+		warp "um_dun02",48,	30;	end;
+wygg1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"yggdrasil01";set ultx,40; set ulty,63;}
+		warp "yggdrasil01",40,63;	end;
+
+// Calabouço dos Orc
+dorc:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"gef_fild10";set ultx,70; set ulty,332; warp "gef_fild10",70,332;	end;}
+if(getgmlevel() <= $CONF1) {warp "gef_fild10",70,332;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("orcsdun01"))+ "]^000000",worc1,
+	     "Level 2 ^FF0000["+ (getmapusers("orcsdun02"))+ "]^000000",worc2,
+"Voltar ao menu anterior",L_Dungeon;
+
+worc1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"orcsdun01";set ultx,32; set ulty,170;}
+		warp "orcsdun01",32,170;	end;
+worc2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"orcsdun02";set ultx,21; set ulty,185;}
+		warp "orcsdun02",21,185;	end;
+
+// Esfinge
+dsph:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"";set ultx,107; set ulty,100; warp "moc_fild19",107,100;	end;}
+if(getgmlevel() <= $CONF1) {warp "moc_fild19",107,100;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("in_sphinx1"))+ "]^000000",wsphinx1,
+	     "Level 2 ^FF0000["+ (getmapusers("in_sphinx2"))+ "]^000000",wsphinx2,
+	     "Level 3 ^FF0000["+ (getmapusers("in_sphinx3"))+ "]^000000",wsphinx3,
+	     "Level 4 ^FF0000["+ (getmapusers("in_sphinx4"))+ "]^000000",wsphinx4,
+	     "Level 5 ^FF0000["+ (getmapusers("in_sphinx5"))+ "]^000000",wsphinx5,
+"Voltar ao menu anterior",L_Dungeon;
+
+wsphinx1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"in_sphinx1";set ultx,288; set ulty,9;}
+		warp "in_sphinx1",288,9;	end;
+wsphinx2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"in_sphinx2";set ultx,149; set ulty,81;}
+		warp "in_sphinx2",149,81;	end;
+wsphinx3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"in_sphinx3";set ultx,210; set ulty,54;}
+		warp "in_sphinx3",210,54;	end;
+wsphinx4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"in_sphinx4";set ultx,10; set ulty,222;}
+		warp "in_sphinx4",10,222;	end;
+wsphinx5:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"in_sphinx5";set ultx,100; set ulty,99;}
+		warp "in_sphinx5",100,99;	end;
+
+// Esgotos de Prontera
+dcul:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"prt_sewb1";set ultx,131; set ulty,247; warp "prt_sewb1",131,247;	end;}
+if(getgmlevel() <= $CONF1) {warp "prt_sewb1",131,247;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("prt_sewb1"))+ "]^000000",wculvert1,
+	     "Level 2 ^FF0000["+ (getmapusers("prt_sewb2"))+ "]^000000",wculvert2,
+	     "Level 3 ^FF0000["+ (getmapusers("prt_sewb3"))+ "]^000000",wculvert3,
+	     "Level 4 ^FF0000["+ (getmapusers("prt_sewb4"))+ "]^000000",wculvert4,
+"Voltar ao menu anterior",L_Dungeon;
+
+wculvert1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"prt_sewb1";set ultx,131; set ulty,247;}
+		warp "prt_sewb1",131,247;	end;
+wculvert2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"prt_sewb2";set ultx,19; set ulty,19;}
+		warp "prt_sewb2",19,19;	end;
+wculvert3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"prt_sewb3";set ultx,180; set ulty,169;}
+		warp "prt_sewb3",180,169;	end;
+wculvert4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"prt_sewb4";set ultx,100; set ulty,92;}
+		warp "prt_sewb4",100,92;	end;
+
+// Fábrica de Brinquedos
+dtoy:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"xmas";set ultx,144; set ulty,310; warp "xmas",144,310;	end;}
+if(getgmlevel() <= $CONF1) {warp "xmas",144,310;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("xmas_dun01"))+ "]^000000",wtoy1,
+	     "Level 2 ^FF0000["+ (getmapusers("xmas_dun02"))+ "]^000000",wtoy2,
+"Voltar ao menu anterior",L_Dungeon;
+
+wtoy1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"xmas_dun01";set ultx,205; set ulty,15;}
+		warp "xmas_dun01",205,15;	end;
+wtoy2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"xmas_dun02";set ultx,129; set ulty,133;}
+		warp "xmas_dun02",129,133;	end;
+
+// Formigueiro Infernal
+dant:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"moc_fild04";set ultx,210; set ulty,328; warp "moc_fild04",210,328;	end;}
+if(getgmlevel() <= $CONF1) {warp "moc_fild04",210,328;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("anthell01"))+ "]^000000",wanthell1,
+	     "Level 2 ^FF0000["+ (getmapusers("anthell02"))+ "]^000000",wanthell2,
+"Voltar ao menu anterior",L_Dungeon;
+
+wanthell1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"anthell01";set ultx,35; set ulty,262;}
+		warp "anthell01",35,262;	end;
+wanthell2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"anthell02";set ultx,168; set ulty,170;}
+		warp "anthell02",168,170;	end;
+
+// Glast Heim
+dgla:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"glast_01";set ultx,368; set ulty,303; warp "glast_01",368,303;	end;}
+if(getgmlevel() <= $CONF1) {warp "glast_01",368,303;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor selecione o andar e a seção desejada.";
+	next;
+	menu "Castelo de Glast Heim 1 ^FF0000["+ (getmapusers("gl_cas01"))+ "]^000000",wglastcast1,
+	     "Castelo de Glast Heim 2 ^FF0000["+ (getmapusers("gl_cas02"))+ "]^000000",wglastcast2,
+	     "Cavalaria de Glast Heim 1 ^FF0000["+ (getmapusers("gl_knt01"))+ "]^000000",wglastchiv1,
+	     "Cavalaria de Glast Heim 2 ^FF0000["+ (getmapusers("gl_knt02"))+ "]^000000",wglastchiv2,
+	     "Cemitério de Glast Heim ^FF0000["+ (getmapusers("gl_chyard"))+ "]^000000",wglastyard,
+	     "Esgoto de Glast Heim 1 ^FF0000["+ (getmapusers("gl_sew01"))+ "]^000000",wglastcul1,
+	     "Esgoto de Glast Heim 2 ^FF0000["+ (getmapusers("gl_sew02"))+ "]^000000",wglastcul1,
+	     "Esgoto de Glast Heim 3 ^FF0000["+ (getmapusers("gl_sew03"))+ "]^000000",wglastcul3,
+	     "Esgoto de Glast Heim 4 ^FF0000["+ (getmapusers("gl_sew04"))+ "]^000000",wglastcul4,
+	     "Abadia de Glast Heim ^FF0000["+ (getmapusers("gl_church"))+ "]^000000",wglastchur,
+	     "Staircase Dungeon ^FF0000["+ (getmapusers("gl_step"))+ "]^000000",wglaststep,
+	     "Caverna Sub Terranea 1 ^FF0000["+ (getmapusers("gl_dun01"))+ "]^000000",wglastcave1,
+	     "Caverna Sub Terranea 2 ^FF0000["+ (getmapusers("gl_dun02"))+ "]^000000",wglastcave2,
+	     "Prisão Sub Terranea 1 ^FF0000["+ (getmapusers("gl_prison"))+ "]^000000",wglastpris1,
+	     "Prisão Sub Terranea 2 ^FF0000["+ (getmapusers("gl_prison1"))+ "]^000000",wglastpris2,
+"Voltar ao menu anterior",L_Dungeon;
+
+wglastcast1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gl_cas01";set ultx,199; set ulty,29;}
+		warp "gl_cas01",199,29;	end;
+wglastcast2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gl_cas02";set ultx,104; set ulty,25;}
+		warp "gl_cas02",104,25;	end;
+wglastchiv1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gl_knt01";set ultx,150; set ulty,15;}
+		warp "gl_knt01",150,15;	end;
+wglastchiv2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gl_knt02";set ultx,157; set ulty,287;}
+		warp "gl_knt02",157,287;	end;
+wglastyard:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gl_chyard";set ultx,157; set ulty,287;}
+		warp "gl_chyard",147,15;	end;
+wglastcul1:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gl_sew01";set ultx,258; set ulty,255;}
+		warp "gl_sew01",258,255;	end;
+wglastcul2:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gl_sew02";set ultx,108; set ulty,291;}
+		warp "gl_sew02",108,291;	end;
+wglastcul3:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gl_sew03";set ultx,171; set ulty,283;}
+		warp "gl_sew03",171,283;	end;
+wglastcul4:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gl_sew04";set ultx,68; set ulty,277;}
+		warp "gl_sew04",68,277;	end;
+wglastchur:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gl_church";set ultx,156; set ulty,7;}
+		warp "gl_church",156,7;	end;
+wglaststep:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gl_step";set ultx,12; set ulty,7;}
+		warp "gl_step",12,7;	end;
+wglastcave1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gl_dun01";set ultx,133; set ulty,271;}
+		warp "gl_dun01",133,271;	end;
+wglastcave2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gl_dun02";set ultx,224; set ulty,274;}
+		warp "gl_dun02",224,274;	end;
+wglastpris1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gl_prison";set ultx,14; set ulty,70;}
+		warp "gl_prison",14,70;	end;
+wglastpris2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"gl_prison1";set ultx,150; set ulty,14;}
+		warp "gl_prison1",150,14;	end;
+
+// Ilha Byalan
+dbylan:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"izlu2dun";set ultx,106; set ulty,88; warp "izlu2dun",106,88;	end;}
+if(getgmlevel() <= $CONF1) {warp "izlu2dun",106,88;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu 	"Level 1 ^FF0000["+ (getmapusers("iz_dun00"))+ "]^000000",wbylan1,
+	"Level 2 ^FF0000["+ (getmapusers("iz_dun01"))+ "]^000000",wbylan2,
+	"Level 3 ^FF0000["+ (getmapusers("iz_dun02"))+ "]^000000",wbylan3,
+	"Level 4 ^FF0000["+ (getmapusers("iz_dun03"))+ "]^000000",wbylan4,
+	"Level 5 ^FF0000["+ (getmapusers("iz_dun04"))+ "]^000000",wbylan5,
+"Voltar ao menu anterior",L_Dungeon;
+
+wbylan1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"iz_dun00";set ultx,168; set ulty,168;}
+		warp "iz_dun00",168,168;	end;
+wbylan2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"iz_dun01";set ultx,41; set ulty,37;}
+		warp "iz_dun01",41,37;	end;
+wbylan3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"iz_dun02";set ultx,236; set ulty,204;}
+		warp "iz_dun02",236,204;	end;
+wbylan4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"iz_dun03";set ultx,32; set ulty,63;}
+		warp "iz_dun03",32,63;	end;
+wbylan5:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"iz_dun04";set ultx,26; set ulty,27;}
+		warp "iz_dun04",26,27;	end;
+
+// Ilha da Tartaruga
+dtur:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"tur_dun01";set ultx,158; set ulty,38; warp "tur_dun01",158,38;	end;}
+if(getgmlevel() <= $CONF1) {warp "tur_dun01",158,38;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Entrance ^FF0000["+ (getmapusers("tur_dun01"))+ "]^000000",wturtleent,
+	     "Level 1 ^FF0000["+ (getmapusers("tur_dun02"))+ "]^000000",wturtle1,
+	     "Level 2 ^FF0000["+ (getmapusers("tur_dun03"))+ "]^000000",wturtle2,
+	     "Level 3 ^FF0000["+ (getmapusers("tur_dun04"))+ "]^000000",wturtle3,
+	     "Level 4 ^FF0000["+ (getmapusers("tur_dun05"))+ "]^000000",wturtle4,
+"Voltar ao menu anterior",L_Dungeon;
+
+wturtleent:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tur_dun01";set ultx,154; set ulty,49;}
+		warp "tur_dun01",154,49;	end;
+wturtle1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tur_dun02";set ultx,148; set ulty,261;}
+		warp "tur_dun02",148,261;	end;
+wturtle2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tur_dun03";set ultx,132; set ulty,189;}
+		warp "tur_dun03",132,189;	end;
+wturtle3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tur_dun04";set ultx,100; set ulty,192;}
+		warp "tur_dun04",100,192;	end;
+wturtle4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tur_dun05";set ultx,85; set ulty,69;}
+		warp "tur_dun05",85,69;	end;
+
+// Labirinto da Floresta
+dlab:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"prt_fild01";set ultx,136; set ulty,368; warp "prt_fild01",136,368;	end;}
+if(getgmlevel() <= $CONF1) {warp "prt_fild01",136,368;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("prt_maze01"))+ "]^000000",whidden1,
+	     "Level 2 ^FF0000["+ (getmapusers("prt_maze02"))+ "]^000000",whidden2,
+	     "Level 3 ^FF0000["+ (getmapusers("prt_maze03"))+ "]^000000",whidden3,
+"Voltar ao menu anterior",L_Dungeon;
+
+whidden1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"prt_maze01";set ultx,176; set ulty,7;}
+		warp "prt_maze01",176,7;	end;
+whidden2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"prt_maze02";set ultx,94; set ulty,9;}
+		warp "prt_maze02",94,9;	end;
+whidden3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"prt_maze03";set ultx,23; set ulty,8;}
+		warp "prt_maze03",23,8;	end;
+
+// Laboratório Biológico
+dlight:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"lhz_dun01";set ultx,149; set ulty,286; warp "lhz_dun01",149,286;	end;}
+if(getgmlevel() <= $CONF1) {warp "lhz_dun01",149,286;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu 	"Level 1 ^FF0000["+ (getmapusers("lhz_dun01"))+ "]^000000",wlight1,
+			"Level 2 ^FF0000["+ (getmapusers("lhz_dun02"))+ "]^000000",wlight2,
+//			"Level 3 ^FF0000["+ (getmapusers("lhz_dun03"))+ "]^000000",wlight3,
+"Voltar ao menu anterior",L_Dungeon;
+
+wlight1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"lhz_dun01";set ultx,151; set ulty,286;}
+		warp "lhz_dun01",151,286;	end;
+wlight2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"lhz_dun02";set ultx,18; set ulty,148;}
+		warp "lhz_dun02",18,148;	end;
+wlight3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"lhz_dun03";set ultx,140; set ulty,133;}
+		warp "lhz_dun03",140,133;	end;
+
+// Mina de Carvão
+dcoa:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"mjolnir_02";set ultx,81; set ulty,359; warp "mjolnir_02",81,359;	end;}
+if(getgmlevel() <= $CONF1) {warp "mjolnir_02",81,359;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("mjo_dun01"))+ "]^000000",wcoal1,
+	     "Level 2 ^FF0000["+ (getmapusers("mjo_dun02"))+ "]^000000",wcoal2,
+	     "Level 3 ^FF0000["+ (getmapusers("mjo_dun03"))+ "]^000000",wcoal3,
+"Voltar ao menu anterior",L_Dungeon;
+
+wcoal1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"mjo_dun01";set ultx,52; set ulty,17;}
+		warp "mjo_dun01",52,17;	end;
+wcoal2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"mjo_dun02";set ultx,381; set ulty,343;}
+		warp "mjo_dun02",381,343;	end;
+wcoal3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"mjo_dun03";set ultx,302; set ulty,262;}
+		warp "mjo_dun03",302,262;	end;
+
+// Navio Fantasma
+dsun:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"alb2trea";set ultx,75; set ulty,98; warp "alb2trea",75,98;	end;}
+if(getgmlevel() <= $CONF1) {warp "alb2trea",75,98;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("treasure01"))+ "]^000000",wsunken1,
+	     "Level 2 ^FF0000["+ (getmapusers("treasure02"))+ "]^000000",wsunken2,
+"Voltar ao menu anterior",L_Dungeon;
+
+wsunken1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"treasure01";set ultx,69; set ulty,24;}
+		warp "treasure01",69,24;	end;
+wsunken2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"treasure02";set ultx,102; set ulty,27;}
+		warp "treasure02",102,27;	end;
+
+// Piramide
+dpyr:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"moc_ruins";set ultx,62; set ulty,162; warp "moc_ruins",62,162;	end;}
+if(getgmlevel() <= $CONF1) {warp "moc_ruins",62,162;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("moc_pryd01"))+ "]^000000",wpyramids1,
+	     "Level 2 ^FF0000["+ (getmapusers("moc_pryd02"))+ "]^000000",wpyramids2,
+	     "Level 3 ^FF0000["+ (getmapusers("moc_pryd03"))+ "]^000000",wpyramids3,
+	     "Level 4 ^FF0000["+ (getmapusers("moc_pryd04"))+ "]^000000",wpyramids4,
+	     "Sub Terraneo 1 ^FF0000["+ (getmapusers("moc_pryd05"))+ "]^000000",wpyramidsb1,
+	     "Sub Terraneo 2 ^FF0000["+ (getmapusers("moc_pryd06"))+ "]^000000",wpyramidsb2,
+"Voltar ao menu anterior",L_Dungeon;
+
+wpyramids1:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"moc_pryd01";set ultx,192; set ulty,9;}
+		warp "moc_pryd01",192,9;	end;
+wpyramids2:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"moc_pryd02";set ultx,10; set ulty,192;}
+		warp "moc_pryd02",10,192;	end;
+wpyramids3:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"moc_pryd03";set ultx,100; set ulty,92;}
+		warp "moc_pryd03",100,92;	end;
+wpyramids4:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"moc_pryd04";set ultx,181; set ulty,11;}
+		warp "moc_pryd04",181,11;	end;
+wpyramidsb1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"moc_pryd05";set ultx,94; set ulty,96;}
+		warp "moc_pryd05",94,96;	end;
+wpyramidsb2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"moc_pryd06";set ultx,192; set ulty,8;}
+		warp "moc_pryd06",192,8;	end;
+
+// Templo de Odin
+dodin:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"odin_tem01";set ultx,98; set ulty,145; warp "odin_tem01",98,145;	end;}
+if(getgmlevel() <= $CONF1) {warp "odin_tem01",98,145;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu 	"Level 1 ^FF0000["+ (getmapusers("odin_tem01"))+ "]^000000",wodin1,
+		"Level 2 ^FF0000["+ (getmapusers("odin_tem02"))+ "]^000000",wodin2,
+		"Level 3 ^FF0000["+ (getmapusers("odin_tem03"))+ "]^000000",wodin3,
+"Voltar ao menu anterior",L_Dungeon;
+
+wodin1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"odin_tem01";set ultx,135; set ulty,135;}
+		warp "odin_tem01",135,135;	end;
+wodin2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"odin_tem02";set ultx,30; set ulty,335;}
+		warp "odin_tem02",30,335;	end;
+wodin3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"odin_tem03";set ultx,245; set ulty,40;}
+		warp "odin_tem03",245,40;	end;
+
+// Torre do Relógio
+dclo:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"c_tower1";set ultx,200; set ulty,163; warp "c_tower1",200,163;	end;}
+if(getgmlevel() <= $CONF1) {warp "c_tower1",200,163;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("c_tower1"))+ "]^000000",wclock1,
+	     "Level 2 ^FF0000["+ (getmapusers("c_tower2"))+ "]^000000",wclock2,
+	     "Level 3 ^FF0000["+ (getmapusers("c_tower3"))+ "]^000000",wclock3,
+	     "Level 4 ^FF0000["+ (getmapusers("c_tower4"))+ "]^000000",wclock4,
+	     "Sub Terraneo 1 ^FF0000["+ (getmapusers("alde_dun01"))+ "]^000000",walde1,
+	     "Sub Terraneo 2 ^FF0000["+ (getmapusers("alde_dun02"))+ "]^000000",walde2,
+	     "Sub Terraneo 3 ^FF0000["+ (getmapusers("alde_dun03"))+ "]^000000",walde3,
+	     "Sub Terraneo 4 ^FF0000["+ (getmapusers("alde_dun04"))+ "]^000000",walde4,
+"Voltar ao menu anterior",L_Dungeon;
+
+walde1:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"alde_dun01";set ultx,297; set ulty,25;}
+		warp "alde_dun01",297,25;	end;
+walde2:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"alde_dun02";set ultx,127; set ulty,169;}
+		warp "alde_dun02",127,169;	end;
+walde3:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"alde_dun03";set ultx,277; set ulty,178;}
+		warp "alde_dun03",277,178;	end;
+walde4:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"alde_dun04";set ultx,268; set ulty,74;}
+		warp "alde_dun04",268,74;	end;
+wclock1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"c_tower1";set ultx,199; set ulty,159;}
+		warp "c_tower1",199,159;	end;
+wclock2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"c_tower2";set ultx,148; set ulty,283;}
+		warp "c_tower2",148,283;	end;
+wclock3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"c_tower3";set ultx,65; set ulty,147;}
+		warp "c_tower3",65,147;	end;
+wclock4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"c_tower4";set ultx,56; set ulty,155;}
+		warp "c_tower4",56,155;	end;
+
+// Torre de Thanatos
+dtha:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"tha_scene01";set ultx,131; set ulty,223; warp "tha_scene01",131,223;	end;}
+if(getgmlevel() <= $CONF1) {warp "tha_scene01",131,223;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("tha_t01"))+ "]^000000",wtha1,
+	     "Level 2 ^FF0000["+ (getmapusers("tha_t02"))+ "]^000000",wtha2,
+	     "Level 3 ^FF0000["+ (getmapusers("tha_t03"))+ "]^000000",wtha3,
+	     "Level 4 ^FF0000["+ (getmapusers("tha_t04"))+ "]^000000",wtha4,
+	     "Level 5 ^FF0000["+ (getmapusers("tha_t05"))+ "]^000000",wtha5,
+	     "Level 6 ^FF0000["+ (getmapusers("tha_t06"))+ "]^000000",wtha6,
+	     "Level 7 ^FF0000["+ (getmapusers("tha_t07"))+ "]^000000",wtha7,
+	     "Level 8 ^FF0000["+ (getmapusers("tha_t08"))+ "]^000000",wtha8,
+	     "Level 9 ^FF0000["+ (getmapusers("tha_t09"))+ "]^000000",wtha9,
+//	     "Level 10 ^FF0000["+ (getmapusers("tha_t10"))+ "]^000000",wtha10,
+//	     "Level 11 ^FF0000["+ (getmapusers("tha_t11"))+ "]^000000",wtha11,
+//	     "Level 12 ^FF0000["+ (getmapusers("tha_t12"))+ "]^000000",wtha12,
+//	     "Topo da Torre ^FF0000["+ (getmapusers("thana_boss"))+ "]^000000",wthaboss,
+"Voltar ao menu anterior",L_Dungeon;
+
+wtha1:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tha_t01";set ultx,150; set ulty,35;}
+		warp "tha_t01",150,35;	end;
+wtha2:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tha_t02";set ultx,150; set ulty,31;;}
+		warp "tha_t02",150,31;	end;
+wtha3:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tha_t03";set ultx,220; set ulty,158;}
+		warp "tha_t03",220,158;	end;
+wtha4:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tha_t04";set ultx,59; set ulty,139;}
+		warp "tha_t04",59,139;	end;
+wtha5:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tha_t05";set ultx,62; set ulty,11;}
+		warp "tha_t05",62,11;	end;
+wtha6:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tha_t06";set ultx,119; set ulty,232;}
+		warp "tha_t06",119,232;	end;
+wtha7:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tha_t07";set ultx,29; set ulty,165;}
+		warp "tha_t07",29,165;	end;
+wtha8:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tha_t08";set ultx,106; set ulty,44;}
+		warp "tha_t08",106,44;	end;
+wtha9:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tha_t09";set ultx,88; set ulty,145;}
+		warp "tha_t09",88,145;	end;
+wtha10:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tha_t10";set ultx,166; set ulty,138;}
+		warp "tha_t10",166,138;	end;
+wtha11:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tha_t11";set ultx,88; set ulty,36;}
+		warp "tha_t11",88,36;	end;
+wtha12:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"tha_t12";set ultx,130; set ulty,52;}
+		warp "tha_t12",130,52;	end;
+wthaboss:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"thana_boss";set ultx,136; set ulty,129;}
+		warp "thana_boss",136,129;	end;
+
+//Floresta encantada
+dmosc:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"mosk_fild02";set ultx,190; set ulty,254; warp "mosk_fild02",190,254;	end;}
+if(getgmlevel() <= $CONF1) {warp "mosk_fild02",190,254;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("mosk_dun01"))+ "]^000000",wmosc1,
+	     "Level 2 ^FF0000["+ (getmapusers("mosk_dun02"))+ "]^000000",wmosc2,
+	     "Level 3 ^FF0000["+ (getmapusers("mosk_dun03"))+ "]^000000",wmosc3,
+"Voltar ao menu anterior",L_Dungeon;
+
+wmosc1:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"mosk_dun01";set ultx,189; set ulty,45;}
+		warp "mosk_dun01",189,45;	end;
+wmosc2:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"mosk_dun02";set ultx,165; set ulty,30;}
+		warp "mosk_dun02",165,30;	end;
+wmosc3:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"mosk_dun03";set ultx,31; set ulty,135;}
+		warp "mosk_dun03",31,135;	end;
+
+//Caverna de Brasilis
+dbra:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"bra_dun01";set ultx,181; set ulty,34; warp "bra_dun01",181,34;	end;}
+if(getgmlevel() <= $CONF1) {warp "bra_dun01",181,34;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("bra_dun01"))+ "]^000000",wbra1,
+	     "Level 2 ^FF0000["+ (getmapusers("bra_dun02"))+ "]^000000",wbra2,
+"Voltar ao menu anterior",L_Dungeon;
+
+wbra1:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"bra_dun01";set ultx,181; set ulty,34;}
+		warp "bra_dun01",181,34;	end;
+wbra2:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"bra_dun02";set ultx,198; set ulty,40;}
+		warp "bra_dun02",198,40;	end;
+
+//Calabouço de Yggdrasil
+dnyd:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"spl_fild01";set ultx,370; set ulty,108; warp "spl_fild01",370,108;	end;}
+if(getgmlevel() <= $CONF1) {warp "spl_fild01",370,108;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("nyd_dun01"))+ "]^000000",wnyd1,
+	     "Level 2 ^FF0000["+ (getmapusers("nyd_dun02"))+ "]^000000",wnyd2,
+//	     "Level 3 ^FF0000["+ (getmapusers("1@nyd"))+     "]^000000",wnyd3,
+//	     "Level 4 ^FF0000["+ (getmapusers("2@nyd"))+     "]^000000",wnyd4,
+"Voltar ao menu anterior",L_Dungeon;
+
+wnyd1:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"nyd_dun01";set ultx,64; set ulty,222;}
+		warp "nyd_dun01",64,222;	end;
+wnyd2:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"nyd_dun02";set ultx,61; set ulty,269;}
+		warp "nyd_dun02",61,269;	end;
+wnyd3:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"1@nyd";set ultx,32; set ulty,38;}
+		warp "1@nyd",	 32, 38;	end;
+wnyd4:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"2@nyd";set ultx,19; set ulty,16;}
+		warp "2@nyd",	 19, 16;	end;
+
+//Caverna de El Dicastes
+ddic:
+if(getgmlevel() <= $CONF1 && getgmlevel() >= $CONF11) {set maptip,0; set ultimomapa$,"dic_dun01";set ultx,31; set ulty,213; warp "dic_dun01",31,213;	end;}
+if(getgmlevel() <= $CONF1) {warp "dic_dun01",31,213;	end;}
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o andar desejado:";
+	next;
+	menu "Level 1 ^FF0000["+ (getmapusers("nyd_dun01"))+ "]^000000",wdic1,
+	     "Level 2 ^FF0000["+ (getmapusers("nyd_dun02"))+ "]^000000",wdic2,
+"Voltar ao menu anterior",L_Dungeon;
+
+wdic1:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"dic_dun01";set ultx, 31; set ulty,213;}
+		warp "dic_dun01", 31,213;	end;
+wdic2:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,1; set ultimomapa$,"dic_dun02";set ultx,102; set ulty,144;}
+		warp "dic_dun02",102,144;	end;
+
+
+// Campos
+L_Fields:
+
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campos de Amatsu ^FF0000["+ (getmapusers("ama_fild01"))+ "]^000000",			amaf,
+	     "Campos de Comodo ^FF0000["+ (getmapusers("cmd_fild01")+
+									   getmapusers("cmd_fild02")+
+									   getmapusers("cmd_fild03")+
+									   getmapusers("cmd_fild04")+
+									   getmapusers("cmd_fild05")+
+		 							   getmapusers("cmd_fild06")+
+		 							   getmapusers("cmd_fild07")+
+		 							   getmapusers("cmd_fild08")+
+		 							   getmapusers("cmd_fild09"))+"]^000000",			cmdf,
+	     "Campos de Einbroch ^FF0000["+ (getmapusers("ein_fild01")+
+										 getmapusers("ein_fild02")+
+										 getmapusers("ein_fild03")+
+										 getmapusers("ein_fild04")+
+										 getmapusers("ein_fild05")+
+										 getmapusers("ein_fild06")+
+										 getmapusers("ein_fild07")+
+										 getmapusers("ein_fild08")+
+										 getmapusers("ein_fild09")+
+										 getmapusers("ein_fild10"))+"]^000000",			einf,
+	     "Campos de El Dicastes ^FF0000["+ (getmapusers("dic_fild01")+
+											getmapusers("dic_fild02"))+ "]^000000",				dic,
+	     "Campos de Geffen ^FF0000["+ (getmapusers("gef_fild00")+
+									   getmapusers("gef_fild01")+
+		 							   getmapusers("gef_fild02")+
+		 							   getmapusers("gef_fild03")+
+									   getmapusers("gef_fild04")+
+									   getmapusers("gef_fild05")+
+									   getmapusers("gef_fild06")+
+									   getmapusers("gef_fild07")+
+									   getmapusers("gef_fild08")+
+									   getmapusers("gef_fild09")+
+									   getmapusers("gef_fild10")+
+									   getmapusers("gef_fild11")+
+									   getmapusers("gef_fild12")+
+									   getmapusers("gef_fild13")+
+									   getmapusers("gef_fild14"))+"]^000000",			geff,
+	     "Campos de Hugel ^FF0000["+ (getmapusers("hu_fild01")+
+									  getmapusers("hu_fild02")+
+									  getmapusers("hu_fild03")+
+									  getmapusers("hu_fild04")+
+									  getmapusers("hu_fild05")+
+									  getmapusers("hu_fild06")+
+									  getmapusers("hu_fild07"))+"]^000000",				hugf,
+		 "Campos de Kunlun ^FF0000["+ (getmapusers("gon_fild01"))+ "]^000000",			gonf,
+	     "Campos de Lighthalzen ^FF0000["+ ( getmapusers("lhz_fild01")+
+											 getmapusers("lhz_fild02") )+ "]^000000",	lhzf,
+	     "Campos de Louyang ^FF0000["+ (getmapusers("lou_fild01"))+ "]^000000",			louf,
+	     "Campos de Lutie ^FF0000["+ (getmapusers("xmas_fild01"))+ "]^000000",			xmsf,
+	     "Campos de Morocc ^FF0000["+ (getmapusers("moc_fild01")+
+									   getmapusers("moc_fild02")+
+									   getmapusers("moc_fild03")+
+									   getmapusers("moc_fild04")+
+									   getmapusers("moc_fild05")+
+									   getmapusers("moc_fild06")+
+									   getmapusers("moc_fild07")+
+									   getmapusers("moc_fild08")+
+									   getmapusers("moc_fild09")+
+									   getmapusers("moc_fild10")+
+									   getmapusers("moc_fild11")+
+									   getmapusers("moc_fild12")+
+									   getmapusers("moc_fild13")+
+									   getmapusers("moc_fild14")+
+									   getmapusers("moc_fild15")+
+									   getmapusers("moc_fild16")+
+									   getmapusers("moc_fild17")+
+									   getmapusers("moc_fild18")+
+									   getmapusers("moc_fild19")+
+									   getmapusers("moc_fild20")+
+									   getmapusers("moc_fild21")+
+									   getmapusers("moc_fild22"))+"]^000000",			morf,
+	     "Campos de Niffheim ^FF0000["+ (getmapusers("nif_fild01")+
+										 getmapusers("nif_fild02"))+"]^000000",			niff,
+	     "Campos de Payon ^FF0000["+ (getmapusers("pay_fild01")+
+									  getmapusers("pay_fild02")+
+									  getmapusers("pay_fild03")+
+									  getmapusers("pay_fild04")+
+									  getmapusers("pay_fild05")+
+									  getmapusers("pay_fild06")+
+									  getmapusers("pay_fild07")+
+									  getmapusers("pay_fild08")+
+									  getmapusers("pay_fild09")+
+									  getmapusers("pay_fild10")+
+									  getmapusers("pay_fild11"))+"]^000000",			payf,
+	     "Campos de Prontera ^FF0000["+ (getmapusers("prt_fild00")+
+										 getmapusers("prt_fild01")+
+										 getmapusers("prt_fild02")+
+										 getmapusers("prt_fild03")+
+										 getmapusers("prt_fild04")+
+										 getmapusers("prt_fild05")+
+										 getmapusers("prt_fild06")+
+										 getmapusers("prt_fild07")+
+										 getmapusers("prt_fild08")+
+										 getmapusers("prt_fild09")+
+										 getmapusers("prt_fild10")+
+										 getmapusers("prt_fild11"))+"]^000000",			prtf,
+	     "Campos de Rachel ^FF0000["+ (getmapusers("ra_fild01")+
+									   getmapusers("ra_fild02")+
+									   getmapusers("ra_fild03")+
+									   getmapusers("ra_fild04")+
+									   getmapusers("ra_fild05")+
+									   getmapusers("ra_fild06")+
+									   getmapusers("ra_fild07")+
+									   getmapusers("ra_fild08")+
+									   getmapusers("ra_fild09")+
+									   getmapusers("ra_fild10")+
+									   getmapusers("ra_fild11")+
+									   getmapusers("ra_fild12")+
+									   getmapusers("ra_fild13"))+"]^000000",			rachf,
+	     "Campos de Umbala ^FF0000["+ (getmapusers("um_fild01")+
+									   getmapusers("um_fild02")+
+									   getmapusers("um_fild03")+
+									   getmapusers("um_fild04"))+"]^000000",			umbf,
+	     "Campos de Veins ^FF0000["+ (getmapusers("ve_fild01")+
+									  getmapusers("ve_fild02")+
+									  getmapusers("ve_fild03")+
+									  getmapusers("ve_fild04")+
+									  getmapusers("ve_fild05")+
+									  getmapusers("ve_fild06")+
+									  getmapusers("ve_fild07"))+"]^000000",				veinf,
+	     "Campos de Yuno ^FF0000["+ (getmapusers("yuno_fild01")+
+									 getmapusers("yuno_fild02")+
+									 getmapusers("yuno_fild03")+
+									 getmapusers("yuno_fild04")+
+									 getmapusers("yuno_fild05")+
+									 getmapusers("yuno_fild06")+
+									 getmapusers("yuno_fild07")+
+									 getmapusers("yuno_fild08")+
+									 getmapusers("yuno_fild09")+
+									 getmapusers("yuno_fild10")+
+									 getmapusers("yuno_fild11")+
+									 getmapusers("yuno_fild12"))+"]^000000",				yunf,
+		 "Campos dos Esplendores ^FF0000["+ (getmapusers("spl_fild01")+
+											 getmapusers("spl_fild02")+
+											 getmapusers("spl_fild03"))+ "]^000000",					spl,
+		 "Montanhas dos Manuk ^FF0000["+ (getmapusers("man_fild01")+
+										  getmapusers("man_fild02")+
+										  getmapusers("man_fild03"))+ "]^000000",			manuk,
+	     "Monte Mjolnir ^FF0000["+ (getmapusers("mjolnir_01")+
+									getmapusers("mjolnir_02")+
+									getmapusers("mjolnir_03")+
+									getmapusers("mjolnir_04")+
+									getmapusers("mjolnir_05")+
+									getmapusers("mjolnir_06")+
+									getmapusers("mjolnir_07")+
+									getmapusers("mjolnir_08")+
+									getmapusers("mjolnir_09")+
+									getmapusers("mjolnir_10")+
+									getmapusers("mjolnir_11")+
+									getmapusers("mjolnir_12"))+ "]^000000",				mtjf,
+		 "Voltar ao menu anterior",		L_PRIN;
+
+
+// Amatsu
+amaf:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de Amatsu 01 ^FF0000["+ (getmapusers("ama_fild01"))+ "]^000000",fama,
+"Voltar ao menu anterior",L_Fields;
+
+fama:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ama_fild01";set ultx,0; set ulty,0;}
+		warp "ama_fild01",0,0;	end;
+
+// Comodo
+cmdf:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de Comodo 01 ^FF0000["+ (getmapusers("cmd_fild01"))+ "]^000000",fcmd1,
+	     "Campo de Comodo 02 ^FF0000["+ (getmapusers("cmd_fild02"))+ "]^000000",fcmd2,
+	     "Campo de Comodo 03 ^FF0000["+ (getmapusers("cmd_fild03"))+ "]^000000",fcmd3,
+	     "Campo de Comodo 04 ^FF0000["+ (getmapusers("cmd_fild04"))+ "]^000000",fcmd4,
+	     "Campo de Comodo 05 ^FF0000["+ (getmapusers("cmd_fild05"))+ "]^000000",fcmd5,
+	     "Campo de Comodo 06 ^FF0000["+ (getmapusers("cmd_fild06"))+ "]^000000",fcmd6,
+	     "Campo de Comodo 07 ^FF0000["+ (getmapusers("cmd_fild07"))+ "]^000000",fcmd7,
+	     "Campo de Comodo 08 ^FF0000["+ (getmapusers("cmd_fild08"))+ "]^000000",fcmd8,
+	     "Campo de Comodo 09 ^FF0000["+ (getmapusers("cmd_fild09"))+ "]^000000",fcmd9,
+"Voltar ao menu anterior",L_Fields;
+
+fcmd1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"cmd_fild01";set ultx,0; set ulty,0;}
+		warp "cmd_fild01",0,0;	end;
+fcmd2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"cmd_fild02";set ultx,0; set ulty,0;}
+		warp "cmd_fild02",0,0;	end;
+fcmd3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"cmd_fild03";set ultx,0; set ulty,0;}
+		warp "cmd_fild03",0,0;	end;
+fcmd4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"cmd_fild04";set ultx,0; set ulty,0;}
+		warp "cmd_fild04",0,0;	end;
+fcmd5:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"cmd_fild05";set ultx,0; set ulty,0;}
+		warp "cmd_fild05",0,0;	end;
+fcmd6:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"cmd_fild06";set ultx,0; set ulty,0;}
+		warp "cmd_fild06",0,0;	end;
+fcmd7:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"cmd_fild07";set ultx,0; set ulty,0;}
+		warp "cmd_fild07",0,0;	end;
+fcmd8:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"cmd_fild08";set ultx,0; set ulty,0;}
+		warp "cmd_fild08",0,0;	end;
+fcmd9:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"cmd_fild09";set ultx,0; set ulty,0;}
+		warp "cmd_fild09",0,0;	end;
+
+// Einbroch
+einf:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de Einbroch01 ^FF0000["+ (getmapusers("ein_fild01"))+ "]^000000",fein1,
+		 "Campo de Einbroch02 ^FF0000["+ (getmapusers("ein_fild02"))+ "]^000000",fein2,
+		 "Campo de Einbroch03 ^FF0000["+ (getmapusers("ein_fild03"))+ "]^000000",fein3,
+	     "Campo de Einbroch04 ^FF0000["+ (getmapusers("ein_fild04"))+ "]^000000",fein4,
+	     "Campo de Einbroch05 ^FF0000["+ (getmapusers("ein_fild05"))+ "]^000000",fein5,
+	     "Campo de Einbroch06 ^FF0000["+ (getmapusers("ein_fild06"))+ "]^000000",fein6,
+	     "Campo de Einbroch07 ^FF0000["+ (getmapusers("ein_fild07"))+ "]^000000",fein7,
+	     "Campo de Einbroch08 ^FF0000["+ (getmapusers("ein_fild08"))+ "]^000000",fein8,
+	     "Campo de Einbroch09 ^FF0000["+ (getmapusers("ein_fild09"))+ "]^000000",fein9,
+	     "Campo de Einbroch10 ^FF0000["+ (getmapusers("ein_fild10"))+ "]^000000",fein10,
+"Voltar ao menu anterior",L_Fields;
+
+fein1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ein_fild01";set ultx,0; set ulty,0;}
+		warp "ein_fild01",0,0;	end;
+fein2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ein_fild02";set ultx,0; set ulty,0;}
+		warp "ein_fild02",0,0;	end;
+fein3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ein_fild03";set ultx,0; set ulty,0;}
+		warp "ein_fild03",0,0;	end;
+fein4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ein_fild04";set ultx,0; set ulty,0;}
+		warp "ein_fild04",0,0;	end;
+fein5:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ein_fild05";set ultx,0; set ulty,0;}
+		warp "ein_fild05",0,0;	end;
+fein6:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ein_fild06";set ultx,0; set ulty,0;}
+		warp "ein_fild06",0,0;	end;
+fein7:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ein_fild07";set ultx,0; set ulty,0;}
+		warp "ein_fild07",0,0;	end;
+fein8:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ein_fild08";set ultx,0; set ulty,0;}
+		warp "ein_fild08",0,0;	end;
+fein9:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ein_fild09";set ultx,0; set ulty,0;}
+		warp "ein_fild09",0,0;	end;
+fein10:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ein_fild10";set ultx,0; set ulty,0;}
+		warp "ein_fild10",0,0;	end;
+
+// Geffen
+geff:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de Geffen 00 ^FF0000["+ (getmapusers("gef_fild00"))+ "]^000000",fgef0,
+	     "Campo de Geffen 01 ^FF0000["+ (getmapusers("gef_fild01"))+ "]^000000",fgef1,
+	     "Campo de Geffen 02 ^FF0000["+ (getmapusers("gef_fild02"))+ "]^000000",fgef2,
+	     "Campo de Geffen 03 ^FF0000["+ (getmapusers("gef_fild03"))+ "]^000000",fgef3,
+	     "Campo de Geffen 04 ^FF0000["+ (getmapusers("gef_fild04"))+ "]^000000",fgef4,
+	     "Campo de Geffen 05 ^FF0000["+ (getmapusers("gef_fild05"))+ "]^000000",fgef5,
+	     "Campo de Geffen 06 ^FF0000["+ (getmapusers("gef_fild06"))+ "]^000000",fgef6,
+	     "Campo de Geffen 07 ^FF0000["+ (getmapusers("gef_fild07"))+ "]^000000",fgef7,
+	     "Campo de Geffen 08 ^FF0000["+ (getmapusers("gef_fild08"))+ "]^000000",fgef8,
+	     "Campo de Geffen 09 ^FF0000["+ (getmapusers("gef_fild09"))+ "]^000000",fgef9,
+	     "Campo de Geffen 10 ^FF0000["+ (getmapusers("gef_fild10"))+ "]^000000",fgef10,
+	     "Campo de Geffen 11 ^FF0000["+ (getmapusers("gef_fild11"))+ "]^000000",fgef11,
+	     "Campo de Geffen 12 ^FF0000["+ (getmapusers("gef_fild12"))+ "]^000000",fgef12,
+	     "Campo de Geffen 13 ^FF0000["+ (getmapusers("gef_fild13"))+ "]^000000",fgef13,
+	     "Campo de Geffen 14 ^FF0000["+ (getmapusers("gef_fild14"))+ "]^000000",fgef14,
+"Voltar ao menu anterior",L_Fields;
+
+fgef0:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gef_fild00";set ultx,0; set ulty,0;}
+		warp "gef_fild00",0,0;	end;
+fgef1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gef_fild01";set ultx,0; set ulty,0;}
+		warp "gef_fild01",0,0;	end;
+fgef2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gef_fild02";set ultx,0; set ulty,0;}
+		warp "gef_fild02",0,0;	end;
+fgef3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gef_fild03";set ultx,0; set ulty,0;}
+		warp "gef_fild03",0,0;	end;
+fgef4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gef_fild04";set ultx,0; set ulty,0;}
+		warp "gef_fild04",0,0;	end;
+fgef5:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gef_fild05";set ultx,0; set ulty,0;}
+		warp "gef_fild05",0,0;	end;
+fgef6:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gef_fild06";set ultx,0; set ulty,0;}
+		warp "gef_fild06",0,0;	end;
+fgef7:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gef_fild07";set ultx,0; set ulty,0;}
+		warp "gef_fild07",0,0;	end;
+fgef8:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gef_fild08";set ultx,0; set ulty,0;}
+		warp "gef_fild08",0,0;	end;
+fgef9:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gef_fild09";set ultx,0; set ulty,0;}
+		warp "gef_fild09",0,0;	end;
+fgef10:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gef_fild10";set ultx,0; set ulty,0;}
+		warp "gef_fild10",0,0;	end;
+fgef11:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gef_fild11";set ultx,0; set ulty,0;}
+		warp "gef_fild11",0,0;	end;
+fgef12:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gef_fild12";set ultx,0; set ulty,0;}
+		warp "gef_fild12",0,0;	end;
+fgef13:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gef_fild13";set ultx,0; set ulty,0;}
+		warp "gef_fild13",0,0;	end;
+fgef14:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gef_fild14";set ultx,0; set ulty,0;}
+		warp "gef_fild14",0,0;	end;
+
+// Gonryun
+gonf:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de Kunlun 01 ^FF0000["+ (getmapusers("gon_fild01"))+ "]^000000",fgon;
+
+fgon:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"gon_fild01";set ultx,0; set ulty,0;}
+		warp "gon_fild01",0,0;	end;
+
+// Hugel
+hugf:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de Hugel 01 ^FF0000["+ (getmapusers("hu_fild01"))+ "]^000000",fhu1,
+	     "Campo de Hugel 02 ^FF0000["+ (getmapusers("hu_fild02"))+ "]^000000",fhu2,
+	     "Campo de Hugel 03 ^FF0000["+ (getmapusers("hu_fild03"))+ "]^000000",fhu3,
+	     "Campo de Hugel 04 ^FF0000["+ (getmapusers("hu_fild04"))+ "]^000000",fhu4,
+	     "Campo de Hugel 05 ^FF0000["+ (getmapusers("hu_fild05"))+ "]^000000",fhu5,
+	     "Campo de Hugel 06 ^FF0000["+ (getmapusers("hu_fild06"))+ "]^000000",fhu6,
+	     "Campo de Hugel 07 ^FF0000["+ (getmapusers("hu_fild07"))+ "]^000000",fhu7,
+"Voltar ao menu anterior",L_Fields;
+
+fhu1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"hu_fild01";set ultx,0; set ulty,0;}
+		warp "hu_fild01",0,0;	end;
+fhu2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"hu_fild02";set ultx,0; set ulty,0;}
+		warp "hu_fild02",0,0;	end;
+fhu3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"hu_fild03";set ultx,0; set ulty,0;}
+		warp "hu_fild03",0,0;	end;
+fhu4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"hu_fild04";set ultx,0; set ulty,0;}
+		warp "hu_fild04",0,0;	end;
+fhu5:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"hu_fild05";set ultx,0; set ulty,0;}
+		warp "hu_fild05",0,0;	end;
+fhu6:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"hu_fild06";set ultx,0; set ulty,0;}
+		warp "hu_fild06",0,0;	end;
+fhu7:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"hu_fild07";set ultx,0; set ulty,0;}
+		warp "hu_fild07",0,0;	end;
+
+// Louyang
+louf:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de Louyang 01 ^FF0000["+ (getmapusers("lou_fild01"))+ "]^000000",flou,
+"Voltar ao menu anterior",L_Fields;
+
+flou:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"lou_fild01";set ultx,0; set ulty,0;}
+		warp "lou_fild01",0,0;	end;
+
+// Lighthalzen
+lhzf:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de LightHalzen 01 ^FF0000["+ (getmapusers("lhz_fild01"))+ "]^000000",flhz1,
+	     "Campo de LightHalzen 02 ^FF0000["+ (getmapusers("lhz_fild02"))+ "]^000000",flhz2,
+	     "Campo de LightHalzen 03 ^FF0000["+ (getmapusers("lhz_fild03"))+ "]^000000",flhz3,
+"Voltar ao menu anterior",L_Fields;
+
+flhz1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"lhz_fild01";set ultx,0; set ulty,0;}
+		warp "lhz_fild01",0,0;	end;
+flhz2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"lhz_fild02";set ultx,0; set ulty,0;}
+		warp "lhz_fild02",0,0;	end;
+flhz3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"lhz_fild03";set ultx,0; set ulty,0;}
+		warp "lhz_fild03",0,0;	end;
+
+// Lutie
+xmsf:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campos de Lutie 01 ^FF0000["+ (getmapusers("xmas_fild01"))+ "]^000000",fxms1,
+"Voltar ao menu anterior",L_Fields;
+
+fxms1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"xmas_fild01";set ultx,0; set ulty,0;}
+		warp "xmas_fild01",0,0;	end;
+
+// Morroc
+morf:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de Morocc 01 ^FF0000["+ (getmapusers("moc_fild01"))+ "]^000000",fmor1,
+	     "Campo de Morocc 02 ^FF0000["+ (getmapusers("moc_fild02"))+ "]^000000",fmor2,
+	     "Campo de Morocc 03 ^FF0000["+ (getmapusers("moc_fild03"))+ "]^000000",fmor3,
+	     "Campo de Morocc 04 ^FF0000["+ (getmapusers("moc_fild04"))+ "]^000000",fmor4,
+	     "Campo de Morocc 05 ^FF0000["+ (getmapusers("moc_fild05"))+ "]^000000",fmor5,
+	     "Campo de Morocc 06 ^FF0000["+ (getmapusers("moc_fild06"))+ "]^000000",fmor6,
+	     "Campo de Morocc 07 ^FF0000["+ (getmapusers("moc_fild07"))+ "]^000000",fmor7,
+	     "Campo de Morocc 08 ^FF0000["+ (getmapusers("moc_fild08"))+ "]^000000",fmor8,
+	     "Campo de Morocc 09 ^FF0000["+ (getmapusers("moc_fild09"))+ "]^000000",fmor9,
+	     "Campo de Morocc 10 ^FF0000["+ (getmapusers("moc_fild10"))+ "]^000000",fmor10,
+	     "Campo de Morocc 11 ^FF0000["+ (getmapusers("moc_fild11"))+ "]^000000",fmor11,
+	     "Campo de Morocc 12 ^FF0000["+ (getmapusers("moc_fild12"))+ "]^000000",fmor12,
+	     "Campo de Morocc 13 ^FF0000["+ (getmapusers("moc_fild13"))+ "]^000000",fmor13,
+	     "Campo de Morocc 14 ^FF0000["+ (getmapusers("moc_fild14"))+ "]^000000",fmor14,
+	     "Campo de Morocc 15 ^FF0000["+ (getmapusers("moc_fild15"))+ "]^000000",fmor15,
+	     "Campo de Morocc 16 ^FF0000["+ (getmapusers("moc_fild16"))+ "]^000000",fmor16,
+	     "Campo de Morocc 17 ^FF0000["+ (getmapusers("moc_fild17"))+ "]^000000",fmor17,
+	     "Campo de Morocc 18 ^FF0000["+ (getmapusers("moc_fild18"))+ "]^000000",fmor18,
+	     "Campo de Morocc 19 ^FF0000["+ (getmapusers("moc_fild19"))+ "]^000000",fmor19,
+	     "Campo de Morocc 20 ^FF0000["+ (getmapusers("moc_fild20"))+ "]^000000",fmor20,
+	     "Campo de Morocc 21 ^FF0000["+ (getmapusers("moc_fild21"))+ "]^000000",fmor21,
+	     "Campo de Morocc 22 ^FF0000["+ (getmapusers("moc_fild22"))+ "]^000000",fmor22,
+"Voltar ao menu anterior",L_Fields;
+
+fmor1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild01";set ultx,0; set ulty,0;}
+		warp "moc_fild01",0,0;	end;
+fmor2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild02";set ultx,0; set ulty,0;}
+		warp "moc_fild02",0,0;	end;
+fmor3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild03";set ultx,0; set ulty,0;}
+		warp "moc_fild03",0,0;	end;
+fmor4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild04";set ultx,0; set ulty,0;}
+		warp "moc_fild04",0,0;	end;
+fmor5:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild05";set ultx,0; set ulty,0;}
+		warp "moc_fild05",0,0;	end;
+fmor6:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild06";set ultx,0; set ulty,0;}
+		warp "moc_fild06",0,0;	end;
+fmor7:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild07";set ultx,0; set ulty,0;}
+		warp "moc_fild07",0,0;	end;
+fmor8:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild08";set ultx,0; set ulty,0;}
+		warp "moc_fild08",0,0;	end;
+fmor9:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild09";set ultx,0; set ulty,0;}
+		warp "moc_fild09",0,0;	end;
+fmor10:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild10";set ultx,0; set ulty,0;}
+		warp "moc_fild10",0,0;	end;
+fmor11:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild11";set ultx,0; set ulty,0;}
+		warp "moc_fild11",0,0;	end;
+fmor12:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild12";set ultx,0; set ulty,0;}
+		warp "moc_fild12",0,0;	end;
+fmor13:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild13";set ultx,0; set ulty,0;}
+		warp "moc_fild13",0,0;	end;
+fmor14:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild14";set ultx,0; set ulty,0;}
+		warp "moc_fild14",0,0;	end;
+fmor15:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild15";set ultx,0; set ulty,0;}
+		warp "moc_fild15",0,0;	end;
+fmor16:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild16";set ultx,0; set ulty,0;}
+		warp "moc_fild16",0,0;	end;
+fmor17:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild17";set ultx,0; set ulty,0;}
+		warp "moc_fild17",0,0;	end;
+fmor18:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild18";set ultx,0; set ulty,0;}
+		warp "moc_fild18",0,0;	end;
+fmor19:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild19";set ultx,0; set ulty,0;}
+		warp "moc_fild19",0,0;	end;
+fmor20:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild20";set ultx,0; set ulty,0;}
+		warp "moc_fild20",0,0;	end;
+fmor21:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild21";set ultx,0; set ulty,0;}
+		warp "moc_fild21",0,0;	end;
+fmor22:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"moc_fild22";set ultx,0; set ulty,0;}
+		warp "moc_fild22",0,0;	end;
+
+// Niflheim
+niff:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de Niffheim 01 ^FF0000["+ (getmapusers("nif_fild01"))+ "]^000000",fnif1,
+	     "Campo de Niffheim 02 ^FF0000["+ (getmapusers("nif_fild02"))+ "]^000000",fnif2,
+"Voltar ao menu anterior",L_Fields;
+
+fnif1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"nif_fild01";set ultx,0; set ulty,0;}
+		warp "nif_fild01",0,0;	end;
+fnif2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"nif_fild02";set ultx,0; set ulty,0;}
+		warp "nif_fild02",0,0;	end;
+
+// Payon
+payf:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de Payon 01 ^FF0000["+ (getmapusers("pay_fild01"))+ "]^000000",fpay1,
+	     "Campo de Payon 02 ^FF0000["+ (getmapusers("pay_fild02"))+ "]^000000",fpay2,
+	     "Campo de Payon 03 ^FF0000["+ (getmapusers("pay_fild03"))+ "]^000000",fpay3,
+	     "Campo de Payon 04 ^FF0000["+ (getmapusers("pay_fild04"))+ "]^000000",fpay4,
+	     "Campo de Payon 05 ^FF0000["+ (getmapusers("pay_fild05"))+ "]^000000",fpay5,
+	     "Campo de Payon 06 ^FF0000["+ (getmapusers("pay_fild06"))+ "]^000000",fpay6,
+	     "Campo de Payon 07 ^FF0000["+ (getmapusers("pay_fild07"))+ "]^000000",fpay7,
+	     "Campo de Payon 08 ^FF0000["+ (getmapusers("pay_fild08"))+ "]^000000",fpay8,
+	     "Campo de Payon 09 ^FF0000["+ (getmapusers("pay_fild09"))+ "]^000000",fpay9,
+	     "Campo de Payon 10 ^FF0000["+ (getmapusers("pay_fild10"))+ "]^000000",fpay10,
+	     "Campo de Payon 11 ^FF0000["+ (getmapusers("pay_fild11"))+ "]^000000",fpay11,
+"Voltar ao menu anterior",L_Fields;
+
+fpay1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"pay_fild01";set ultx,0; set ulty,0;}
+		warp "pay_fild01",0,0;	end;
+fpay2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"pay_fild02";set ultx,0; set ulty,0;}
+		warp "pay_fild02",0,0;	end;
+fpay3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"pay_fild03";set ultx,0; set ulty,0;}
+		warp "pay_fild03",0,0;	end;
+fpay4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"pay_fild04";set ultx,0; set ulty,0;}
+		warp "pay_fild04",0,0;	end;
+fpay5:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"pay_fild05";set ultx,0; set ulty,0;}
+		warp "pay_fild05",0,0;	end;
+fpay6:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"pay_fild06";set ultx,0; set ulty,0;}
+		warp "pay_fild06",0,0;	end;
+fpay7:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"pay_fild07";set ultx,0; set ulty,0;}
+		warp "pay_fild07",0,0;	end;
+fpay8:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"pay_fild08";set ultx,0; set ulty,0;}
+		warp "pay_fild08",0,0;	end;
+fpay9:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"pay_fild09";set ultx,0; set ulty,0;}
+		warp "pay_fild09",0,0;	end;
+fpay10:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"pay_fild10";set ultx,0; set ulty,0;}
+		warp "pay_fild10",0,0;	end;
+fpay11:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"pay_fild11";set ultx,0; set ulty,0;}
+		warp "pay_fild11",0,0;	end;
+
+// Prontera
+prtf:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de Prontera 00 ^FF0000["+ (getmapusers("prt_fild00"))+ "]^000000",fprt0,
+	     "Campo de Prontera 01 ^FF0000["+ (getmapusers("prt_fild01"))+ "]^000000",fprt1,
+	     "Campo de Prontera 02 ^FF0000["+ (getmapusers("prt_fild02"))+ "]^000000",fprt2,
+	     "Campo de Prontera 03 ^FF0000["+ (getmapusers("prt_fild03"))+ "]^000000",fprt3,
+	     "Campo de Prontera 04 ^FF0000["+ (getmapusers("prt_fild04"))+ "]^000000",fprt4,
+	     "Campo de Prontera 05 ^FF0000["+ (getmapusers("prt_fild05"))+ "]^000000",fprt5,
+	     "Campo de Prontera 06 ^FF0000["+ (getmapusers("prt_fild06"))+ "]^000000",fprt6,
+	     "Campo de Prontera 07 ^FF0000["+ (getmapusers("prt_fild07"))+ "]^000000",fprt7,
+	     "Campo de Prontera 08 ^FF0000["+ (getmapusers("prt_fild08"))+ "]^000000",fprt8,
+	     "Campo de Prontera 09 ^FF0000["+ (getmapusers("prt_fild09"))+ "]^000000",fprt9,
+	     "Campo de Prontera 10 ^FF0000["+ (getmapusers("prt_fild10"))+ "]^000000",fprt10,
+	     "Campo de Prontera 11 ^FF0000["+ (getmapusers("prt_fild11"))+ "]^000000",fprt11,
+"Voltar ao menu anterior",L_Fields;
+
+fprt0:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"prt_fild00";set ultx,0; set ulty,0;}
+		warp "prt_fild00",0,0;	end;
+fprt1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"prt_fild01";set ultx,0; set ulty,0;}
+		warp "prt_fild01",0,0;	end;
+fprt2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"prt_fild02";set ultx,0; set ulty,0;}
+		warp "prt_fild02",0,0;	end;
+fprt3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"prt_fild03";set ultx,0; set ulty,0;}
+		warp "prt_fild03",0,0;	end;
+fprt4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"prt_fild04";set ultx,0; set ulty,0;}
+		warp "prt_fild04",0,0;	end;
+fprt5:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"prt_fild05";set ultx,0; set ulty,0;}
+		warp "prt_fild05",0,0;	end;
+fprt6:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"prt_fild06";set ultx,0; set ulty,0;}
+		warp "prt_fild06",0,0;	end;
+fprt7:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"prt_fild07";set ultx,0; set ulty,0;}
+		warp "prt_fild07",0,0;	end;
+fprt8:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"prt_fild08";set ultx,0; set ulty,0;}
+		warp "prt_fild08",0,0;	end;
+fprt9:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"prt_fild09";set ultx,0; set ulty,0;}
+		warp "prt_fild09",0,0;	end;
+fprt10:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"prt_fild10";set ultx,0; set ulty,0;}
+		warp "prt_fild10",0,0;	end;
+fprt11:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"prt_fild11";set ultx,0; set ulty,0;}
+		warp "prt_fild11",0,0;	end;
+
+// Umbala
+umbf:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de Umbala 01 ^FF0000["+ (getmapusers("um_fild01"))+ "]^000000",fum1,
+	     "Campo de Umbala 02 ^FF0000["+ (getmapusers("um_fild02"))+ "]^000000",fum2,
+	     "Campo de Umbala 03 ^FF0000["+ (getmapusers("um_fild03"))+ "]^000000",fum3,
+	     "Campo de Umbala 04 ^FF0000["+ (getmapusers("um_fild04"))+ "]^000000",fum4,
+"Voltar ao menu anterior",L_Fields;
+
+fum1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"um_fild01";set ultx,0; set ulty,0;}
+		warp "um_fild01",0,0;	end;
+fum2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"um_fild02";set ultx,0; set ulty,0;}
+		warp "um_fild02",0,0;	end;
+fum3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"um_fild03";set ultx,0; set ulty,0;}
+		warp "um_fild03",0,0;	end;
+fum4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"um_fild04";set ultx,0; set ulty,0;}
+		warp "um_fild04",0,0;	end;
+
+// Yuno
+yunf:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de Yuno 01 ^FF0000["+ (getmapusers("yuno_fild01"))+ "]^000000",fyun1,
+	     "Campo de Yuno 02 ^FF0000["+ (getmapusers("yuno_fild02"))+ "]^000000",fyun2,
+	     "Campo de Yuno 03 ^FF0000["+ (getmapusers("yuno_fild03"))+ "]^000000",fyun3,
+	     "Campo de Yuno 04 ^FF0000["+ (getmapusers("yuno_fild04"))+ "]^000000",fyun4,
+	     "Campo de Yuno 05 ^FF0000["+ (getmapusers("yuno_fild05"))+ "]^000000",fyun5,
+	     "Campo de Yuno 06 ^FF0000["+ (getmapusers("yuno_fild06"))+ "]^000000",fyun6,
+	     "Campo de Yuno 07 ^FF0000["+ (getmapusers("yuno_fild07"))+ "]^000000",fyun7,
+	     "Campo de Yuno 08 ^FF0000["+ (getmapusers("yuno_fild08"))+ "]^000000",fyun8,
+	     "Campo de Yuno 09 ^FF0000["+ (getmapusers("yuno_fild09"))+ "]^000000",fyun9,
+	     "Campo de Yuno 10 ^FF0000["+ (getmapusers("yuno_fild10"))+ "]^000000",fyun10,
+	     "Campo de Yuno 11 ^FF0000["+ (getmapusers("yuno_fild11"))+ "]^000000",fyun11,
+	     "Campo de Yuno 12 ^FF0000["+ (getmapusers("yuno_fild12"))+ "]^000000",fyun12,
+"Voltar ao menu anterior",L_Fields;
+
+
+fyun1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"yuno_fild01";set ultx,0; set ulty,0;}
+		warp "yuno_fild01",0,0;	end;
+fyun2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"yuno_fild02";set ultx,0; set ulty,0;}
+		warp "yuno_fild02",0,0;	end;
+fyun3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"yuno_fild03";set ultx,0; set ulty,0;}
+		warp "yuno_fild03",0,0;	end;
+fyun4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"yuno_fild04";set ultx,0; set ulty,0;}
+		warp "yuno_fild04",0,0;	end;
+fyun5:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"yuno_fild05";set ultx,0; set ulty,0;}
+		warp "yuno_fild05",0,0;	end;
+fyun6:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"yuno_fild06";set ultx,0; set ulty,0;}
+		warp "yuno_fild06",0,0;	end;
+fyun7:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"yuno_fild07";set ultx,0; set ulty,0;}
+		warp "yuno_fild07",0,0;	end;
+fyun8:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"yuno_fild08";set ultx,0; set ulty,0;}
+		warp "yuno_fild08",0,0;	end;
+fyun9:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"yuno_fild09";set ultx,0; set ulty,0;}
+		warp "yuno_fild09",0,0;	end;
+fyun10:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"yuno_fild10";set ultx,0; set ulty,0;}
+		warp "yuno_fild10",0,0;	end;
+fyun11:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"yuno_fild11";set ultx,0; set ulty,0;}
+		warp "yuno_fild11",0,0;	end;
+fyun12:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"yuno_fild12";set ultx,0; set ulty,0;}
+		warp "yuno_fild12",0,0;	end;
+
+// Monte Mjolnir
+mtjf:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Mjolnir 01 ^FF0000["+ (getmapusers("mjolnir_01"))+ "]^000000",fmtj1,
+	     "Mjolnir 02 ^FF0000["+ (getmapusers("mjolnir_02"))+ "]^000000",fmtj2,
+	     "Mjolnir 03 ^FF0000["+ (getmapusers("mjolnir_03"))+ "]^000000",fmtj3,
+	     "Mjolnir 04 ^FF0000["+ (getmapusers("mjolnir_04"))+ "]^000000",fmtj4,
+	     "Mjolnir 05 ^FF0000["+ (getmapusers("mjolnir_05"))+ "]^000000",fmtj5,
+	     "Mjolnir 06 ^FF0000["+ (getmapusers("mjolnir_06"))+ "]^000000",fmtj6,
+	     "Mjolnir 07 ^FF0000["+ (getmapusers("mjolnir_07"))+ "]^000000",fmtj7,
+	     "Mjolnir 08 ^FF0000["+ (getmapusers("mjolnir_08"))+ "]^000000",fmtj8,
+	     "Mjolnir 09 ^FF0000["+ (getmapusers("mjolnir_09"))+ "]^000000",fmtj9,
+	     "Mjolnir 10 ^FF0000["+ (getmapusers("mjolnir_10"))+ "]^000000",fmtj10,
+	     "Mjolnir 11 ^FF0000["+ (getmapusers("mjolnir_11"))+ "]^000000",fmtj11,
+	     "Mjolnir 12 ^FF0000["+ (getmapusers("mjolnir_12"))+ "]^000000",fmtj12,
+"Voltar ao menu anterior",L_Fields;
+
+fmtj1:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"mjolnir_01";set ultx,0; set ulty,0;}
+		warp "mjolnir_01",0,0;	end;
+fmtj2:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"mjolnir_02";set ultx,0; set ulty,0;}
+		warp "mjolnir_02",0,0;	end;
+fmtj3:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"mjolnir_03";set ultx,0; set ulty,0;}
+		warp "mjolnir_03",0,0;	end;
+fmtj4:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"mjolnir_04";set ultx,0; set ulty,0;}
+		warp "mjolnir_04",0,0;	end;
+fmtj5:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"mjolnir_05";set ultx,0; set ulty,0;}
+		warp "mjolnir_05",0,0;	end;
+fmtj6:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"mjolnir_06";set ultx,0; set ulty,0;}
+		warp "mjolnir_06",0,0;	end;
+fmtj7:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"mjolnir_07";set ultx,0; set ulty,0;}
+		warp "mjolnir_07",0,0;	end;
+fmtj8:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"mjolnir_08";set ultx,0; set ulty,0;}
+		warp "mjolnir_08",0,0;	end;
+fmtj9:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"mjolnir_09";set ultx,0; set ulty,0;}
+		warp "mjolnir_09",0,0;	end;
+fmtj10:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"mjolnir_10";set ultx,0; set ulty,0;}
+		warp "mjolnir_10",0,0;	end;
+fmtj11:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"mjolnir_11";set ultx,0; set ulty,0;}
+		warp "mjolnir_11",0,0;	end;
+fmtj12:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"mjolnir_12";set ultx,0; set ulty,0;}
+		warp "mjolnir_12",0,0;	end;
+
+// Rachel
+rachf:
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de Rachel 01 ^FF0000["+ (getmapusers("ra_fild01"))+ "]^000000",frach1,
+	     "Campo de Rachel 02 ^FF0000["+ (getmapusers("ra_fild02"))+ "]^000000",frach2,
+	     "Campo de Rachel 03 ^FF0000["+ (getmapusers("ra_fild03"))+ "]^000000",frach3,
+	     "Campo de Rachel 04 ^FF0000["+ (getmapusers("ra_fild04"))+ "]^000000",frach4,
+	     "Campo de Rachel 05 ^FF0000["+ (getmapusers("ra_fild05"))+ "]^000000",frach5,
+	     "Campo de Rachel 06 ^FF0000["+ (getmapusers("ra_fild06"))+ "]^000000",frach6,
+	     "Campo de Rachel 07 ^FF0000["+ (getmapusers("ra_fild07"))+ "]^000000",frach7,
+	     "Campo de Rachel 08 ^FF0000["+ (getmapusers("ra_fild08"))+ "]^000000",frach8,
+	     "Campo de Rachel 09 ^FF0000["+ (getmapusers("ra_fild09"))+ "]^000000",frach9,
+	     "Campo de Rachel 10 ^FF0000["+ (getmapusers("ra_fild10"))+ "]^000000",frach10,
+	     "Campo de Rachel 11 ^FF0000["+ (getmapusers("ra_fild11"))+ "]^000000",frach11,
+	     "Campo de Rachel 12 ^FF0000["+ (getmapusers("ra_fild12"))+ "]^000000",frach12,
+	     "Campo de Rachel 13 ^FF0000["+ (getmapusers("ra_fild13"))+ "]^000000",frach13,
+"Voltar ao menu anterior",L_Fields;
+
+
+frach1:	 callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ra_fild01";set ultx,0; set ulty,0;}
+		warp "ra_fild01",0,0;	end;
+frach3:	 callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ra_fild02";set ultx,0; set ulty,0;}
+		warp "ra_fild02",0,0;	end;
+frach2:	 callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ra_fild03";set ultx,0; set ulty,0;}
+		warp "ra_fild03",0,0;	end;
+frach4:	 callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ra_fild04";set ultx,0; set ulty,0;}
+		warp "ra_fild04",0,0;	end;
+frach5:	 callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ra_fild05";set ultx,0; set ulty,0;}
+		warp "ra_fild05",0,0;	end;
+frach6:	 callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ra_fild06";set ultx,0; set ulty,0;}
+		warp "ra_fild06",0,0;	end;
+frach7:	 callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ra_fild07";set ultx,0; set ulty,0;}
+		warp "ra_fild07",0,0;	end;
+frach8:	 callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ra_fild08";set ultx,0; set ulty,0;}
+		warp "ra_fild08",0,0;	end;
+frach9:	 callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ra_fild09";set ultx,0; set ulty,0;}
+		warp "ra_fild09",0,0;	end;
+frach10: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ra_fild10";set ultx,0; set ulty,0;}
+		warp "ra_fild10",0,0;	end;
+frach11: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ra_fild11";set ultx,0; set ulty,0;}
+		warp "ra_fild11",0,0;	end;
+frach12: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ra_fild12";set ultx,0; set ulty,0;}
+		warp "ra_fild12",0,0;	end;
+frach13: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ra_fild13";set ultx,0; set ulty,0;}
+		warp "ra_fild13",0,0;	end;
+
+// Veins
+veinf:
+
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campo de Veins 01 ^FF0000["+ (getmapusers("ve_fild01"))+ "]^000000",fvein1,
+	     "Campo de Veins 02 ^FF0000["+ (getmapusers("ve_fild02"))+ "]^000000",fvein2,
+	     "Campo de Veins 03 ^FF0000["+ (getmapusers("ve_fild03"))+ "]^000000",fvein3,
+	     "Campo de Veins 04 ^FF0000["+ (getmapusers("ve_fild04"))+ "]^000000",fvein4,
+	     "Campo de Veins 05 ^FF0000["+ (getmapusers("ve_fild05"))+ "]^000000",fvein5,
+	     "Campo de Veins 06 ^FF0000["+ (getmapusers("ve_fild06"))+ "]^000000",fvein6,
+	     "Campo de Veins 07 ^FF0000["+ (getmapusers("ve_fild07"))+ "]^000000",fvein7,
+"Voltar ao menu anterior",L_Fields;
+
+fvein1: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ve_fild01";set ultx,0; set ulty,0;}
+		warp "ve_fild01",0,0;	end;
+fvein2: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ve_fild02";set ultx,0; set ulty,0;}
+		warp "ve_fild02",0,0;	end;
+fvein3: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ve_fild03";set ultx,0; set ulty,0;}
+		warp "ve_fild03",0,0;	end;
+fvein4: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ve_fild04";set ultx,0; set ulty,0;}
+		warp "ve_fild04",0,0;	end;
+fvein5: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ve_fild05";set ultx,0; set ulty,0;}
+		warp "ve_fild05",0,0;	end;
+fvein6: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ve_fild06";set ultx,0; set ulty,0;}
+		warp "ve_fild06",0,0;	end;
+fvein7: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"ve_fild07";set ultx,0; set ulty,0;}
+		warp "ve_fild07",0,0;	end;
+
+//Campos dos Esplendores
+spl:
+
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campos dos Esplendores 01 ^FF0000["+ (getmapusers("spl_fild01"))+ "]^000000",fspl1,
+	     "Campos dos Esplendores 02 ^FF0000["+ (getmapusers("spl_fild02"))+ "]^000000",fspl2,
+	     "Campos dos Esplendores 03 ^FF0000["+ (getmapusers("spl_fild03"))+ "]^000000",fspl3,
+"Voltar ao menu anterior",L_Fields;
+
+fspl1: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"spl_fild01";set ultx,0; set ulty,0;}
+		warp "spl_fild01",0,0;	end;
+fspl2: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"spl_fild02";set ultx,0; set ulty,0;}
+		warp "spl_fild02",0,0;	end;
+fspl3: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"spl_fild03";set ultx,0; set ulty,0;}
+		warp "spl_fild03",0,0;	end;
+
+//Montanhas dos Manuk
+manuk:
+
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Montanhas dos Manuk 01 ^FF0000["+ (getmapusers("man_fild01"))+ "]^000000",fman1,
+	     "Montanhas dos Manuk 02 ^FF0000["+ (getmapusers("man_fild02"))+ "]^000000",fman2,
+	     "Montanhas dos Manuk 03 ^FF0000["+ (getmapusers("man_fild03"))+ "]^000000",fman3,
+"Voltar ao menu anterior",L_Fields;
+
+fman1: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"man_fild01";set ultx,0; set ulty,0;}
+		warp "man_fild01",0,0;	end;
+fman2: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"man_fild02";set ultx,0; set ulty,0;}
+		warp "man_fild02",0,0;	end;
+fman3: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"man_fild03";set ultx,0; set ulty,0;}
+		warp "man_fild03",0,0;	end;
+
+//Campos de El Dicastes
+dic:
+
+	mes "[Teleportadora]";
+	mes "Por favor, selecione o seu destino:";
+	next;
+	menu "Campos de El Dicastes 01 ^FF0000["+ (getmapusers("dic_fild01"))+ "]^000000",fdic1,
+	     "Campos de El Dicastes 02 ^FF0000["+ (getmapusers("dic_fild02"))+ "]^000000",fdic2,
+"Voltar ao menu anterior",L_Fields;
+
+fdic1: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"dic_fild01";set ultx,0; set ulty,0;}
+		warp "dic_fild01",0,0;	end;
+fdic2: callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+		if (getgmlevel() >= $CONF11){set maptip,2; set ultimomapa$,"dic_fild02";set ultx,0; set ulty,0;}
+		warp "dic_fild02",0,0;	end;
+
+L_GLD:
+mes "[Teleportadora]";
+	mes "Escolha uma Guilda:";
+	next;
+	if(getcharid(2)!=0 || getgmlevel() >= $CONF15){
+	menu 	"Guilda de Prontera ^FF0000["+ ( getmapusers("prt_gld")+getmapusers("prtg_cas01")+getmapusers("prtg_cas02")+getmapusers("prtg_cas03")+getmapusers("prtg_cas04")+getmapusers("prtg_cas05") )+ "]^000000",prtgld,
+			"Guilda de Geffen^FF0000["+ ( getmapusers("gef_fild13")+getmapusers("gefg_cas01")+getmapusers("gefg_cas02")+getmapusers("gefg_cas03")+getmapusers("gefg_cas04")+getmapusers("gefg_cas05") )+ "]^000000",gefgld,
+			"Guilda de Aldebaram^FF0000["+ ( getmapusers("alde_gld")+getmapusers("aldeg_cas01")+getmapusers("aldeg_cas02")+getmapusers("aldeg_cas03")+getmapusers("aldeg_cas04")+getmapusers("aldeg_cas05") )+ "]^000000",aldegld,
+			"Guilda de Payon^FF0000["+ ( getmapusers("pay_gld")+getmapusers("payg_cas01")+getmapusers("payg_cas02")+getmapusers("payg_cas03")+getmapusers("payg_cas04")+getmapusers("payg_cas05") )+ "]^000000",paygld,
+			"Guilda de Arunafeltz^FF0000["+ ( getmapusers("aru_gld")+getmapusers("arug_cas01")+getmapusers("arug_cas02")+getmapusers("arug_cas03")+getmapusers("arug_cas04")+getmapusers("arug_cas05") )+ "]^000000",aruld,
+			"Guilda de Schwaltzvalt^FF0000["+ ( getmapusers("sch_gld")+getmapusers("schg_cas01")+getmapusers("schg_cas02")+getmapusers("schg_cas03")+getmapusers("schg_cas04")+getmapusers("schg_cas05") )+ "]^000000",schgld,
+			"Guilda de Aprendizes^FF0000["+ ( getmapusers("n_castle")+getmapusers("nguild_pay")+getmapusers("nguild_prt")+getmapusers("nguild_alde")+getmapusers("nguild_gef") )+ "]^000000",novgld,
+"Voltar ao menu anterior",L_PRIN;
+	close;}
+	menu 	"Guilda de Prontera ^FF0000["+ ( getmapusers("prt_gld")+getmapusers("prtg_cas01")+getmapusers("prtg_cas02")+getmapusers("prtg_cas03")+getmapusers("prtg_cas04")+getmapusers("prtg_cas05") )+ "]^000000",prtgld,
+			"Guilda de Geffen^FF0000["+ ( getmapusers("gef_fild13")+getmapusers("gefg_cas01")+getmapusers("gefg_cas02")+getmapusers("gefg_cas03")+getmapusers("gefg_cas04")+getmapusers("gefg_cas05") )+ "]^000000",gefgld,
+			"Guilda de Aldebaram^FF0000["+ ( getmapusers("alde_gld")+getmapusers("aldeg_cas01")+getmapusers("aldeg_cas02")+getmapusers("aldeg_cas03")+getmapusers("aldeg_cas04")+getmapusers("aldeg_cas05") )+ "]^000000",aldegld,
+			"Guilda de Payon^FF0000["+ ( getmapusers("pay_gld")+getmapusers("payg_cas01")+getmapusers("payg_cas02")+getmapusers("payg_cas03")+getmapusers("payg_cas04")+getmapusers("payg_cas05") )+ "]^000000",paygld,
+			"Guilda de Arunafeltz^FF0000["+ ( getmapusers("aru_gld")+getmapusers("arug_cas01")+getmapusers("arug_cas02")+getmapusers("arug_cas03")+getmapusers("arug_cas04")+getmapusers("arug_cas05") )+ "]^000000",aruld,
+			"Guilda de Schwaltzvalt^FF0000["+ ( getmapusers("sch_gld")+getmapusers("schg_cas01")+getmapusers("schg_cas02")+getmapusers("schg_cas03")+getmapusers("schg_cas04")+getmapusers("schg_cas05") )+ "]^000000",schgld,
+"Voltar ao menu anterior",L_PRIN;
+
+
+prtgld:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+			if (getgmlevel() >= $CONF11){set maptip,3; set ultimomapa$,"prt_gld";set ultx,159; set ulty,28;}
+			warp "prt_gld",		159,	 28;	end;
+gefgld:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+			if (getgmlevel() >= $CONF11){set maptip,3; set ultimomapa$,"gef_fild13";set ultx,41; set ulty,366;}
+			warp "gef_fild13",	 41,	366;	end;
+aldegld:	callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+			if (getgmlevel() >= $CONF11){set maptip,3; set ultimomapa$,"alde_gld";set ultx,280; set ulty,160;}
+			warp "alde_gld",	280,	160;	end;
+paygld:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+			if (getgmlevel() >= $CONF11){set maptip,3; set ultimomapa$,"pay_gld";set ultx,369; set ulty,149;}
+			warp "pay_gld",		369,	149;	end;
+aruld:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+			if (getgmlevel() >= $CONF11){set maptip,3; set ultimomapa$,"aru_gld";set ultx,195; set ulty,358;}
+			warp "aru_gld",		195,	358;	end;
+schgld:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+			if (getgmlevel() >= $CONF11){set maptip,3; set ultimomapa$,"sch_gld";set ultx,349; set ulty,89;}
+			warp "sch_gld",		349,	 89;	end;
+novgld:		callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;
+			if (getgmlevel() >= $CONF11){set maptip,3; set ultimomapa$,"n_castle";set ultx,103; set ulty,103;}
+			warp "n_castle",	103,	103;	end;
+
+
+
+
+L_CONF:
+	mes "[Teleportadora]";
+	mes "-Menu Game Master-";
+	mes "Configure o NPC de seu modo";
+	mes "";
+	menu "- Teleporte apenas até a porta!",			L_CONF1,
+		 "- Teleporte para os campos",				L_CONF2,
+		 "- Teleporte para os feudos",				L_CONF3,
+		 "- Curando HP e SP",						L_CONF4,
+		 "- Dando Buff",							L_CONF5,
+		 "- Tempo do Buff",							L_CONF6,
+		 "- Campo de Trena.. e Prisão",				L_CONF7,
+		 "- Cobrar por teleporte",					L_CONF8,
+		 "- Presso do teleporte",					L_CONF9,
+		 "- Pagar teleporte com item",				L_CONF10,
+		 "- Ultimo mapa",					 		L_CONF11,
+//		 "- Conf. 12",					L_CONF12,
+//		 "- Conf. 13",					L_CONF13,
+//		 "- Conf. 14",					L_CONF14,
+		 "- Nivel para acesar este menu",			L_CONF15,
+		 "- Voltar mapa menu principal",			L_PRIN;
+L_CONF1:
+	next;
+	mes "[Teleportadora]";
+	mes "O NPC só teletransportara jogadores para a porta das cavernas.";
+	mes "Para que isso ocora o jogador deve ter nivel de GM igual/menor a?";
+	mes "-1: Para desativar  0 á 99: Niveis Possiveis";
+	mes "No momento esta configurado para "+$CONF1;
+	input @input;
+	mes "Configurar para \""+@input+"\" ?";
+	switch (select ("- Sim","- Não, desejo mudar o numero")==1){
+	set $CONF1,@input;
+	next;goto L_CONF;}
+	next;goto L_CONF1;
+L_CONF2:
+	next;
+	mes "[Teleportadora]";
+	mes "O NPC só teletransportara jogadores para os aredores das cidades(Campos).";
+	mes "Para que isso ocora o jogador deve ter nivel de GM igual/maior a?";
+	mes "-1: Para desativar  0 á 99: Niveis Possiveis";
+	mes "No momento esta configurado para "+$CONF2;
+	input @input;
+	mes "Configurar para \""+@input+"\" ?";
+	switch (select ("- Sim","- Não, desejo mudar o numero")==1){
+	set $CONF2,@input;
+	next;goto L_CONF;}
+	next;goto L_CONF2;
+L_CONF3:
+	next;
+	mes "[Teleportadora]";
+	mes "O NPC só teletransportara jogadores para os feudos.";
+	mes "Para que isso ocora o jogador deve ter nivel de GM igual/maior a?";
+	mes "100: Para desativar  0 á 99: Niveis Possiveis";
+	mes "No momento esta configurado para "+$CONF3;
+	input @input;
+	mes "Configurar para \""+@input+"\" ?";
+	switch (select ("- Sim","- Não, desejo mudar o numero")==1){
+	set $CONF3,@input;
+	next;goto L_CONF;}
+	next;goto L_CONF3;
+
+L_CONF4:
+	next;
+	mes "[Teleportadora]";
+	mes "O NPC emchera o HP e SP do jogador.";
+	mes "Para que isso ocora o jogador deve ter nivel de GM igual/maior a?";
+	mes "100: Para desativar  0 á 99: Niveis Possiveis";
+	mes "No momento esta configurado para "+$CONF4;
+	input @input;
+	mes "Configurar para \""+@input+"\" ?";
+	switch (select ("- Sim","- Não, desejo mudar o numero")==1){
+	set $CONF4,@input;
+	next;goto L_CONF;}
+	next;goto L_CONF4;
+
+L_CONF5:
+	next;
+	mes "[Teleportadora]";
+	mes "O NPC ira dar buff os jogadores.";
+	mes "Para que isso ocora o jogador deve ter nivel de GM igual/maior a?";
+	mes "100: Para desativar  0 á 99: Niveis Possiveis";
+	mes "No momento esta configurado para "+$CONF5;
+	input @input;
+	mes "Configurar para \""+@input+"\" ?";
+	switch (select ("- Sim","- Não, desejo mudar o numero")==1){
+	set $CONF5,@input;
+	next;goto L_CONF;}
+	next;goto L_CONF5;
+
+L_CONF6:
+	next;
+	mes "[Teleportadora]";
+	mes "Tempo da duração dos buff's.";
+	mes "Opição \"Buf\" deve estar ativa. (Benção e Agi apenas)";
+	mes "Digite os segundos de duração 60s=1min,180s=3min e 300s=5min.";
+	mes "No momento esta configurado para "+$CONF6;
+	input @input;
+	mes "Configurar para \""+@input+"\" ?";
+	switch (select ("- Sim","- Não, desejo mudar o numero")==1){
+	set $CONF6,@input;
+	next;goto L_CONF;}
+	next;goto L_CONF6;
+
+L_CONF7:
+	next;
+	mes "[Teleportadora]";
+	mes "O jogador podera entrar na prisão e no campo de treinamento.";
+	mes "Para que isso ocora o jogador deve ter nivel de GM igual/maior a?";
+	mes "-1: Para desativar  0 á 99: Niveis Possiveis";
+	mes "No momento esta configurado para "+$CONF7;
+	input @input;
+	mes "Configurar para \""+@input+"\" ?";
+	switch (select ("- Sim","- Não, desejo mudar o numero")==1){
+	set $CONF7,@input;
+	next;goto L_CONF;}
+	next;goto L_CONF7;
+
+L_CONF8:
+	next;
+	mes "[Teleportadora]";
+	mes "Sera cobrado uma tarifa de "+$CONF9+"z por teleporte.";
+	mes "Para que isso ocora o jogador deve ter nivel de GM igual/menor á?";
+	mes "100: Para desativar  0 á 99: Niveis Possiveis";
+	mes "No momento esta configurado para "+$CONF8;
+	input @input;
+	mes "Configurar para \""+@input+"\" ?";
+	switch (select ("- Sim","- Não, desejo mudar o numero")==1){
+	set $CONF8,@input;
+	next;goto L_CONF;}
+	next;goto L_CONF8;
+	
+L_CONF9:
+	next;
+	mes "[Teleportadora]";
+	mes "Quanto deve ser cobrado por teleporte?";
+	mes "Digite a quantidade de zeny necessária.";
+	mes "No momento esta configurado para "+$CONF9;
+	input @input;
+	mes "Configurar para \""+@input+"\" ?";
+	switch (select ("- Sim","- Não, desejo mudar o numero")==1){
+	set $CONF9,@input;
+	next;goto L_CONF;}
+	next;goto L_CONF9;
+
+L_CONF10:
+	next;
+	mes "[Teleportadora]";
+	mes "Qual item pode substituir o dinheiro do teleporte?";
+	mes "Digite o ID do item.";
+	mes "No momento esta configurado para "+$CONF10+" "+getitemname($CONF10);
+	input @input;
+	mes "Configurar para \""+@input+"\" ?";
+	switch (select ("- Sim","- Não, desejo mudar o numero")==1){
+	set $CONF10,@input;
+	next;goto L_CONF;}
+	next;goto L_CONF10;
+
+L_CONF11:
+	next;
+	mes "[Teleportadora]";
+	mes "O NPC Aprezentara a opção de teleportar ao ultimo mapa teleportado?.";
+	mes "Para que isso ocora o jogador deve ter nivel de GM igual/maior a?";
+	mes "-1: Para desativar  0 á 99: Niveis Possiveis";
+	mes "No momento esta configurado para "+$CONF11;
+	input @input;
+	mes "Configurar para \""+@input+"\" ?";
+	switch (select ("- Sim","- Não, desejo mudar o numero")==1){
+	set $CONF11,@input;
+	next;goto L_CONF;}
+	next;goto L_CONF11;
+
+L_CONF15:
+	next;
+	mes "[Teleportadora]";
+	mes "O NPC permitira o acesso as configurações.";
+	mes "Para que isso ocora o jogador deve ter nivel de GM igual/maior a?";
+	mes "100: Para desativar  0 á 99: Niveis Possiveis";
+	mes "No momento esta configurado para "+$CONF15;
+	input @input;
+	mes "Configurar para \""+@input+"\" ?";
+	switch (select ("- Sim","- Não, desejo mudar o numero")==1){
+	set $CONF15,@input;
+	next;goto L_CONF;}
+	next;goto L_CONF15;
+
+}
+
+// Duplicate
+//Cidades
+prontera,120,73,5	duplicate(Teleportadora)	Teleportadora#0	117
+morocc,159,97,4	duplicate(Teleportadora)	Teleportadora#1	117
+geffen,115,64,4	duplicate(Teleportadora)	Teleportadora#2	117
+payon,177,104,4	duplicate(Teleportadora)	Teleportadora#3	117
+payon,178,226,4	duplicate(Teleportadora)	Teleportadora#83	117
+alberta,24,240,4	duplicate(Teleportadora)	Teleportadora#4	117
+alberta,184,146,4	duplicate(Teleportadora)	Teleportadora#84	117
+izlude,126,118,4	duplicate(Teleportadora)	Teleportadora#5	117
+aldebaran,147,119,4	duplicate(Teleportadora)	Teleportadora#6	117
+xmas,150,136,4	duplicate(Teleportadora)	Teleportadora#7	117
+comodo,198,148,4	duplicate(Teleportadora)	Teleportadora#8	117
+yuno,144,187,4	duplicate(Teleportadora)	Teleportadora#9	117
+yuno,162,47,4	duplicate(Teleportadora)	Teleportadora#97	117
+amatsu,192,81,1	duplicate(Teleportadora)	Teleportadora#10	117
+gonryun,155,122,4	duplicate(Teleportadora)	Teleportadora#11	117
+umbala,132,130,4	duplicate(Teleportadora)	Teleportadora#12	117
+umbala,89,159,4	duplicate(Teleportadora)	Teleportadora#82	117
+niflheim,201,185,4	duplicate(Teleportadora)	Teleportadora#13	117
+niflheim,26,159,4	duplicate(Teleportadora)	Teleportadora#81	117
+louyang,215,104,4	duplicate(Teleportadora)	Teleportadora#14	117
+louyang,212,40,4	duplicate(Teleportadora)	Teleportadora#94	117
+jawaii,175,173,4	duplicate(Teleportadora)	Teleportadora#17	117
+jawaii,252,127,4	duplicate(Teleportadora)	Teleportadora#86	117
+ayothaya,155,117,4	duplicate(Teleportadora)	Teleportadora#18	117
+einbroch,56,205,4	duplicate(Teleportadora)	Teleportadora#19	117
+lighthalzen,167,101,4	duplicate(Teleportadora)	Teleportadora#20	117
+einbech,135,249,4	duplicate(Teleportadora)	Teleportadora#21	117
+einbech,74,97,4	duplicate(Teleportadora)	Teleportadora#87	117
+hugel,84,168,4	duplicate(Teleportadora)	Teleportadora#22	117
+hugel,98,145,4	duplicate(Teleportadora)	Teleportadora#88	117
+rachel,105,135,4	duplicate(Teleportadora)	Teleportadora#23	117
+rachel,135,117,4	duplicate(Teleportadora)	Teleportadora#89	117
+veins,201,237,4	duplicate(Teleportadora)	Teleportadora#24	117
+veins,214,123,4	duplicate(Teleportadora)	Teleportadora#90	117
+moscovia,226,191,4	duplicate(Teleportadora)	Teleportadora#25	117
+brasilis,200,223,4	duplicate(Teleportadora)	Teleportadora#26	117
+brasilis,185,240,4	duplicate(Teleportadora)	Teleportadora#92	117
+mid_camp,206,235,4	duplicate(Teleportadora)	Teleportadora#27	117
+mid_camp,183,240,4	duplicate(Teleportadora)	Teleportadora#91	117
+splendide,202,167,4	duplicate(Teleportadora)	Teleportadora#28	117
+manuk,270,166,4	duplicate(Teleportadora)	Teleportadora#29	117
+manuk,285,138,4	duplicate(Teleportadora)	Teleportadora#93	117
+dicastes01,195,191,4	duplicate(Teleportadora)	Teleportadora#30	117
+//mora,46,153,4	duplicate(Teleportadora)	Teleportadora#31	117
+//dewata,198,185,4	duplicate(Teleportadora)	Teleportadora#95	117
+//malangdo,137,117,4	duplicate(Teleportadora)	Teleportadora#96	117
+//malaya,240,209,4	duplicate(Teleportadora)	Teleportadora#96	117
+//eclage,114,40,4	duplicate(Teleportadora)	Teleportadora#96	117
+
+//Bonificado
+jupe_gate,53,25,4	duplicate(Teleportadora)	Teleportadora#41	117
+valkyrie,48,35,4	duplicate(Teleportadora)	Teleportadora#42	117
+//Entrada das cavernas
+hu_fild05,187,210,4	duplicate(Teleportadora)	Teleportadora#51	117
+ama_dun01,233,14,4	duplicate(Teleportadora)	Teleportadora#52	117
+ayo_dun01,16,154,4	duplicate(Teleportadora)	Teleportadora#53	117
+beach_dun,268,72,4	duplicate(Teleportadora)	Teleportadora#54	117
+gef_tower,156,35,4	duplicate(Teleportadora)	Teleportadora#55	117
+ra_fild01,228,329,4	duplicate(Teleportadora)	Teleportadora#56	117
+gon_dun01,158,54,4	duplicate(Teleportadora)	Teleportadora#57	117
+yuno_fild07,216,179,4	duplicate(Teleportadora)	Teleportadora#58	117
+kh_dun01,5,230,4	duplicate(Teleportadora)	Teleportadora#59	117
+lou_dun01,216,198,4	duplicate(Teleportadora)	Teleportadora#60	117
+yuno_fild03,37,142,4	duplicate(Teleportadora)	Teleportadora#61	117
+pay_arche,40,136,4	duplicate(Teleportadora)	Teleportadora#62	117
+ra_san01,145,271,4	duplicate(Teleportadora)	Teleportadora#63	117
+ve_fild03,173,239,4	duplicate(Teleportadora)	Teleportadora#64	117
+um_dun01,48,31,4	duplicate(Teleportadora)	Teleportadora#65	117
+gef_fild10,67,338,4	duplicate(Teleportadora)	Teleportadora#66	117
+moc_fild19,109,101,4	duplicate(Teleportadora)	Teleportadora#67	117
+prt_fild05,278,222,4	duplicate(Teleportadora)	Teleportadora#68	117
+xmas,148,313,4	duplicate(Teleportadora)	Teleportadora#69	117
+moc_fild04,207,331,4	duplicate(Teleportadora)	Teleportadora#70	117
+glast_01,370,308,4	duplicate(Teleportadora)	Teleportadora#71	117
+izlu2dun,112,88,4	duplicate(Teleportadora)	Teleportadora#72	117
+tur_dun01,159,44,4	duplicate(Teleportadora)	Teleportadora#73	117
+prt_fild01,141,365,4	duplicate(Teleportadora)	Teleportadora#74	117
+lhz_dun01,153,288,4	duplicate(Teleportadora)	Teleportadora#75	117
+mjolnir_02,85,360,4	duplicate(Teleportadora)	Teleportadora#76	117
+alb2trea,77,102,4	duplicate(Teleportadora)	Teleportadora#77	117
+moc_ruins,63,164,4	duplicate(Teleportadora)	Teleportadora#78	117
+odin_tem01,101,149,4	duplicate(Teleportadora)	Teleportadora#79	117
+tha_scene01,138,201,4	duplicate(Teleportadora)	Teleportadora#80	117
+
+
+function	script	F_checar_zenny	{
+if (getgmlevel() > getarg(0) )return;
+if ( countitem(getarg(2)) >= 1 ) {delitem getarg(2),1; return;}
+if ( Zeny >= getarg(1) ) {set zeny,zeny-getarg(1); return;}
+mes "Você não tem o dinheiro necessário!";
+mes "O teleporte custa "+getarg(1)+"z";
+close;}
+//callfunc "F_checar_zenny",$CONF8,$CONF9,$CONF10;

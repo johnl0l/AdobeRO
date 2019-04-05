@@ -1,0 +1,130 @@
+// Script Iniciado & Finalizado por _Keryr_ (Cronus)
+// Me baseei no Teste-Empérium do _Fleex_ (Cronus)
+// Agradecimentos ao _CarlosHenrq_ (Cronus)
+
+prontera,150,150,5	script	Teste no Emperium	867,{
+
+//~~~~~*Configurações*~~~~~//
+set .nome$,"[ ^228B22Teste no Empérium^000000 ]"; // Nome do NPC!
+set .@price,10000000; // Bote 0, caso não queira que cobre!
+//~~~~~*Configurações*~~~~~//
+
+	mes .nome$;
+	mes "Olá "+strcharinfo(0)+", você deseja fazer teste no empérium!?";
+	if(.@price != 0) { mes "Mas você precisa me pagar uma taxa de " +.@price+ "zenys!"; }
+	next;
+	if( Zeny < .@price ) { mes "Você não tem a grana, tchau!"; close; }
+	set Zeny, Zeny-.@price;
+	mes .nome$;
+	if(select("- Sim.","- Não.")==2) close;
+	warp "06guild_r.gat",66,177;
+	end;
+}
+
+06guild_r,67,177,4	script	Retorno	867,{
+
+//~~~~~*Configurações*~~~~~//
+set .nome$,"[ ^228B22Retorno^000000 ]"; // Nome do NPC!rno!
+setarray .@returnmap$[0],"prontera",150,150; // Configure o Mapa de retorno!
+//~~~~~*Configurações*~~~~~//
+
+	mes .nome$;
+	mes "Olá "+strcharinfo(0)+", deseja retornar!?";
+	next;
+	if(select("- Sim.","- Não.")==2) close;
+	next;
+	warp .@returnmap$[0],.@returnmap$[1],.@returnmap$[2];
+	end;
+}
+
+06guild_r,74,183,5	script	Ajudante Emperium	867,{
+
+//~~~~~*Configurações*~~~~~//
+set .nome$,"[ ^228B22Ajudante Empérium^000000 ]"; // Nome do NPC!
+//~~~~~*Configurações*~~~~~//
+
+	mes .nome$;
+	mes "Gostaria de quebrar o Empérium com todas as suas forças?!";
+	if(select("- Sim.","- Não.")==2) close;
+	next;
+	if (getgmlevel() >= 1) {
+	mes .nome$;
+	mes "Vejo que você é vip!";
+	mes "Então receba os melhores buffs & cura!";
+	next;
+		percentheal 100,100;
+		skilleffect 384,0; sc_start SC_MELTDOWN,360000,5;
+		skilleffect 383,0; sc_start SC_WINDWALK,360000,5;
+		skilleffect 465,0; sc_start SC_KAITE,360000,7;
+		skilleffect 464,0; sc_start SC_KAUPE,360000,3;
+		skilleffect 463,0; sc_start SC_KAAHI,360000,7;
+		skilleffect 462,0; sc_start SC_KAIZEL,360000,7;
+		skilleffect 8,0; sc_start SC_ENDURE,360000,10;
+		skilleffect 33,0; sc_start SC_ANGELUS,360000,10;
+		skilleffect 45,0; sc_start SC_CONCENTRATE,360000,10;
+		skilleffect 74,0; sc_start SC_MAGNIFICAT,360000,5;
+		skilleffect 75,0; sc_start SC_GLORIA,360000,5;
+		skilleffect 459,0; sc_start SC_ADRENALINE2,360000,1;
+		skilleffect 66,0; sc_start SC_IMPOSITIO,360000,5;
+		skilleffect 67,0; sc_start SC_SUFFRAGIUM,360000,3;
+		skilleffect 34,0; sc_start SC_BLESSING,360000,10;
+		skilleffect 29,0; sc_start SC_INCREASEAGI,360000,10;
+		skilleffect 112,0; sc_start SC_WEAPONPERFECTION,360000,10;
+		skilleffect 113,0; sc_start SC_OVERTHRUST,360000,5;
+		skilleffect 114,0; sc_start SC_MAXIMIZEPOWER,360000,5;
+		skilleffect 357,0; sc_start SC_CONCENTRATION,360000,5;
+		skilleffect 355,0; sc_start SC_AURABLADE,360000,5;
+		skilleffect 155,0; sc_start SC_LOUD,360000,1;
+		skilleffect 157,0; sc_start SC_ENERGYCOAT,360000,1;
+		sc_start SC_ASPDPOTION2,360000,0;
+		sc_start SC_STRFood,360000,10;
+		sc_start SC_AGIFood,360000,10;
+		sc_start SC_VITFood,360000,10;
+		sc_start SC_INTFood,360000,10;
+		sc_start SC_DEXFood,360000,10;
+		sc_start SC_LUKFood,360000,10;
+		sc_start SC_HitFood,1200000,30;
+		sc_start SC_FleeFood,1200000,30;
+		sc_start SC_BATKFood,1200000,10;
+		sc_start SC_MATKFood,120000,10;
+		skilleffect 380,0; sc_start SC_TRUESIGHT,360000,5;
+		skilleffect 361,0; sc_start SC_ASSUMPTIO,360000,5;
+	next;
+	mes .nome$;
+	mes "Até mais!";
+	close;
+	}
+	mes .nome$;
+	mes "Ok, lhe darei alguns buffs & te irei te curar!";
+	next;
+		percentheal 100,100;
+		skilleffect 384,0; sc_start SC_MELTDOWN,360000,100;
+		skilleffect 383,0; sc_start SC_WINDWALK,360000,100;
+		skilleffect 157,0; sc_start SC_ENERGYCOAT,360000,100;
+		skilleffect 8,0; sc_start SC_ENDURE,360000,100;
+		skilleffect 33,0; sc_start SC_ANGELUS,360000,100;
+		skilleffect 45,0; sc_start SC_CONCENTRATE,360000,100;
+		skilleffect 74,0; sc_start SC_MAGNIFICAT,360000,100;
+		skilleffect 75,0; sc_start SC_GLORIA,360000,100;
+		skilleffect 29,0; sc_start SC_INCREASEAGI,360000,100;
+		skilleffect 112,0; sc_start SC_WEAPONPERFECTION,360000,100;
+		skilleffect 113,0; sc_start SC_OVERTHRUST,360000,100;
+		skilleffect 114,0; sc_start SC_MAXIMIZEPOWER,360000,100;
+		skilleffect 357,0; sc_start SC_CONCENTRATION,360000,100;
+	close;
+}
+
+//Empérium de Teste ~*
+06guild_r,73,162,8,8	monster	Emperium de Teste	1288,1,0,0,0
+06guild_r,90,161,8,8	monster	Emperium de Teste	1288,1,0,0,0
+06guild_r,109,162,8,8	monster	Emperium de Teste	1288,1,0,0,0
+06guild_r,127,163,8,8	monster	Emperium de Teste	1288,1,0,0,0
+//Empérium de Teste ~*
+
+//Mapflags ~*
+06guild_r	mapflag	nomemo
+06guild_r	mapflag	nowarpto
+06guild_r	mapflag	noteleport
+06guild_r	mapflag	noreturn
+06guild_r	mapflag	nowarp
+//Mapflags ~*

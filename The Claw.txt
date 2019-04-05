@@ -1,0 +1,88 @@
+//===== rAthena Script =======================================
+//= The Claw Script
+//===== By: ==================================================
+//= Nova http://www.novaragnarok.com
+//============================================================
+
+moc_para01,13,25,6	script	The Claw	562,{
+    set .@n$,"[ ^FF0000The Claw^000000 ]";
+    mes .@n$;
+    mes "Instructions:";
+	mes "You may pay 250 coins for a random headgear, or 500 to pick a specific headgear.";
+	mes "New hats will be in stock every month.";
+    next;
+	
+		switch(select("Random Hat",""+.hat1$+"",""+.hat2$+"",""+.hat3$+"",""+.hat4$+"")) {
+			case 1:
+				mes .@n$;
+				mes "Are you sure you want a random hat for 250 Gold Coins?";
+				next;
+				switch(select("Yes","No")) {
+					case 1:
+						if (countitem(671)) < (500) { mes .@n$,"You do not have enough Gold Coins to operate The Claw."; close; }
+						if (checkweight(.@pickedhat,1) == 0 ) { mes .@n$,"The Claw detects you are over your weight limit."; close; }
+						set .HatRandomArray,rand(1,4);
+						delitem 671,250;
+						if(.HatRandomArray==1) { getitem .hatid1,1; }
+						if(.HatRandomArray==2) { getitem .hatid2,1; }
+						if(.HatRandomArray==3) { getitem .hatid3,1; }
+						if(.HatRandomArray==4) { getitem .hatid4,1; }
+						mes .@n$;
+						mes "The Claw has chosen. Here is your hat.";
+						close;
+					case 2:                 
+						mes .@n$;
+						mes "Come back and play again!";
+							close;
+				}
+				end;
+			case 2:
+				.@pickedhat = .hatid1;
+				.@pickedname$ = .hat1$;
+				break;
+			case 3:
+				.@pickedhat = .hatid2;
+				.@pickedname$ = .hat2$;
+				break;
+			case 4:
+				.@pickedhat = .hatid3;
+				.@pickedname$ = .hat3$;
+				break;
+			case 5:
+				.@pickedhat = .hatid4;
+				.@pickedname$ = .hat4$;
+				break;
+		}
+            
+		mes .@n$;
+		mes "Are you sure you want to buy: ";
+		mes "<ITEMLINK>"+.@pickedname$+"<INFO>"+.@pickedhat+"</INFO></ITEMLINK> ?";
+		next;
+		
+			switch(select("Buy for 500 Gold Coins","Cancel")) {
+				case 1:
+					if (countitem(671)) < (500) { mes .@n$,"You do not have enough Gold Coins to operate The Claw."; close; }
+					if (checkweight(.@pickedhat,1) == 0 ) { mes .@n$,"The Claw detects you are over your weight limit."; close; }
+					delitem 671,500;
+					getitem .@pickedhat,1;
+					mes .@n$;
+					mes "The Claw has retrieved your "+.@pickedname$+". Enjoy it.";
+					close;	
+				case 2:
+					mes .@n$;
+					mes "Come back and play again!";
+					close;
+			}
+	
+OnInit:
+	.hatid1 = 5474;
+	.hatid2 = 5102;
+	.hatid3 = 18678;
+	.hatid4 = 5793;
+	.hat1$ = getitemname(.hatid1);
+	.hat2$ = getitemname(.hatid2);
+	.hat3$ = getitemname(.hatid3);
+	.hat4$ = getitemname(.hatid4);
+	end;
+	
+}

@@ -1,0 +1,99 @@
+lhz_in01.gat,270,269,4	script	Keios Buffer#01::buffer	936,{
+
+	set .@deny, 10; // 10 seconds cooldown
+	if ( @healer_deny + .@deny >= gettimetick(2) ) end;
+	set @healer_deny, gettimetick(2);
+
+//percentheal 100,100;
+//skilleffect 384,0; sc_start SC_MELTDOWN,60000,5;
+//skilleffect 383,0; sc_start SC_WINDWALK,370000,5;
+//skilleffect 378,0; sc_start SC_EDP,50000,5;
+//skilleffect 465,0; sc_start SC_KAITE,600000,7;
+//skilleffect 464,0; sc_start SC_KAUPE,600000,3;
+//skilleffect 463,0; sc_start SC_KAAHI,1800000,7;
+//skilleffect 462,0; sc_start SC_KAIZEL,1800000,7;
+//skilleffect 8,0; sc_start SC_ENDURE,37000,10;
+skilleffect 33,0; sc_start SC_ANGELUS,300000,10;
+//skilleffect 45,0; sc_start SC_CONCENTRATE,240000,10;
+skilleffect 74,0; sc_start SC_MAGNIFICAT,90000,5;
+skilleffect 75,0; sc_start SC_GLORIA,30000,5;
+//skilleffect 459,0; sc_start SC_ADRENALINE2,150000,1;
+//skilleffect 66,0; sc_start SC_IMPOSITIO,60000,5;
+skilleffect 67,0; sc_start SC_SUFFRAGIUM,10000,3;
+skilleffect 34,0; sc_start SC_BLESSING,240000,10;
+skilleffect 29,0; sc_start SC_INCREASEAGI,240000,10;
+//skilleffect 112,0; sc_start SC_WEAPONPERFECTION,50000,10;
+//skilleffect 113,0; sc_start SC_OVERTHRUST,100000,5;
+//skilleffect 114,0; sc_start SC_MAXIMIZEPOWER,5000,5;
+//skilleffect 357,0; sc_start SC_CONCENTRATION,45000,5;
+//skilleffect 355,0; sc_start SC_AURABLADE,120000,5;
+//skilleffect 155,0; sc_start SC_LOUD,300000,1;
+//skilleffect 157,0; sc_start SC_ENERGYCOAT,300000,1;
+//sc_start SC_ASPDPOTION2,360000,0;
+//sc_start SC_STRFood,360000,10;
+//sc_start SC_AGIFood,360000,10;
+//sc_start SC_VITFood,360000,10;
+//sc_start SC_INTFood,360000,10;
+//sc_start SC_DEXFood,360000,10;
+//sc_start SC_LUKFood,360000,10;
+//sc_start SC_HitFood,1200000,30;
+//sc_start SC_FleeFood,1200000,30;
+//sc_start SC_BATKFood,1200000,10;
+//sc_start SC_MATKFood,120000,10;
+//skilleffect 380,0; sc_start SC_TRUESIGHT,30000,5;
+//skilleffect 361,0; sc_start SC_ASSUMPTIO,100000,5;
+//skilleffect 479,0; sc_start SC_FULLPROTECTION,600000,5;
+percentheal 100,100;
+//if ((Class == 18) || (Class == 4019) || (Class == 4071) || (Class == 4078)) skilleffect 445,0; sc_start SC_SL_ALCHEMIST,360000,5; 
+close;
+}
+
+morocc.gat,153,97,5	duplicate(buffer)	Keios Buffer#02	936
+geffen.gat,126,64,5	duplicate(buffer)	Keios Buffer#03	936
+payon.gat,168,226,5	duplicate(buffer)	Keios Buffer#04	936
+payon.gat,174,104,5	duplicate(buffer)	Keios Buffer#05	936
+alberta.gat,187,146,5	duplicate(buffer)	Keios Buffer#06	936
+alberta.gat,27,240,5	duplicate(buffer)	Keios Buffer#07	936
+izlude,135,119,5	duplicate(buffer)	Keios Buffer#08	936
+aldebaran,147,116,4	duplicate(buffer)	Keios Buffer#09	936
+xmas,142,137,5	duplicate(buffer)	Keios Buffer#10	936
+comodo,201,148,5	duplicate(buffer)	Keios Buffer#11	936
+yuno,165,47,5	duplicate(buffer)	Keios Buffer#12	936
+yuno,141,187,5	duplicate(buffer)	Keios Buffer#13	936
+amatsu,189,81,5	duplicate(buffer)	Keios Buffer#14	936
+gonryun,152,122,5	duplicate(buffer)	Keios Buffer#15	936
+umbala,132,134,5	duplicate(buffer)	Keios Buffer#16	936
+umbala,86,160,5	duplicate(buffer)	Keios Buffer#17	936
+niflheim,29,160,5	duplicate(buffer)	Keios Buffer#18	936
+niflheim,201,188,5	duplicate(buffer)	Keios Buffer#19	936
+louyang,212,44,5	duplicate(buffer)	Keios Buffer#20	936
+louyang,218,104,5	duplicate(buffer)	Keios Buffer#45	936
+jawaii,254,128,5	duplicate(buffer)	Keios Buffer#21	936
+jawaii,178,173,5	duplicate(buffer)	Keios Buffer#22	936
+ayothaya,144,121,5	duplicate(buffer)	Keios Buffer#23	936
+einbroch,71,206,5	duplicate(buffer)	Keios Buffer#24	936
+lighthalzen,169,103,5	duplicate(buffer)	Keios Buffer#25	936
+einbech,74,94,5	duplicate(buffer)	Keios Buffer#26	936
+einbech,132,249,5	duplicate(buffer)	Keios Buffer#27	936
+einbech,132,249,5	duplicate(buffer)	Keios Buffer#28	936
+hugel,101,145,5	duplicate(buffer)	Keios Buffer#29	936
+hugel,81,168,5	duplicate(buffer)	Keios Buffer#30	936
+rachel,124,117,5	duplicate(buffer)	Keios Buffer#31	936
+rachel,102,134,5	duplicate(buffer)	Keios Buffer#32	936
+veins,211,123,5	duplicate(buffer)	Keios Buffer#33	936
+veins,200,239,5	duplicate(buffer)	Keios Buffer#34	936
+moscovia,229,191,5	duplicate(buffer)	Keios Buffer#35	936
+mid_camp,209,235,5	duplicate(buffer)	Keios Buffer#36	936
+mid_camp,186,240,5	duplicate(buffer)	Keios Buffer#37	936
+manuk,288,138,5	duplicate(buffer)	Keios Buffer#38	936
+manuk,273,167,5	duplicate(buffer)	Keios Buffer#39	936
+splendide,205,167,5	duplicate(buffer)	Keios Buffer#40	936
+brasilis,185,237,5	duplicate(buffer)	Keios Buffer#41	936
+brasilis,194,221,5	duplicate(buffer)	Keios Buffer#42	936
+dicastes01,198,191,5	duplicate(buffer)	Keios Buffer#43	936
+//mora,49,153,5	duplicate(buffer)	Keios Buffer#44	936
+//dewata,201,185,5	duplicate(buffer)	Keios Buffer#46	936
+//malangdo,140,117,5	duplicate(buffer)	Keios Buffer#47	936
+//malaya,240,212,5	duplicate(buffer)	Keios Buffer#48	936
+//eclage,117,40,5	duplicate(buffer)	Keios Buffer#49	936
+mjolnir_02,76,358,5	duplicate(buffer)	Keios Buffer#50	936

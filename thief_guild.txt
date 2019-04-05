@@ -1,0 +1,893 @@
+//DIEBES GILDE SCRIPT
+
+//Lee - Anfangs Quest
+
+
+-	script	thief_guild	-1,{
+
+OnWhisperGlobal:
+
+if (getgmlevel() >= 90) {
+	if (@whispervar0$ == "get_quest") {
+		set TG_beginning,3;
+		set TG_skilllevel,1;
+		set TG_speak,1;
+		dispbottom "Thief Quest abgeschlossen...";
+	} else if (@whispervar0$ == "reset_quest") {
+		set TG_beginning,0;
+		set TG_skilllevel,0;
+		set TG_speak,0;
+		dispbottom "Thief Quest resettet...";
+	} else if (@whispervar0$ == "get_vars") {
+		dispbottom "TG_beginning: "+TG_beginning;
+		dispbottom "TG_skilllevel: "+TG_skilllevel;
+		dispbottom "TG_speak: "+TG_speak;
+	} else if (@whispervar0$ == "get_chests") {
+		dispbottom "Chests:";
+		for (set @i,1; @i < 26; set @i,@i+1) {
+				getmapxy @mapname$,@x,@y,1,"Chest#"+@i;
+				dispbottom "Chest#"+@i+" - "+@mapname$+" ("+@x+","+@y+")"; 
+			}
+	} else if (@whispervar0$ == "goto") {
+		if (@whispervar1$ == "") { dispbottom "Bitte Nummer eingeben!"; end; }
+		getmapxy @mapname$,@x,@y,1,"Chest#"+@whispervar1$;
+		warp @mapname$,@x,@y;
+	} else {
+		dispbottom "Vorhandene Funktionen: get_quest , reset_quest , get_vars , get_chests , goto#<nummer>";
+	}
+} 
+end;
+
+}
+
+//AdminNPC
+kh_vila.gat,12,115,6	script	TruhenVerwaltung	874,{
+
+if (getgmlevel() >= 90) {
+	
+	set .@n$,"~ ^845D00Truhen Verwaltung^000000 ~";
+	
+	mes .@n$;
+	mes "Was wollt Ihr tun?";
+	next;
+	switch(select("-Truhen anzeigen.:-Schatzsuche Event.:Beenden")) {
+	
+		case 1:
+			mes .@n$;
+			for (set .@i,1; .@i < 26; set .@i,.@i+1) {
+				getmapxy .@mapname$,.@x,.@y,1,"Chest#"+.@i;
+				mes "Chest#"+.@i+" - ^0000FF"+.@mapname$+"^000000 (^0000FF"+.@x+"^000000,^0000FF"+.@y+"^000000)"; 
+			}
+			close;
+			
+		case 2:
+			mes .@n$;
+			if (!$TG_schatzsuche) {
+				
+				mes "Das Event ^00FF00starten^000000?";
+				next;
+				if (select("-Nein.:-Ja.") != 1) {
+					
+					mes .@n$;
+					mes "Bitte Anzahl der zu suchenden Truhen eingeben (0 zum abbrechen).";
+					next;
+					input $TG_schatzsuche;
+					if (!$TG_schatzsuche) close;
+					mes .@n$;
+					mes "Das Event wird gestartet...";
+					close2;
+					
+					announce "Das Schatzsuche Event wurde gestartet, findet soviele Truhen wie möglich!",0;
+					announce "The Treasurehunting event has started, find as much chests as you can!",0;
+					
+					end;
+					
+				} close;
+			} else {
+				
+				mes "Das Event ^FF0000beenden^000000?";
+				next;
+				if (select("-Nein.:-Ja.") != 1) {
+					mes .@n$;
+					mes "Das Event wird beendet...";
+					close2;
+					
+					set $TG_schatzsuche,0;
+					announce "Die Schatzsuche wurde von ainem Admin beendet.",0;
+					announce "The Treasurehunting was cancled by an admin.",0;
+					
+					end;
+				
+				}
+			}
+			
+			
+			
+			close;
+			
+			
+		default: close;
+	
+	}
+	
+	
+	
+}
+
+
+end;
+
+
+} 
+
+moscovia,226,150,4	script	Isad::isad	946,10,10,{
+
+function npc_speech;
+function npc_menu;
+
+	
+set .@n$,"~ ^845D00Isad^000000 ~";
+
+if (TG_beginning == 3) {
+	mes .@n$;
+	npc_speech(19,19);
+	close;
+}
+
+if (TG_beginning >= 1) {
+	mes .@n$;
+	npc_speech(1,1);
+	next;
+	npc_menu(1,2);
+	if (@m != 2) { 
+		mes .@n$;
+		npc_speech(2,2);
+		close; 
+	} else {
+		if (TG_beginning == 2) {
+			if ((countitem(512) < 20) || (countitem(513) < 10) || (countitem(514) < 15)) {
+				set TG_beginning,1;
+				delitem 512,20;
+				delitem 513,10;
+				delitem 514,15;
+				mes .@n$;
+				npc_speech(3,3);
+				close;
+			} else {
+				mes .@n$;
+				delitem 512,20;
+				delitem 513,10;
+				delitem 514,15;
+				set TG_beginning,3;
+				npc_speech(4,6);
+				next;
+				mes .@n$;
+				npc_speech(7,7);
+				next;
+				npc_menu(3,4);
+				if (@m != 2) { 
+					mes .@n$;
+					npc_speech(8,8);
+					close; 
+				} else {
+					mes .@n$;
+					npc_speech(9,9);
+					next;
+					warp "force_1-1",99,54;
+					close;
+				}
+			}
+		} else {
+			mes .@n$;
+			npc_speech(10,10);
+			close;
+		}
+	}
+	
+
+
+} else {
+
+	mes .@n$;
+	npc_speech(11,11);
+	next;
+	npc_menu(3,4);
+	if (@m != 2) {  
+		mes .@n$;
+		npc_speech(12,12);
+		close; 
+	} else {
+		mes .@n$;
+		npc_speech(13,16);
+		next;
+		npc_menu(5,6);
+		if (@m != 2) { 
+			mes .@n$;
+			npc_speech(17,17);
+			close; 
+		} else {
+			mes .@n$;
+			npc_speech(18,18);
+			set TG_beginning,1;
+			close;
+		}
+		
+	}
+
+}
+
+
+
+
+function npc_speech {
+
+		callfunc "npc_speech", "isad", getarg(0), getarg(1);
+
+		return;
+	
+}
+
+function npc_menu {
+
+		callfunc "npc_menu", "isad", getarg(0), getarg(1);
+
+		return;
+	
+}		
+OnTouch:
+	
+	if (!TG_beginning) {
+		switch(rand(3)) {
+
+			case 1: npctalk (##language == 1) ? "Hey, hier drüben!" : "Hey, over here";
+			case 2: npctalk "Psssssssst...";
+			case 3: npctalk (##language == 1) ? "Kommt her!" : "Come to me!";
+			default: npctalk (##language == 1) ? "Heeey Ihr!" : "Heeey you!";
+		}
+	}
+	end;
+
+} 
+
+moscovia,145,189,4	script	Board	858,{
+
+mes "~ ^845D00Board^000000 ~";
+mes (##language == 1) ? "Eingang zur alten Kanalisation" : "Entry to the old canalization.";
+next;
+mes "~ ^845D00"+strcharinfo(0)+"^000000 ~";
+mes (##language == 1) ? "Komisch, man sieht gar nichts..." : "Strange, you even can't see anything.";
+close;
+}
+
+
+moscovia,144,190,4	script	Entry	139,2,2,{
+
+OnTouch:
+
+	if (TG_beginning == 3) {
+		mes "~^845D00"+strcharinfo(0)+"^000000~";
+		mes (##language == 1) ? "Moment mal, was ist das?!" : "One Moment, what's this?!";
+		if (!select ((##language == 1) ? "-Gegen die Wand drücken.:-Nix tun." : "-Push against the wall.:-Do nothing.") - 1) {
+			next;
+			mes "~^845D00"+strcharinfo(0)+"^000000~";
+			warp "force_1-1",99,54;
+			next;
+			mes "~^845D00"+strcharinfo(0)+"^000000~";
+			mes (##language == 1) ? "Ich bin durch die Wand gefalln!!" : "I have been falling throw the wall!!";
+			close;
+			
+		} else close;
+	} else end;
+
+
+}
+
+moscovia,151,69,4	script	Obst	139,1,1,{
+
+if (TG_beginning == 1) {
+	mes "~ ^845D00"+strcharinfo(0)+"^000000 ~";
+	mes (##language == 1) ? "Ah, hier muss es sein!" : "Ah, here it must be!";
+	getitem 512,20;
+	getitem 513,10;
+	getitem 514,15;
+	set TG_beginning,2;
+	close;
+}
+end;
+}
+
+moscovia,160,73,8	script	Quel	110,1,7,{
+
+OnTouch:
+
+
+
+	if (TG_beginning == 1) {
+		unitwalk getcharid(3),163,84;
+		mes "~ ^845D00Quel^000000 ~";
+		mes (##language == 1) ? "FassT meine Ware nicht an!!" : "Don't touch my goods!!";
+		close;
+	} else end;
+	
+
+
+}
+
+force_1-1,100,31,8	script	Rude::rude	880,{
+
+function npc_speech;
+function npc_menu;
+
+set @n$,"~ ^845D00Rude^000000 ~";
+
+if (TG_beginning == 3) { 
+	set TG_speak,1;
+	mes @n$;
+	npc_speech(1,2);
+	next;
+	npc_menu(1,2);
+	if (@m != 1) { 
+		close;
+	} 
+	mes @n$;
+	npc_speech(3,6);
+	close;
+}
+
+callfunc "thief_go";
+
+
+function npc_speech {
+
+		callfunc "npc_speech", "rude", getarg(0), getarg(1);
+
+		return;
+	
+}
+
+function npc_menu {
+
+		callfunc "npc_menu", "rude", getarg(0), getarg(1);
+
+		return;
+	
+}		
+
+}
+
+force_1-1,99,12,8	script	Jokester::jokester	106,{
+
+function npc_speech;
+function npc_menu;
+
+set @n$,"~ ^845D00Jokester^000000 ~";
+
+if (TG_skilllevel >= 1) {
+mes @n$;
+npc_speech(9,9);
+close;
+}
+
+if (TG_beginning == 3) { 
+	mes @n$;
+	if (!TG_speak) {
+		npc_speech(1,1);
+		close;
+	}
+	npc_speech(2,4);
+	next;
+	npc_menu(1,2);
+	if (@m != 2) { 
+		close;
+	} else {
+		if (Class == 6 || Class == 12 || Class == 17 || Class == 17 || Class == 4007 || Class == 4013 || Class == 4018 || Class == 4035 || Class == 4029 || Class == 4040 ) {
+			mes @n$;
+			npc_speech(5,6);
+			next;
+			set TG_skilllevel,30;
+			specialeffect2 406;
+			npc_speech(7,8);
+			close;
+		} else {
+			mes @n$;
+			npc_speech(7,8);
+			set TG_skilllevel,1;
+			specialeffect2 406;
+			close;
+		}
+		
+		
+	}
+	
+	
+}
+
+callfunc "thief_go";
+
+
+function npc_speech {
+
+		callfunc "npc_speech", "jokester", getarg(0), getarg(1);
+
+		return;
+	
+}
+
+function npc_menu {
+
+		callfunc "npc_menu", "jokester", getarg(0), getarg(1);
+
+		return;
+	
+}		
+
+
+
+
+}
+
+force_1-1,112,19,8	script	Targar::targar	930,{
+
+function npc_speech;
+function npc_menu;
+
+set @n$,"~ ^845D00Targar^000000 ~";
+
+
+if (TG_beginning == 3) { 
+	mes @n$;
+	if (TG_skilllevel < 1) {
+		npc_speech(1,1);
+		close;
+	}
+	npc_speech(2,3);
+	next;
+	npc_menu(1,2);
+	if (@m != 2) {
+		mes @n$;
+		npc_speech(4,4);
+		close;
+	} else {
+		mes @n$;
+		npc_speech(5,7);
+		next;
+		mes @n$;
+		npc_speech(8,10);
+		close;
+	}
+	
+	
+}
+
+callfunc "thief_go";
+
+function npc_speech {
+
+		callfunc "npc_speech", "targar", getarg(0), getarg(1);
+
+		return;
+	
+}
+
+function npc_menu {
+
+		callfunc "npc_menu", "targar", getarg(0), getarg(1);
+
+		return;
+	
+}	
+
+}
+
+force_1-1,87,19,8	script	Kulgar::kulgar	931,{
+
+function npc_speech;
+function npc_menu;
+
+set @n$,"~ ^845D00Kulgar^000000 ~";
+
+
+if (TG_beginning == 3) { 
+	mes @n$;
+	npc_speech(2,2);
+	next;
+	npc_menu(1,2);
+	if (@m != 2) {
+		mes @n$;
+		npc_speech(3,3);
+		close;
+	} else {
+		mes @n$;
+		mes (##language == 1) ? "Eure Fertigkeit befindet sich auf ^0000FF"+TG_skilllevel+"^000000." : "Your Skill is on the level ^0000FF"+TG_skilllevel+"^000000.";
+		npc_speech(4,6);
+		next;
+		mes @n$;
+		npc_speech(7,10);
+		close;
+	}
+	
+	
+}
+
+callfunc "thief_go";
+
+function npc_speech {
+
+		callfunc "npc_speech", "kulgar", getarg(0), getarg(1);
+
+		return;
+	
+}
+
+function npc_menu {
+
+		callfunc "npc_menu", "kulgar", getarg(0), getarg(1);
+
+		return;
+	
+}	
+
+}
+
+
+//Dynamische Truhen
+//TruhenTyp1: bei falscher Eingabe bricht Nadel ab
+//TruhenTyp2: erst bei ende wird verraten ob Truhe geknackt wurde oder nicht
+//Sim0n is geil!!
+
+//Todo: Veränderung: Belohnungen, Zeitgesterutes Event (14-21uhr, keinen Tag doppelt) 
+
+moc_fild17,154,203,8	script	Chest::chest	1324,{
+
+function generate_code;
+function getlocation;	
+function code_check;
+function npc_warp;
+
+set .@gm$,"~ ^845D00Admin Menü^000000 ~";
+		
+		if (getgmlevel() >= 90) {
+			
+			mes .@gm$;
+			mes strnpcinfo(3);
+			mes "Hallo Admin, was willst du tun?";
+			switch(select("Code anzeigen:Code neu erzeugen:NPC auf andere Map setzen:Zum Truhen knacken:Sonstiges:Beenden")) {
+			
+			case 1:
+				next;
+				mes .@gm$;
+				mes "Typ: ^0000FF"+getd(".truhen_typ"+strnpcinfo(0));
+				mes "^000000Level: ^0000FF"+getd(".truhen_level"+strnpcinfo(0))+"^000000";
+				getmapxy @mapname$,@x,@y,1,strnpcinfo(3);
+				mes (getd(".code_erfolg"+strnpcinfo(0))) ? "Code wurde ^00FF00erfolgreich^000000 generiert." : "Code wurde ^FF0000nicht^000000 generiert. MAP: ^0000FF"+@mapname$+"^000000";
+				mes "Code: ";
+				for (set @i,0; @i < getarraysize(getd(".code"+strnpcinfo(0))); set @i,@i+1) mes "^0000FF"+getd(".code"+strnpcinfo(0)+"["+@i+"]")+"^000000 - "+getlocation(getd(".code"+strnpcinfo(0)+"["+@i+"]")); 
+				break;
+				
+			case 2:
+				next;
+				mes .@gm$;
+				generate_code();
+				mes "Code wurde neu generiert!";
+				break;
+			
+			case 3:
+				next;
+				mes .@gm$;
+				mes "Einen Moment....";
+				next;
+				npc_warp();			
+				getmapxy @mapname$,@x,@y,1,strnpcinfo(3);
+				warp @mapname$,@x,@y;
+				close;
+			
+			case 4:
+				next;
+				goto L_Truhe;
+			
+			case 5:
+				next;
+				mes .@gm$;
+				getmapxy @mapname$,@x,@y,1,strnpcinfo(3);
+				mes "NPC Steht auf: ^0000FF"+@mapname$+" ^000000(^0000FF"+@x+"^000000,^0000FF"+@y+"^000000)";
+				break;
+				
+			default: break;
+				
+			
+			}
+			
+			close;
+			
+
+		}
+		
+	L_Truhe:
+		
+		if (!TG_skilllevel) {
+			dispbottom (##language == 1) ? "Ihr könnt leider keine Truhen öffnen, da ihr nicht die benötigten Fähigkeiten dazu habt. Schaut euch dochmal in Seventh Sanctum um. Vielleicht findet Ihr etwas was Euch weiterhilft." : "You can not open chests, because you dont have the skill for it. Take a look around Seventh Sanctum. Maybe you will find something what you will help.";
+			end;
+		}
+		
+		if(getd(".truhe_benutzt"+strnpcinfo(0))) {
+			mes (##language == 1) ? "Ein anderer Spieler versucht schon die Truhe zu knacken..." : "Another Player already tries to crack this chest...";
+			close;
+		}
+		
+		if (!getd(".code_erfolg"+strnpcinfo(0))) { 
+			mes "^FF0000ERROR!!!^000000";
+			mes (##language == 1) ? "Es gab einen Fehler bei der Code Generation, bitte melde diesen Bug einen Admin." : "There was an error by the code generation, please report this to an admin.";
+			close;
+		}
+		
+		if (TG_skilllevel >= getd(".truhen_level"+strnpcinfo(0)) - 5 || TG_skilllevel <= getd(".truhen_level"+strnpcinfo(0)) + 5 || getgmlevel() >= 90) { 
+			
+			setd ".truhe_benutzt"+strnpcinfo(0),1;
+			
+			for (set @i,0; @i < getarraysize(getd(".code"+strnpcinfo(0))); set @i,@i+1)	set @code[@i],getd(".code"+strnpcinfo(0)+"["+@i+"]");
+			
+			set @done,0;
+			set @zaehler,0;
+			set @geknackt,0;
+			
+			mes (##language == 1) ? "~ ^845D00Truhe^000000 ~" : "~ ^845D00Chest^000000 ~";
+			mes (##language == 1) ? "Truhe knacken..." : "Cracking chest...";
+			
+			while(!@done) {
+				
+				switch(select((##language == 1) ? "-Links.:-Rechts.:-Hoch.:-Runter." : "-Left.:-Right.:-Up.:-Down.")) {
+					case 1:
+						code_check(getd(".truhen_typ"+strnpcinfo(0)),0);
+						break;
+					case 2:
+						code_check(getd(".truhen_typ"+strnpcinfo(0)),1);
+						break;
+					case 3:
+						code_check(getd(".truhen_typ"+strnpcinfo(0)),2);
+						break;
+					case 4:
+						code_check(getd(".truhen_typ"+strnpcinfo(0)),3);
+						break;
+				}
+			
+			}
+			
+			if (@geknackt == 2 || @geknackt == 0) {
+				
+				if ($TG_schatzsuche) {
+					
+					set chest_found,chest_found+1;
+					
+					if (chest_found >= $TG_schatzsuche) {
+						set $TG_schatzsuche,0;
+						dispbottom (##language == 1) ? "Ihr habt alle Truhen geknackt!!" : "You have cracked all chests!!";
+						set TG_skilllevel,TG_skilllevel+10;
+						
+						announce strcharinfo(0)+" hat "+chest_found+" Truhen geknackt und damit das Event gewonnen!",0;
+						announce strcharinfo(0)+" has cracked "+chest_found+" chests and won the event!",0;
+						
+						//Belohnung
+					}
+				
+					
+					dispbottom (##language == 1) ? chest_found+" Truhe(n) geknackt." : chest_found+" chest(s) cracked";
+					
+				} else if (chest_found) { set chest_found,0; }
+				
+				mes (##language == 1) ? "Geknackt!" : "Cracked!";
+				
+				if (TG_Skilllevel - getd(".truhen_level"+strnpcinfo(0)) <= 3  ) {
+					switch(rand(2)) {
+						case 1:
+							dispbottom (##language == 1) ? "Ihr habt keine Erfahrung gewonnen." : "You didn't gain any expierence.";
+							break;
+						case 2:
+							set TG_skilllevel,TG_skilllevel+1;
+							dispbottom (##language == 1) ? "Eure Erfahrung hat sich um 1 erhöht." : "Your expirience has increased by 1.";
+							break;
+						default:
+							dispbottom (##language == 1) ? "Ihr habt keine Erfahrung gewonnen." : "You didn't gain any expierence.";
+							break;
+						
+					}
+				}
+				
+				if ((getd(".truhen_level"+strnpcinfo(0)) - TG_Skilllevel >= 3) && (getd(".truhen_level"+strnpcinfo(0)) - TG_Skilllevel < 4)) {
+					switch(rand(1)) {
+						case 1:
+							set TG_skilllevel,TG_skilllevel+1;
+							dispbottom (##language == 1) ? "Eure Erfahrung hat sich um 1 erhöht." : "Your expirience has increased by 1.";
+							break;
+						default:
+							dispbottom (##language == 1) ? "Ihr habt keine Erfahrung gewonnen." : "You didn't gain any expierence.";
+							break;
+						
+					}
+				}
+				
+				if (getd(".truhen_level"+strnpcinfo(0)) - TG_Skilllevel >= 4) {
+					set @rnd,rand(1,2);
+					set TG_skilllevel,TG_skilllevel+@rnd;
+					dispbottom (##language == 1) ? "Eure Erfahrung hat sich um "+@rnd+" erhöht." : "Your expirience has increased by "+@rnd+".";
+				}
+			
+				//Belohnung
+				close2;
+				generate_code();
+				npc_warp();
+				setd ".truhe_benutzt"+strnpcinfo(0),0;
+				end;
+				
+			} else {
+				
+				mes (##language == 1) ? "Fehlgeschlagen..." : "Aborted...";
+				close2;
+				setd ".truhe_benutzt"+strnpcinfo(0),0;
+				end;
+				
+			}
+		
+		}
+		
+		mes (##language == 1) ? "~ ^845D00Truhe^000000 ~" : "~ ^845D00Chest^000000 ~";
+		mes (##language == 1) ? "Dein Skill reicht nicht aus um diese Truhe zu öffnen." : "Your skill is to low, to open this chest.";
+		close;
+		
+OnInit:
+	generate_code();
+	npc_warp();
+	end;
+	
+
+function getlocation {
+
+switch(getarg(0)) {
+	case 1:
+		set .@loc$,"rechts";
+		break;
+	case 2:
+		set .@loc$,"hoch";
+		break;
+	case 3:
+		set .@loc$,"runter";
+		break;
+	default:
+		set .@loc$,"links";
+		break;
+}
+
+return .@loc$;
+
+}	
+
+
+
+function generate_code {
+	
+	setd ".code_erfolg"+strnpcinfo(0),0;
+	
+	getmapxy .@mapname$,.@x,.@y,1,strnpcinfo(3);
+	
+	query_sql "SELECT `lvl` FROM `core` WHERE `map` = '"+.@mapname$+"'", .@map_level_temp;
+	
+	if (.@map_level_temp[0]) {
+		
+		setd ".map_level"+strnpcinfo(0),.@map_level_temp[0];
+		
+		deletearray getd(".code"+strnpcinfo(0)+"["+0+"]"),getarraysize(getd(".code"+strnpcinfo(0)));
+		setd ".truhen_typ"+strnpcinfo(0),rand(1,2);
+		setd ".truhen_level"+strnpcinfo(0),rand(getd(".map_level"+strnpcinfo(0))-9,getd(".map_level"+strnpcinfo(0)));
+		while(getarraysize(getd(".code"+strnpcinfo(0))) < 1) {
+			
+			if (getd(".truhen_typ"+strnpcinfo(0)) == 1) {
+				if (getd(".map_level"+strnpcinfo(0)) < 50) {
+					for (set .@i,0; .@i < 5; set .@i,.@i+1) setd ".code"+strnpcinfo(0)+"["+.@i+"]",rand(3);
+				} else {
+					for (set .@i,0; .@i < (getd(".truhen_level"+strnpcinfo(0))/rand(5,10)); set .@i,.@i+1) setd ".code"+strnpcinfo(0)+"["+.@i+"]",rand(3);
+				}
+			} else {
+				for (set .@i,0; .@i < rand(1,5); set .@i,.@i+1) setd ".code"+strnpcinfo(0)+"["+.@i+"]",rand(3);
+			}
+		}
+		setd ".code_erfolg"+strnpcinfo(0),1;
+	
+		return;
+	
+	} else {
+	
+		return;
+	
+	}
+	
+	
+
+}
+
+function	code_check	{
+	
+	if (getarg(0) == 1) {
+		
+		if (@code[@zaehler] != getarg(1)) { set @done,1; set @geknackt,1; return; }
+		
+		set @zaehler,@zaehler+1;
+		
+		if (@zaehler == getarraysize(@code)) { set @done,1; set @geknackt,2; return; }
+		
+		return;
+	
+	} else {
+	
+		if (@code[@zaehler] != getarg(1)) { set @done,1; set @geknackt,1; }
+		
+		set @zaehler,@zaehler+1;
+		
+		if (@zaehler == getarraysize(@code)) { set @done,1; set @geknackt,2; return; }
+		
+		return;
+		
+	}
+
+}
+
+function	npc_warp	{
+	
+	query_sql "SELECT `map` FROM `core` WHERE `lvl` = '"+getd(".map_level"+strnpcinfo(0))+"'", .@map$;
+	
+	set .@rnd,rand(4);
+	
+	set .@ok,0;
+	
+	while(!.@ok) {
+		set .@x,rand(1,300);
+		set .@y,rand(1,300);
+		if (checkcell(.@map$[.@rnd],.@x,.@y,cell_chkpass)) set .@ok,1;
+	}
+	
+	unitwarp getnpcid(),.@map$[.@rnd],.@x,.@y;
+}
+}
+
+function	script	thief_go	{
+
+if (@thief_go < 5) { 
+	mes @n$;
+	mes (##language == 1) ?  "Verschwindet von hier!" : "Go away!";
+	set @thief_go,@thief_go+1;
+	close;
+} else {
+	set @thief_go,0;
+	atcommand "@kill "+strcharinfo(0);
+	npctalk "Paaaah~";
+	end;
+}
+
+
+
+} 
+
+moc_fild18,0,0,4	duplicate(chest)	Chest#1	1324
+moc_fild05,0,0,4	duplicate(chest)	Chest#2	1324
+ein_fild01,0,0,4	duplicate(chest)	Chest#3	1324
+pay_fild05,0,0,4	duplicate(chest)	Chest#4	1324
+ve_fild03,0,0,4	duplicate(chest)	Chest#5	1324
+prt_fild04,0,0,4	duplicate(chest)	Chest#6	1324
+gef_fild09,0,0,4	duplicate(chest)	Chest#7	1324
+gef_fild14,0,0,4	duplicate(chest)	Chest#8	1324
+yuno_fild10,0,0,4	duplicate(chest)	Chest#9	1324
+gef_fild08,0,0,4	duplicate(chest)	Chest#10	1324
+prt_fild09,0,0,4	duplicate(chest)	Chest#11	1324
+cmd_fild08,0,0,4	duplicate(chest)	Chest#12	1324
+pay_fild07,0,0,4	duplicate(chest)	Chest#13	1324
+gef_fild12,0,0,4	duplicate(chest)	Chest#14	1324
+ra_fild06,0,0,4	duplicate(chest)	Chest#15	1324
+cmd_fild09,0,0,4	duplicate(chest)	Chest#16	1324
+ra_fild12,0,0,4	duplicate(chest)	Chest#17	1324
+yuno_fild11,0,0,4	duplicate(chest)	Chest#18	1324
+yuno_fild04,0,0,4	duplicate(chest)	Chest#19	1324
+ra_fild09,0,0,4	duplicate(chest)	Chest#20	1324
+ve_fild04,0,0,4	duplicate(chest)	Chest#21	1324
+moc_fild13,0,0,4	duplicate(chest)	Chest#22	1324
+moc_fild03,0,0,4	duplicate(chest)	Chest#23	1324
+ein_fild05,0,0,4	duplicate(chest)	Chest#24	1324
+ve_fild06,0,0,4	duplicate(chest)	Chest#25	1324
+pay_fild04,0,0,4	duplicate(chest)	Chest#26	1324

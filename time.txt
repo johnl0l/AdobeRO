@@ -1,0 +1,108 @@
+function	script	now	{
+	return gettimetick(2);
+}
+
+
+function	script	time_from_ms	{
+	return now() + (getarg(0) / 1000);
+}
+
+function	script	time_from_seconds	{
+	return now() + getarg(0);
+}
+
+function	script	time_from_minutes	{
+	return now() + (getarg(0) * 60);
+}
+
+function	script	time_from_hours	{
+	return now() + (getarg(0) * 3600);
+}
+
+function	script	time_from_days	{
+	return now() + (getarg(0) * 86400);
+}
+
+
+// FuzzyTime(<unix timestamp>{, <options>{, <precision>}})
+//     gives time in a human-readable  format
+//
+//     <options> is bitmasked:
+//     1  do not show "ago" when in past
+//     2  do not show "in" when in the future
+//     4  show "from now" instead of "in" when in the future
+//
+//     <precision> is the number of units to show,
+//     by default uses max precision
+
+function	script	FuzzyTime	{
+	.@future = getarg(0, now());
+	.@options = getarg(1, 0);
+	.@precision = getarg(2, 99);
+	.@diff = (.@future - now());
+
+	// check if in the past, or in the future
+	if (.@diff < 0) {
+		.@diff *= -1;
+		.@past = true;
+	}
+
+	.@diff = max(1, .@diff);
+
+	if (.@diff >= 31536000) {
+		.@years = (.@diff / 31536000);
+		.@diff = (++.@s == .@precision ? 0 : (.@diff % 31536000));
+		.@ret$ += sprintf("%d %s", .@years, (.@years > 1 ? "years" : "year"));
+	}
+
+	if (.@diff >= 86400) {
+		.@days = (.@diff / 86400);
+		.@diff = (++.@s == .@precision ? 0 : (.@diff % 86400));
+
+		if (.@s > 1) {
+			.@ret$ += (.@diff > 0 ? ", " : " and ");
+		}
+
+		.@ret$ += sprintf("%d %s", .@days, (.@days > 1 ? "days" : "day"));
+	}
+
+	if (.@diff >= 3600) {
+		.@hours = (.@diff / 3600);
+		.@diff = (++.@s == .@precision ? 0 : (.@diff % 3600));
+
+		if (.@s > 1) {
+			.@ret$ += (.@diff > 0 ? ", " : (.@s >= 3 ? ", " : " ") + "and ");
+		}
+
+		.@ret$ += sprintf("%d %s", .@hours, (.@hours > 1 ? "hours" : "hour"));
+	}
+
+	if (.@diff >= 60) {
+		.@minutes = (.@diff / 60);
+		.@diff = (++.@s == .@precision ? 0 : (.@diff % 60));
+
+		if (.@s > 1) {
+			.@ret$ += (.@diff > 0 ? ", " : (.@s >= 3 ? ", " : " ") + "and ");
+		}
+
+		.@ret$ += sprintf("%d %s", .@minutes, (.@minutes > 1 ? "minutes" : "minute"));
+	}
+
+	if (.@diff >= 1) {
+		if (++.@s > 1) {
+			.@ret$ += (.@s >= 3 ? ", " : " ") + "and ";
+		}
+
+		.@ret$ += sprintf("%d %s", .@diff, (.@diff > 1 ? "seconds" : "second"));
+	}
+
+	if (.@past && !(.@options & 1)) {
+		.@ret$ += " ago";
+	}
+
+	if (!(.@past) && !(.@options & 2)) {
+		.@ret$ = ((.@options & 4) ? sprintf("%s from now", .@ret$) : sprintf("in %s", .@ret$));
+	}
+
+	return .@ret$;
+}

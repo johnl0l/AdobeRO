@@ -1,0 +1,396 @@
+//===== rAthena Script ============================================
+//= High Quick Refinement System
+//===== By: =======================================================
+//= Kenedos
+//===== Current Version: ==========================================
+//= 1.0
+//===== Compatible With: ==========================================
+//= rAthena SQL/TXT
+//===== Description: ==============================================
+//= Allows players to quickly refine their gear
+//===== Topic =====================================================
+//= Unknown
+//===== Additional Comments: ======================================
+//= Warning : If your server lags too much, you have to look for
+//= the "sleep2" command and increase the delay past 300.
+//=
+//= Make sure you disable the normal refine.txt from eAthena before
+//= enabling this one (else it will conflict with existing one)
+//=================================================================
+
+prt_in,59,55,3	script	Great Balthazar	407,{
+	callfunc "highrefinemain","Balthazar";
+	end;
+}
+
+morocc_in,73,35,3	script	Great Galadrel	407,{
+	callfunc "highrefinemain","Galadrel";
+	end;
+}
+
+payon,147,173,3	script	Great Adramelech	407,{
+	callfunc "highrefinemain","Adramelech";
+	end;
+}
+
+alberta_in,25,63,3	script	Great Azrael	407,{
+	callfunc "highrefinemain","Azrael";
+	end;
+}
+
+yuno_in01,167,23,3	script	Great Lannor	407,{
+	callfunc "highrefinemain","Lannor";
+	end;
+}
+
+ein_in01,23,82,3	script	Great Baulfor	407,{
+	callfunc "highrefinemain","Baulfor";
+	end;
+}
+
+lhz_in02,278,20,3	script	Great Kandror	407,{
+	callfunc "highrefinemain","Kandror";
+	end;
+}
+
+function	script	highrefinemain	{
+
+	mes "[" + getarg(0) + "]";
+	mes "Looking for more power, eh? I can high refine your equipments.";
+	mes "That is, attempt to refine them past +10 refine rates.";
+	mes "^0000FFJust have equipped your +10 gear, and they will be shown in the list.^000000";
+	next;
+
+	setarray .@position$[1], "Head","Body","Left hand","Right hand","Robe","Shoes","Accessory 1","Accessory 2","Head 2","Head 3";
+	set .@menu$,"";
+	for( set .@i,1; .@i <= 10; set .@i,.@i+1 )
+	{
+		if( getequipisequiped(.@i) && (getequiprefinerycnt(.@i) >= 10) )
+			set .@menu$, .@menu$ + .@position$[.@i] + "-" + "[" + getequipname(.@i) + "]";
+
+		set .@menu$, .@menu$ + ":";
+	}
+	if (!M_quickref)
+		set .@menu$, .@menu$ + "^0000FFTurn ^009933ON^0000FF Quick Refining^000000";
+	else
+		set .@menu$, .@menu$ + "^0000FFTurn ^FF0000OFF^0000FF Quick Refining^000000";
+	set .@part,select(.@menu$);
+	if (.@part == .@i ) {
+		mes "[" + getarg(0) + "]";
+		if (!M_quickref) {
+			mes "The ^0000FFQuick Refine^000000 Function has been Turned ^009933ON^000000";
+			set M_quickref, 1;
+		}
+		else {
+			mes "The ^0000FFQuick Refine^000000 Function has been Turned ^FF0000OFF^000000";
+			set M_quickref, 0;
+		}
+		close;
+	}
+	if(!getequipisequiped(.@part)) {
+		mes "[" + getarg(0) + "]";
+		mes "Hey, you must have equipped +10 or above gears so that they can be highly refined.";
+		emotion 6;
+		close;
+	}
+	//Check if the item is refinable...
+	if(!getequipisenableref(.@part)) {
+		mes "[" + getarg(0) + "]";
+		mes "I don't think I can";
+		mes "refine this item at all...";
+		close;
+	}
+	//Check if the item is identified... (Don't know why this is in here... but kept it anyway)
+	if(!getequipisidentify(.@part)) {
+		mes "[" + getarg(0) + "]";
+		mes "You can't refine this";
+		mes "if you haven't appraised";
+		mes "it first. Make sure your";
+		mes "stuff is identified before";
+		mes "I can refine it.";
+		close;
+	}
+	//Check to see if the items are bellow +10 (Double check?)
+	if(getequiprefinerycnt(.@part) < 10) {
+		mes "[" + getarg(0) + "]";
+		mes "I can't refine this.";
+		mes "Talk to the normal blacksmith to";
+		mes "refine this up to +10 first.";
+		close;
+	}
+	set .@refineitemid, getequipid(.@part); // save id of the item
+	set .@refinerycnt, getequiprefinerycnt(.@part); //save refinery count
+	switch(getequipweaponlv(.@part)){
+	
+	// ----------- Refine Prices, Materials and Safe Refines ---------- //
+	
+	case 0: 	//Refine Armor
+		set .@price,50000;
+		set .@material,6223;
+		break;
+	case 1: 	//Refine Level 1 Weapon
+		set .@price,10000;
+		set .@material,6224;
+		break;
+	case 2: 	//Refine Level 2 Weapon
+		set .@price,20000;
+		set .@material,6224;
+		break;
+	case 3: 	//Refine Level 3 Weapon
+		set .@price,60000;
+		set .@material,6224;
+		break;
+	case 4: 	//Refine Level 4 Weapon
+		set .@price,120000;
+		set .@material,6224;
+		break;
+	case 5: 	//Refine other stuff?
+		set .@price,50000;
+		set .@material,6223;
+		break;
+		
+	// ------------------------------------------------------------------ //
+		
+	}
+
+	next;
+	mes "[" + getarg(0) + "]";
+	mes "So how many times would you like me to high refine your item?";
+	next;
+	input .@refinecnt;
+	set .@refinecheck,.@refinecnt + getequiprefinerycnt(.@part);
+	if (.@refinecnt < 1 || .@refinecheck > 20) {
+		mes "[" + getarg(0) + "]";
+		mes "I can't high refine this item that many times.";
+		close;
+	}
+	mes "["+strnpcinfo(1)+"]";
+	mes "Alright, I can do it for only your currently equipped item, or ALL ^0000FF"+getequipname(.@part)+"^000000 you have in your inventory. What would you like to do?";
+	next;
+	if (select ("Currently Equipped:All Items in Inventory") == 2) set .@allinv, 1;
+	if (.@allinv)
+	set .@refinecnt, getequiprefinerycnt(.@part) + .@refinecnt;
+	mes "[" + getarg(0) + "]";
+	if ( !.@allinv)
+		mes "This will try to high refine the equipment " + (.@refinecheck - getequiprefinerycnt(.@part)) + " times. If it fails, your equipment will be pulverized.";
+	else
+		mes "Remember this will attempt to high refine to ^009933+"+.@refinecnt+"^000000 ^FF0000ALL^000000 the ^0000FF"+getequipname(.@part)+"^000000 items you have in your inventory!!";
+	next;
+	if(select("Accept","Reject") == 2){
+		mes "[" + getarg(0) + "]";
+		mes "Ha, just as I thought!";
+		close;
+	}
+	
+	if (.@allinv) {
+		deletearray @inventorylist_refine;
+		deletearray @inventorylist_id;
+		getinventorylist;
+		set .@i, 0;
+		for (set .@j, 0; .@j < @inventorylist_count; set .@j, .@j + 1) {
+			if (( @inventorylist_id[.@j] == getequipid(.@part) ) && (@inventorylist_refine[.@j] >= 10)) {
+				set .@temp[.@i], @inventorylist_refine[.@j];
+				set .@i, .@i + 1;
+			}
+		}
+		deletearray @inventorylist_refine;
+		deletearray @inventorylist_id;
+	}
+	set .@fullprice, 0;
+	if ( !.@allinv )
+		set .@fullprice,.@price * .@refinecnt;
+	else {
+		set .@j, 0;
+		for ( set .@k, 0; .@k < .@i ; set .@k, .@k + 1) {
+			if ( .@temp[.@k] < .@refinecnt ) {
+				set .@fullprice, .@fullprice + ( ( .@refinecnt - .@temp[.@k] ) * .@price );
+				set .@j, .@j + (.@refinecnt - .@temp[.@k]);
+			}
+		}
+		deletearray .@temp;
+	}
+	mes "[" + getarg(0) + "]";
+	if ( !.@allinv )
+		mes "That will cost you " + .@refinecnt + " " + getitemname(.@material) + " and " + .@fullprice + " Zeny. Is that ok?";
+	else
+		mes "That will cost you " + .@j + " " + getitemname(.@material) + " and " + .@fullprice + " Zeny. Is that ok?";
+	next;
+	if(select("Yes","No...") == 2){
+		mes "[" + getarg(0) + "]";
+		mes "You said so..Hmm so be it...";
+		close;
+	}
+		
+	if ( !.@allinv ) {
+		if(countitem(.@material) < .@refinecnt || Zeny < .@fullprice) {
+			mes "[" + getarg(0) + "]";
+			mes "I only work with ^0000FFBradiums^000000, ^009933Kaluniums^000000 and ^FF0000Zeny^000000, pal.";
+			close;
+		}
+		set Zeny,Zeny - .@fullprice;
+		delitem .@material,.@refinecnt;
+		while(.@refinecnt){
+			if (getequipisequiped(.@part) == 0) {
+				mes "[" + getarg(0) + "]";
+				mes "Look here... you don't have any Items on...";
+				close;
+			}
+			if (getequipid(.@part) != .@refineitemid) {
+				mes "[" + getarg(0) + "]";
+				mes "What, you changed your equipment!?!";
+				mes "You moron!";
+				next;
+				atcommand "@nuke "+strcharinfo(0);
+				end;
+			}
+			mes "Clang, clang!!!";
+			if(getequippercentrefinery(.@part) <= rand(100)) {
+				failedrefitem .@part;
+				emotion 23;
+				mes "[" + getarg(0) + "]";
+				mes "Hey, it broke, but don't blame me. Your item sucked.";
+				set .@refinecnt,.@refinecnt - 1;
+				if(.@refinecnt == 0) close;
+				mes "Here's the unused Zeny and Material back.";
+				getitem .@material,.@refinecnt;
+				set .@fullprice,.@refinecnt * .@price;
+				set Zeny,Zeny + .@fullprice;
+				close;
+			}
+			successrefitem .@part;
+			emotion 21;
+			set .@refinecnt,.@refinecnt - 1;
+			next;
+		}
+	}
+	else {
+	
+		if ( getbrokenid (.@refineitemid) ) {
+			mes "[" + getarg(0) + "]";
+			mes "Sorry but I can't work to high refine an equipment if you have another of the same kind of item that's not repaired in your inventory.";
+			close;
+		}
+		if(countitem(.@material) < .@j || Zeny < .@fullprice) {
+			mes "[" + getarg(0) + "]";
+			mes "You have no zeny or materials. Get lost.";
+			close;
+		}
+		
+		set .@breakme, 0;
+		
+		while(1){
+		
+			for (set .@c, 0; .@c < .@re; set .@c, .@c + 1)
+				deletearray getd(".@equip_inf"+.@c);
+			
+			if ( getequipisequiped(.@part) == 0 ) {
+				equip .@refineitemid;
+				set .@re, 0;
+				while ( getequiprefinerycnt(.@part) >= .@refinecnt ) {
+					for (set .@c, 0; .@c < 4; set .@c, .@c + 1)
+						if (getequipcardid(.@part,.@c) != 0)
+							setd ".@equip_inf"+.@re+"[.@c]", getequipcardid(.@part,.@c);
+					setd ".@equip_inf"+.@re+"[4]", getequiprefinerycnt(.@part);
+					unequip .@part;
+					delitem2 .@refineitemid,1,1,getd(".@equip_inf"+.@re+"[4]"),0,getd(".@equip_inf"+.@re+"[0]"),
+					getd(".@equip_inf"+.@re+"[1]"),getd(".@equip_inf"+.@re+"[2]"),getd(".@equip_inf"+.@re+"[3]");
+					equip .@refineitemid;
+					set .@re, .@re + 1;
+				}
+				if (.@re) {
+					for (set .@c, 0; .@c < .@re; set .@c, .@c + 1) {
+						getitem2 .@refineitemid,1,1,getd(".@equip_inf"+.@c+"[4]"),0,getd(".@equip_inf"+.@c+"[0]"),
+						getd(".@equip_inf"+.@c+"[1]"),getd(".@equip_inf"+.@c+"[2]"),getd(".@equip_inf"+.@c+"[3]");
+					}
+				}
+				for (set .@c, 0; .@c < .@re; set .@c, .@c + 1)
+					deletearray getd(".@equip_inf"+.@c);
+			}
+			
+			if (checkweight(.@refineitemid,1) == 0 ) {
+				next;
+				mes "[" + getarg(0) + "]";
+				mes "Hey you are overweight, try storing some items first.";
+				close;
+			}
+			
+			if (getequipid(.@part) != .@refineitemid) {
+				mes "[" + getarg(0) + "]";
+				mes "What, you changed your equipment!?!";
+				mes "You moron!";
+				next;
+				atcommand "@nuke "+strcharinfo(0);
+				end;
+			}
+			
+			if (getequiprefinerycnt(.@part) < 10) {
+				next;
+				mes "[" + getarg(0) + "]";
+				mes "You changed your equipment!";
+				mes "You douchebag!!";
+				next;
+				atcommand "@nuke "+strcharinfo(0);
+				end;
+			}
+			
+			if (!M_quickref) {
+				set .@rand, rand(1,4);
+				if (.@rand == 1)
+					mes "WaCLANG clang CLANG!";
+				else if (.@rand == 2)
+					mes "Crack clang CLaNG ClAnG!";
+				else if (.@rand == 3)
+					mes "CRaCk ClAnG ClANg!";
+				else if (.@rand == 4)
+					mes "CraCK CrAck CLaNG!!";
+			}
+			else if (!.@breakme) {
+				mes "ClAng ClanG ^FF0000CRACK^000000 ClanG Clangg CLAgn ^FF0000CRACK^000000 Cnaglnac CLnacnlnagCALNGa ClangaglnaCLAnagacalNCagaCLNAangCRACKalncalclanCLANGlancLANgacln!!!";
+				mes "^FF0000(Please do not Log-Off while in this process)^000000";
+				set .@breakme, 1;
+			}
+			set Zeny, Zeny - .@price;
+			delitem .@material, 1;
+			
+			if(getequippercentrefinery(.@part) <= rand(100)) {
+				set .@breakgap, .@refinecnt - getequiprefinerycnt(.@part) ;
+				set .@j, .@j - .@breakgap ;
+				failedrefitem .@part;
+				if(.@j <= 0) close;
+			}
+			else {
+				successrefitem .@part;
+				set .@j, .@j - 1;
+				if(.@j <= 0) close;
+				set .@re, 0;
+				while ( getequiprefinerycnt(.@part) >= .@refinecnt ) {
+					for (set .@c, 0; .@c < 4; set .@c, .@c + 1)
+						if (getequipcardid(.@part,.@c) != 0)
+							setd ".@equip_inf"+.@re+"[.@c]", getequipcardid(.@part,.@c);
+					setd ".@equip_inf"+.@re+"[4]", getequiprefinerycnt(.@part);
+					unequip .@part;
+					delitem2 .@refineitemid,1,1,getd(".@equip_inf"+.@re+"[4]"),0,getd(".@equip_inf"+.@re+"[0]"),
+					getd(".@equip_inf"+.@re+"[1]"),getd(".@equip_inf"+.@re+"[2]"),getd(".@equip_inf"+.@re+"[3]");
+					equip .@refineitemid;
+					set .@re, .@re + 1;
+				}
+				if (.@re) {
+					for (set .@c, 0; .@c < .@re; set .@c, .@c + 1) {
+						getitem2 .@refineitemid,1,1,getd(".@equip_inf"+.@c+"[4]"),0,getd(".@equip_inf"+.@c+"[0]"),
+						getd(".@equip_inf"+.@c+"[1]"),getd(".@equip_inf"+.@c+"[2]"),getd(".@equip_inf"+.@c+"[3]");
+					}
+				}
+			}
+			if (!M_quickref)
+				next;
+			else {
+				set .@clang, .@clang + 1;
+					sleep2 300;
+			}
+		}
+	}
+	mes "[" + getarg(0) + "]";
+	mes "All finished... Come again soon.";
+	close;		
+}
+
