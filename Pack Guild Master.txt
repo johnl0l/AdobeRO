@@ -1,0 +1,117 @@
+/*_________________________________________________________________________
+ /                                                                         \
+ |                  _           _   _   _                                  |
+ |               | |__  _ __ / \ | |_| |__   ___ _ __   __ _               |
+ |               | '_ \| '__/ _ \| __| '_ \ / _ \ '_ \ / _` |              |
+ |               | |_) | | / ___ \ |_| | | |  __/ | | | (_| |              |
+ |               |_.__/|_|/_/   \_\__|_| |_|\___|_| |_|\__,_|              |
+ |                                                                         |
+ |                             brAthena © 2013                             |
+ |                Desenvolvimento: Sephira e AdrianoBarbosa                |
+ |                            Pack Guild Master                            |
+ \_________________________________________________________________________/
+*/
+prontera,153,181,5	script	Pack Guild Master	56,{
+	mes .n$;
+	mes "Olá, "+strcharinfo(0)+" bem vind"+(sex?"o":"a")+" ao "+.rag_name$+", todas as guild's do "+.rag_name$+" tem direito a um serviço gratuito de ajuda para novas guild's.";
+	next;
+	mes .n$;
+	if(getguildmaster(getcharid(2)) == strcharinfo(0)){
+		mes (sex?"O":"A")+" senhor"+(sex?"":"a")+" gostaria de obter informações sobre meus serviços ?";
+		switch(select("Receber meu Pack:Requisitos para receber o Pack:Oque é o Pack Guild:Voltarei depois")){
+		next;
+		mes .n$;
+		case 1:
+			query_sql "SELECT `guild_id` FROM `pack_guild` WHERE `guild_id` = "+getcharid(2),@id_guild;
+			if(@id_guild != getcharid(2)){
+				query_sql "SELECT `account_id` FROM `char` WHERE `online` = 1 AND `guild_id` = "+getcharid(2), .@guild_membros;
+				if(getarraysize(.@guild_membros) >= .min_membros){
+					mes "A guild ira receber suprimentos referentes a quantidade de jogador membros da guild online, deseja receber o Pack Guild agora ?";
+					mes "^0000FFMembros online: ^000000"+getarraysize(.@guild_membros);
+					if(select("Sim desejo receber:Irei aguardar")==1){
+						next;
+						mes .n$;
+						mes "Os itens serão entregue a cada membro da guild online nessse momento.";
+						close2;
+						query_sql "INSERT INTO `pack_guild` (`ID`, `guild_id`, `membros`) VALUES (NULL, '"+getcharid(2)+"', '"+getarraysize(.@guild_membros)+"')";
+						for(set .@c, 0; .@c < getarraysize(.@guild_membros);set .@c,.@c+1){
+							if(attachrid(.@guild_membros[.@c])){
+								query_sql "SELECT `account_id` FROM `pack_list` WHERE `account_id` = '"+.@guild_membros[.@c]+"'",@pack_acc;
+								if(@pack_acc != .@guild_membros[.@c]){
+									for(set .@i, 0; .@i < getarraysize(.id_pg); set .@i, .@i+1){
+										query_sql "INSERT INTO `storage` (`id`, `account_id`, `nameid`, `amount`, `identify`, `card0`, `card2`, `card3`, `bound`) VALUES (NULL, '"+.@guild_membros[.@c]+"', '"+.id_pg[.@i]+"', '1', '"+(.qn_pg[.@i]*.@guild_membros)+"', '254', '3392', '3', '2')";
+									}
+									query_sql "INSERT INTO `pack_list` (`ID`, `account_id`, `guild_id`) VALUES (NULL, '"+.@guild_membros[.@c]+"', '"+getcharid(2)+"')";
+									dispbottom "[AVISO] Sua guild acaba de receber o Pack Guild, seus itens se encontram no storage, relogue para comfirmação do Pack Guild.";
+								}
+							}
+						}
+						end;
+					}
+					next;
+					mes .n$;
+					mes "Tudo bem, assim que tiver tudo pronto me procure.";
+					close;
+				}
+				mes "Sua guild não tem membros online suficiente para receber o Pack Guild.";
+				close;
+			}
+			mes "Sua guild ja recebeu o Pack Guild, o pack guild é entregue apenas uma vez por guild.";
+			close;
+		case 2:
+			mes "Após a criação da sua guild os processos para receber o Pack Guild é simples, em sua Guild devem haver "+.min_membros+" membros online.";
+			next;
+			mes .n$;
+			mes "Todos os premios ganhos pelo Pack Guild são vinculados a Guild, o item sera deletado caso algum jogador que nao seja da guild o equipe.";
+			next;
+			mes "Esses são os requisitos para receber o Pack guild, bom jogo.";
+			close;
+		case 3:
+			mes "O Pack Guild é uma forma de ajudar as Guild's a se tornarem estaveis no "+.rag_name$+" e ajudar seus membros.";
+			next;
+			mes .n$;
+			mes "Qual quer guild pode receber o Pack Guild e não ha restrições de level, é realmente uma forma de ajudar novas guild's no "+.rag_name$;
+			close;
+		case 4:
+			mes .n$;
+			mes "Tudo bem, estarei aguardando seu retorno, bom  jogo.";
+			close;
+		default:break;
+		}
+	}
+	mes "Tenha em mente que meus serviços são validos apenas com os lideres das guild's, até que você se torne um ou o lider da sua guild venha ate mim você deve esperar.";
+	close;
+OnInit:
+	set .n$, "[^F50049Pack Guild Master^000000]";
+	set .rag_name$, "PerfectRO";
+	set .min_membros, 1;                      /* Quantidade minima de membros da guild online para receber o Pack Guild.*/
+	/* A quantidade de itens entregue
+	no pack e calculada atraves do
+	numero de membros da guild online.
+	(membros online * Quantidade de itens)*/ 
+	setarray .id_pg[0], 501,502;               /* ID dos itens dados no Pack Guild.*/
+	setarray .qn_pg[0], 1,1;                   /* Quantidade de itens dados no Pack Guild.*/
+end;
+
+}
+
+/* Para o perfeito funcionando insira a seguinte query em seu banco de dados:
+
+CREATE TABLE IF NOT EXISTS `pack_guild` (
+  `ID` int(10) unsigned NOT NULL auto_increment,
+  `guild_id` int(10) NOT NULL,
+  `membros` int(10) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `pack_list` (
+  `ID` int(10) unsigned NOT NULL auto_increment,
+  `account_id` int(10) NOT NULL,
+  `guild_id` int(10) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+INSERT INTO `char` (`char_id`, `account_id`, `char_num`, `name`, `class`, `base_level`, `job_level`, `base_exp`, `job_exp`, `zeny`, `str`, `agi`, `vit`, `int`, `dex`, `luk`, `max_hp`, `hp`, `max_sp`, `sp`, `status_point`, `skill_point`, `option`, `karma`, `manner`, `party_id`, `guild_id`, `pet_id`, `homun_id`, `elemental_id`, `hair`, `hair_color`, `clothes_color`, `weapon`, `shield`, `head_top`, `head_mid`, `head_bottom`, `robe`, `last_map`, `last_x`, `last_y`, `save_map`, `save_x`, `save_y`, `partner_id`, `online`, `father`, `mother`, `child`, `fame`, `rename`, `delete_date`, `slotchange`, `char_opt`, `font`, `unban_time`) VALUES
+(200000, 2000000, 0, '[PG]', 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 40, 40, 11, 11, 48, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'prontera', 155, 173, 'new_1-1', 53, 111, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+*/

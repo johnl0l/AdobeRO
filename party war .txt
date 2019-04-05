@@ -1,0 +1,1059 @@
+-	script	init	-1,{
+		
+OnInit:
+
+	//== CONFIG START ==//
+	set $@charsymbol$,"#";									// Set the symbol of your char command ex. #
+	
+	set $@npcname$,"^009966War Organizer^000000";						// Set NPC name
+	set $@party_mem,7;									// Set minimum members per party, if a party has 6 members below including the leader, leader can't register his/her party
+	set $@arena_map$,"guild_vs3";								// Set where you want the players to battle
+	
+	set $@team1_arena_mapX,15;								// Set the starting X position of Team 1
+	set $@team1_arena_mapY,49;								// Set the starting Y position of Team 1
+	
+	set $@team2_arena_mapX,85;								// Set the starting X position of Team 2
+	set $@team2_arena_mapY,49;								// Set the starting Y position of Team 2
+	
+	set $@starting_map$,"quiz_02";								// Set where you want the players to be warped after the player was killed.
+	set $@starting_mapX,350;
+	set $@starting_mapY,379;
+
+	//== Set Winning Party Rewards ==//
+	set $@reward_winitem_qnty,0;								// Important, set to how many reward items you set below for the winning party
+	setarray $@win_itemid[0],0;								// Set the item id of the reward item
+	setarray $@win_itemname$[0],"Red Potion",						// Set the name of the reward item
+								"Orange Potion",
+								"Yellow Potion",
+								"White Potion",
+								"Blue Potion";
+								
+	setarray $@win_itemnum[0],0;								// Set the quantity of the reward
+	
+	//== Set Losing Party Rewards ==//
+	set $@reward_loseitem_qnty,0;								// Important, set to how many reward items you set below for losing party
+	setarray $@lse_itemid[0],0;								// Set the item id of the reward item
+	setarray $@lse_itemname$[0],"Red Potion",						// Set the name of the reward item
+								"Orange Potion";
+	setarray $@lse_itemnum[0],0;								// Set the quantity of the reward
+	
+	//== Set Draw Rewards ==//
+	set $@reward_drawitem_qnty,0;								// Important, set to how many reward items you set below for draw result
+	setarray $@drw_itemid[0],0;								// Set the item id of the reward item
+	setarray $@drw_itemname$[0],"Yellow Potion",						// Set the name of the reward item
+								"White Potion";
+	setarray $@drw_itemnum[0],0;								// Set the quantity of the reward
+	
+	//== CONFIG END ==//
+	
+	// Do not change configs below, this will reset in case the server unexpectedly shuts down
+	set $@Battle_Start,0;
+	set $@party_team,0;
+	set $@party_team1,0;
+	set $@party_team2,0;
+	set $team1_mem,0;
+	set $team2_mem,0;
+
+	    // RWC 3
+            enablenpc "WALL#41";
+            enablenpc "WALL#42";
+            enablenpc "WALL#43";
+            enablenpc "WALL#44";
+            enablenpc "WALL#45";
+            enablenpc "WALL#46";
+            enablenpc "WALL#47";
+            enablenpc "WALL#48";
+            enablenpc "WALL#49";
+            enablenpc "WALL#50";
+            enablenpc "WALL#51";
+            enablenpc "WALL#52";
+            enablenpc "WALL#53";
+            enablenpc "WALL#54";
+            enablenpc "WALL#55";
+            enablenpc "WALL#56";
+            enablenpc "WALL#57";
+            enablenpc "WALL#58";
+            enablenpc "WALL#59";
+            enablenpc "WALL#60";
+            enablenpc "WALL#61";
+            enablenpc "WALL#62";
+            enablenpc "WALL#63";
+            enablenpc "WALL#64";
+
+	// Now let's check if the event is on going or not (checks current server's time)
+	// if the event is on going, Enable NPC and sends a message to the player upon logging in
+	
+	for(set .@q,0; .@q<=22; set .@q,.@q+2) {
+		set .@count,.@count+1;
+		if(gettime(3)>.@q && gettime(3)<=.@count) {
+			set $@evt_start,1;
+			enablenpc "PartyReg";
+		}
+		set .@count,.@count+1;
+	}
+	end;
+}
+
+// Party Registration NPC
+
+quiz_02,350,389,3	script	Party Registration::PartyReg	89,{
+	
+	mes "["+$@npcname$+"]";
+	if(($@Battle_Start && getcharid(1)==$@party_team1) || ($@Battle_Start && getcharid(1)==$@party_team2) ) { mes "Hmm... Too bad for you, you didn't make it to win for your party. Cheer them up instead."; close; }
+	if($@Battle_Start || $@party_team>=2) {
+		mes "Battle is currently on";
+		mes "going. Party registration is";
+		mes "close during this time.";
+		next;
+		if(select("> Check current battle info.:> Leave") == 2){
+			mes "["+$@npcname$+"]";
+			mes "Come back to me and register your party after the battle between "+getpartyname($@party_team1)+" and "+getpartyname($@party_team2)+" has ended.";
+			close;
+		}
+		mes "["+$@npcname$+"]";
+		if(!$@Battle_Start) { mes "The Battle already ended."; close; }
+		set @standing_mem1,$@party_mem-$team2_mem;
+		set @standing_mem2,$@party_mem-$team1_mem;
+		mes "Battle Information";
+		mes "---";
+		mes "- " + getpartyname($@party_team1) + " Party : ";
+		mes "Standing Members Left : " + @standing_mem1;
+		mes "---";
+		mes "- " + getpartyname($@party_team2) + " Party : ";
+		mes "Standing Members Left : " + @standing_mem2; 
+		next;
+		mes "["+$@npcname$+"]";
+		if($team1_mem>$team2_mem) {
+			mes "Current leading party is "+getpartyname($@party_team1);
+			close;
+		} else if($team1_mem<$team2_mem) {
+			mes "Current leading party is "+getpartyname($@party_team2);
+			close;
+		} else {
+			mes "Both Party has the same number of members that are still alive.";
+			close;
+		}
+	}
+	if(getcharid(1)==0) goto L_ContinueMain;
+	if(getcharid(1)==$@party_team1 || getcharid(1)==$@party_team2) { mes getpartyleader(getcharid(1)) + ", your party leader already registered your party, please wait for the other team to register."; close; }
+L_ContinueMain:
+	mes "Welcome "+strcharinfo(0)+"!";
+	mes "I am the War Arena Organizer";
+
+	next;
+	switch(select("> Register")) {
+		case 1:	callsub R_Party;
+	}
+R_Party:
+
+	mes "["+$@npcname$+"]";
+        if ( callfunc("party_has_duplicate_job") ) {
+                mes "It seems that someone in the party has the same class than another member. Please check again the requirements...";
+                close;
+        }
+
+        if ( $@partymembercount != 7 ) {
+                mes "You have to be 7 on the team.";
+                close;
+	}
+	if(getcharid(1)==0) { mes "I see that you have no party yet. Please form your party first before registering."; close; }
+	mes "Party Name : "+strcharinfo(1);
+	if(getpartyleader(getcharid(1),2)==getcharid(0)) {
+		mes "Party Leader : You";
+	} else {
+		mes "Party Leader : "+getpartyleader(getcharid(1));
+	}
+	mes "-";
+	getpartymember(getcharid(1));
+	set @partymembercount,$@partymembercount;
+	copyarray @partymembername$[0],$@partymembername$[0],@partymembercount;
+	set @countmem,0;
+
+L_DisplayMem:
+	if(@countmem == @partymembercount) goto L_Continue;
+	set @countmem,@countmem+1;
+	goto L_DisplayMem;
+L_Continue:
+	mes "Party Members ("+(@countmem)+"/"+$@party_mem+")";
+	set @count,0;
+
+L_DisplayMember:
+	if(@count == @partymembercount) goto L_Continue2;
+	mes (@count + 1) + ". ^0000FF" + @partymembername$[@count] + "^000000";
+	set @count,@count+1;
+	goto L_DisplayMember;
+L_Continue2:
+	if($@Battle_Start || $@party_team>=2) { next; mes "Sorry but party registration is now close. Please re-register after the current battle progress has ended."; close; }
+	if(getpartyleader(getcharid(1),2)!=getcharid(0)) { next; mes strcharinfo(0)+", If you have time, please find your Party Leader "+getpartyleader(getcharid(1))+" and let him/her register your party"; close; }
+	if(@countmem>$@party_mem) { next; mes "This event requires you to form a party with only "+$@party_mem+" members including you. I'm sorry to say but you need to expel ^FF0000"+(@countmem-$@party_mem)+"^000000 more member(s)."; close; }
+	if(@countmem<$@party_mem) { next; mes "This event requires you to form a party with "+$@party_mem+" members including you. You still need to recruit ^FF0000"+($@party_mem-@countmem)+"^000000 more member(s)."; close; }
+	set $@party_team,$@party_team+1;
+	if($@party_team==1) {
+		set $@party_team1,getcharid(1);
+		setarray $@mem_name1$[0],@partymembername$[0],@partymembername$[1],@partymembername$[2],@partymembername$[3],@partymembername$[4];
+		announce "Team "+getpartyname($@party_team1)+" registered on Team "+$@party_team+".",bc_all;
+		goto L_Continue3;
+	}
+	if($@party_team==2) {
+		set $@party_team2,getcharid(1);
+		announce "Team "+getpartyname($@party_team2)+" registered on Team "+$@party_team+".",bc_all;
+		setarray $@mem_name2$[0],@partymembername$[0],@partymembername$[1],@partymembername$[2],@partymembername$[3],@partymembername$[4];
+		goto L_Continue3;
+	}
+
+L_Continue3:
+	close2;
+	if($@party_team==2) donpcevent "PvP_Func::OnStart";
+	end;
+
+OnPCDieEvent:
+
+	getmapxy @map$,@x,@y,0;
+	
+	if($@Battle_Start && @map$==$@arena_map$ && getcharid(1)==$@party_team1) {
+		set $team2_mem,$team2_mem+1;
+		warp $@starting_map$,$@starting_mapX,$@starting_mapY;
+		if($team2_mem==$@party_mem) {
+			setcell $@arena_map$,80,55,80,44,cell_walkable,1;
+			setcell $@arena_map$,19,55,19,44,cell_walkable,1;
+			donpcevent "PvP_Func::OnTeam2Win2";
+		}
+		end;
+	}
+	if($@Battle_Start && @map$==$@arena_map$ && getcharid(1)==$@party_team2) {
+		set $team1_mem,$team1_mem+1;
+		warp $@starting_map$,$@starting_mapX,$@starting_mapY;
+		if($team1_mem==$@party_mem) {
+			setcell $@arena_map$,80,55,80,44,cell_walkable,1;
+			setcell $@arena_map$,19,55,19,44,cell_walkable,1;
+			donpcevent "PvP_Func::OnTeam1Win2";
+		}
+		end;
+	}
+	
+OnPCLogoutEvent:
+
+	getmapxy @map$,@x,@y,0;
+	
+	if($@Battle_Start && @map$==$@arena_map$ && getcharid(1)==$@party_team1) {
+		warp $@starting_map$,$@starting_mapX,$@starting_mapY;
+		set $team2_mem,$team2_mem+1;
+		mapannounce $@arena_map$,"User "+strcharinfo(0)+" of "+getpartyname($@party_team1)+" Team logged out of the game.",bc_all;
+		if($team2_mem==$@party_mem) {
+			setcell $@arena_map$,80,55,80,44,cell_walkable,1;
+			setcell $@arena_map$,19,55,19,44,cell_walkable,1;
+			donpcevent "PvP_Func::OnTeam2Win2";
+		}
+		end;
+	}
+	if($@Battle_Start && @map$==$@arena_map$ && getcharid(1)==$@party_team2) {
+		warp $@starting_map$,$@starting_mapX,$@starting_mapY;
+		set $team1_mem,$team1_mem+1;
+		mapannounce $@arena_map$,"User "+strcharinfo(0)+" of "+getpartyname($@party_team2)+" Team logged out of the game.",bc_all;
+		if($team1_mem==$@party_mem) {
+			setcell $@arena_map$,80,55,80,44,cell_walkable,1;
+			setcell $@arena_map$,19,55,19,44,cell_walkable,1;
+			donpcevent "PvP_Func::OnTeam1Win2";
+		}
+		end;
+	}
+	
+OnPCLoadMapEvent:
+
+	getmapxy @map$,@x,@y,0;
+	
+	if($@Battle_Start && @map$!=$@arena_map$ && getcharid(1)==$@party_team1) {
+		warp $@starting_map$,$@starting_mapX,$@starting_mapY;
+		set $team2_mem,$team2_mem+1;
+		mapannounce $@arena_map$,""+strcharinfo(0)+" of "+getpartyname($@party_team1)+" party warped out of the battle arena.",bc_blue;
+		if($team2_mem==$@party_mem) {
+			setcell $@arena_map$,80,55,80,44,cell_walkable,1;
+			setcell $@arena_map$,19,55,19,44,cell_walkable,1;
+			donpcevent "PvP_Func::OnTeam2Win2";
+		}
+		end;
+	}
+	if($@Battle_Start && @map$!=$@arena_map$ && getcharid(1)==$@party_team2) {
+		warp $@starting_map$,$@starting_mapX,$@starting_mapY;
+		set $team1_mem,$team1_mem+1;
+		mapannounce $@arena_map$,""+strcharinfo(0)+" of "+getpartyname($@party_team2)+" party warped out of the battle arena.",bc_blue;
+		if($team1_mem==$@party_mem) {
+			setcell $@arena_map$,80,55,80,44,cell_walkable,1;
+			setcell $@arena_map$,19,55,19,44,cell_walkable,1;
+			donpcevent "PvP_Func::OnTeam1Win2";
+		}
+		end;
+	}
+
+}
+
+// Script where all functions are stored
+
+-	script	PvP_Func	-1,{
+
+OnStart:
+
+	initnpctimer;
+	set $@Battle_Start,1;
+	setcell $@arena_map$,80,55,80,44,cell_walkable,0;
+	setcell $@arena_map$,19,55,19,44,cell_walkable,0;
+	announce "The Battle between  "+getpartyname($@party_team1)+" and "+getpartyname($@party_team2)+" Party has engaged. Registered Party along with its members will be automatically warped to the arena after 10 seconds.",bc_all;
+	gvgoff $@arena_map$;
+	setnpctimer 0;
+	startnpctimer;
+	end;
+	
+OnTimer5000:
+
+	warpparty $@arena_map$,$@team1_arena_mapX,$@team1_arena_mapY,$@party_team1;
+	warpparty $@arena_map$,$@team2_arena_mapX,$@team1_arena_mapY,$@party_team2;
+	end;
+OnTimer30000:
+	mapannounce $@arena_map$,"Players, you only have 30 seconds left to prepare for the Battle.",bc_all;
+	end;
+OnTimer50000:
+	mapannounce $@arena_map$,"The Battle will begin in 5 seconds.",bc_all;
+	end;
+OnTimer51000:
+	mapannounce $@arena_map$,"The Battle will begin in 4 seconds.",bc_all;
+	end;
+OnTimer52000:
+	mapannounce $@arena_map$,"The Battle will begin in 3 seconds.",bc_all;
+	end;
+OnTimer53000:
+	mapannounce $@arena_map$,"The Battle will begin in 2 seconds.",bc_all;
+	end;
+OnTimer54000:
+	mapannounce $@arena_map$,"The Battle will begin in 1 second.",bc_all;
+	end;
+OnTimer55000:
+	gvgon $@arena_map$;
+	setcell $@arena_map$,80,55,80,44,cell_walkable,1;
+	setcell $@arena_map$,19,55,19,44,cell_walkable,1;
+
+		    disablenpc "WALL#41";
+		    disablenpc "WALL#42";
+		    disablenpc "WALL#43";
+		    disablenpc "WALL#44";
+		    disablenpc "WALL#45";
+		    disablenpc "WALL#46";
+		    disablenpc "WALL#47";
+		    disablenpc "WALL#48";
+		    disablenpc "WALL#49";
+		    disablenpc "WALL#50";
+		    disablenpc "WALL#51";
+		    disablenpc "WALL#52";
+		    disablenpc "WALL#53";
+		    disablenpc "WALL#54";
+		    disablenpc "WALL#55";
+		    disablenpc "WALL#56";
+		    disablenpc "WALL#57";
+		    disablenpc "WALL#58";
+		    disablenpc "WALL#59";
+		    disablenpc "WALL#60";
+		    disablenpc "WALL#61";
+		    disablenpc "WALL#62";
+		    disablenpc "WALL#63";
+		    disablenpc "WALL#64";
+
+	announce "The team "+getpartyname($@party_team1)+" vs "+getpartyname($@party_team2)+" battle has begun!",bc_all;
+	mapannounce $@arena_map$,"You only have 5 minutes to eliminate all opponent's party members. Be quick!!!",bc_all;
+	end;
+	
+	// After 5 Minutes, system will check the party who has the most number of member and will declare that party as a winner.
+	// All variables will be resetted.
+OnTimer420000:
+
+	if($team2_mem<$team1_mem) {
+		donpcevent "PvP_Func::OnTeam1Win";
+	} else if ($team2_mem<$team1_mem) {
+		donpcevent "PvP_Func::OnTeam2Win";
+	} else if ($team2_mem==$team1_mem || $team1_mem==$team2_mem) {
+		donpcevent "PvP_Func::OnDraw";
+	} else {
+		donpcevent "PvP_Func::OnNoWin";
+	}
+	end;
+
+	// This label will be called after the event has ended without registered parties
+OnNoWin:
+
+	announce "The Battle has ended.",bc_all;
+	gvgoff $@arena_map$;
+	set $@party_team,0;
+	set $@Battle_Start,0;
+	set $team1_mem,0;
+	set $team2_mem,0;
+	set $@party_team1,0;
+	set $@party_team2,0;
+
+	    	    setcell "guild_vs3",19,55,19,44,cell_walkable,0;
+                    setcell "guild_vs3",80,55,80,44,cell_walkable,0;
+		    enablenpc "WALL#41";
+		    enablenpc "WALL#42";
+		    enablenpc "WALL#43";
+		    enablenpc "WALL#44";
+		    enablenpc "WALL#45";
+		    enablenpc "WALL#46";
+		    enablenpc "WALL#47";
+		    enablenpc "WALL#48";
+		    enablenpc "WALL#49";
+		    enablenpc "WALL#50";
+		    enablenpc "WALL#51";
+		    enablenpc "WALL#52";
+		    enablenpc "WALL#53";
+		    enablenpc "WALL#54";
+		    enablenpc "WALL#55";
+		    enablenpc "WALL#56";
+		    enablenpc "WALL#57";
+		    enablenpc "WALL#58";
+		    enablenpc "WALL#59";
+		    enablenpc "WALL#60";
+		    enablenpc "WALL#61";
+		    enablenpc "WALL#62";
+		    enablenpc "WALL#63";
+		    enablenpc "WALL#64";
+
+	stopnpctimer;
+	sleep2 10000;
+	areawarp $@arena_map$,12,87,87,12,$@starting_map$,$@starting_mapX,$@starting_mapY;
+	end;
+	
+OnEndNoWin:
+
+	announce "The Battle has ended.",bc_all;
+	gvgoff $@arena_map$;
+	set $@party_team,0;
+	set $@Battle_Start,0;
+	set $team1_mem,0;
+	set $team2_mem,0;
+	set $@party_team1,0;
+	set $@party_team2,0;
+	set $@evt_start,0;
+
+	    	    setcell "guild_vs3",19,55,19,44,cell_walkable,0;
+                    setcell "guild_vs3",80,55,80,44,cell_walkable,0;
+		    enablenpc "WALL#41";
+		    enablenpc "WALL#42";
+		    enablenpc "WALL#43";
+		    enablenpc "WALL#44";
+		    enablenpc "WALL#45";
+		    enablenpc "WALL#46";
+		    enablenpc "WALL#47";
+		    enablenpc "WALL#48";
+		    enablenpc "WALL#49";
+		    enablenpc "WALL#50";
+		    enablenpc "WALL#51";
+		    enablenpc "WALL#52";
+		    enablenpc "WALL#53";
+		    enablenpc "WALL#54";
+		    enablenpc "WALL#55";
+		    enablenpc "WALL#56";
+		    enablenpc "WALL#57";
+		    enablenpc "WALL#58";
+		    enablenpc "WALL#59";
+		    enablenpc "WALL#60";
+		    enablenpc "WALL#61";
+		    enablenpc "WALL#62";
+		    enablenpc "WALL#63";
+		    enablenpc "WALL#64";
+
+	stopnpctimer;
+	sleep2 10000;
+	areawarp $@arena_map$,12,87,87,12,$@starting_map$,$@starting_mapX,$@starting_mapY;
+	end;
+	
+OnDraw:
+	announce "Team "+getpartyname($@party_team1)+" and Team "+getpartyname($@party_team2)+" has the same number of members standing in the arena, the battle result is a draw.",bc_all;
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_drawitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name1$[.@i]+" "+$@drw_itemid[.@j]+" "+$@drw_itemnum[.@j]+"";
+		}
+	}
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_drawitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name2$[.@i]+" "+$@drw_itemid[.@j]+" "+$@drw_itemnum[.@j]+"";
+		}
+	}
+	stopnpctimer;
+	gvgoff $@arena_map$;
+	set $@party_team,0;
+	set $@Battle_Start,0;
+	set $team1_mem,0;
+	set $team2_mem,0;
+	set $@party_team1,0;
+	set $@party_team2,0;
+
+	    	    setcell "guild_vs3",19,55,19,44,cell_walkable,0;
+                    setcell "guild_vs3",80,55,80,44,cell_walkable,0;
+		    enablenpc "WALL#41";
+		    enablenpc "WALL#42";
+		    enablenpc "WALL#43";
+		    enablenpc "WALL#44";
+		    enablenpc "WALL#45";
+		    enablenpc "WALL#46";
+		    enablenpc "WALL#47";
+		    enablenpc "WALL#48";
+		    enablenpc "WALL#49";
+		    enablenpc "WALL#50";
+		    enablenpc "WALL#51";
+		    enablenpc "WALL#52";
+		    enablenpc "WALL#53";
+		    enablenpc "WALL#54";
+		    enablenpc "WALL#55";
+		    enablenpc "WALL#56";
+		    enablenpc "WALL#57";
+		    enablenpc "WALL#58";
+		    enablenpc "WALL#59";
+		    enablenpc "WALL#60";
+		    enablenpc "WALL#61";
+		    enablenpc "WALL#62";
+		    enablenpc "WALL#63";
+		    enablenpc "WALL#64";
+
+	sleep2 10000;
+	areawarp $@arena_map$,12,87,87,12,$@starting_map$,$@starting_mapX,$@starting_mapY;
+	end;
+	
+OnEndDraw:
+	announce "Team "+getpartyname($@party_team1)+" and Team "+getpartyname($@party_team2)+" has the same number of members standing in the arena, the battle result is a draw.",bc_all;
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_drawitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name1$[.@i]+" "+$@drw_itemid[.@j]+" "+$@drw_itemnum[.@j]+"";
+		}
+	}
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_drawitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name2$[.@i]+" "+$@drw_itemid[.@j]+" "+$@drw_itemnum[.@j]+"";
+		}
+	}
+	stopnpctimer;
+	gvgoff $@arena_map$;
+	set $@party_team,0;
+	set $@Battle_Start,0;
+	set $team1_mem,0;
+	set $team2_mem,0;
+	set $@party_team1,0;
+	set $@party_team2,0;
+	set $@evt_start,0;
+
+	    	    setcell "guild_vs3",19,55,19,44,cell_walkable,0;
+                    setcell "guild_vs3",80,55,80,44,cell_walkable,0;
+		    enablenpc "WALL#41";
+		    enablenpc "WALL#42";
+		    enablenpc "WALL#43";
+		    enablenpc "WALL#44";
+		    enablenpc "WALL#45";
+		    enablenpc "WALL#46";
+		    enablenpc "WALL#47";
+		    enablenpc "WALL#48";
+		    enablenpc "WALL#49";
+		    enablenpc "WALL#50";
+		    enablenpc "WALL#51";
+		    enablenpc "WALL#52";
+		    enablenpc "WALL#53";
+		    enablenpc "WALL#54";
+		    enablenpc "WALL#55";
+		    enablenpc "WALL#56";
+		    enablenpc "WALL#57";
+		    enablenpc "WALL#58";
+		    enablenpc "WALL#59";
+		    enablenpc "WALL#60";
+		    enablenpc "WALL#61";
+		    enablenpc "WALL#62";
+		    enablenpc "WALL#63";
+		    enablenpc "WALL#64";
+
+	sleep2 10000;
+	areawarp $@arena_map$,12,87,87,12,$@starting_map$,$@starting_mapX,$@starting_mapY;
+	end;
+	
+OnTeam1Win:
+
+	announce "After 5 minutes of battle, "+getpartyname($@party_team1)+" party member survives more than "+getpartyname($@party_team2)+" party member and won the Battle!",bc_all;
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_winitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name1$[.@i]+" "+$@win_itemid[.@j]+" "+$@win_itemnum[.@j]+"";
+		}
+	}
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_loseitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name2$[.@i]+" "+$@lse_itemid[.@j]+" "+$@lse_itemnum[.@j]+"";
+		}
+	}
+	set $@party_team,0;
+	set $@Battle_Start,0;
+	set $team1_mem,0;
+	set $team2_mem,0;
+	set $@party_team1,0;
+	set $@party_team2,0;
+	gvgoff $@arena_map$;
+
+	    	    setcell "guild_vs3",19,55,19,44,cell_walkable,0;
+                    setcell "guild_vs3",80,55,80,44,cell_walkable,0;
+		    enablenpc "WALL#41";
+		    enablenpc "WALL#42";
+		    enablenpc "WALL#43";
+		    enablenpc "WALL#44";
+		    enablenpc "WALL#45";
+		    enablenpc "WALL#46";
+		    enablenpc "WALL#47";
+		    enablenpc "WALL#48";
+		    enablenpc "WALL#49";
+		    enablenpc "WALL#50";
+		    enablenpc "WALL#51";
+		    enablenpc "WALL#52";
+		    enablenpc "WALL#53";
+		    enablenpc "WALL#54";
+		    enablenpc "WALL#55";
+		    enablenpc "WALL#56";
+		    enablenpc "WALL#57";
+		    enablenpc "WALL#58";
+		    enablenpc "WALL#59";
+		    enablenpc "WALL#60";
+		    enablenpc "WALL#61";
+		    enablenpc "WALL#62";
+		    enablenpc "WALL#63";
+		    enablenpc "WALL#64";
+
+	stopnpctimer;
+	sleep2 10000;
+	areawarp $@arena_map$,12,87,87,12,$@starting_map$,$@starting_mapX,$@starting_mapY;
+	end;
+	
+OnEndTeam1Win:
+
+	announce "After 5 minutes of battle, "+getpartyname($@party_team1)+" party member survives more than "+getpartyname($@party_team2)+" party member and won the Battle!",bc_all;
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_winitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name1$[.@i]+" "+$@win_itemid[.@j]+" "+$@win_itemnum[.@j]+"";
+		}
+	}
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_loseitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name2$[.@i]+" "+$@lse_itemid[.@j]+" "+$@lse_itemnum[.@j]+"";
+		}
+	}
+	set $@party_team,0;
+	set $@Battle_Start,0;
+	set $team1_mem,0;
+	set $team2_mem,0;
+	set $@party_team1,0;
+	set $@party_team2,0;
+	set $@evt_start,0;
+	gvgoff $@arena_map$;
+
+	    	    setcell "guild_vs3",19,55,19,44,cell_walkable,0;
+                    setcell "guild_vs3",80,55,80,44,cell_walkable,0;
+		    enablenpc "WALL#41";
+		    enablenpc "WALL#42";
+		    enablenpc "WALL#43";
+		    enablenpc "WALL#44";
+		    enablenpc "WALL#45";
+		    enablenpc "WALL#46";
+		    enablenpc "WALL#47";
+		    enablenpc "WALL#48";
+		    enablenpc "WALL#49";
+		    enablenpc "WALL#50";
+		    enablenpc "WALL#51";
+		    enablenpc "WALL#52";
+		    enablenpc "WALL#53";
+		    enablenpc "WALL#54";
+		    enablenpc "WALL#55";
+		    enablenpc "WALL#56";
+		    enablenpc "WALL#57";
+		    enablenpc "WALL#58";
+		    enablenpc "WALL#59";
+		    enablenpc "WALL#60";
+		    enablenpc "WALL#61";
+		    enablenpc "WALL#62";
+		    enablenpc "WALL#63";
+		    enablenpc "WALL#64";
+
+	stopnpctimer;
+	sleep2 10000;
+	areawarp $@arena_map$,12,87,87,12,$@starting_map$,$@starting_mapX,$@starting_mapY;
+	end;
+
+OnTeam2Win:
+
+	announce "After 5 minutes of battle, "+getpartyname($@party_team2)+" party member survives more than "+getpartyname($@party_team1)+" party member and won the Battle!",bc_all;
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_winitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name2$[.@i]+" "+$@win_itemid[.@j]+" "+$@win_itemnum[.@j]+"";
+		}
+	}
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_loseitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name1$[.@i]+" "+$@lse_itemid[.@j]+" "+$@lse_itemnum[.@j]+"";
+		}
+	}
+	set $@party_team,0;
+	set $@Battle_Start,0;
+	set $team1_mem,0;
+	set $team2_mem,0;
+	set $@party_team1,0;
+	set $@party_team2,0;
+	gvgoff $@arena_map$;
+
+	    	    setcell "guild_vs3",19,55,19,44,cell_walkable,0;
+                    setcell "guild_vs3",80,55,80,44,cell_walkable,0;
+		    enablenpc "WALL#41";
+		    enablenpc "WALL#42";
+		    enablenpc "WALL#43";
+		    enablenpc "WALL#44";
+		    enablenpc "WALL#45";
+		    enablenpc "WALL#46";
+		    enablenpc "WALL#47";
+		    enablenpc "WALL#48";
+		    enablenpc "WALL#49";
+		    enablenpc "WALL#50";
+		    enablenpc "WALL#51";
+		    enablenpc "WALL#52";
+		    enablenpc "WALL#53";
+		    enablenpc "WALL#54";
+		    enablenpc "WALL#55";
+		    enablenpc "WALL#56";
+		    enablenpc "WALL#57";
+		    enablenpc "WALL#58";
+		    enablenpc "WALL#59";
+		    enablenpc "WALL#60";
+		    enablenpc "WALL#61";
+		    enablenpc "WALL#62";
+		    enablenpc "WALL#63";
+		    enablenpc "WALL#64";
+
+	stopnpctimer;
+	sleep2 10000;
+	areawarp $@arena_map$,12,87,87,12,$@starting_map$,$@starting_mapX,$@starting_mapY;
+	end;
+	
+OnEndTeam2Win:
+
+	announce "After 5 minutes of battle, "+getpartyname($@party_team2)+" party member survives more than "+getpartyname($@party_team1)+"'s Party member and won the Battle!",bc_all;
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_winitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name2$[.@i]+" "+$@win_itemid[.@j]+" "+$@win_itemnum[.@j]+"";
+		}
+	}
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_loseitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name1$[.@i]+" "+$@lse_itemid[.@j]+" "+$@lse_itemnum[.@j]+"";
+		}
+	}
+	set $@party_team,0;
+	set $@Battle_Start,0;
+	set $team1_mem,0;
+	set $team2_mem,0;
+	set $@party_team1,0;
+	set $@party_team2,0;
+	set $@evt_start,0;
+	disablenpc "PartyReg";
+	gvgoff $@arena_map$;
+
+	    	    setcell "guild_vs3",19,55,19,44,cell_walkable,0;
+                    setcell "guild_vs3",80,55,80,44,cell_walkable,0;
+		    enablenpc "WALL#41";
+		    enablenpc "WALL#42";
+		    enablenpc "WALL#43";
+		    enablenpc "WALL#44";
+		    enablenpc "WALL#45";
+		    enablenpc "WALL#46";
+		    enablenpc "WALL#47";
+		    enablenpc "WALL#48";
+		    enablenpc "WALL#49";
+		    enablenpc "WALL#50";
+		    enablenpc "WALL#51";
+		    enablenpc "WALL#52";
+		    enablenpc "WALL#53";
+		    enablenpc "WALL#54";
+		    enablenpc "WALL#55";
+		    enablenpc "WALL#56";
+		    enablenpc "WALL#57";
+		    enablenpc "WALL#58";
+		    enablenpc "WALL#59";
+		    enablenpc "WALL#60";
+		    enablenpc "WALL#61";
+		    enablenpc "WALL#62";
+		    enablenpc "WALL#63";
+		    enablenpc "WALL#64";
+
+	stopnpctimer;
+	sleep2 10000;
+	areawarp $@arena_map$,12,87,87,12,$@starting_map$,$@starting_mapX,$@starting_mapY;
+	end;
+	
+	
+OnTeam1Win2:
+
+	announce "Team "+getpartyname($@party_team1)+" smashed all the member of Team "+getpartyname($@party_team2)+" and won the Battle!",bc_all;
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_winitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name1$[.@i]+" "+$@win_itemid[.@j]+" "+$@win_itemnum[.@j]+"";
+		}
+	}
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_loseitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name2$[.@i]+" "+$@lse_itemid[.@j]+" "+$@lse_itemnum[.@j]+"";
+		}
+	}
+	set $@party_team,0;
+	set $@Battle_Start,0;
+	set $team1_mem,0;
+	set $team2_mem,0;
+	set $@party_team1,0;
+	set $@party_team2,0;
+	gvgoff $@arena_map$;
+
+	    	    setcell "guild_vs3",19,55,19,44,cell_walkable,0;
+                    setcell "guild_vs3",80,55,80,44,cell_walkable,0;
+		    enablenpc "WALL#41";
+		    enablenpc "WALL#42";
+		    enablenpc "WALL#43";
+		    enablenpc "WALL#44";
+		    enablenpc "WALL#45";
+		    enablenpc "WALL#46";
+		    enablenpc "WALL#47";
+		    enablenpc "WALL#48";
+		    enablenpc "WALL#49";
+		    enablenpc "WALL#50";
+		    enablenpc "WALL#51";
+		    enablenpc "WALL#52";
+		    enablenpc "WALL#53";
+		    enablenpc "WALL#54";
+		    enablenpc "WALL#55";
+		    enablenpc "WALL#56";
+		    enablenpc "WALL#57";
+		    enablenpc "WALL#58";
+		    enablenpc "WALL#59";
+		    enablenpc "WALL#60";
+		    enablenpc "WALL#61";
+		    enablenpc "WALL#62";
+		    enablenpc "WALL#63";
+		    enablenpc "WALL#64";
+
+	stopnpctimer;
+	sleep2 10000;
+	areawarp $@arena_map$,12,87,87,12,$@starting_map$,$@starting_mapX,$@starting_mapY;
+	end;
+
+OnTeam2Win2:
+
+	announce "Team "+getpartyname($@party_team2)+" smashed all the member of Team "+getpartyname($@party_team1)+"and won the Battle!",bc_all;
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_winitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name2$[.@i]+" "+$@win_itemid[.@j]+" "+$@win_itemnum[.@j]+"";
+		}
+	}
+	for(set .@i,0; .@i<$@party_mem; set .@i,.@i+1) {
+		for(set .@j,0; .@j<$@reward_loseitem_qnty; set .@j,.@j+1) {
+			charcommand ""+$@charsymbol$+"item "+$@mem_name1$[.@i]+" "+$@lse_itemid[.@j]+" "+$@lse_itemnum[.@j]+"";
+		}
+	}
+	set $@party_team,0;
+	set $@Battle_Start,0;
+	set $team1_mem,0;
+	set $team2_mem,0;
+	set $@party_team1,0;
+	set $@party_team2,0;
+	gvgoff $@arena_map$;
+
+	    	    setcell "guild_vs3",19,55,19,44,cell_walkable,0;
+                    setcell "guild_vs3",80,55,80,44,cell_walkable,0;
+		    enablenpc "WALL#41";
+		    enablenpc "WALL#42";
+		    enablenpc "WALL#43";
+		    enablenpc "WALL#44";
+		    enablenpc "WALL#45";
+		    enablenpc "WALL#46";
+		    enablenpc "WALL#47";
+		    enablenpc "WALL#48";
+		    enablenpc "WALL#49";
+		    enablenpc "WALL#50";
+		    enablenpc "WALL#51";
+		    enablenpc "WALL#52";
+		    enablenpc "WALL#53";
+		    enablenpc "WALL#54";
+		    enablenpc "WALL#55";
+		    enablenpc "WALL#56";
+		    enablenpc "WALL#57";
+		    enablenpc "WALL#58";
+		    enablenpc "WALL#59";
+		    enablenpc "WALL#60";
+		    enablenpc "WALL#61";
+		    enablenpc "WALL#62";
+		    enablenpc "WALL#63";
+		    enablenpc "WALL#64";
+
+	stopnpctimer;
+	sleep2 10000;
+	areawarp $@arena_map$,12,87,87,12,$@starting_map$,$@starting_mapX,$@starting_mapY;
+	end;
+	
+}
+
+function	script	StartEvent	{
+		enablenpc "PartyReg";
+		set $@evt_start,1;
+		announce "The Battle has begun.",bc_all;
+		return;
+}
+
+function	script	EndEvent	{
+		if (!$@Battle_Start && $@party_team<2) {
+			setcell $@arena_map$,80,55,80,44,cell_walkable,1;
+			setcell $@arena_map$,19,55,19,44,cell_walkable,1;
+			donpcevent "PvP_Func::OnEndNoWin";
+		} else if ($team2_mem<$team1_mem) {
+			setcell $@arena_map$,80,55,80,44,cell_walkable,1;
+			setcell $@arena_map$,19,55,19,44,cell_walkable,1;
+			donpcevent "PvP_Func::OnEndTeam1Win";
+		} else if ($team2_mem<$team1_mem) {
+			setcell $@arena_map$,80,55,80,44,cell_walkable,1;
+			setcell $@arena_map$,19,55,19,44,cell_walkable,1;
+			donpcevent "PvP_Func::OnEndTeam2Win";
+		} else if ($team2_mem==$team1_mem || $team1_mem==$team2_mem) {
+			setcell $@arena_map$,80,55,80,44,cell_walkable,1;
+			setcell $@arena_map$,19,55,19,44,cell_walkable,1;
+			donpcevent "PvP_Func::OnEndDraw";
+		} else {
+			setcell $@arena_map$,80,55,80,44,cell_walkable,1;
+			setcell $@arena_map$,19,55,19,44,cell_walkable,1;
+			donpcevent "PvP_Func::OnEndNoWin";
+		}
+		end;
+
+}
+
+////////////////////////////////////////////////////////////////////////////
+////RWC 3///////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+    guild_vs3,19,55,0	script	WALL#41	1905,{
+    }
+    guild_vs3,19,54,0	duplicate(WALL#41)	WALL#42	1905
+    guild_vs3,19,53,0	duplicate(WALL#41)	WALL#43	1905
+    guild_vs3,19,52,0	duplicate(WALL#41)	WALL#44	1905
+    guild_vs3,19,51,0	duplicate(WALL#41)	WALL#45	1905
+    guild_vs3,19,50,0	duplicate(WALL#41)	WALL#46	1905
+    guild_vs3,19,49,0	duplicate(WALL#41)	WALL#47	1905
+    guild_vs3,19,48,0	duplicate(WALL#41)	WALL#48	1905
+    guild_vs3,19,47,0	duplicate(WALL#41)	WALL#49	1905
+    guild_vs3,19,46,0	duplicate(WALL#41)	WALL#50	1905
+    guild_vs3,19,45,0	duplicate(WALL#41)	WALL#51	1905
+    guild_vs3,19,44,0	duplicate(WALL#41)	WALL#52	1905
+
+    guild_vs3,80,55,0	duplicate(WALL#41)	WALL#53	1905
+    guild_vs3,80,54,0	duplicate(WALL#41)	WALL#54	1905
+    guild_vs3,80,53,0	duplicate(WALL#41)	WALL#55	1905
+    guild_vs3,80,52,0	duplicate(WALL#41)	WALL#56	1905
+    guild_vs3,80,51,0	duplicate(WALL#41)	WALL#57	1905
+    guild_vs3,80,50,0	duplicate(WALL#41)	WALL#58	1905
+    guild_vs3,80,49,0	duplicate(WALL#41)	WALL#59	1905
+    guild_vs3,80,48,0	duplicate(WALL#41)	WALL#60	1905
+    guild_vs3,80,47,0	duplicate(WALL#41)	WALL#61	1905
+    guild_vs3,80,46,0	duplicate(WALL#41)	WALL#62	1905
+    guild_vs3,80,45,0	duplicate(WALL#41)	WALL#63	1905
+    guild_vs3,80,44,0	duplicate(WALL#41)	WALL#64	1905
+
+function	script	party_has_duplicate_job	{
+        set .@party_id, getarg( 0, getcharid(1) );
+
+        // Need to have a party.
+        if ( !.@party_id )
+        {
+                        return -1;
+        }
+
+        // Loading party members variables
+        getpartymember .@party_id, 1;
+        getpartymember .@party_id, 2;
+
+        // Keep rid attached.
+        set .@rid, playerattached();
+
+
+        // Check all members
+        for ( set .@i,0; .@i<$@partymembercount; set .@i, .@i+1 )
+        {
+
+                // Online user
+                if ( isloggedin( $@partymemberaid[.@i], $@partymembercid[.@i]) )
+                {
+                        // Attach the member to access "Class"
+                        attachrid( $@partymemberaid[.@i] );
+                        if ( compare( .@tmp_class$ + "|", "|" + Class + "|" ) )
+                        {
+                                if ( .@rid )
+                                        attachrid(.@rid);
+                                else
+                                        detachrid;
+                                return 1;
+                        }
+                        set .@tmp_class$, .@tmp_class$ + "|" + Class;
+                }
+
+                // Offline user (use sql)
+                else
+                {
+                        set .@sql$, .@sql$ + ( .@sql_i ? "OR " : "" ) + "`char_id`='" + $@partymembercid[.@i] + "' ";
+                        set .@sql_i, .@sql_i + 1;
+                }
+        }
+
+        // SQL for offline users
+        if ( getstrlen(.@sql$) )
+        {
+                // get class from offline members
+                set .@count, query_sql("SELECT `class` FROM `char` WHERE " + .@sql$, .@class );
+
+                // Check the class.
+                for ( set .@i, 0; .@i<.@count; set .@i, .@i+1 )
+                {
+                        if ( compare( .@tmp_class$ + "|", "|" + .@class[.@i] + "|" ) )
+                        {
+                                if ( .@rid )
+                                        attachrid(.@rid);
+                                else
+                                        detachrid;
+                                return 1;
+                        }
+                        set .@tmp_class$, .@tmp_class$ + "|" + .@class[.@i];
+                }
+        }
+
+
+        // Restore RID.
+        if ( .@rid )
+                attachrid(.@rid);
+        else
+                detachrid;
+
+        return 0;
+}
+
+-	script	RWC	-1,{
+    // Settings
+    // GM LVL Allowed
+    set .gmlvl,99;
+
+    OnWhisperGlobal:
+            if(getgmlevel() <= .gmlvl) goto N_Authority;
+		switch(select("Reset:")) {
+	    case 1:
+		stopnpctimer;
+		gvgoff $@arena_map$;
+		set $@party_team,0;
+		set $@Battle_Start,0;
+		set $team1_mem,0;
+		set $team2_mem,0;
+		set $@party_team1,0;
+		set $@party_team2,0;
+		set $@evt_start,0;
+		dispbottom "Reset OK.";
+		close;
+
+    N_Authority:
+            dispbottom "You cannot use this commands anymore.";
+            close;
+}
+}

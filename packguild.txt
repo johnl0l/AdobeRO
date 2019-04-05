@@ -1,0 +1,525 @@
+//========= Maked by Mclzeszen™ ==============//###############################################
+//========Nome:===============================//###############################################
+//      PackGuild								###############################################
+//========Versão:=============================//###############################################
+//          v1.0								###############################################
+//====Todos os direitos reservados® Cronus====//###############################################
+///Não remova os créditos=====================//###############################################
+///############################################################################################
+morocc,149,104,3	script	Pack Guild	404,{
+set .npc$,"^9EB449[ PACK GUILD ]^000000";
+
+
+set .@max,70; //Itens no inventório // se tiver mais que esta quantidade não pega o pack
+///Itens dados às guilds liberadas
+setarray .@packitem[0],607,608,609,610;  //modifique o id dos itens e pode acrescentar mais se quizer
+///Fim itens
+
+query_sql "SELECT `char_id`,`guild_id` FROM `guild_pack_take` WHERE `char_id` = '"+getcharid(0)+"'",.@RID,.@GIDT;
+query_sql "SELECT `guild_id`,`name`,`master`,`permissao`,`qtd_itens` FROM `guild_pack` WHERE `guild_id` = '"+getcharid(2)+"'",.GIDC,.NAMEC$,.MASTERC$,.PERMC,.QTD;
+//Condições
+if(getgmlevel() > 90) goto L_GM;  //Se ADM
+if(agitcheck()) goto L_WOE;    //Se gerra em andamento
+if(!getcharid(2)) goto NOGUILD; //Se sem guild
+if(!.PERMC) goto NO_PERM;  //Se não permitido pelo adm
+if((.PERMC == 1) && (.MASTERC$ != strcharinfo(0))) goto NO_PERM2; //Se permitido pelo adm
+if(.MASTERC$ == strcharinfo(0)) goto MENU_MASTER; //Se for dono da guild
+
+if(.PERMC == 2) goto PLAYER;
+///====================================Entrada para players=================================///
+
+
+///================Menu Player==================================///
+PLAYER:
+mes .npc$;
+mes "Você deseja pegar seu Pack Guild agora?";
+if(select("SIM:NÃO")==2) goto L_FIM;
+goto L_PACK;
+
+
+
+
+
+
+
+///================Menu Guild-Master==================================///
+
+
+	MENU_MASTER:
+		mes .npc$;
+		mes "Oi "+strcharinfo(0)+". Deve dar trabalho gerenciar uma guild, não é mesmo?";
+		mes "Por isso que estou aqui, eu vou ajudar sua guild da melhor forma possivel.";
+		mes "Temos alguns itens aqui para dar um pouco mais de tranquilidade ao seu clã.";
+		next;
+		mes .npc$;
+		mes "Você tem direito à um menu, já que é dono da guild ^ff0000"+.NAMEC$+"^000000";
+		mes "O que quer fazer?";
+		next;
+		switch(select("Permissão:Pegar meus itens:Ver itens:Quem pegou:Sair")){
+		
+		
+///================Procedimento para o Guild-Master dar permissão aos membros==================================///		
+			case 1:
+				mes .npc$;
+				mes "Bem, aqui você terá de dar permissão aos seus membros.";
+				mes "^ff0000ATENÇÃO!^000000";
+				mes "^00ffccDê permissão aos seus membros em horário que relamente necessitar.";
+				mes "Pois após isso, não poderá mais reverter e retirar a sua permissão, e seus membros não poderão pegar itens mais de uma vêz.^000000";
+				mes "^ff0000Lei 1:^000000";
+				mes "Sempre que todos os seus membros pegarem os itens inclusive você só poderão pegar novamente após uma nova permissão de ADM ou GM.";
+				mes "^ff0000Lei 2:^000000";
+				mes "Não funcionaremos em horários de guerra, se tiver querendo dar itens aos seus membros para a guerra, dê antes de começar a batalha.";
+				mes "^ff0000Lei 3:^000000";
+				mes "Se houver convocação de novos membros após o GM/ADM tiver cadastrado sua guild.";
+				mes "Peça à um membro da staff que atualize o cadastro de sua guild.";
+				mes "^ff0000Todas as leis estão ai, e a Staff do servidor não se reponsabilizar por perdas, sobre o pack guild^000000";
+				next;
+				mes .npc$;
+				mes "Após ter lido todas as leis.";
+				mes "Você tem certeza que quer dar permissão aos seus membros para pegar o pack guild?";
+					if(select("Sim. Já quero dar permissão:Não. Vou esperar o tempo certo") == 2) goto MENU_MASTER;
+						next;
+						mes .npc$;
+						mes "Ok.";
+						mes "Vou dar a permissão aos seus membros";
+						mes "Faça bom proveito do pack guild e espero vê lo por aqui novamente.";
+						next;
+						query_sql "UPDATE `guild_pack` SET `permissao` = '2' WHERE `guild_id` = '"+getcharid(2)+"'";
+						mes .npc$;
+						mes "Permissão dada com sucesso.";
+						close;
+			
+			case 2:
+				goto L_PACK;
+				
+				
+				
+///================Itens cadastrados para dar com o pack guild==============================///				
+			case 3:
+			mes .npc$;
+			mes "^00ff00Estes são os itens cadastrados^000000";
+			for(set .b,0;.b < getarraysize(.@packitem);set .b,.b+1){
+			mes "Item "+.b+1+": ^ff0000"+getitemname(.@packitem[.b])+"^000000";
+			}
+			close;
+				
+				
+				
+///================Lista jogadores que já pegaram o pack==================================///
+			
+			
+			
+			case 4:
+			query_sql "SELECT `a`.`name` FROM `char` AS a INNER JOIN `guild_pack_take` AS b ON `a`.`char_id` = `b`.`char_id` WHERE `b`.`guild_id` = '"+getcharid(2)+"'",.@CharN$;
+				mes .npc$;
+				mes "Todos os membros de sua guild que pegaram o Pack.";
+				for(set .c,0;.c < getarraysize(.@CharN$); set .c,.c+1){
+				mes .c+1+": "+.@CharN$[.c];
+				}
+			close;
+			
+			case 5:
+			goto L_FIM;
+		
+		
+		} ///Final menu Guild-Master
+		
+
+
+
+
+///================Procedimento para dar p pack para um jogador=============================///
+
+				L_PACK:
+				if(.PERMC != 2) goto NO_PERM3;
+				mes .npc$;
+				mes "Cuidado, quando você pegar seu pack, só poderá pegar novamente com a autorização de um GM.";
+				mes "Você quer realmente pegar seu pack?";
+				next;
+					if(select(" SIM : NÃO ") == 2 ) goto L_FIM;
+					if(.@RID) goto L_TAKED;
+				mes .npc$;
+				mes "Ok vou lhe dar agora os itens do pack guild.";
+				next;
+				getinventorylist;
+						if((@inventorylist_count >= .@max) || (Weight > MaxWeight*5/10)){
+						mes .npc$;
+						mes "Você parece estar acima do peso máximo permitido!";
+						mes "Vai liberar um pouco essa bagaça...";
+						close;
+						}
+				for(set .a,0;.a < getarraysize(.@packitem);set .a,.a+1){
+					getitem .@packitem[.a],.QTD;
+				}
+				query_sql "INSERT INTO `guild_pack_take` (`guild_id`,`char_id`) VALUES ("+getcharid(2)+","+getcharid(0)+")";
+				mes .npc$;
+				mes "Ai está seus itens...";
+				mes "Faça bom uso.";
+				close;
+				
+				
+///================Procedimento para dar p pack para um jogador=============================///
+
+
+
+
+
+
+///==================================PARTE GM/ADM===========================================///
+	///Configuração do ADM
+	L_GM:
+		mes .npc$;
+		mes "É bom vê lo novamente "+strcharinfo(0);
+		mes "O que deseja?";
+		if(select("Configuração:Sair") == 2) goto L_SAIRGM;
+		next;
+		
+		L_MENU:
+		mes .npc$;
+		mes "O que você quer fazer?";
+		next;
+		switch(select("Registrar guild:Permições das guildas:Renovar Permissão:Excluir uma guild:Limpar tabela:Sair")){
+			
+///================================Registrando as guilds==================================///			
+
+			case 1:
+			mes .npc$;
+			mes "Digite o nome ou parte do nome da ^00ff00guild^000000 para eu pesquizar tudo sobre ela.";
+			input .guildname$;
+			next;
+			query_sql "SELECT `guild_id`,`name`,`guild_lv`,`skill_point` FROM `guild` WHERE `name` like '%"+.guildname$+"%'",.@GID,.@NAME$,.@GLVL,.@SKILLP;
+			///====================================================================================================
+			if(getarraysize(.@GID) > 1){ //Se for encontrado mais de um nome com os parametros digitados volta
+				mes .npc$;
+				mes "Foi encontrado mais de um nome de guild com este parametro.";
+				mes "Por favor digite novamente. Seja mais expecifico, por favor!";
+				close;
+				
+			}
+			///=====================================================================================================
+			if(!.@GID){  //Se não for encontrado nenhum nome parecido volta
+				mes .npc$;
+				mes "Eu não encontrei nada. Verifique se errou algo não precisa digitar o nome todo.";
+				mes "Por favor digite novamente. Seja mais expecifico, por favor!";
+				close;
+			}
+			///=====================================================================================================
+			query_sql "SELECT count(*) FROM `guild_member` WHERE `guild_id` IN (SELECT `guild_id` FROM `guild` WHERE `guild_id` = '"+.@GID+"')",.@QTM;
+			mes .npc$;
+			mes "Encontrei alguma coisa aqui.";
+			next;
+			mes .npc$;
+			mes "Eis os dados da guild";
+			mes "======================";
+			mes "Guild ID: ^ff0000"+.@GID+"^000000";
+			mes "Nome: ^ff0000"+.@NAME$+"^000000";
+			mes "Nome Master: ^ff0000"+getguildmaster(.@GID)+"^000000";
+			mes "ID Master: ^ff0000"+getguildmasterid(.@GID)+"^000000";
+			mes "Membros: ^ff0000"+.@QTM+"^000000";
+			mes "Level: ^ff00000"+.@GLVL+"^000000";
+			mes "Pontos Skill: ^ff0000"+.@SKILLP+"^000000";
+			next;
+			mes .npc$;
+			mes "Você deseja incluir esta guild na lista do PACK?";
+			if(select("Sim vou cadastrar.:Não vou incluir esta.") == 2 ) goto L_FIM;
+			next;
+				AGAIN1:
+					mes .npc$;
+					mes "Qual a quantidade de cada item, vai dar ára esta guild?";
+					input .@qtdItens;
+					next;
+						if(.@qtdItens <= 4){
+						mes "^ff0000Deixa de ser mesquinho.";
+						mes "Me recuso a cadastrar esta guild.";
+						mes "Numero minimo de cada itens é ^0000005.";
+						mes "Esta é a quantidade de cada item para cada membro do clã.";
+						next;
+						goto AGAIN1;
+						}
+						
+						query_sql "SELECT `guild_id` FROM `guild_pack` WHERE `guild_id` = '"+.@GID+"'",.@GID2;
+						if(.@GID2){
+							mes .npc$;
+							mes "Está guild já está cadastrada, eu irei apenas atualizar...";
+							mes "Nosso banco de dados";
+							next;
+							query_sql "UPDATE `guild_pack` SET `master` = '"+getguildmaster(.@GID)+"',`qtd_membros` = '"+.@QTM+"', `qtd_itens` = '"+.@qtdItens+"' WHERE `guild_id` = '"+.@GID+"'";
+						
+							mes .npc$;
+							mes "Banco de dados atualizado.";
+							mes "Talvêz ainda precise dar permissão para esta guild.";
+							mes "Até logo!";
+							close;						
+						}
+						
+			query_sql "INSERT INTO `guild_pack` (`guild_id`,`name`,`master`,`qtd_membros`,`qtd_itens`) VALUES ("+.@GID+",'"+.@NAME$+"','"+getguildmaster(.@GID)+"',"+.@QTM+","+.@qtdItens+")";
+			mes .npc$;
+			mes "Eu inclui a guild na lista do pack.";
+			mes "Isso não significa que a guild já pode pegar os itens.";
+			mes "Você ainda precisa dar a permição.";
+			mes "Vejo você depois.";
+			close;
+			
+
+			
+///================================Permissões das guilds=============================================///
+			case 2:
+			L_PERMI:
+			query_sql "SELECT `guild_id`,`name`,`permissao` FROM `guild_pack`",.@guid,.@nome$,.@perm;
+			if(!.@guid){
+			mes .npc$;
+			mes "Sinto muito, não tem guilds cadastradas no pack.";
+			close;
+			}
+			mes .npc$;
+			mes "Escolha uma das guilds para dar permissão";
+			mes "¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨";
+			for(set .i,0; .i<getarraysize(.@guid); set .i,.i+1){
+			if (.@perm){set @permissao$,"^1431C9SIM^000000";}else{set @permissao$,"^ff0000NÃO^000000";}
+			mes "Guild "+.i+1;
+			mes "ID:[ ^0708F8"+.@guid[.i]+"^000000 ]";
+			mes "NOME:[ ^00ffcc"+.@nome$[.i]+"^000000 ]";
+			mes "PERMITIDO:[ "+@permissao$[.i]+" ]";
+			mes "--------------------------";
+			}
+			mes "¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨";
+			mes "^62585EDigite o id da Guild para manusear a permissão.";
+			input .@id;
+			next;
+			query_sql "SELECT `guild_id`,`name`,`permissao` FROM `guild_pack` WHERE `guild_id` = '"+.@id+"'",.@guid2,.@nome2$,.@perm2;
+				if(!.@guid2){
+					mes .npc$;
+					mes "Não encontrei esta guild, tente novamente.";
+					close;
+				}
+				if(.@perm2 >= 1){
+					query_sql "UPDATE `guild_pack` SET `permissao` = '0' WHERE `guild_id` = '"+.@id+"'";
+					mes .npc$;
+					mes "Você acaba de retirar a permissão dada à esta guild...";
+					mes "Deseja continuar a manusear as permissões?";
+					if(select("Tenho que continuar:Vou sair agora") == 2)goto L_FIM;
+					close2;
+					goto L_PERMI;
+				}
+			query_sql "UPDATE `guild_pack` SET `permissao` = '1' WHERE `guild_id` = '"+.@id+"'";
+			mes .npc$;
+			mes "Permissão dada com sucesso.";
+			next;
+			mes .npc$;
+			mes "BDC553Deseja sair ou continuar a dar permissões?^^000000";
+			if(select("Tenho que continuar:Vou sair agora") == 2)goto L_FIM;
+			close2;
+			goto L_PERMI;
+			
+			
+///================================Renovar permissão de guild=============================================///			
+			case 3:
+			AGAIN:
+			mes .npc$;
+			mes "Vou renovar a permissão de uma guild.";
+			mes "Só preciso que escreva o nome ou uma parte do nome da guild pra eu renovar.";
+			next;
+			input .@nenew$;
+			query_sql "SELECT `guild_id`,`name`,`permissao` FROM `guild_pack` WHERE `name` like '%"+.@nenew$+"%'",.RGID,.RNAM$,.RPER;
+			query_sql "SELECT `guild_id`,`name`,`guild_lv`,`skill_point` FROM `guild` WHERE `name` like '%"+.@nenew$+"%'",.@GID3,.@NAME3$,.@GLVL3,.@SKILLP3;
+			if(!.RGID){
+				mes .npc$;
+				mes "Sinto muito... Eu não encontrei nada usando este parâmetro.";
+				mes "Você pode tentar novamente ou verificar se ralmente existe esta guilda cadastrada.";
+				next;
+				if(select("Vou tentar novamente:Sair") == 2)goto L_FIM;
+				goto AGAIN;
+			}
+			if(getarraysize(.RGID) >= 2){
+				mes .npc$;
+				mes "Eu encontrei mais de um registro com este parâmetro...";
+				mes "Por favor repita o procedimento.";
+				next;
+				goto AGAIN;			
+			}
+			if(.RPER == 1){SET .p$,"Administrador";}else if(.RPER == 2){SET .p$,"Guild-Master";}else{SET .p$,"NENHUMA";}
+			mes .npc$;
+			mes "Encontrei o registro da guild.";
+			mes "^ff00ccDADOS DA TABELA PACK GUILD^000000";
+			mes "ID:[ ^0708F8"+.RGID+"^000000 ]";
+			mes "NOME:[ ^00ffcc"+.RNAM$+"^000000 ]";
+			mes "PERMISSÃO:[ "+.p$+" ]";			
+			next;
+			
+			query_sql "SELECT count(*) FROM `guild_member` WHERE `guild_id` IN (SELECT `guild_id` FROM `guild` WHERE `guild_id` = '"+.@GID3+"')",.@QTM3;
+			mes .npc$;
+			mes "^ff00ccDADOS REAIS DA GUILD^000000";
+			mes "Guild ID: ^ff0000"+.@GID3+"^000000";
+			mes "Nome: ^ff0000"+.@NAME3$+"^000000";
+			mes "Nome Master: ^ff0000"+getguildmaster(.@GID3)+"^000000";
+			mes "ID Master: ^ff0000"+getguildmasterid(.@GID3)+"^000000";
+			mes "Membros: ^ff0000"+.@QTM3+"^000000";
+			mes "Level: ^ff00000"+.@GLVL3+"^000000";
+			mes "Pontos Skill: ^ff0000"+.@SKILLP3+"^000000";
+			next;
+			
+			mes .npc$;
+			mes "Se optar por renovar todos os dados da guild será atualizado também.";
+			mes "Deseja realmente renovar a permissão desta guild?";
+			if(select("Sim, vou renovar:Não, os dados não me animaram") == 2) goto L_SAIRGM;
+			next;
+			mes .npc$;
+			mes "Digite a quantidade de cada item para atualizar a quantidade.";
+			input .@qtdItens3;
+			query_sql "UPDATE `guild_pack` SET `master` = '"+getguildmaster(.@GID3)+"',`qtd_membros` = '"+.@QTM3+"', `qtd_itens` = '"+.@qtdItens3+"',`permissao` = '1' WHERE `guild_id` = '"+.@GID3+"'";
+			query_sql "DELETE FROM `guild_pack_take` WHERE `guild_id` = '"+.@GID3+"'";
+			next;
+			mes .npc$;
+			mes "Todos os dados da guild fora renovados.";
+			mes "A guild já está com sua permissão e já pode usar o pack.";
+			close;
+			
+
+///================================Excluir guilds do pack guild=============================================///			
+			case 4:
+			AGAIN2:
+			mes .npc$;
+			mes "Tem certeza que quer excluir alguma guild da lista do pack?";
+			next;
+			if(select("Tenho que excluir:Foi mal click errado") == 2) goto L_GM;
+			query_sql "SELECT `guild_id`,`name`,`permissao` FROM `guild_pack`",.@guid,.@nome$,.@perm;
+			if(!.@guid){
+			mes .npc$;
+			mes "Sinto muito, não tem guilds cadastradas no pack.";
+			close;
+			}
+			mes .npc$;
+			mes "Escolha uma das guilds para excluir";
+			mes "¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨";
+			for(set .i,0; .i<getarraysize(.@guid); set .i,.i+1){
+			if (.@perm){set @permissao$,"^1431C9SIM^000000";}else{set @permissao$,"^ff0000NÃO^000000";}
+			mes "Guild "+.i+1;
+			mes "ID:[ ^0708F8"+.@guid[.i]+"^000000 ]";
+			mes "NOME:[ ^00ffcc"+.@nome$[.i]+"^000000 ]";
+			mes "PERMITIDO:[ "+@permissao$[.i]+" ]";
+			mes "--------------------------";
+			}
+			mes "¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨";
+			mes "^62585EDigite o id da Guild excluir.";
+			input .@id2;
+			next;
+			query_sql "SELECT `guild_id`,`name`,`permissao` FROM `guild_pack` WHERE `guild_id` = '"+.@id2+"'",.@guid3,.@nome3$,.@perm3;
+				if(!.@guid3){
+					mes .npc$;
+					mes "Não encontrei esta guild, tente novamente.";
+					close;
+				}
+				if(.@guid3){
+					mes .npc$;
+					mes "Vou perguntar novamente.";
+					mes "^FF0000VOCÊ TEM CERTEZA QUE QUER EXCLUIR ESTA GUILDA DO PACK?^000000";
+					next;
+					if(select("Já falei que vou excluir:Vou conferir novamente") == 2) goto AGAIN2;
+					query_sql "DELETE FROM `guild_pack` WHERE `guild_id` = '"+.@id2+"'"; //delete guild do pack guild
+					mes .npc$;
+					mes "A guilda "+getguildname(.@id2)+" foi deletada com sucesso.";
+					mes "E não poderá mais receber o pack.";
+					mes "^BDC553Deseja sair ou continuar brincando de excluir?^000000";
+					if(select("Tenho que continuar:Vou sair agora") == 2)goto L_FIM;
+					close2;
+					goto AGAIN2;
+					
+				}
+				
+			
+			
+///================================Excluir toda a tabela do pack guild=============================================///				
+			case 5:
+			emotion 79,0;
+			mes .npc$;
+			mes "Tem certeza que quer excluir toda a tabela do pack guild?";
+			next;
+			if(select("Tenho que excluir:Foi mal click errado") == 2) goto L_GM;
+			
+			mes .npc$;
+			mes "^FF0000SE VOCÊ FIZER ISSO TODA A TABELA DO PACK GUILD SERÁ LIMPA E NINGUÉM MAIS NENHUMA GUILD PODERÁ PEGAR SEU PACK...";
+			mes "VAI MESMO DESCADASTRAR TODAS AS GUILDS DO PACK GUILD?";
+			mes "PENSE NO TRABALHO PARA RECADASTRAR...^000000";
+			next;
+			if(select("Estou ciente de tudo e vou excluir:Eu não vou excluir")== 2) goto L_GM;
+			mes .npc$;
+			mes "Espere um seg estou limpando a tabela.";
+			next;
+			query_sql "DELETE FROM `guild_pack`";
+			query_sql "DELETE FROM `guild_pack_take`";
+			mes .npc$;
+			mes "A tabela de guild pack foi limpa...";
+			mes "Agora não tem como voltar atráz!!!";
+			emotion 79,0;
+			close;
+			
+			case 6:
+			mes .npc$;
+			mes "Adeus...";
+			close;
+			
+		}
+///====================================FIM GM/ADM===============================================///
+		
+		L_WOE:
+		mes .npc$;
+		mes "Me disculpe eu não trabalho em horários de guerra.";
+		close;
+
+		NOGUILD:
+		mes .npc$;
+		mes "Você precisa estar em uma guild para usar este serviço.";
+		close;
+		
+		L_SAIRGM:
+		mes .npc$;
+		mes "Você só pode mexer neste serviço em configuração. Vcoê é um membro da staff e não tem porque usar os serviços.";
+		close;
+		
+		NO_PERM:
+		mes .npc$;
+		mes "Sua guilda ainda não tem permissão para pegar o pack guild.";
+		mes "Peça para o Guild-Master falar com um GM ou Administrador.";
+		close;
+		
+		NO_PERM2:
+		mes .npc$;
+		mes "Você ainda não tem permissão para pegar o pack guild.";
+		mes "Peça ao seu Guild-Master, que libere os itens...";
+		close;
+		
+		NO_PERM3:
+		mes .npc$;
+		mes "Você precisa da permissão do Guild-Master para pegar o pack guild";
+		mes "Se você for o dono da guild, vá no menu e dê a permissão!";
+		close;
+		
+		L_TAKED:
+		mes .npc$;
+		mes "Você já pegou seu pack, terá que esperar até a proxima autorização do GM/ADM";
+		close;
+
+		L_FIM:
+		mes .npc$;
+		mes "Até logo...";
+		close;
+		
+
+
+} ///Final NPC .. .. .. . . .
+
+
+//create table `guild_pack`(
+//`guild_id` int(11) not null default '0',
+//`name` varchar(32) not null,
+//`master` varchar(32) not null,
+//`qtd_membros` int(11) not null default '0',
+//`permissao` int(11) not null default '0',
+//`qtd_itens` int(11) not null default '0'
+//)
+
+
+//create table `guild_pack_take`(
+//`guild_id` int(11) not null default '0',
+//`char_id` int(11) not null default '0'
+//)

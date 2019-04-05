@@ -1,0 +1,72 @@
+// == Release 0.1 - Norm Hmuryj(Melbou)
+
+prontera,164,162,4	script	Party Clone Warper	100,{
+	mes "Hey, you want to go to the battle arena clones party?";
+	next;
+	if ( select( "Yes:No" ) == 2 ) close;
+	if ( !getcharid(1) ) {
+		mes "Sorry, but you are not in a party...";
+		close;
+	}
+	else if ( getmapusers("guild_vs3") > 0 ) {
+		mes "In the arena already have players come back later";
+		close;
+	}
+	warpparty "guild_vs3",0,0,getcharid(1);
+	doevent "PartyClone::OnEvent";
+}
+
+guild_vs3,0,0,0	script	PartyClone	-1,{
+OnEvent:
+	killmonsterall .map$;
+	announce "Event will start in 20 seconds",1;
+	set .partyid, getcharid(1);
+	sleep 15000;
+	mapannounce .map$,"5",0;
+	sleep 1000;
+	mapannounce .map$,"4",0;
+	sleep 1000;
+	mapannounce .map$,"3",0;
+	sleep 1000;
+	mapannounce .map$,"2",0;
+	sleep 1000;
+	mapannounce .map$,"1",0;
+	sleep 1000;
+	getpartymember .partyid,1;
+	getpartymember .partyid,2;
+	set .@partycount, $@partymembercount;
+	copyarray .@partyaid, $@partymemberaid, .@partycount;
+	copyarray .@partycid, $@partymembercid, .@partycount;
+	if ( !.@partycount ) end;
+	for ( set .@i,0; .@i < .@partycount; set .@i, .@i +1 ) {
+		if ( !isloggedin(.@partyaid[.@i]) ) continue;
+		attachrid .@partyaid[.@i];
+		clone .map$,0,0,"PartyClone::OnThisDie",.@partycid[.@i];
+		set .count, .count +1;
+	}
+	mapannounce .map$,"We have "+ .count +" clone(s)",0;
+	end;
+OnThisDie:
+	announce "Clone was defeated",1;
+	if ( getcharid(1) != .partyid )
+		announce "Pretender !!! his name"+ strcharinfo(0) +" !!",1;
+	set .count, .count -1;
+	if ( .count > 0 ) end;
+	announce getpartyname(.partyid) +" Party ruled all the clones of a clone of the arena!",0;
+	getpartymember .partyid,1;
+	set .@partycount, $@partymembercount;
+	copyarray .@partyaid, $@partymemberaid, .@partycount;
+	for ( set .@i,0; .@i < .@partycount; set .@i, .@i +1 ) {
+		if ( !isloggedin(.@partyaid[.@i]) ) continue;
+		attachrid .@partyaid[.@i];
+		getmapxy .@map$, .@x, .@y, 0;
+		if ( .@map$ != "guild_vs3" && .@map$ != "guild_vs3.gat" ) continue; // make sure the player in that map
+		if ( hp == 1 ) continue; // make sure is alive to receive items
+		getitem 7227,5;
+	}
+	sleep 5000;
+	warpparty "prontera",154,187,.partyid;
+	end;
+OnInit:
+	getmapxy .map$, .@x, .@y, 1;
+}

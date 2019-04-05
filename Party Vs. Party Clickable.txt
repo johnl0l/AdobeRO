@@ -1,0 +1,106 @@
+
+prontera,155,181,5	script	Sample	757,{
+mes "I am Party Match Manager.";
+mes "Party Leader may create a PVP Match here.";
+next;
+switch( select( ( .Created )?"Join Game[ ^FF0000"+.No+"vs"+.No+"^000000 ]":"Create Game",
+				( ( getgmlevel() >= .GMLevel || getcharid(0) == getpartyleader( getcharid(1),2 ) ) && .Created )?"^FF0000Remove Game^000000":"" )){
+
+Case 1:
+	switch( .Created ){
+		Case 0:
+			getpartymember getcharid(1),1;
+			if( getcharid(0) != getpartyleader( getcharid(1),2 ) || !getcharid(1) ){
+				mes "Sorry, but only a ^FF0000Party Leader^000000 can register a game here.";
+			}else{
+				mes "How many Players for each Party Team ?";
+				mes "Min = 1    Max = "+$@partymembercount;
+				mes "Because you only have "+$@partymembercount+" member right now.";
+				next;
+				input .No,1,$@partymembercount;
+				announce "[ "+.No+"vs"+.No+" Party Match ] created by "+strcharinfo(0)+", you may register to join.",0;
+				set .Team[0],getcharid(1);
+				set .Created,1;
+			}
+			close;
+		Case 1:
+			if( !.Team[1] && getcharid(1) == .Team[0] ){
+				mes "Please wait for ^FF0000Team 2^000000 to Register.";
+			}else{
+				if( getcharid(0) != getpartyleader( getcharid(1),2 ) || !getcharid(1) ){
+					mes "Sorry, but only a ^FF0000Party Leader^000000 can register a game here.";
+					close;
+				}
+				getpartymember getcharid(1),1;
+				if( $@partymembercount < .No ){
+					mes "You didnt have enough of "+.No+" Member for the Game.";
+					mes "You only have "+$@partymembercount+" Member.";
+				}else{
+					mes "Confirm Registration ?";
+					if( select("Yes:No") == 1 ){
+						set .Team[1],getcharid(1);
+						set .Created,2;
+						setarray .Members[0],.No,.No;
+						for( set .@party,0; .@party < 2; set .@party,.@party + 1 ){
+							getpartymember .Team[.@party],1;
+							for( set .@i,0; .@i < .No; set .@i,.@i + 1 )
+								warpchar .Map$,0,0,$@partymembercid[.@i];
+						}
+						end;
+					}
+				}
+			}
+			close;
+		Case 2:
+			mes "^FF0000The Game is in Progress.^000000";
+			mes "[ A "+.No+" vs "+.No+" Game ]";
+			mes "Team ^FF0000"+getpartyname( .Team[0] )+"^000000 vs Team ^FF0000"+getpartyname( .Team[1] )+"^000000 .";
+			close;
+		}
+		close;
+Case 2:
+		mes "Done, Match will be terminated right away.";
+		mapannounce .Map$,"Match has been Cancelled by a GM.",0;
+		close2;
+	OnReset:
+		deletearray .Team[0],getarraysize( .Team );
+		deletearray .Members[0],getarraysize( .Members );
+		if( .Winner ){
+			getpartymember .Winner,2;
+			for( set .@i,0; .@i < .No; set .@i,.@i + 1 ){
+				getitem 512,100,$@partymemberaid[.@i];
+				getitem 607,1,$@partymemberaid[.@i];
+			}
+		set .Winner,0;
+		}
+		sleep2 2000;
+		set .Created,0;
+		mapwarp .Map$,"prontera",155,181;
+		end;
+}
+close;
+		
+OnPCDieEvent:
+OnPCLogoutEvent:
+if( strcharinfo(3) == .Map$ && .Created ){
+	for( set .@i,0; .@i < 2; set .@i,.@i + 1 )	
+		if( getcharid(1) == .Team[.@i] )
+			set .Members[.@i],.Members[.@i] - 1;
+			
+	if( .Members[0] < 1 ) set .Winner,.Team[1];
+	else if( .Members[1] < 1 ) set .Winner,.Team[0];
+			
+	if( .Winner ){
+		mapannounce .Map$,"Team "+getpartyname( .Winner )+" Win the "+.No+"vs"+.No+" Game.",0;
+		donpcevent strnpcinfo(0)+"::OnReset";
+	}else{
+		warp "prontera",155,181;
+	}
+}
+end;
+				
+OnInit:
+set .GMLevel,80;
+set .Map$,"pvp_y_1-1";
+end;
+}

@@ -1,0 +1,148 @@
+//==================================================================================================================
+//				By : IUbantot
+//				Facebook : www.facebook.com/ivantuting
+//				Outfit Stylist ver 1.0 (compatible with : rA)
+//				You may use, modify, and host all of my released scripts.
+//				You may not sell them, re-release them in any way (modified or otherwise), or remove the credits.
+//==================================================================================================================
+
+
+
+prontera,147,172,5	script	Outfit Stylist	10115,{
+	mes .npcName$;
+	
+	@eac = eaclass();
+	if(!(@eac&EAJL_THIRD)){
+		mes "Sorry I only work with 3rd jobs.";
+		close;
+	}
+	mes "Hello I am the Outfit Stylist!";
+	mes "I can offer you new outfits for a price!";
+	next;
+	opendressroom(1);
+	mes .npcName$;
+	.@menu$ = "";
+	
+		//	----------------------------------------------
+		// Is the Alternate Outfit available for this job?.
+			.@stylemax = .maxOutfit;
+			for(.@i = 0; .@i < .maxRestrict; .@i++){
+				if(Class == .outfitRestrict[.@i]){
+					.@i = .maxRestrict;
+					.@stylemax -= 1;
+				}
+			}
+		//	----------------------------------------------
+	
+	
+		//	-------------------------------------------------------
+		//	Get purchased outfits list.
+			.@curOpen = openOutfit;
+			
+			if(.@curOpen > 0){
+				setarray .@purchased[0],0,0,0;
+				for(.@i = 0; .@curOpen != 0; .@i++){
+					.@curOpen -= .outfitNum[.@i];
+						if(.@curOpen < 0){
+							.@curOpen += .outfitNum[.@i];
+						}else{
+							.@purchased[.@i] = 1;
+						}
+				}
+			}
+		//	-------------------------------------------------------
+		
+		
+	mes "Select the outfit that you want.";
+		for(.@i = 0;.@i < .@stylemax;.@i++){
+			if(.@purchased[.@i] == 1){
+				.@menu$ += .outfit$[.@i] + " - " + "<Purchased>"+ ":";
+			}else{
+			.@menu$ += .outfit$[.@i] + " - <" + .outfitPrice[.@i] +  " Cash>"+ ":";
+			}
+			if(.@i == (.@stylemax - 1)){
+				.@menu$ += "Default Outfit";
+			}
+		}
+	next;
+	.@pick = (select(.@menu$)-1);
+	
+
+		// ------------------------------------------------------
+		//	This Resets the style if Default Style is selected.
+			if((.@pick + 1) > .@stylemax ){
+				mes .npcName$;
+				mes "Oh so you prefer the original huh? well here you go!";
+				setlook  LOOK_BODY2,0;
+				close;
+			}
+		// ------------------------------------------------------
+
+		
+
+		
+		
+		for(.@i = 0;.@i < 3; .@i++){
+					if(.@purchased[.@pick] == 1){
+						mes .npcName$;
+						mes "Well thank you for using the service here you go!";
+						.@setStyle = .outfitNum[.@pick];
+						if(.@setStyle == 4){
+							.@setStyle--;
+						}
+						setlook  LOOK_BODY2,.@setStyle;
+						close;
+					}
+			}
+		
+		mes .npcName$;
+		mes "Do you really want to proceed?";
+		next;
+		if(select("Proceed...:Changed my mind!") == 2){
+			mes "Well its you're decision!";
+			close;
+		}
+	// ------------------------------------------------------
+		if(#CASHPOINTS < .outfitPrice[.@pick]){
+			mes .npcName$;
+			mes "You do not have what it takes to buy this outfit!";
+			close;
+		}
+	
+	// Change Cloths to desired.
+			mes .npcName$;
+			mes "Well thank you using the service here you go!";
+			.@setStyle = .outfitNum[.@pick];
+			if(.@setStyle == 4){
+				.@setStyle--;
+			}
+			setlook  LOOK_BODY2,.@setStyle;
+			// Character variable for purchased outfits.
+			openOutfit += .outfitNum[.@pick];
+			
+			 #CASHPOINTS -= .outfitPrice[.@pick];
+			 dispbottom "You now have " +#CASHPOINTS+ " cash points.";
+	close;
+end;
+
+OnInit:
+	.npcName$ = "[Fashionista Merry]";
+	
+	// Input the names of the outfits that is available into your client.
+	setarray .outfit$[0],"^0000FFTranscendent Outfit^000000","^00FF00Second Class Outfit^000000","^FF0000Alternate Outfit^000000";
+	setarray .outfitPrice[0],5000,5000,5000; // in cashpoints
+	setarray .outfitNum[0],4,2,1;
+	.maxOutfit = getarraysize(.outfit$);
+	
+	//list of restricted classes.
+	// As of now restricted classes are.
+	//	Rune Knight
+	//	Sorcerer
+	//	Shura
+	setarray .outfitRestrict[0],	4060,4054,4096,4067,4074,4103,4070,4077,4106;
+	.maxRestrict = getarraysize(.outfitRestrict);
+	
+	
+	
+end;
+}

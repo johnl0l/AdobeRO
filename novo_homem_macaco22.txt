@@ -1,0 +1,283 @@
+/*
+
+Em duas mob_skills_db
+//DÊ ALT+F E ESCREVA 1585, ACHE A LINHA DO MIME MONKEY.
+//SUBISTITUA E ADICIONE AS LINHAS existentes pelas linhas de baixo
+//ESSAS LINHAS SÃO AS HABILIDADES QUE O SEU HOMEM MACACO IRA SOLTAR NO EVENTO
+//------------------------------------------
+1585,Mime Monkey@NPC_HALLUCINATION,chase,207,1,500,500,5000,yes,target,always,0,,,,,,18,
+1585,Mime Monkey@SM_PROVOKE,chase,6,10,500,600,5000,no,target,always,0,,,,,,18,
+1585,Mime Monkey@NPC_HALLUCINATION,attack,207,1,500,500,5000,yes,target,always,0,,,,,,18,
+1585,Mime Monkey@SM_PROVOKE,attack,6,10,500,600,5000,no,target,always,0,,,,,,18,
+1585,Mime Monkey@NPC_POWERUP,attack,349,5,10000,0,30000,yes,self,myhpltmaxrate,30,,,,,,,
+1585,Mime Monkey@NPC_POWERUP,chase,349,5,10000,0,30000,yes,self,myhpltmaxrate,30,,,,,,,
+1585,Mime Monkey@NPC_AGIUP,attack,350,5,10000,0,30000,yes,self,myhpltmaxrate,30,,,,,,,
+1585,Mime Monkey@NPC_AGIUP,chase,350,5,10000,0,30000,yes,self,myhpltmaxrate,30,,,,,,,
+1585,Mime Monkey@NPC_PULSESTRIKE,attack,661,5,2000,0,30000,yes,self,always,0,,,,,,32,
+1585,Mime Monkey@KN_TWOHANDQUICKEN,attack,60,30,10000,0,90000,yes,self,myhpltmaxrate,30,,,,,,,
+1585,Mime Monkey@AS_SONICBLOW,attack,136,10,2000,0,5000,yes,target,always,0,,,,,,,
+1585,Mime Monkey@NPC_HOLYATTACK,attack,189,10,2000,200,5000,no,target,always,0,,,,,,,
+1585,Mime Monkey@CR_HOLYCROSS,attack,253,10,2000,0,5000,yes,target,always,0,,,,,,,
+1585,Mime Monkey@MG_THUNDERSTORM,attack,21,20,10000,200,5000,no,target,attackpcge,2,,,,,,,
+1585,Mime Monkey@NPC_EARTHQUAKE,chase,653,5,10000,200,25000,no,self,myhpltmaxrate,30,,,,,,,
+1585,Mime Monkey@NPC_EARTHQUAKE,attack,653,5,10000,200,25000,no,self,myhpltmaxrate,30,,,,,,,,
+1585,Mime Monkey@MG_FIREWALL,chase,18,10,2000,500,5000,no,target,always,0,,,,,,,
+1585,Mime Monkey@WZ_METEOR,attack,83,11,5000,3000,2000,no,target,always,0,,,,,,,
+1585,Mime Monkey@WZ_QUAGMIRE,chase,92,5,2000,0,5000,no,target,always,0,,,,,,,
+1585,Mime Monkey@WZ_METEOR,chase,83,11,5000,3000,2000,no,target,always,0,,,,,,,
+1585,Mime Monkey@HT_FREEZINGTRAP,chase,121,5,2000,0,60000,yes,around2,always,0,,,,,,,
+1585,Mime Monkey@HT_FREEZINGTRAP,attack,121,5,500,0,5000,yes,around2,always,0,,,,,,,
+1585,Mime Monkey@HT_FREEZINGTRAP,chase,121,5,2000,0,60000,yes,around2,always,0,,,,,,,
+1585,Mime Monkey@HT_FREEZINGTRAP,attack,121,5,500,0,5000,yes,around2,always,0,,,,,,,
+1585,Mime Monkey@MO_BODYRELOCATION,chase,264,1,2000,200,1000,yes,target,always,0,,,,,,,
+1585,Mime Monkey@NPC_DRAGONFEAR,chase,659,5,10000,0,30000,no,self,always,0,,,,,,6,
+1585,Mime Monkey@NPC_DRAGONFEAR,attack,659,5,2000,1000,20000,no,self,myhpltmaxrate,80,,,,,,32,
+1585,Mime Monkey@NPC_CRITICALSLASH,attack,170,1,500,500,5000,no,target,always,0,,,,,,,
+1585,Mime Monkey@NPC_FIREBREATH,attack,654,5,500,800,1,no,target,always,0,,,,,,32,
+1585,Mime Monkey@NPC_DARKBREATH,attack,202,5,500,800,1,no,target,always,0,,,,,,36,
+1585,Mime Monkey@NPC_POWERUP,attack,349,5,10000,0,1,yes,self,myhpltmaxrate,30,,,,,,36,
+1585,Mime Monkey@WZ_VERMILION,attack,85,21,2000,500,3000,no,target,always,0,,,,,,,
+1585,Mime Monkey@WZ_VERMILION,chase,85,21,2000,500,3000,no,target,always,0,,,,,,,
+1585,Mime Monkey@NPC_STUNATTACK,attack,179,5,2000,0,1,yes,target,always,0,,,,,,7,
+1585,Mime Monkey@NPC_STUNATTACK,chase,179,5,2000,0,1,yes,target,always,0,,,,,,7,
+1585,Mime Monkey@NPC_SUMMONSLAVE,attack,196,3,10000,2000,60000,no,self,slavele,0,1057,,,,,27,
+1585,Mime Monkey@NPC_SUMMONSLAVE,idle,196,3,10000,2000,60000,no,self,slavele,0,1057,,,,,27,
+1585,Mime Monkey@WZ_FIREPILLAR,idle,80,10,5000,200,2000,yes,around2,always,0,,,,,,,
+1585,Mime Monkey@WZ_FIREPILLAR,attack,80,10,2000,200,0,yes,target,always,0,,,,,,,
+1585,Mime Monkey@WZ_STORMGUST,attack,89,10,2000,3000,5,no,target,always,0,,,,,,21,
+1585,Mime Monkey@WZ_STORMGUST,chase,89,10,2000,3000,5,no,target,always,0,,,,,,21,
+1585,Mime Monkey@CG_TAROTCARD,chase,489,5,10000,0,10000,no,target,always,0,,,,,,18,
+1585,Mime Monkey@CG_TAROTCARD,attack,489,5,10000,1000,0,no,target,always,0,,,,,,18,
+1585,Mime Monkey@CG_TAROTCARD,attack,489,5,2000,1000 ,0,no,target,myhpltmaxrate,30,,,,,,18,
+1585,Mime Monkey@MO_EXTREMITYFIST,attack,271,5,10000,500,10000,no,target,always,0,,,,,,6,
+1585,Mime Monkey@MO_EXTREMITYFIST,chase,271,5,10000,500,10000,no,target,always,0,,,,,,6,
+1585,Mime Monkey@MO_EXTREMITYFIST,chase,271,5,10000,500,10000,no,target,always,0,,,,,,6,
+
+
+//AGORA VA EM DB/PRE/MOB_DB.TXT
+//DE ALT+F PROCURE POR "1585" E SUBSTITUA A SUA LINHA PELO TEXTO ABAIXO
+1585,MIME_MONKEY,Mime Monkey,Mime Monkey,99,6000000,6000,100,100,1,99999,99999,9999,9999,200,200,200,150,200,200,50,10,5,20,21,0x6283695,190,576,576,480,0,0,0,0,0,0,0,12210,7000,1202,100,938,400,512,1000,713,1500,741,5,619,20,0,0,0,0,0,0
+
+//Configure o Bau de premios da forma que ficar melhor.
+//1324 o id dele
+
+*/
+
+//- Entrada do Evento.
+prontera,156,233,5	script	Homem das Selvas#st	4_M_UMCHIEF,{
+
+set @name$,"[^0065DF Homem das Selvas ^000000]"; //- Nome do NPC.
+set $premio,"5000000"; //- Quantiadde de Zenys dada aos vencedores padrão 20kk.
+
+specialeffect 417;
+mes @name$;
+mes "Deseja ir ao território do Homem Macaco?";
+next;
+switch(select("Sim:Não, obrigado")) {
+
+	case 1:
+		//- Checando se o Evento está Ligado.
+		if($open == 0){
+		mes @name$;
+		mes "Sinto muito, mas o evento está fechado no momento.";
+		close;
+		}
+		//- Removedor de Buffs , Carrinhos , Falcões e Montarias.
+		sc_end SC_ALL;
+		setcart 0;
+		setfalcon 0;
+		setriding 0;
+		//- Checagem e Remoção Temporária de Homunculus.
+		if (checkhomcall() == 0) { atcommand "@useskill 244 1 "+strcharinfo(0);
+		dispbottom "[ Homem das Selvas ] : Homunculus são proibidos neste local!";
+		dispbottom "[ Homem das Selvas ] : por isso usei o [ Vaporizar ] para você !"; next;
+		}
+		//- Chacagem de uso de Pets.
+		if (getpetinfo(2) != "null") {
+		mes @name$;
+		mes "Por favor, remova o Pet para entrar no Evento.";
+		close;
+		}
+			mes @name$;
+			mes "Certo, irei te teleportar para lá. Boa Sorte!";
+			warp "quiz_02",335,340;
+			announce "[ Homem das Selvas ] O Jogador "+strcharinfo(0)+" acaba de entrar no Território do Homem Macaco!!",bc_all;
+			close;
+	
+	case 2:
+		mes @name$;
+		mes "Isso mesmo, homem macaco é um evento aqui em nosso servidor.";
+		mes "E ele funciona da seguinte maneira";
+		next;
+		mes @name$;
+		mes "Assim que o evento se iniciar, 1 monstro chamado Homem Macaco é invocado no mapa do evento.";
+		mes "E você deve fugir dele para sobreviver.";
+		next;
+		mes @name$;
+		mes "A cada 1 Minuto 1 baú de tesouros é invocado no mapa e você deve apanha-lo como prêmio.";
+		next;
+		mes @name$;
+		mes "Serão 5 rounds super dificeis fugindo de homens macacos que serão invocados de tempos em tempos.";
+		next;
+		mes @name$;
+		mes "E no final, os últimos sobreviventes ganharam uma quantidade de Zenys por Participar !";
+		mes "Fora o que conseguirem quebrando os baús de tesouros...";
+		mes "Enfim, é isso .-.";
+		close;
+		
+	case 3:			
+		mes @name$;
+		mes "Uma pena, o evento é bem legal!";
+		close;
+		
+//	OnInit:
+		waitingroom "Evento Homem Macaco",0;       // Balão Chat
+		set $open,0;                          // Closed de Evento Não Mexer.
+		end;
+	}
+}
+
+quiz_02,337,353,0	script	Macaco#evt	-1,{
+
+OnBoxBreak:
+	set .monkeytrasurex1,rand(41,57);
+	set .monkeytrasurex2,rand(41,57);
+	set .monkeytrasurex3,rand(41,57);
+	set .monkeytrasurex4,rand(41,57);
+	set .monkeytrasurex5,rand(41,57);
+	set .monkeytrasurex6,rand(41,57);
+	set .monkeytrasurex7,rand(41,57);
+	set .monkeytrasurex8,rand(41,57);
+	set .monkeytrasurex9,rand(41,57);
+	set .monkeytrasurex10,rand(41,57);
+	set .monkeytrasurex11,rand(41,57);
+	set .monkeytrasurex12,rand(41,57);
+	set .monkeytrasurex13,rand(41,57);
+	set .monkeytrasurex14,rand(41,57);
+	set .monkeytrasurex15,rand(41,57);
+	set .monkeytrasurey1,rand(40,55);
+	set .monkeytrasurey2,rand(40,55);
+	set .monkeytrasurey3,rand(40,55);
+	set .monkeytrasurey4,rand(40,55);
+	set .monkeytrasurey5,rand(40,55);
+	set .monkeytrasurey6,rand(40,55);
+	set .monkeytrasurey7,rand(40,55);
+	set .monkeytrasurey8,rand(40,55);
+	set .monkeytrasurey9,rand(40,55);
+	set .monkeytrasurey10,rand(40,55);
+	set .monkeytrasurey11,rand(40,55);
+	set .monkeytrasurey12,rand(40,55);
+	set .monkeytrasurey13,rand(40,55);
+	set .monkeytrasurey14,rand(40,55);
+	set .monkeytrasurey15,rand(40,55);
+	
+	end;
+
+//Horário de ínicio do evento 4:30 em 4:30 horas.
+OnClock0030:
+OnClock0430:
+OnClock0830:
+OnClock1230:
+OnClock1520:
+OnClock0018:
+
+initnpctimer;
+announce "[Homem das Selvas] O Evento Homem Macaco iniciará em 5 Minutos !",bc_all,0xADD8E6;
+set $open,1;
+end;
+
+OnTimer60000:
+announce "[Homem das Selvas] Em 4 minutos o Evento iniciará , apressem-se !",bc_all,0xADD8E6;
+end;
+
+OnTimer120000:
+announce "[Homem das Selvas] Em 3 minutos o Evento iniciará , apressem-se !",bc_all,0xADD8E6;
+end;
+
+OnTimer180000:
+announce "[Homem das Selvas] Em 2 minutos o Evento iniciará , apressem-se !",bc_all,0xADD8E6;
+end;
+
+OnTimer240000:
+announce "[Homem das Selvas] Em 1 minuto o Evento iniciará , apressem-se !",bc_all,0xADD8E6;
+end;
+
+OnTimer300000:
+set $open,0;
+announce "[Homem das Selvas] O 1º Round Começou !",bc_all,0xADD8E6;
+monster "quiz_02",335,340,"Mime Monkey",1585,1;
+end;
+
+OnTimer360000:
+mapannounce "quiz_02","[Homem das Selvas] 1 Baú de Tesouro foi derrubado pelo Homem Macaco !",bc_map,0xADD8E6;
+sleep 1000;
+monster "quiz_02",335,340,"Baú do Tesouro",1324,1,"Macaco#evt::OnBoxBreak";
+sleep 1000;
+mapannounce "quiz_02","[Homem das Selvas] 2º Round Começou !",bc_map,0xADD8E6;
+monster "quiz_02",341,351,"Mime Monkey",1585,1;
+end;
+
+OnTimer420000:
+mapannounce "quiz_02","[Homem das Selvas] 1 Baú de Tesouro foi derrubado pelo Homem Macaco !",bc_map,0xADD8E6;
+sleep 1000;
+monster "quiz_02",337,355,"Baú do Tesouro",1324,1,"Macaco#evt::OnBoxBreak";
+sleep 1000;
+mapannounce "quiz_02","[Homem das Selvas] 3º Round Começou !",bc_map,0xADD8E6;
+monster "quiz_02",344,336,"Mime Monkey",1585,1;
+end;
+
+OnTimer480000:
+mapannounce "quiz_02","[Homem das Selvas] 1 Baú de Tesouro foi derrubado pelo Homem Macaco !",bc_map,0xADD8E6;
+sleep 1000;
+monster "quiz_02",343,344,"Baú do Tesouro",1324,1,"Macaco#evt::OnBoxBreak";
+sleep 1000;
+mapannounce "quiz_02","[Homem das Selvas] 4º Round Começou !",bc_map,0xADD8E6;
+monster "quiz_02",335,340,"Mime Monkey",1585,1;
+end;
+
+OnTimer540000:
+mapannounce "quiz_02","[Homem das Selvas] 1 Baú de Tesouro foi derrubado pelo Homem Macaco !",bc_map,0xADD8E6;
+sleep 1000;
+monster "quiz_02",326,354,"Baú do Tesouro",1324,1,"Macaco#evt::OnBoxBreak";
+sleep 1000;
+mapannounce "quiz_02","[Homem das Selvas] O 5º e Último Round Começou !",bc_map,0xADD8E6;
+monster "quiz_02",335,340,"Mime Monkey",1585,1;
+end;
+
+OnTimer600000:
+announce "[Homem das Selvas] O Evento Terminou, Parabéns aos Vencedores !",bc_all,0xADD8E6;
+killmonsterall "quiz_02",0;
+sleep 100000;
+warp "quiz_02",335,340;
+set $open,0;
+set Zeny, Zeny + $premio;
+stopnpctimer;
+end;
+
+}
+
+-	script	macaco-PCDieEvent	-1,{
+
+OnPCDieEvent:
+	getmapxy @map$,@x,@y,0;
+	sleep2 180000;
+	if ( @map$ == "quiz_02" || @map$ == "quiz_02" ) {
+	set .@spoint$, getsavepoint(0);
+	set .@x, getsavepoint(1);
+	set .@y, getsavepoint(2);
+	warp .@spoint$, .@x, .@y;
+	end;
+		}
+			else { end; }
+}
+
+//Mapflags - Mime Monkey
+quiz_02	mapflag	novending
+quiz_02	mapflag	nochat
+quiz_02	mapflag	noskill
+quiz_02	mapflag	noteleport
+quiz_02	mapflag	noicewall
+quiz_02	mapflag	nobranch
+quiz_02	mapflag	nomemo
+quiz_02	mapflag	nopenalty
+quiz_02	mapflag	nosave	SavePoint

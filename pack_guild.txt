@@ -1,0 +1,59 @@
+prontera,150,150,5	script	Pack Guild#Por Zell	90,{
+
+
+if (getcharid(2) == 0) {
+mes "[Pack Guild]";
+mes "Me desculpe, mas apenas falo com pessoas que ao menos tenham um clã.";
+close;
+}
+
+ 
+if (strcharinfo(0) != getguildmaster(getcharid(2))) {
+mes "[Pack Guild]";
+mes "Me desculpe, mas apenas o líde deve falar comigo.";
+close;
+}
+ 
+if(#packguild!=0){
+mes "[Pack Guild]";
+mes "Não tenho mais nada a tratar com você";
+close;
+}
+ 
+ 
+set .@count, query_sql("SELECT `char_id` FROM `char` WHERE `guild_id` = "+getcharid(2),.@temp);
+if (.@count<.guildcheck) {
+mes "[Pack Guild]";
+mes "Me desculpe, mas seu clã deve ter no mínimo "+.guildcheck+" membros.";
+close;
+}
+ 
+mes "[Pack Guild]";
+mes "Olá, deseja pegar seu Guild Pack?";
+switch(select("- Sim","- Não")){
+
+case 1:
+set #packguild,1;
+close2;
+for(.@z = 0; .@z < getarraysize(.itempack); .@z++){
+getitem .itempack[.@z],.itempackq[.@z];
+}
+end;
+ 
+case 2:
+close;
+
+}
+
+
+end; 
+
+//Configurações
+
+OnInit:
+setarray .itempack[0],501,502,503; //Para adicionar mais itens só seguir este exemplo
+setarray .itempackq[0],1,2,3; //Para adicionar mais itens só seguir este exemplo
+setarray .guildcheck,10; //Coloque quantos membros é preciso ter no clã para poder pegar o Pack.
+end;
+ 
+}

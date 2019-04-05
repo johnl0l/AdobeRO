@@ -1,0 +1,77 @@
+prontera,164,164,4	script	Central VIP	4_F_KAFRA1,{
+OnTalk:
+	mes .npc$;
+	mes (gettime(3)>= 6&&gettime(3)<= 12?"Bom-dia":(gettime(3)>=13&&gettime(3)<=18?"Boa-tarde":"Boa-noite"))+", ^008aff"+strcharinfo(0)+"^000000 !";
+	mes "Bem-vindo a Central VIP.";
+	if (vip_status(1)) {
+		mes "^008affSeu acesso VIP expira em " + callfunc("Time2Str",vip_status(2)) + ".^000000";
+		mes " ";		
+	}
+	mes "Em que posso ajudar?";
+	next;
+	switch (select(.bcor$+"Desejo ir a Central VIP.",""+((vip_status(1))?""+.bcor$+"Desejo extender meu tempo ^008affVIP^000000.":""+.bcor$+"Desejo me tornar um jogador ^008affVIP^000000."),""+.rcor$+"Não quero nada.")){
+		case 1:
+			if (!vip_status(1) ) {
+				mes .npc$;
+				mes "Desculpe! O Acesso a Central VIP é permitido somente a jogadores ^008affVIP^000000.";
+				mes "-----------------------------------";
+				mes "Visite nosso site e saiba como se tornar um jogador ^008affVIP^000000.";
+				mes "-----------------------------------";
+				close;
+			}
+			warp .map$,.cord[0],.cord[1];
+			end;
+		case 2:
+			mes .npc$;
+			mes "Quantos dias de acesso ^008affVIP^000000 você deseja adquirir?";
+			next;
+			.@i = select(
+				.bcor$+""+.vip_day[0] + " Dias."
+				,.bcor$+""+.vip_day[1] + " Dias."
+				,.bcor$+""+.vip_day[2] + " Dias."
+				) - 1;
+				
+			mes .npc$;
+			mes "Você escolheu o plano de:";
+			mes "^4527A0VIP:^000000 "+.vip_day[.@i]+" Dias VIP.";
+			mes "^4527A0Preço:^000000 "+F_InsertComma(.vip_cashpoint[.@i])+" #CASHPOINTS.";
+			sleep2 2000;
+			mes " ";
+			mes " ";
+			mes "O que deseja fazer?";
+			next;
+			switch(select(.bcor$+"Comprar:"+.rcor$+"Cancelar")){
+				case 1:
+					if ( #CASHPOINTS < .vip_cashpoint[.@i] ) {
+					mes .npc$;
+					mes "Você não possui a quantidade de ^008aff"+F_InsertComma(.vip_cashpoint[.@i])+" #CASHPOINTS^000000.";
+					close;
+				}
+				else {
+					#CASHPOINTS -= .vip_cashpoint[.@i];
+					vip_time (.vip_day[.@i] * 1440);
+					mes .npc$;
+					mes "Parabéns você acaba de adquirir "+.vip_day[.@i]+" dias VIP.";
+					close;
+				}
+				end;
+				case 2:
+					mes .npc$;
+					mes "Tudo bem, volte sempre que quiser.";
+					close;
+			}
+
+		case 3:
+			close;
+	}
+
+OnInit:
+	.npc$ = "^FF7F00[ Central VIP ]^000000";						// Nome do NPC;
+	.bcor$ = "^008aff[»]^000000 ";									// Simbolo do botão de opções;
+	.rcor$ = "^ff0000[»]^000000 ";									// Simbolo do botão de Cancelar;
+	setarray .vip_day,7,14,30;										// Quantidade de dias que poderá ser comprado;
+	setarray .vip_cashpoint,4000,7000,10000;						// Preço em #CASHPOINTS;
+	.map$ = "sec_in02";												// Mapa da Sala Vip
+	setarray .cord,130,161;											// Coordenada X e Y;
+	end;
+}
