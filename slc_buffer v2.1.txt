@@ -1,0 +1,137 @@
+///This function takes an array of strings and builds a menu players can navigate.
+///Usage: f_displayPages(.@string_array${, .@page_size {, .@extra_string_array$}});
+///Output: This function returns the selected item index from the given array.
+function	script	f_displayPages	{
+	.@page_size = getarg(1, 10);
+	.@len = getarraysize(getarg(0));
+	.@pages = .@len / .@page_size;
+	.@pages -= .@len > .@page_size && .@len % .@page_size ? 0 : 1;
+	
+	.@foo_len = getarraysize(getarg(2, .@foo$));
+	copyarray .@foo$[0], getarg(2, .@foo$), .@foo_len;
+	.@foo$[0] = .@foo_len ? .@foo$[0] : "foo"; // This is only here to avoid warnings.
+	
+	do {
+		copyarray .@copy$[0], getelementofarray(getarg(0), .@page_size * .@page), .@page_size;
+		if( .@page < .@pages ) .@copy$[.@page_size] = "Next Page =>";
+		if( .@page > 0 ) .@copy$[.@page_size +1] = "<= Previous Page";
+		.@menu = select(implode(.@copy$,":")+( .@foo_len ? ":" + implode(.@foo$,":") : "" ));
+		if( .@menu == .@page_size +1 ) .@page++;
+		else if( .@menu == .@page_size +2 ) .@page--;
+		else if( .@menu > getarraysize(.@copy$) ) return getarraysize(.@copy$) - .@menu;
+		deletearray .@copy$;
+	} while( .@menu > .@page_size );
+	.@menu += .@page_size * .@page;
+	return .@menu-1;
+}
+
+function	script	f_timeKeep	{
+	function s;
+		set .@left, getarg(0);
+		if ( .@left <= 0 ) return getarg(0);
+		set .@day, .@left / 86400;
+		set .@hour, .@left % 86400 / 3600;
+		set .@min, .@left % 3600 / 60;
+		set .@sec, .@left % 60;
+		.@mes$ = ( .@day ? .@day +" day"+ s( .@day ) : "" ) +
+				 ( .@hour ? .@hour +" hour"+ s( .@hour ) : "" ) +
+				 ( .@min ? .@min +" minute"+ s( .@min ) : "" ) +
+				 ( .@sec ? .@sec +" second"+ s( .@sec,1 ) : "" );
+		if ( charat( .@mes$, getstrlen(.@mes$)-1 ) == " " )
+			.@mes$ = delchar( .@mes$, getstrlen(.@mes$)-1 );
+		return ( .@mes$ );
+	function s {
+		return (
+			( getarg(0) > 1 ? "s" : "" ) +
+			( getarg(1,0) ? "" : " " )
+		);
+	}
+}
+
+// By Skorm... Selection Buffer Version 2.1
+prontera,150,150,5	script	Buffer	100,{
+	if( @h_last > gettimetick(2) && !.dual_mode
+	||  compare(strnpcinfo(2),"set")
+	||  !slc_bufs )
+		goto OnSetBuff;
+
+OnBuff:
+	if( @h_last > gettimetick(2) )
+		end;
+	
+	@h_last = gettimetick(2) + .trigger;
+	.@total = callsub(Sub_PriceCheck);
+	
+	if( .@total > Zeny ) {
+		message strcharinfo(0), "You don't have enough Zeny to buff "+( .dual_mode ? "" : "double ")+"click the "+( .dual_mode ? "Buff Setter" : "Buffer ")+"to modify your selection.";
+		end;
+	}
+	
+	for( .@a = 0; .@a < .len; .@a++ )
+		if( ( slc_bufs & pow( 2, .@a ) ) ) {
+			skilleffect .skil_num[.@a], .levels[.@a];
+			sc_start .sc_effect[.@a], .ticks[.@a], .levels[.@a];
+			message strcharinfo(0),"Buff "+.skil_txt$[.@a]+" Added!";
+		}
+		
+	Zeny = Zeny - .@total;
+	end;
+	
+Sub_PriceCheck:
+	for( .@a = 0; .@a < .len; .@a++ )
+		if( ( slc_bufs & pow( 2, .@a ) ) )
+			.@total = .@total + .price[.@a];
+	return .@total;
+	
+OnSetBuff:
+	.@slc_bufs = slc_bufs;
+	.@total = callsub(Sub_PriceCheck);
+	.@len = getarraysize(.skil_txt$);
+	for (.@i = 0; .@i < .@len; .@i++)
+		.@buffs$[.@i] = "( "+(.@slc_bufs&pow(2,.@i)?"^35a100On":"^FF0000Off")+"^000000 ) [ ^0054ff"+.skil_txt$[.@i]+" Lv"+.levels[.@i]+"^000000 ] "+F_InsertComma(.price[.@i])+"z, "+f_timeKeep(.ticks[.@i]/1000);
+	
+	do {
+		mes .npc_nm$;
+		mes "Select your buffs!";
+		.@select = f_displayPages(.@buffs$, .page_size, .format$);
+		next;
+		switch( .@select ) {
+			case -1: 
+				mes .npc_nm$;
+				mes "Alright, your current total will be "+F_InsertComma(.@total)+"z each time you use my buffing service. Is that ok?";
+				next;
+				if( select( "Yes:No" ) == 1 )
+					slc_bufs = .@slc_bufs;
+				break;
+			
+			default:
+				.@total = ( .@slc_bufs & pow( 2, .@select ) ) ? .@total - .price[.@select] : .@total + .price[.@select];
+				.@slc_bufs = .@slc_bufs ^ pow( 2, .@select );
+				.@buffs$[.@select] = "( "+(.@slc_bufs&pow(2,.@select)?"^35a100On":"^FF0000Off")+"^000000 ) [ ^0054ff"+.skil_txt$[.@select]+" Lv"+.levels[.@select]+"^000000 ] "+F_InsertComma(.price[.@select])+"z, "+f_timeKeep(.ticks[.@select]/1000);
+		}
+	} while ( .@select > -1 );
+	end;
+	
+OnInit:
+	if(compare(strnpcinfo(2),"set"))
+		.dual_mode = 1;
+	.npc_nm$ = "[ "+strnpcinfo(1)+" ]";
+	if(.len) end;
+	
+	setarray .sc_effect, SC_INCREASEAGI, SC_BLESSING, SC_ASSUMPTIO, SC_IMPOSITIO, SC_ANGELUS, SC_MAGNIFICAT, SC_GLORIA;
+	setarray .skil_txt$, "Increase Agi", "Blessing",  "Assumptio",  "Impositio",  "Angelus",  "Magnificat",  "Gloria";
+	setarray .ticks,     300000,         300000,      300000,       300000,       300000,     300000,        300000;
+	setarray .price,     1000,           1000,        5000,         5000,         5000,       10000,         10000;
+	setarray .skil_num,  29,             34,          361,          66,           33,         74,            75;
+	setarray .levels,    10,             10,          5,            5,            10,         5,             5;
+	setarray .format$,   "Done"; // This is the conformation button at the end of the menu.
+	.page_size = 10; // Buffs shown per page.
+	.trigger = 2; // Number of seconds between clicks to not trigger select page.
+	.len = getarraysize(.sc_effect);
+	bindatcmd "setbuff",strnpcinfo(0)+"::OnSetBuff";
+	bindatcmd "buff",strnpcinfo(0)+"::OnBuff";
+}
+
+// Any duplicate npc with a hidden name that contains "set" will be considered a buff setter. For Example, set1, set2, or setting are all valid hidden names.
+// To enable one-npc-mode where double clicking on the same npc allows for buffs to be changed. Just remove all duplicate npcs with "set" in their hidden names.
+prontera,152,150,4	duplicate(Buffer)	Buff Setter#set	100

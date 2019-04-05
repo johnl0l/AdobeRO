@@ -1,0 +1,28 @@
+// ------------------------------------------------------------------------------ \\
+// SIZE CHANGER NPC - Saves in Disguise Room Once You Talk
+// Size Options: Giant, Normal, and Small - Same as the GM @size command
+// ------------------------------------------------------------------------------ \\
+prontera.gat,140,175,5	script	Size Changer	64,{
+savepoint "prontera",155,183;
+mes "^ff0000[Size Changer]^000000";
+mes "Olá ^0000CD"+strcharinfo(0)+"^000000.";
+mes "Eu posso mudar o seu tamanho para gigante ou pequeno ou volta ao tamanho normal.";
+next;
+menu "Legal, eu quero tentar!",L_YES,"Fim Conversa",L_NO;
+L_YES:
+mes "^ff0000[Size Changer]^000000";
+mes "Ok, escolha um tamanho.";
+next;
+menu "Gigante",L_Giant,"Pequeno",L_Small,"Normal",L_Normal;
+L_Normal:
+atcommand strcharinfo(0)+ "@size 0";
+close;
+L_Small:
+atcommand strcharinfo(0)+ "@size 1";
+close;
+L_Giant:
+atcommand strcharinfo(0)+ "@size 2";
+close;
+L_NO:
+close;
+}

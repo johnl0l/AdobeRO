@@ -1,0 +1,45 @@
+prontera,150,175,5	script	Skull4Ygg	983,{
+
+	mes set(.name$,"[^0000ff"+strnpcinfo(0)+"^000000]");
+	mes "Sou o npc que fará as trocas de Caveira por Ygg!";
+	next;
+	mes .name$;
+	mes "Você gostaria de concretizar as trocas?!";
+	if (select("Sim:Não")==2) close;
+	mes .name$;
+	if (!countitem(@id_caveira) || !countitem(@id_yggdrasil) {
+		mes "Você não tem nenhum dos itens necessários para a troca.";
+		close;
+	}
+	if (@pay_price && Zeny < @pay_price) {
+		mes "Você não tem Zeny suficiente para continuar!";
+		close;
+	}
+	if (@pay_price) {
+		mes "você tem o Zeny e os itens necessários!
+		set Zeny, Zeny -  @pay_price;
+		break;
+	} else
+	{
+		mes "Tudo bem, vamos continuar, você tem os itens necessários!";
+		break;
+	}
+	next;
+	mes .name$;
+	mes "Digite a quantidade de "+getitemname(@id_caveira)+" que você gostaria de trocar por ^FF0000"+@ygg_trade+"^000000 "+getitemname(@id_yggdrasil)+".";
+	input @qtd; 
+	next;
+	mes .name$;
+	mes "Você acaba de receber ^FF0000"+@ygg_count+"^000000 "+getitemname(@id_yggdrasil);
+	set @ygg_count, @qtd * @ygg_trade; 
+	delitem @id_caveira, @qtd; 
+	getitem @id_yggdrasil, @ygg_count;
+	close;
+	
+	OnInit:
+		set @pay_price, 0; // Coloque o preço caso queira o script pago. [Ex: 1000, cobrará 1000 de Zeny!]
+		set @id_caveira, 0; // Coloque o ID da Caveira. [Somente para organizar melhor as verificações, e o script.]
+		set @id_yggdrasil, 0; // Coloque o ID da Caveira. [Somente para organizar melhor as verificações, e o script.]
+		set @ygg_trade, 5; // Configure. [Ex: A cada 1 caveira, 5 ygg, ou diminua, a seu gosto.]
+	end;
+}

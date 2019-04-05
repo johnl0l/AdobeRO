@@ -1,0 +1,17 @@
+prontera,188,208,5	script	Skull Buyer	792,{
+mes "I am a Player Skull Buyer.";
+mes "I am going to buy all of your skulls.";
+mes "But how many skull that you will sell to me ?";
+next;
+mes "Please Input the Skull that you want to sell it.";
+mes "Input 0 to cancel.";
+input @amount,0,countitem(7420);
+if ( @amount == 0 ){
+mes "You have choose to cancel the Deal.";
+close;
+}
+delitem 7420,@amount;
+set Zeny,Zeny+(@amount*50000);
+message strcharinfo(0),"You have gained "+(@amount*50000)+" Zeny.";
+close;
+}

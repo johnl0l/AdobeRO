@@ -1,0 +1,197 @@
+//                                                                                                 
+//                                                                                                    
+//  DDDDDDDD      D                          D       DDDDDDDDDD                                       
+// DDDDDDDDDDD  DDDD                      DDDDD      DDDDDDDDDDD                                      
+//  DDDDDDDDDD DDDDD                      DDDDD       DDDD  DDDD                                      
+//   DDDD  DDDD DD                        DDDDD       DDDD    DD                                      
+//   DDDD  DDDD    D    DD   DD     DD     DDDD       DDDD          DD       DD  D     D   D    D     
+//   DDDD  DDDD DDDD  DDDDDD DDD  DDDDDD   DDDD       DDDD  D     DDDDDD   DDDD DDD DDDD DDDD DDDDD   
+//   DDDD  DDDDDDDDD  DDDDDD DD  DDD  DD   DDDD       DDDD DD    DD  DDD  DDDDDDDDD DDDDDDDDDDDDDDD   
+//   DDDDDDDDD  DDDD   DDDDD D   DDD  DDD  DDDD       DDDDDDD    DD  DDDD  DDDDDDDD DDDDDDDDDD DDDD   
+//   DDDDDDDD   DDDD    DDDDDD  DDDDDDDDD  DDDD       DDDDDDD        DDDD  DDDD DD  DDDD  DDDD DDDD   
+//   DDDDDD     DDDD     DDDD   DDDDDDDDD  DDDD       DDDD  D     DDDDDDD  DDDD     DDDD  DDDD  DDD   
+//   DDDD       DDDD    DDDDDD  DDDD       DDDD       DDDD  D    DDD DDDD  DDDD     DDDD  DDDD  DDD   
+//   DDDD       DDDD    D DDDD   DDD       DDDD       DDDD      DDDD DDDD  DDDD     DDDD  DDDD DDDD   
+//   DDDD       DDDD   DD DDDDD  DDDD  DD  DDDD       DDDD      DDDD DDDDD DDDD     DDDD  DDDD DDDD   
+//  DDDDDD     DDDDDD DDD DDDDDD DDDDDDD  DDDDDD    DDDDDDD     DDDDDDDDD DDDDDD    DDDDDDDDDD DDDDD  
+//  DDDDDD     DDDDDDDDDD DDDDDD  DDDDD   DDDDD      DDDDDD      DDDD DDD DDDDDD   DDDDD DDDDD DDDDD  
+// ===========================================================
+//===== Cronus Script ========================================
+//= Sistema Vip
+//===== Por: =================================================
+//= Pixel Farm
+//===== Versão Atual: ========================================
+//= 1.0
+//===== Compatibilidade: =====================================
+//= Cronus Emulador
+//===== Descrição: ===========================================
+// Administrador de vip com as opções:
+// Adicionar dias vip.
+// Remover dias vip.
+// Ver dias vip.
+// O jogador adquirir dias vip por cash.
+// Leva o jogador para a sala vip.
+//============================================================
+prontera,149,188,4	script	Sistema Vip	714,{
+
+//====== Configurações =======================================
+set @npc$,"[^FF7F24Sistema Vip^000000]"; // Nome do npc
+set @srv$,"SeuRO"; // Nome do seu servidor
+set @lvl,99; // Level da conta para administrar o vip
+set @price,1000; // Preço dos dias vip.
+set @dias,30; // Quantidade de dias vip.
+set @map$,"que_qaru05"; // Mapa da sala vip
+set @x,248; // Coordenada x do mapa da sala vip
+set @y,340; // Coordenada y do mapa da sala vip
+//============================================================
+//ALTER TABLE `login` ADD `diasvip` INT( 11 ) NOT NULL DEFAULT '0';		//Tabelas SQL
+
+if (getgmlevel() < @lvl){
+if(getgmlevel() < 1){
+mes @npc$;
+mes "Me desculpe mais você não é vip, deseja adquirir seu vip agora mesmo?";
+if (select("- Sim:- Não") == 2) close;
+
+	mes @npc$;
+	mes "Você pode adquirir "+@dias+" dias vip por apenas "+@price+" Cashs ";
+	mes "Deseja comprar?";
+	if (select("- Sim:- Não") == 2) close;
+	
+	if(#CASHPOINTS < @price){ next; mes @npc$; mes "Desculpe mas você não possui cash suficiente"; close; }
+	next;
+	mes @npc$;
+	mes "Parabéns seus dias vip foram adquiridos com sucesso, relogue para ativar";
+	query_sql "UPDATE `login` SET `level`='1',`diasvip`=`diasvip`+"+@dias+" WHERE `account_id`='"+ getcharid(3) +"'";
+	set #CASHPOINTS,#CASHPOINTS-@price;
+	close;
+	}
+	
+		mes @npc$;
+		query_sql "SELECT `diasvip` FROM `login` WHERE `account_id` = '"+getcharid(3)+"'", .@diasvip;
+		mes "Olá ^FF7F24"+strcharinfo(0)+"^000000 !";
+		mes "Você Possui ^00BFFF"+.@diasvip+"^000000 Dias VIP.";
+		mes "Deseja ir para a Sala Vip ?";
+		if (select("- Sim:- Não") == 2) close;
+		
+		close2;
+		warp @map$,@x,@Y;
+		end;
+	}
+
+
+mes @npc$;
+mes "Olá "+strcharinfo(0)+" o que deseja administrar no sistema vip?";
+switch(select("- Adicionar Vip:- Remover Vip:- Ver dias vip")){
+
+case 1:
+	next;
+	mes @npc$;
+	mes "Digite o login da conta que deseja adicionar os dias vip";
+	input .@conta$;
+
+	query_sql "SELECT `account_id` FROM `login` WHERE `userid`='"+.@conta$+"'",.@cont;
+	if(.@cont == 0)
+	{
+	next;
+	mes @npc$;
+	mes "Desculpe mais você não digitou o login da conta corretamente.";
+	close;
+}
+	next;
+	mes @npc$;
+	mes "Agora digite a quantidade de dias vip que deseja adicionar a conta "+.@conta$+".";
+	input .@quant;
+			if(.@quant == 0)
+			{
+			next;
+			mes @npc$;
+			mes "Desculpe mas você digitou uma quantidade invalida.";
+			close;
+			}
+	next;
+	mes @npc$;
+	mes "Tem certeza que deseja adicionar ^00BFFF"+.@quant+"^000000 dias vip na conta ^00BFFF"+.@conta$+"^000000?";
+	if (select("- Sim:- Não") == 2) close;
+	
+	next;
+		mes @npc$;
+		mes "Os dias vip da conta "+@conta$+" foram adicionados com sucesso.";
+		query_sql "UPDATE `login` SET `level`='1',`diasvip`=`diasvip`+"+.@quant+" WHERE `userid`='"+.@conta$+"'";
+		close;
+
+case 2:
+	next;
+	mes @npc$;
+	mes "Digite o login da conta que deseja remover os dias vip";
+	input .@conta$;
+			query_sql "SELECT `account_id` FROM `login` WHERE `userid`='"+.@conta$+"'",.@cont;
+			if(.@cont == 0)
+			{
+			next;
+			mes @npc$;
+			mes "Desculpe mais você não digitou o login da conta corretamente.";
+			close;
+			}
+	next;
+	mes @npc$;
+	mes "Agora digite a quantidade de dias vip que deseja remover da conta "+.@conta$+".";
+	input .@quant;
+			if(.@quant == 0)
+			{
+			next;
+			mes @npc$;
+			mes "Desculpe mas você digitou uma quantidade invalida.";
+			close;
+			}
+	next;
+	mes @npc$;
+	mes "Tem certeza que deseja remover ^00BFFF"+.@quant+"^000000 dias vip da conta ^00BFFF"+.@conta$+"^000000?";
+	if (select("- Sim:- Não") == 2) close;
+	
+		next;
+		mes @npc$;
+		mes "Os dias vip da conta "+@conta1$+" foram removidos com sucesso.";
+		query_sql "UPDATE `login` SET `level`='1',`diasvip`=`diasvip`-"+.@quant+" WHERE `userid`='"+.@conta$+"'";
+		close;
+
+case 3:
+	next;
+	mes @npc$;
+	mes "Digite o login da conta que deseja ver a quantidade de dias vip";
+	input .@conta$;
+			query_sql "SELECT `account_id` FROM `login` WHERE `userid`='"+.@conta$+"'",.@cont;
+			if(.@cont == 0)
+			{
+			next;
+			mes @npc$;
+			mes "Desculpe mais você não digitou o login da conta corretamente.";
+			close;
+			}
+	next;
+	mes @npc$;
+	query_sql "SELECT `diasvip` FROM `login` WHERE `userid` = '"+.@conta$+"'", .@diasvip;
+	mes "A Conta ^00BFFF"+.@conta$+"^000000 Possui ^00BFFF"+.@diasvip+"^000000 dias de vip.";
+	close;
+}
+}
+
+-	script	Sistema Vip#02	-1,{
+
+OnClock0001: query_sql "UPDATE `login` SET `diasvip`=`diasvip`-1 WHERE `level`='1'"; end;
+OnClock0002: query_sql "UPDATE `login` SET `level`='0' WHERE `diasvip`<='0' AND `level`='1'"; end;
+end;
+}
+
+-	script	Sistema Vip#03	-1,{
+
+OnPCLoginEvent:
+if (getgmlevel() >= 20){ end; }
+query_sql "SELECT `diasvip` FROM `login` WHERE `account_id` = '"+getcharid(3)+"'", .@diasvip;
+if(.@diasvip == 0){ end; }
+dispbottom "Olá "+strcharinfo(0)+" você possui "+.@diasvip+" dias vip.";
+end;
+}
+
+/*
+ALTER TABLE `login` ADD `diasvip` INT( 11 ) NOT NULL DEFAULT '0';
+*/

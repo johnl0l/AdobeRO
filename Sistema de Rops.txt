@@ -1,0 +1,593 @@
+/* 	  ___       ___       ___       ___       ___       ___       ___       ___       ___       ___       ___   
+         /\  \     /\  \     /\  \     /\__\     /\  \     /\  \     /\  \     /\  \     /\__\     /\__\     /\  \  
+         \:\  \   /::\  \   /::\  \   /:| _|_   /::\  \   /::\  \   /::\  \   /::\  \   /:| _|_   /:/ _/_   /::\  \ 
+         /::\__\ /::\:\__\ /:/\:\__\ /::|/\__\ /:/\:\__\ /:/\:\__\ /::\:\__\ /:/\:\__\ /::|/\__\ /:/_/\__\ /\:\:\__\
+        /:/\/__/ \:\:\/  / \:\ \/__/ \/|::/  / \:\/:/  / \:\ \/__/ \;:::/  / \:\/:/  / \/|::/  / \:\/:/  / \:\:\/__/
+        \/__/     \:\/  /   \:\__\     |:/  /   \::/  /   \:\__\    |:\/__/   \::/  /    |:/  /   \::/  /   \::/  / 
+        	   \/__/     \/__/     \/__/     \/__/     \/__/     \|__|     \/__/     \/__/     \/__/     \/__/ 
+
+ 					           Advanced Scripts
+
+					  (C) Copyright TecnoCronus 08/09/09
+			    	 	
+	*--------------------------------------------Cronus Script ---------------------------------------------*
+	*- Rops Bro				       								*
+	*------------------------------------------------ By: --------------------------------------------------*
+	*- Cronus	                                                                                       	*
+	*------------------------------------------ Current Version: -------------------------------------------*
+	*- 4.0												       	*
+	*---------------------------------------- Additional Comments: -----------------------------------------*
+	*- 1.0 Trabalha em Cronus									       	*
+	*- 1.1 Em TXT, o Player tem que estar Online na Hora de adicionar Creditos		       		*
+	*- 1.2 Auto detecta, se e TXT ou SQL								       	*
+	*- 2.0 VERSAO 2.0 Adiconado o Sistema Rapido [TecnoCronus]					      	*
+	*- 2.1 "Sistema Rapido" funciona assim, você manda uma mensagem em privado para ROP com o Nome do Joga  *
+	*-      dor que vai receber os Rops junto com o Numero de Rops que ele vai receber			*
+	*-      Ex.: Player#3000										*
+	*-	Isso Vai Adicionar 3000 Rops para o jogador chamado "Player"					*
+	*- 2.2 O LvL Minimo para Adicionar Rops é Conforme a Variavel "$@Rop_MinGMLvl" na Linha "94"	       	*
+	*- 3.0 VERSAO 3.0 Atualizado o Sistema Rapido [TecnoCronus]						*
+	*- 4.0 Adicionado suporte para o emuldor Cronus.							*
+	*-------------------------------------------------------------------------------------------------------
+	Arquivo SQL
+	ALTER TABLE login ADD rops INT(255) NOT NULL DEFAULT 0 ;
+	*/
+
+prontera,140,175,5	script	Loja de Rops	403,{
+
+	if($@UseMySQL == 0) {
+
+		if(getgmlevel()>=$@Rop_MinGMLvl) {
+			set @adm$, strcharinfo(0);
+			set .@adm, getcharid(3,@adm$);
+			show "[^9f13f8 Vendedor ^000000]";
+			show "Olá Administrador, diga o nome do jogador que você deseja adicionar Rops";
+			digit @name$;
+			set @GetCharId, getcharid(0,@name$);
+			set $@GetcharId2, getcharid(3,@name$);
+			set @Online, isloggedin($@GetCharId2,@GetCharId);
+			if(@Online != 1) {
+				show "Jogador não existe ou não está online";
+				close;
+			}
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Quantos Rops você deseja que ^3cbd32 "+@name$+" ^000000 ganhe?";
+		show "Lembrando: Ele deve estar Online";
+		digit @Credit;
+		show "Ok, Adicionando ^FF0000 "+@Credit+" ^000000 Rops em ^3cbd32 "+@name$+" ^000000 ";
+		callfunc "AddCred";
+		end;
+		} else if (getgmlevel() < $@Rop_MinGMLvl && $@UseMySQL == 0) {
+				callfunc "Sell";
+				end;
+			} 
+		} if($@UseMySQL == 1) {
+
+			if(getgmlevel()>=$@Rop_MinGMLvl) {
+				show "[^9f13f8 Vendedor ^000000]";
+				show "Olá Administrador, diga o nome do jogador que você deseja adicionar Rops";
+				digit @name2$;
+				set @name3$, @name2$;
+				set @name2, getcharid(3,@name2$);
+				if (@name2 <= 0 || !@name2) {
+					show "Essa Conta não existe senhor.";
+					close;
+				}
+			set @SQLname, @name2;
+			query_sql "SELECT rops FROM login WHERE account_id = "+@name2+"", @rops;
+			show "Essa pessoa tem "+@rops+" Rops";
+			show "Deseja Prosseguir?";
+			if(select ("Sim","nao") == 2) close;
+			show "Quanto Créditos "+@name3$+" deve receber?";
+			digit @Cred;
+			show "Confirmando: "+@name3$+" receberá "+@Cred+" Rops, Deseja Continuar?";
+			if(select ("Sim","Não") == 2) close;
+			query_sql "UPDATE login SET rops = rops + "+@Cred+" WHERE account_id = "+@SQLname+"";
+			show "Créditos adicionado com Sucesso";
+			close;
+			}
+		callfunc "Sell";
+		end;
+		}
+			OnTimer5000:
+				setnpctimer 0;
+				stopnpctimer;
+				attachrid($@GetcharId2);
+				if(!#RopPoint) set #RopPoint, 0;
+				set #RopPoint, #RopPoint+@Credit;
+				show "[^9f13f8 Sistema de Rops ^000000]";
+				show "Meus parabéns ^5F80C2"+strcharinfo(0)+"^000000 !!!!";
+				show "Você recebeu "+@credit+" Rops";
+				close;
+
+			OnInit:
+				set $@Rop_MinGMLvl, 60;
+				set .@AutoD, query_sql("select version()");
+				if(.@AutoD < 0) { set $@UseMySQL,0; debugmes "Sistema Rops trabalhando em TXT"; } else { set $@UseMySQL,1; debugmes "Sistema Rops trabalhando em SQL(Ver."+@AutoD+")"; }
+				end;
+			
+	}
+
+
+function	script	AddCred	{
+			show "Aperte close antes de 5 segundos !!";
+			startnpctimer;
+			close;
+			}
+
+function	script	Sell	{
+
+	set @Login, getcharid(3);
+	if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+@Login+"", @rops;
+	show "[^9f13f8 Vendedor ^000000]";
+	if($@UseMySQL != 1) { show "Você tem "+#RopPoint+" Rop(s)"; } else { show "Você tem "+@rops+" Rop(s)"; }
+	show "Deseja trocar seus Rops por?";
+	show "Lembre-se: R significa ^55A0FFRops^000000";
+	goto pag_1;
+	pag_1:
+switch(select("Boneca de Alice[1] 8R","Lendárias Asas de Anjo 5R","Bandana do Mecânico 5R","Boneca de Lady Solace 4R","Óculos[1] 5R","Chapéu de Graduação em Magia 5R","Chapéu de Graduaçãoo Habilidosa 5R","Chapéu de Deviling 4R","Manteau de Diabolus[1] 7R","Armadura de Diablos[1] 10R","Anel de Diablos[1] 4R","Manto de Diablos[1] 10R","Elmo de Diablos[1] 5R","Máscara do Senhor das Trevas 5R" ,"Proxima página")) {
+	case 1:
+		set @price, 8;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+@Login+"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Uma Boneca de Alice [1] (+10% de dano em Humanóides +1 de For) ?";
+		switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 8R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 5137,1;
+		show "Troca feita";
+		goto pag_1;
+		close;
+		end;
+
+	case 2:
+		goto pag_1;
+		close;
+}
+	case 2:
+		set @price, 5;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+ @Login +"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Lendárias Asas de Anjo (+3% Vel Atq -3% Tempo de conjuração +1 Int + 1 Agi) ?";
+		
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 5R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 5210,1;
+		show "Feito!";
+		goto pag_1;
+		close;
+		end;
+	case 2:
+		goto pag_1;
+		close;
+}
+	case 3:
+		set @price, 5;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+ @Login +"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Bandana do Mecânico (+2Sor +2Vit, Reduz em 10% o dano de Ataques Físicos à Distância) ?";
+
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 5R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 5277,1;
+		show "Troca Concluida";
+		goto pag_1;
+		close;
+		end;
+	case 2:
+		goto pag_1;
+		close;
+}
+	case 4:
+		set @price, 4;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+ @Login +"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Boneca de Lady Solace (+3 Dex e chance de usar lv3 Grand Cross ao receber dano) ?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 4R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 5324,1;
+		show "Troca Feita!";
+		goto pag_1;
+		close;
+	case 2:
+		goto pag_1;
+		close;
+}
+	case 5:
+		set @price, 5;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+ @Login +"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Óculos Escuros[1] (+5% de Resistência contra Cegueira) ?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 5R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 2202,1;
+		show "Ok, Troca feita";
+		goto pag_1;
+		close;
+	case 2:
+		goto pag_1;
+		close;
+}
+	case 6:
+		set @price, 5;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+ @Login +"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "chapéu de Graduação em Magia (+2Int +2Dex, Ao conjurar magias concede 2% de chance de usar Suffragium nv1) ?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 5R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 5407,1;
+		show "Troca feita com sucesso";
+		goto pag_1;
+		close;
+	case 2:
+		goto pag_1;
+		close;
+}
+	case 7:
+		set @price, 5;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+ @Login +"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Chapéu de Graduação Habilidosa (+1Int +2Dex +1Vit e Reduz em 5% o intervalo na conjuração de Habilidades) !?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 5R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 5406,1;
+		show "Troca Concluida";
+		goto pag_1;
+		close;
+	case 2:
+		goto pag_1;
+		close;
+}
+	case 8:
+		set @price, 4;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+ @Login +"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "chapéu de Deviling(+1 de For Crit+3, ao refinar aumenta o Crit)?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 7k de R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 5254,1;
+		show "Feito";
+		goto pag_1;
+		close;
+	case 2:
+		goto pag_1;
+		close;
+}
+	case 9:
+		set @price, 7;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+ @Login +"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Manteau de Diabolus[1] (Reduz o dano Neutro em 5%. HP Máx +6% quando equipado junto com as Botas de Diabolus) ?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 7R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 2537,1;
+		show "Troca Concluida";
+		goto pag_1;
+		close;
+	case 2:
+		goto pag_1;
+		close;
+}
+	case 10:
+		set @price, 10;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+ @Login +"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Armadura de Diabolus[1] (+2 For +1 Dex Max HP +150 +5% Resist contra Atordoamento e Petrificação) ?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 10R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 2375,1;
+		show "Troca Concluida";
+		goto pag_1;
+		close;
+	case 2:
+		goto pag_1;
+		close;
+}
+	case 11:
+		set @price, 4;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+ @Login +"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Anel de Diablos[1](Max HP & SP +100 e aumenta em 5% a da skill Cura) ?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 4R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 2729,1;
+		show "Troca Concluida";
+		goto pag_1;
+		close;
+	case 2:
+		goto pag_1;
+		close;
+}
+	case 12:
+		set @price, 10;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+ @Login +"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Manto de Diablos[1] (Max SP +150 DefM+5) ?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 10R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 2374,1;
+		show "Troca Concluida";
+		goto pag_1;
+		close;
+	case 2:
+		goto pag_1;
+		close;
+}
+	case 13:
+		set @price, 5;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+ @Login +"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Elmo de Diablos[1] (+20% Resist contra Petrificação, Congelamento e Atordoamento)?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 5R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 5808,1;
+		show "Troca Concluida";
+		goto pag_1;
+		close;
+	case 2:
+		goto pag_1;
+		close;
+}
+	case 14:
+		set @price, 5;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+@Login+"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Máscara do Senhor das Trevas[1] (+2 For)?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 2R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 5181,1;
+		show "Troca feita";
+		goto pag_1;
+		close;
+	case 2:
+		goto pag_1;
+		close;
+}
+	case 15:
+		goto pag_2;
+	}
+	pag_2:
+	switch(select("Máscara do Ifrit 8R","Brysinggamen 8R","Elmo de Valkiria 6R","Sleipnir 10R","Mascara de Fugitivo 4R")) {
+	case 1:
+		set @price, 8;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+@Login+"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Uma Máscara do Ifrit (For+1, Int+1,DefM+5. Aumenta resist Fogo em 10%. Reduz a resist água em 10%.Permite o uso Chama Reveladora Chance de conjurar Chuva de Meteoros Nv.3 quando receber dano físico. Chance de conjurar LaNãas de Fogo Nv.3 sempre que causar dano físico)?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 8R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 5420,1;
+		show "Troca feita";
+		goto pag_2;
+		close;
+	case 2:
+		goto pag_2;
+		close;
+}
+	case 2:
+		set @price, 8;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+@Login+"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Uma Brysinggamen (+6AGI,FOR,VIT,INT +10LUK +5 DefM) ?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 8R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 2630,1;
+		show "Troca feita";
+		goto pag_2;
+		close;
+	case 2:
+		goto pag_2;
+		close;
+}
+	case 3:
+		set @price, 6;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+@Login+"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Um Elmo de Valkiria[1] (+5 DefM +1 Todos Status se usando conjunto completo da Valkiria) ?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 6R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 5171,1;
+		show "Troca feita";
+		goto pag_2;
+		close;
+	case 2:
+		goto pag_2;
+		close;
+}
+	case 4:
+		set @price, 10;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+@Login+"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Uma Sleipnir (Aumenta Velocidade de Movimento HP/SP Max+20% +10 DefM Recuperação de Sp+15% )?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 10R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 2410,1;
+		show "Troca feita";
+		goto pag_2;
+		close;
+	case 2:
+		goto pag_2;
+		close;
+}
+	case 5:
+		set @price, 4;
+		if($@UseMySQL == 1) query_sql "SELECT rops FROM login WHERE account_id = "+@Login+"", @rops;
+		show "[^9f13f8 Vendedor ^000000]";
+		show "Uma Mascara de Fugitivo (+5 Atq e se usado por Arruaceiros Permite o Uso de Malandragem)?";
+switch(select(	"Sim.","Não")){
+	case 1:
+		show "Ok, Vamos Trocar";
+		show "Vou checar se você tem 4R";
+		show "Se nao tiver nao falo mais com você";
+		if(#RopPoint< @price && $@UseMySql == 0) close;
+		if ($@UseMySql == 1 && @rops < @price) close;
+		if($@UseMySQL == 1) query_sql "UPDATE login SET rops = rops - "+ @price +" WHERE account_id = "+ @Login+"";
+		set #RopPoint,#RopPoint-@price;
+		additem 5361,1;
+		show "Troca feita";
+		goto pag_2;
+		close;
+	case 2:
+		goto pag_2;
+		close;
+}
+
+	}
+					
+}
+
+-	script	ROP	-1,{
+end;
+	OnWhisperGlobal:
+		if (getgmlevel() < $@Rop_MinGMLvl) {
+			if($@UseMySQL == 1) {
+				query_sql "SELECT rops FROM login WHERE account_id = "+@Login+"", @rops;
+				dispbottom "você tem "+@rops+" pontos de rops";
+			} else
+				dispbottom "você tem "+#RopPoint+" pontos de rops";
+			end;
+		}
+
+	if(@whispervar0$ && @whispervar1$) { callfunc ("AddRop"); }
+		else {
+			if(!@whispervar0$) dispbottom "Faltando Primeiro argumento: ^FF00FF(Nome)^000000";
+			if(!@whispervar1$) dispbottom "Faltando Segundo argumento: ^FF00FF(Quantidade de Rops)^000000";
+		}
+	end;	
+
+
+OnInit:
+
+			if($@UseMySQL==0) disablenpc "ROP";
+			end;
+}
+function	script	AddRop	{
+				set @F_Add, getcharid(3,@whispervar0$);
+				query_sql "UPDATE login SET rops = rops + "+@whispervar1$+" WHERE account_id = "+@F_Add+"";
+				dispbottom "Rops Adicionados com sucesso";
+				end;
+			}

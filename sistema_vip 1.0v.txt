@@ -1,0 +1,756 @@
+//===== Atual Versão: ========================================
+//	3.2
+//===== Descrição: ===========================================
+//	Ativa contas VIPs, retira dias vips automaticamente,
+//	e quando acaba os dias vips, a VIP é retirada.
+//===== Comentários Adicionais: ==============================
+//	- 1.0 Criado SVRO 
+//	- 2.0 Script Otimizado e adicionado opção que mostra o 
+//		total de contas VIP que há no servidor. 
+//	- 2.5 Adicionado possibilidade de setar o level da conta 
+//		VIP do seu servidor. 
+//	- 2.6 Script Otimizado e reestruturado. 
+//	- 2.6b Readicionado o waitingroom e corrigido um 
+// 		pequeno erro. 
+//	- 2.7 Script Otimizado. 
+//	- 2.8 Adicionado novo modo de adicionar VIP (pelo nome do char). 
+//	- 2.9 Adicionado nova opção de ter ou não ter o comando @reloadgmdb. 
+//	- 3.0 Script Otimizado , e modificado pequenas coisas. 
+//	- 3.0b Feita uma mini modificação.
+//	- 3.1 Varias modificações no sistema.
+//	- 3.2 Modificados comandos para ficar compatível com eAthena. [ Lord ]
+// 	- 3.2 OBSERVAÇÂO TABELA SQL A SER IMPORTADA PARA SEU BANCO DE DADOS --> ALTER TABLE `login` ADD `diasvip` INT( 11 ) NOT NULL DEFAULT '0';
+//============================================================
+-	script	SVRO#config	-1,{
+//===== Configuraçõe: ========================================
+//
+OnInit:
+//
+// Level Mínimo de GM para ele poder mecher no Sistema VIP in-game:
+// Lembre-se: alem do Level Minimo o GM terá também que saber a
+// senha. ( deffault: 80 )
+set $minlvgm,"80";
+//
+// Level da conta VIP (deffault: 1)
+set $levelvip, 1;
+//
+// Seu emulador possui o comando: @reloadgmdb ?
+// (0 para não, 1 para sim) (deffault: 0)
+set $reload, 0;
+//
+// Senha para mexer no Sistema VIP in-game :
+set $vipsen$,"271094275";
+//
+// Quantidade de contas a mostrar por página
+// na opção de listar contas vips.
+// Maximo: 100 por página. ( deffault: 30 )
+set $mesVIPs, 30;
+//
+// Coordenadas da Sala VIP :
+set $mapavip$,"sec_in01.gat";
+set $cordx,169;
+set $cordy,177;
+//
+// Site do seu servidor : 
+// OBSERVAÇÂO, se não houver deixe em branco (como está).
+set $site$,"";
+//
+//Nome do npc:
+set $namenpc$, "^CD0000[Porteiro VIP]^000000";
+//
+end;
+//
+//============================================================
+}
+
+prontera.gat,166,187,4	script	Porteiro VIP	89,{
+if (getgmlevel() < $levelvip){
+mes $namenpc$;
+mes "Você não é VIP";	
+if ($site$ == ""){mes "Informe-se como ser VIP!";
+} else {mes "Entre no site ^FF0000"+$site$+"^000000 e saiba como ser VIP !";}
+close;
+}
+set .@loop,1;
+while(.@loop){
+mes $namenpc$;
+mes "Olá "+strcharinfo(0)+"!";
+mes "O que deseja?";
+next;
+if (getgmlevel() >= $minlvgm)
+set .@menu$,select("- Entrar na sala VIP","- Administrar VIPs","","- Nada");
+else
+set .@menu$,select("- Entrar na sala VIP","","- Dias restantes de VIP","- Nada");
+switch(.@menu$){
+		case 1:
+			next;
+			mes $namenpc$;
+			mes "Você gostaria de ir para sala vip?";
+			if(select("- Sim:- Não") == 1){
+			warp $mapavip$,$cordx,$cordy; end;
+			}
+			next;
+			break;
+			
+		case 2:
+			next;
+			mes ""+$namenpc$+" - ^FF0000Administração^000000";
+			mes "inpute a senha para acessar essa Area:";
+			input @admvipssenha$;
+			next;
+			if (@admvipssenha$ != $vipsen$){
+			mes ""+$namenpc$+" - ^FF0000Administração^000000"; 
+			mes "Senha Incorreta!";
+			next;
+			break;
+			}
+			mes ""+$namenpc$+" - ^FF0000Administração^000000";
+			mes "Senha Correta...";
+			mes "Levando à Administração de Contas VIP...";
+			set .@loop2,1;
+			while(.@loop2) {
+			next;
+			mes ""+$namenpc$+" - ^FF0000Administração^000000";
+			mes "Oque você gostaria de fazer?";
+			switch(select("- Adicionar VIP:- Editar conta VIP:- Listar contas VIP:- Total de Contas VIP:- Opções Extras:- Sair")){
+
+				case 1:
+					set .@loop6,1;
+					while(.@loop6) {
+					next;
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "Como deseja adicionar a VIP?";
+					switch(select("- Pelo Login:- Nome de um Char:- Voltar")){
+						
+						case 1:
+							next;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";	
+							mes "inpute o Login da Conta que deseja Adicionar:";
+							mes "Observação: Não é possível adicionar conta que ja é VIP.";
+							input @login$;
+							next;
+							set @accid,0;
+							set @acclogin$,"";
+							query_sql "SELECT `account_id` FROM `login` WHERE `group_id`='0' AND `diasvip`='0' AND `userid`='"+@login$+"'",@accid;
+							if (@accid[0] == 0){
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Está conta não existe ou ja é VIP!";
+							break;
+							}
+							query_sql "SELECT `userid` FROM `login` WHERE `account_id`='"+@accid+"'",@acclogin$;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "^FF0000ID da conta : ^000000"+@accid+"";
+							mes "^FF0000Login : ^000000"+@acclogin$+"";
+							mes "Quantos dias VIP deseja adicionar a essa conta?";
+							mes "Observação: Não existe dias VIP 0";
+							input @numdias;
+							next;
+							if (@numdias == 0){
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Não é possível adicionar 0 dia(s) VIP!";
+							break;
+							}
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Adicionar ^FF0000"+@numdias+"^000000 dia(s) VIP à conta de ^FF0000"+@acclogin$+"^000000.";
+							mes "Proseguir?";
+							if(select("- Sim:- Não") == 2) break;
+							query_sql "UPDATE `login` SET `group_id`='"+$levelvip+"',`diasvip`='"+@numdias+"' WHERE `account_id`='"+@accid+"'";
+							next;
+							if($reload) atcommand "@reloadgmdb";
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Conta VIP adicionada!";
+							break;
+							
+						case 2:
+							next;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";	
+							mes "inpute o nome do Char que deseja Adicionar VIP:";
+							mes "Observação: Não é possível adicionar VIP a chars VIP.";
+							input @name$;
+							next;
+							set @accid2,0;
+							set @acclogin2$,"";
+							query_sql "SELECT `account_id` FROM `char` WHERE `name`='"+@name$+"'",@accid2;
+							if (@accid2[0] == 0){
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Este char não existe!";
+							break;
+							}
+							query_sql "SELECT `userid` FROM `login` WHERE `group_id`='0' AND `diasvip`='0' AND `account_id`='"+@accid2+"'",@acclogin2$;
+							if (@acclogin2$[0] == ""){
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "A conta referente a este char ja é VIP!";
+							break;
+							}
+							query_sql "SELECT `name` FROM `char` WHERE `account_id`='"+@accid2+"'",@charname$;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "O char: ^FF0000"+@charname$+"^000000 pertence a:";
+							mes "^FF0000ID da conta : ^000000"+@accid2+"";
+							mes "^FF0000Login : ^000000"+@acclogin2$+"";
+							mes "Quantos dias VIP deseja adicionar a essa conta?";
+							mes "Observação: Não existe dias VIP 0";
+							input @numdias2;
+							next;
+							if (@numdias2 == 0){
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Não é possível adicionar 0 dia(s) VIP!";
+							break;
+							}
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Adicionar ^FF0000"+@numdias2+"^000000 dia(s) VIP à conta de ^FF0000"+@acclogin2$+"^000000 cujo char pertencente é: ^FF0000"+@charname$+"^000000.";
+							mes "Proseguir?";
+							if(select("- Sim:- Não") == 2) break;
+							query_sql "UPDATE `login` SET `group_id`='"+$levelvip+"',`diasvip`='"+@numdias2+"' WHERE `account_id`='"+@accid2+"'";
+							next;
+							if($reload) atcommand "@reloadgmdb";
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Conta VIP adicionada!";
+							break;
+						
+						case 3:
+							set .@loop6,0;
+							break;
+					
+					}
+					}
+					break;
+					
+					
+				case 2:
+					next;
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "inpute o Login da Conta que você deseja editar:";
+					mes "Observação: Não é possível editar contas que não são VIPs.";
+					input @login$;
+					set @accid,0;
+					set @diasr,0;
+					set @acclogin$,"";
+					set @EColor$, "^000000";
+					query_sql "SELECT `account_id` FROM `login` WHERE `group_id`='"+$levelvip+"' AND `userid`='"+@login$+"'",@accid;
+					if (@accid[0] == 0) {
+					next;
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "Está conta não é VIP ou não existe!";
+					break;
+					}
+					set .@loop3,1;
+					while(.@loop3) {
+					next;
+					query_sql "SELECT `userid` FROM `login` WHERE `account_id`='"+@accid+"'",@acclogin$;
+					query_sql "SELECT `diasvip` FROM `login` WHERE `account_id`='"+@accid+"'",@diasr;
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "A conta selecionada foi:";
+					if (@diasr[0] <= 1) set @Color$, "^FF0000";
+					if (@diasr[0] >= 2 && @diasr[0] < 7) set @Color$, "^FFA200";
+					if (@diasr[0] >= 7 && @diasr[0] < 15) set @Color$, "^C4CB00";
+					if (@diasr[0] >= 15) set @Color$, "^008000";
+					mes "===========================";
+					mes "ID da conta: "+ @Color$ + @accid + @EColor$;
+					mes "Login da conta: "+ @Color$ + @acclogin$ + @EColor$;
+					mes "Dias VIPs restantes: "+ @Color$ + @diasr + @EColor$;
+					mes "===========================";
+					mes "O que deseja fazer?";
+					switch(select("- Editar dias VIP:- Cancelar conta VIP:- Voltar")){
+
+						case 1:
+							next;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Modificar Dias VIPs restantes da";
+							mes "Conta: ^FF0000"+@acclogin$+"^000000 de ^FF0000"+@diasr+"^000000 dia(s) VIP";
+							mes "Para?";
+							mes "Observação: Não da para modificar para 0 dias VIP!";
+							input @numdiase;
+							next;
+							if (@numdiase == 0){
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Não é possível modificar para 0 dia(s) VIP!";
+							break;
+							}
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Modificar de ^FF0000"+@diasr+"^000000 dia(s) VIP para ^FF0000"+@numdiase+"^000000 dia(s) VIP ?";
+							if(select("- Sim:- Não") == 2) break;
+							query_sql "UPDATE `login` SET `diasvip`='"+@numdiase+"' WHERE `account_id`='"+@accid+"'";
+							next;
+							if($reload) atcommand "@reloadgmdb";
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Dias Restantes VIP modificado!";
+							break;
+
+						case 2:
+							next;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Deseja cancelar a VIP da";
+							mes "Conta: ^FF0000"+@acclogin$+"^000000 ?";
+							if(select("- Sim:- Não") == 2) break;
+							query_sql "UPDATE `login` SET `group_id`='0',`diasvip`='0' WHERE `account_id`='"+@accid+"'";
+							next;
+							if($reload) atcommand "@reloadgmdb";
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Vip Cancelada!";
+							break;
+								
+						case 3:
+							set .@loop3,0;
+							break;
+						}
+					}
+					break;
+
+				case 3:
+					set .@Page, 0;
+					set .@Found, 0;
+					set .@loop5,1;
+					while(.@loop5){
+					deletearray .@UserID$[0], 128;
+					deletearray .@AccID[0], 128;
+					deletearray .@VipDia[0], 128;
+					if ($mesVIPs > 100) set $mesVIPs, 100;
+					set @EColor$, "^000000";
+					set .@Page, .@Page + 1;
+					next;
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "Lista de Contas VIPs:";
+					query_sql "SELECT `userid`, `account_id`, `diasvip` FROM `login` WHERE `group_id`='"+$levelvip+"' LIMIT " + (.@Page - 1) * $mesVIPs + ", " + ($mesVIPs + 1), .@UserID$, .@AccID, .@VipDia;
+					for (set .@i, 0; .@i < $mesVIPs; set .@i, .@i + 1) {
+						if (.@VipDia[.@i] <= 1) set @Color$, "^FF0000";
+						if (.@VipDia[.@i] >= 2 && .@VipDia[.@i] < 7) set @Color$, "^FFA200";
+						if (.@VipDia[.@i] >= 7 && .@VipDia[.@i] < 15) set @Color$, "^C4CB00";
+						if (.@VipDia[.@i] >= 15) set @Color$, "^008000";
+						if (.@AccID[.@i]) {
+						mes "ID da conta: "+ @Color$ + .@AccID[.@i] + @EColor$;
+						mes "Login da conta: "+ @Color$ + .@UserID$[.@i] + @EColor$;
+						mes "Dias VIPs restantes: "+ @Color$ + .@VipDia[.@i] + @EColor$;
+						mes "===========================";
+						set .@Found, 1;
+						}
+					}
+					setarray .@Mnu$[0], "", "";
+					if (.@Page > 1) set .@Mnu$[0], "- Página anterior";
+					if (.@AccID[$mesVIPs]) set .@Mnu$[1], "- Próxima página";
+					if (!.@Found) mes "Não existe nenhum VIP ainda.";
+					switch(select(""+.@Mnu$[0]+"",""+.@Mnu$[1]+"","- Voltar")){
+						
+						case 1:
+							set .@Page, .@Page - 2;
+							break;
+						
+						case 2:
+							break;
+
+						case 3:
+						set .@loop5,0;
+						break;
+						}
+					}
+					break;
+
+				case 4:
+					next;
+					set @totalvip,0;
+					set @desbug,0;
+					query_sql "SELECT COUNT(1) FROM `login` WHERE `group_id`='"+$levelvip+"'",@totalvip;
+					query_sql "SELECT COUNT(1) FROM `login` WHERE `group_id`='"+$levelvip+"' AND `diasvip`<= '0'",@desbug;
+					if (@desbug[0] > 0){
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "Seu servidor tem um total de ^008000"+@totalvip+"^000000 conta VIP, mas há ^FF0000"+@desbug+"^000000 contas VIP que eram para estar canceladas.";
+					mes "Deseja cancelar as Contas VIPs com dias acabados?";
+					if(select("- Sim:- Não") == 2) break;
+					query_sql "UPDATE `login` SET `group_id`='0' WHERE `diasvip`<='0' AND `group_id`='"+$levelvip+"'";
+					next;
+					if($reload) atcommand "@reloadgmdb";
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "Contas com dias vip acabados canceladas com sucesso.";
+					break;
+					}
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "Seu servidor tem um total de ^008000"+@totalvip+"^000000 conta VIP.";
+					select("- Voltar");
+					break;
+					
+				case 5:
+					set .@loop4,1;
+					while(.@loop4) {
+					next;
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "O que deseja fazer?";
+					switch(select("- Processar Contas VIP:- Cancelar TODAS contas VIPs:- Voltar")){
+			
+						case 1:
+							next;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Processando as Contas VIP você ";
+							mes "retirará 1 dia de todas contas VIP ";
+							mes "e se alguma conta chegar a 0 dias VIP ";
+							mes "ela será cancelada.";
+							mes "Deseja fazer isto?";
+							if(select("Sim:Não") == 2) break;
+							query_sql "UPDATE `login` SET `diasvip`=`diasvip`-1 WHERE `group_id`='"+$levelvip+"'";
+							query_sql "UPDATE `login` SET `group_id`='0' WHERE `diasvip`<='0' AND `group_id`='"+$levelvip+"'";
+							next;
+							if($reload) atcommand "@reloadgmdb";
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Contas Processadas com sucesso!";
+							break;
+
+						case 2:
+							next;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Fazendo isto você irá cancelar";
+							mes "TODAS contas VIP do servidor.";
+							mes "Deseja fazer isto?";
+							next;
+							if(select("Sim:Não") == 2) break;
+							query_sql "UPDATE `login` SET `group_id`='0',`diasvip`='0' WHERE `group_id`='"+$levelvip+"'";
+							next;
+							if($reload) atcommand "@reloadgmdb";
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Todas as contas VIP foram Canceladas!";
+							break;
+			
+						case 3:
+							set .@loop4,0;
+							break;
+						}
+					}
+					break;
+
+				case 6:
+					set .@loop2,0;
+					break;
+				}
+			}
+			close;
+
+		case 3:
+			next;
+			query_sql "SELECT `diasvip` FROM `login` WHERE `account_id` = '"+ getcharid(3) +"'", @dias;
+			if (@dias[0] <= 5){
+			mes $namenpc$;
+			mes "Você só tem "+@dias+" dia(s) de VIP restando,";
+			mes "recarregue sua VIP e Ajude o Servidor !!!";
+			select("- Voltar");
+			next;
+			break;
+			}
+			mes $namenpc$;
+			mes "Você ainda tem "+@dias+" dia(s) de VIP.";
+			select("- Voltar");
+			next;
+			break;
+		
+		case 4:
+			next;
+			mes $namenpc$;
+			mes "Ok! Volte quando quiser!";
+			set .@loop,0;
+			break;
+	}
+}
+close;
+
+OnInit:
+waitingroom "Porteiro VIP",0;	
+end;
+}
+
+
+-	script	SVRO#T-1	-1,{
+	end;
+
+OnClock0001:
+	query_sql "UPDATE `login` SET `diasvip`=`diasvip`-1 WHERE `group_id`='"+$levelvip+"'";
+	end;
+
+OnClock0002:
+	query_sql "UPDATE `login` SET `group_id`='0' WHERE `diasvip`<='0' AND `group_id`='"+$levelvip+"'";
+	if($reload) atcommand "@reloadgmdb";
+	end;
+}
+
+-	script	SVRO#L-1	-1,{
+OnPCLoginEvent:
+	if (getgmlevel() != $levelvip) end;
+	query_sql "SELECT `diasvip` FROM `login` WHERE `account_id` = '"+ getcharid(3) +"'", @dias;
+	if (@dias[0] <= 5){
+	dispbottom "[Controle VIP]";
+	dispbottom "Você só tem "+@dias+" dia(s) de VIP restando,";
+	dispbottom "Recarregue sua VIP e Ajude o Servidor !!!";
+	end;
+	}
+	dispbottom "[Controle VIP]";
+	dispbottom "Você ainda tem "+@dias+" dia(s) de VIP.";
+	end;
+}
+
+
+sec_in01,180,172,3	script	Resetadora	4_F_TELEPORTER,{
+
+	set .@ResetStat,5000;	// Zeny for stat resetaaaa
+	set .@ResetSkill,5000;	// Zeny for skill reset
+	set .@ResetBoth,9000;	// Zeny for resetting both together
+
+	mes "[Resetadora]";
+	mes "Eu sou a Resetadora";
+	mes "Resetar Status: "+ .@ResetStat +"z";
+	mes "Resetar Skills: "+ .@ResetSkill +"z";
+	mes "Resetar Ambos: "+ .@ResetBoth +"z";
+	mes "Por favor selecione o serviço que quer:";
+	next;
+	switch(select("^FF3355Resetar Skills:Resetar Status:Resetar Ambos^000000:Cancel")) {
+	case 1:
+		mes "[Resetadora]";
+		if (Zeny < .@ResetSkill) {
+			mes "Desculpe, você não tem o zeny.";
+			close;
+		}
+		Zeny -= .@ResetSkill;
+		sc_end SC_ALL;
+		resetskill;
+		mes "Está feito.";
+		close;
+	case 2:
+		mes "[Resetadora]";
+		if (Zeny < .@ResetStat) {
+			mes "Desculpe, você não tem o zeny.";
+			close;
+		}
+		Zeny -= .@ResetStat;
+		resetstatus;
+		mes "Está feito.";
+		close;
+	case 3:
+		mes "[Resetadora]";
+		if (Zeny < .@ResetBoth) {
+			mes "Desculpe, você não tem o zeny.";
+			close;
+		}
+		Zeny -= .@ResetBoth;
+		sc_end SC_ALL;
+		resetskill;
+		resetstatus;
+		mes "Está feito.";
+		close;
+	case 4:
+		close;
+	}
+}
+
+
+sec_in01,183,169,3	script	Remover SkillPoint	97,{
+
+mes "[^FF0000Removedor SkillPoint^000000]";
+mes "***********************************";
+mes "Você tem "+SkillPoint+" pontos de skill no momento";
+next;
+mes "[^FF0000Removedor SkillPoint^000000]";
+mes "***********************************";
+mes "Deseja remover seus skill point?";
+if(select("Não:Sim") == 1) close;
+next;
+mes "[^FF0000Removedor SkillPoint^000000]";
+mes "***********************************";
+set SkillPoint, 0;
+mes "Pontos resetados!";
+close;
+}
+
+
+sec_in01,180,176,4	script	Removedora de Cartas#eAcustom	1_F_ORIENT_04,{
+
+	set .zenycost,200000; // Set base cost in zeny of the card remover services
+	set .percardcost,25000; // set cost per card of the card remover services
+	set .faildestroy,0; // Should the card remover have a chance of failure that destroys items? 1 = Yes, 0 = No.
+
+	disable_items;
+	mes "^FF0000[Removedora de Cartas]^000000";
+	mes "Bom dia " + strcharinfo(0) + ",";
+	mes "tenho o poder de retirar cartas de equipamentos.";
+	mes "Está ideia te agrada?";
+	next;
+	switch(select("Sim, bastante.:Quanto custa?:Não Obrigado.")) {
+	case 1:
+		mes "[Removedora de Cartas]";
+		mes "Muito bem, Qual item eu devo examinar pra você?";
+		next;
+
+		setarray .@position$[1], "Head","Body","Left hand","Right hand","Robe","Shoes","Accessory 1","Accessory 2","Head 2","Head 3";
+		set .@menu$,"";
+		for( set .@i,1; .@i <= 10; set .@i,.@i+1 )
+		{
+			if( getequipisequiped(.@i) )
+			set .@menu$, .@menu$ + .@position$[.@i] + "-" + "[" + getequipname(.@i) + "]";
+
+			set .@menu$, .@menu$ + ":";
+		}
+		set .@part,select(.@menu$);
+		if(!getequipisequiped(.@part)) {
+			mes "[Removedora de Cartas]";
+			mes "Você não me ouviu dizer que posso remover as cartas dele.";
+			close;
+		}
+		if(getequipcardcnt(.@part) == 0) {
+			mes "[Removedora de Cartas]";
+			mes "Não tem cartas nesse equipamento posso fazer nada com ele.";
+			close;
+		}
+		set .@cardcount,getequipcardcnt(.@part);
+		
+		if (!checkweight(1202,(.@cardcount+1))) {
+			mes "So um momento!";
+			mes "Eu nao posso oferecer um dos meus";
+			mes "serviÃ§os para voce, porque ";
+			mes "voce esta carregando muito peso.";
+			mes "Coloque na kafra ou venda";
+			mes "seus itens extras.";
+			close;
+		}
+		mes "[Removedora de Cartas]";
+		mes "This item has " + .@cardcount + " cards compounded on it. To perform my magic, I will need " + (.zenycost+(.@cardcount * .percardcost)) + " zeny, a ^0000FFStar Crumb^000000, and a ^0000FFYellow Gemstone^000000.";
+		next;
+		if(select("Very well. Do it.:Nevermind.") == 2) {
+			mes "[Removedora de Cartas]";
+			mes "Volte se precisar de mim.";
+			close;
+		}
+		if((Zeny < (.zenycost+(.@cardcount * .percardcost))) || (countitem(1000) < 1) || (countitem(715) < 1)) {
+			mes "[Removedora de Cartas]";
+			mes "Voce nao tem todos os itens necessarios para minha magica funcionar, volte quando tiver.";
+			close;
+		}
+		mes "[Removedora de Cartas]";
+		mes "Antes de começar, Preciso avisa-lo que pode falhar. Se acontecer, pode destruir as cartas, o item, ou ambos. Sem reembolso. Sera mais importante pra você: as cartas, ou o item?";
+		next;
+		switch(select("I changed my mind about this.:The item.:The cards.")) {
+		case 1:
+			mes "[Removedora de Cartas]";
+			mes "Muito bem. volte quando precisar de meus serviços.";
+			close;
+		case 2:
+			set .@failtype,1;
+			break;
+		case 3:
+			set .@failtype,2;
+		}
+		mes "[Wise Old Woman]";
+		mes "Very well. I shall begin.";
+		Zeny -= (.zenycost+(.@cardcount * .percardcost));
+		delitem 1000,1;
+		delitem 715,1;
+		
+		// Replace the constants in the next 3 lines with failure chance values defined in refine_db.txt
+		// First value = Total failure chance (item and cards destroyed)
+		// Second value = Partial failure chance (one or the other is destroyed, player decides which one is safe)
+		// Third value = Harmless failure chance (all that's lost is your investment)
+
+		set .@failchance,rand(100);
+		if (.faildestroy==1) {
+			if(.@failchance < 2) {
+				next;
+				failedremovecards .@part,0;
+				mes "[Velha Sábia]";
+				mes "O processo foi um fracasso total. Receio que o item e as cartas foram destruídas.";
+				close;
+			}
+
+			if(.@failchance < 8) {
+				if (.@failtype == 1) {
+					next;
+					failedremovecards .@part,1;
+					mes "[Velha Sábia]";
+					mes "Embora eu tenha conseguido remover as cartas a partir do item, foram destruídos no processo.";
+					close;
+				}
+
+				if (.@failtype == 2) {
+					next;
+					failedremovecards .@part,2;
+					mes "[Velha Sábia]";
+					mes "Mais infelizmente. Eu sucedi na remoção dos cartões, mas o item em si foi destruído no processo.";
+					close;
+				}
+			}
+		}
+
+		if(.@failchance < 10) {
+			next;
+			failedremovecards .@part,3;
+			mes "[Velha Sábia]";
+			mes "Eu não conseguiram remover as cartas. Felizmente, porém, tanto o item e os cartões ainda estão perfeitos.";
+			close;
+		}
+		next;
+		successremovecards .@part;
+		mes "[Velha Sábia]";
+		mes "O processo foi um sucesso. Aqui estão suas cartas e seu item.";
+		close;
+	case 2:
+		mes "[Velha Sábia]";
+		mes "Custa por volta de "+.zenycost+" zeny, referente a "+.percardcost+" zeny de cada carta que eu for remover, Eu preciso tambem de um fragmento estelar e uma gema amarela para magica funcionar.";
+		close;
+	case 3:
+		mes "[Velha Sábia]";
+		mes "Muito bem. volte quando precisar de meus serviços.";
+		close;
+	}
+}
+
+
+sec_in01,175,180,4	cashshop	Loja de ROPs	494,5518:20000,5374:20000,5137:15000,5462:13500,5325:12000,5361:12000,5377:12000,5314:10000,13709:2500,13718:1250,13720:1250,12913:1000,12914:1000,12915:1000,12916:1000,12917:1000,12918:1000,14003:1000,14004:1000,12901:800,14002:700,12922:500,14001:4005641:6000,5095:10000,5098:11000,5099:12000,5100:5000,5102:5000,5107:2000,5130:7000,5131:7000,5132:4000,5135:5000,5137:20000,5138:7000,5140:7000,5142:6000,5143:5000,5145:10000,5146:6000,5147:3000,5148:4000,5149:4000,5150:7000,5151:7000,5400:3000,5401:7000,5402:2000,5403:3000,5405:3000,5406:7000,5407:6000,5410:7000,5411:8000,5416:6000,5420:7000,5421:6000,5426:3000,5428:6000,5433:5000,5435:5000,5451:20000,5452:15000,5453:10000,5454:7000,5457:9000,5458:2000,5459:4000,5461:5000,5462:10000,5463:10000,5464:8000,5465:8000,5467:7000,5469:6000,5470:2000,5471:5000,5475:4000,5477:1000,5478:5000,5479:9000,5481:7000,5482:10000,5483:8000,5526:7000,5545:7000,5549:5000,5592:5000,5624:7000,5657:8000,5658:7000
+sec_in01,171,182,4	cashshop	Loja de ROPs Chapeus	561,2589:20000,2573:10000,2576:12000,5641:6000,5095:10000,5098:11000,5099:12000,5100:5000,5102:5000,5107:2000,5130:7000,5131:7000,5132:4000,5135:5000,5137:20000,5138:7000,5140:7000,5142:6000,5143:5000,5145:10000,5146:6000,5147:3000,5148:4000,5149:4000,5150:7000,5151:7000,5400:3000,5401:7000,5402:2000,5403:3000,5405:3000,5406:7000,5407:6000,5410:7000,5411:8000,5416:6000,5420:7000,5421:6000,5426:3000,5428:6000,5433:5000,5435:5000,5451:20000,5452:15000,5453:10000,5454:7000,5457:9000,5458:2000,5459:4000,5461:5000,5462:10000,5463:10000,5464:8000,5465:8000,5467:7000,5469:6000,5470:2000,5471:5000,5475:4000,5477:1000,5478:5000,5479:9000,5481:7000,5482:10000,5483:8000,5526:7000,5545:7000,5549:5000,5592:5000,5624:7000,5657:8000,5658:7000
+sec_in01,165,182,4	cashshop	Loja de ROPs Armaduras	546,2357:18000,2375:16000,2561:5000,2562:4000,2563:5000,2581:6000,2580:5000,2138:7000,2145:4000,2149:3000,2150:3000,2151:3000,2158:5000,2159:5000,2174:5000,2163:5000,2164:5000,2165:5000,2167:5000,2160:4000,2161:6000,2168:6000,2169:4000,2169:4000,2170:2000,2171:2000,2172:2000,2173:2000
+sec_in01,173,182,4	cashshop	Loja de ROPs acessórios	548,2678:22000,2679:21000,2680:10000,2701:7000,2620:5000,2629:7000,2630:20000,2631:7000,2638:4000,2639:4000,2640:4000,2646:4000,2648:3000,2649:3000,2650:3000,2651:3000,2654:3000,2663:4000,2664:3000,2667:3000,2668:15000,2702:3000
+sec_in01,169,182,4	cashshop	Loja de ROPs Usáveis	544,12202:100,12203:100,12204:100,12205:100,12206:100,12207:100,12208:200,12209:300,12210:500,12211:50,12212:50,12214:200,12215:100,12221:100,12225:100,14466:5000,14469:2000,12622:5000
+sec_in01,167,182,4	cashshop	Loja de ROPs Equipamento	555,2524:10000,2523:1000,2433:3000,2374:5000,2491:7000,2495:8000,2115:3000,2126:5000,1292:7000,1296:7000,2527:9000,2536:5000,2537:7000,2541:5000,2553:5000,2554:15000,2559:7000,2565:5000,2569:5000,2570:5000,2574:5000,2575:5000,2582:5000,2586:5000,2590:4000,2591:4000
+
+
+sec_in01,178,165,1	script	estilista#custom_stylist	2_M_DYEINGER,{
+
+	setarray .@styles[1],getbattleflag("max_cloth_color"),getbattleflag("max_hair_style"),getbattleflag("max_hair_color");
+	setarray .@Look[1],7,1,6;
+	set .@s, select(" ~ Cor da roupa: ~ Estilo de cabelo: ~ Cor de cabelo");
+	set .@Revert, getlook(.@Look[.@s]);
+	set .@style,1;
+	while(1) {
+		setlook .@Look[.@s], .@style;
+		message strcharinfo(0),"This is style #"+.@style+".";
+		set .@menu$, " ~ Proximo (^0055FF"+((.@style!=.@styles[.@s])?.@style+1:1)+"^000000): ~ Volta (^0055FF"+((.@style!=1)?.@style-1:.@styles[.@s])+"^000000): ~ Escolher...: ~ Volta para original (^0055FF"+.@Revert+"^000000)";
+		switch(select(.@menu$)) {
+			case 1: set .@style, ((.@style!=.@styles[.@s])?.@style+1:1); break;
+			case 2: set .@style, ((.@style!=1)?.@style-1:.@styles[.@s]); break;
+			case 3: message strcharinfo(0),"Choose a style between 1 - "+.@styles[.@s]+".";
+				input .@style,0,.@styles[.@s];
+				if (!.@style) set .@style, rand(1,.@styles[.@s]);
+				break;
+			case 4: set .@style, .@Revert; setlook .@Look[.@s], .@Revert; break;
+		}
+	}
+}
+
+
+sec_in01,172,163,2	script	Sala vip	542,{
+
+mes "[Sala vip]";
+mes "Você quer ir para a prontera?";
+menu "Opa,claro que sim",sim,"Ah,agora nao to afim",nao;
+
+nao:
+next;
+mes "[Sala vip]";
+mes "OK, volte quando quiser";
+close;
+
+sim:
+next;
+mes "[Sala vip]";
+mes "Escolha uma arena";
+menu "Arena",arena,Nenhuma,n;
+
+n:
+next;
+mes "[Sala vip]";
+mes "OK, volte quando quiser";
+close;
+
+arena:
+warp "prontera",151,160;
+}

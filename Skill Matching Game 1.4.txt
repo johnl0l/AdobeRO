@@ -1,0 +1,693 @@
+/*(¯`º¤ø,¸¸,ø¤°¯`º¤ø,¸¸,ø¤°¯`º¤ø,¸¸,ø¤°¯º¤ø,¸¸,ø¤º´¯)
+  |                                                 |
+  | rAthena Script                                  |
+  |                                                 |
+  | Skill Matching Game                             |
+  | By:                                             |
+  | Viole                                           |
+  |                                                 |
+  | Current Version                                 |
+  | 1.4                                             |
+  |                                                 |
+  | Description:                                    |
+  | Just like a normal matching/memory game.        |
+  | Here, you need to match skill effects with      |
+  | the same skill effect by clicking the eggs.     |
+  | If 1 pair is matched, the pair disappears       |
+  | and gives a prize. If all are matched,          |
+  | npc gives another prize for completing          |
+  | the game. Depends on what prizes are set        |
+  | by the GM. ( In-game set )                      |
+  | If prizes are not set, default prize are        |
+  | distributed instead. 3 Minutes Game Duration.   |
+  |                                                 |
+  | Changelogs:                                     |
+  | 1.0 Skill Matching Game ( Special Effects )     |
+  | 1.1 Removed Timer (I'll add another timer soon) |
+  | 1.2 Fixed Attempts Bug                          |
+  | 1.2 Added Setwall in Event Room                 |
+  | 1.3 Added time interval before you can          |
+  |     join the event again.                       |
+  |     (Finish/Failed/AFK/Timer's up)              |
+  | 1.3 Set if Char/Account Based Time Interval     |
+  | 1.3 Added AFK Check ( Read note line 601 )      |
+  | 1.4 Fixed minor mistake (Thanks to Emistry)     |
+  | 1.4 Changed few lines in time interval (cadz)   |
+  |                                                 |
+  | Credits:                                        |
+  | Noobita for explaining *atoi                    |
+  | Quinn for giving the eggs idea lol              |
+  |                                                 |
+  | Edit things under : ( Added set timer )         |
+  | C O N F I G U R A T I O N (line 448)            |
+  |                                                 | 
+  ´¯`º¤ø,¸¸,ø¤°¯`º¤ø,¸¸,ø¤°¯`º¤ø,¸¸,ø¤°¯º¤ø,¸¸,ø¤º´¯´*/
+
+
+prontera,164,172,2	script	Mavis Vermillion	437,{
+
+	if( .gameon != 0 )
+	{
+		mes .n$;
+		mes "Looks like someone is playing the game, wait until it ends.";
+		close;
+	}
+	
+	if( $skillmatchgame_based == 0 )
+	{
+		if( #Already_Played > gettimetick(2) )
+		{
+			mes .n$;
+			mes "Sorry, you have to wait "+ .intervalmavis / 60 +"minutes before joining the event again!";
+			close;
+		}
+	}
+	
+	if( $skillmatchgame_based == 1 )
+	{
+		if( Already_Played > gettimetick(2) )
+		{
+			mes .n$;
+			mes "Sorry, you have to wait "+ .intervalmavis / 60 +"minutes before joining the event again!";
+			close;
+		}
+	}
+		
+		
+Player_Menu:
+	specialeffect 75;
+	specialeffect 312;
+	specialeffect 42;
+	specialeffect 40;
+	mes .n$;
+	mes "Welcome, ^008000"+strcharinfo(0)+"^000000, want to play?";
+	mes "Cost is ^0000FF"+.zeny+"^000000 zeny.";
+	mes "If you don't have zeny.";
+	mes "You can pay ^FF0000"+.payamount+" "+getitemname(.payitem)+"s^000000 instead.";
+	next;
+	switch( select("^FFA500Please warp me now!^000000:^0000FFI've changed my mind!^000000",
+		( getgmlevel() < .gmlvl )?"":"Admin Configuration"))
+	{
+	case 1:
+		if((countitem(.payitem) < .payamount ) && ( Zeny < .zeny ))
+		{
+			mes .n$;
+			mes "It seems you don't have enough zeny. Or even "+.payamount+" "+getitemname(.payitem)+"s.";
+			mes "Poor little guy..";
+			close;
+		}
+		else
+		{
+			mes .n$;
+			mes "Goodluck in your game!~";
+			if((countitem(.payitem) >= .payamount))
+				delitem .payitem, .payamount;
+			else
+				set Zeny, Zeny - .zeny;
+			close2;
+			goto Game_On;
+		}
+		
+Game_On:
+	set .gameon, 1;
+	set .attempt, .attempts;	
+	set .Char_Name$, strcharinfo(0);
+	set .Char_ID, getcharid(3);
+	attachnpctimer;
+	warp .mapname$,.warpx,.warpy;
+	sleep 5000;
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : The game will start in 10 seconds.",8;
+	sleep 2000;
+			
+	stopnpctimer;
+	donpcevent "::OnShowTogepi";
+	set .gameon, 1;
+
+	deletearray .@special_effects[0],127;
+	
+	//•••••Special Effects•••••//
+	// You can change special effects #s here, remember to always have a pair # (Note: The same count with array .@npc_size)
+	setarray .@special_effects[0],312,312,470,470,8,8,9,9,15,15,468,468,17,17,226,226,409,409,252,252,471,471,336,336,635,635,27,27,28,28,467,467,30,30,637,637;
+
+	set .@seffect_size, getarraysize(.@special_effects);
+	deletearray .skill_effects[0],127;
+	set .@seffects, .@seffect_size;
+
+	for( set .@i, 0; .@i < .@seffect_size; set .@i, .@i + 1 )
+	{
+		set .@rand_seffects, rand(.@seffects);
+		set .skill_effects[.@i], .@special_effects[.@rand_seffects];
+		deletearray .@special_effects[.@rand_seffects], 1;
+		set .@seffects, .@seffects - 1;
+	}
+
+	set .event_showeffect, -1;
+	set .attempt, .attempt + 1;
+	set .gamepair, 0;
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : See the Togepi's astonishing skill effects!",8;
+	sleep 2000;
+	
+	deletearray .@npc_size[0],127;
+	
+	// NPC Count
+	setarray .@npc_size[0],0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,33,34,35,36;
+
+	set .@seffect_size, getarraysize(.@npc_size);
+	deletearray .@show_seffects[0],127;
+	set .@seffects, .@seffect_size;
+
+	for( set .@i, 0; .@i < .@seffect_size; set .@i, .@i + 1 )
+	{
+		set .@rand_seffects, rand(.@seffects);
+		set .@show_seffects[.@i], .@npc_size[.@rand_seffects];
+		deletearray .@npc_size[.@rand_seffects], 1;
+		set .@seffects, .@seffects - 1;
+	}
+
+	for( set .@i, 0; .@i < 36; set .@i, .@i + 2 )
+	{
+		donpcevent "SkillEffect" + .@show_seffects[.@i] + "::OnShowSkillEffects";
+		donpcevent "SkillEffect" + .@show_seffects[.@i + 1] + "::OnShowSkillEffects";
+		sleep 200;
+	}
+
+	sleep 1600;
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : You only have " + .attempt + " attempts.",8;
+	sleep 2000;
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : Starting in 3..",8;
+	sleep 1000;
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : 2..",8;
+	sleep 1000;
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : 1..",8;
+	sleep 1000;
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : Go! Find pairs of skill effects now. You only got 3 minutes!",8;
+	set .gameon, 2;
+	initnpctimer;
+	end;
+
+OnDoingGood:
+	switch( rand(4) )
+	{
+		case 0: areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : Well, lucky guy...",8; break;
+		case 1: areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : Great...",8; break;
+		case 2: areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : You're doing good!",8; break;
+		case 3: areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : Nice! Just keep looking..!",8; break;
+	}
+	end;
+
+OnDoingBad:
+	switch( rand(4) )
+	{
+		case 0: areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : Wrong egg! (" + .attempt + " lives)",8; break;
+		case 1: areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : Sucks being you, I guess? (" + .attempt + " lives)",8; break;
+		case 2: areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : Too bad! (" + .attempt + " lives)",8; break;
+		case 3: areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : Drink Memory Plus! (" + .attempt + " lives)",8; break;
+	}
+	end;
+
+
+OnWinner:
+	stopnpctimer;
+	donpcevent "::OnHideTogepi";
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : YOU DID IT!!",8;
+	set .gameon, 0;
+	sleep 2000;
+	mapwarp .mapname$,.maintown$,.mainx,.mainy;
+	end;
+	
+OnLose:
+	stopnpctimer;
+	donpcevent "::OnHideTogepi";
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : No more attempts. Sucks being you, I guess.",8;
+	set .gameon, 0;
+	sleep 2000;
+	mapwarp .mapname$,.maintown$,.mainx,.mainy;
+	end;
+
+OnTimer60000:
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : 2 minutes remaining.",8;
+	end;
+OnAfk:
+	stopnpctimer;
+	detachnpctimer;
+	donpcevent "::OnHideTogepi";
+	end;
+OnTimer120000:
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : 1 minute remaining.",8;
+	end;
+OnTimer150000:
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : Last 30 seconds.",8;
+	end;
+OnTimer170000:
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : HURRY! Last 10 seconds.",8;
+	end;
+OnTimer175000:
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : 5..",8;
+	end;
+OnTimer176000:
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : 4..",8;
+	end;
+OnTimer177000:
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : 3..",8;
+	end;
+OnTimer178000:
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : 2..",8;
+	end;
+OnTimer179000:
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : 1..",8;
+	end;
+OnTimer180000:
+	stopnpctimer;
+	donpcevent "::OnHideTogepi";
+	areaannounce .mapname$,.areax1,.areay1,.areax2,.areay2,"Mavis Vermillion : Time's up. You did not make it.",8;
+	if ( getareausers(.mapname$,.areax1,.areay1,.areax2,.areay2) > 0 )
+	{
+		if ( $skillmatchgame_based == 0 )
+		{
+			set #Already_Played, strcharinfo(0);
+			set #Already_Played, gettimetick(2)+.intervalmavis;
+			detachnpctimer;
+		}
+		if ( $skillmatchgame_based == 1 )
+		{
+			set Already_Played, strcharinfo(0);
+			set Already_Played, gettimetick(2)+.intervalmavis;
+			detachnpctimer;
+		}
+	}
+	set .gameon, 0;
+	sleep 2000;
+	mapwarp .mapname$,.maintown$,.mainx,.mainy;
+	end;
+	
+	case 2:
+		close;
+	case 3:
+	Admin_Menu:
+		next;
+		mes .n$;
+		mes "Welcome back GM ^FF0000"+strcharinfo(0)+"^000000.";
+		mes "What do you want to do today?";
+		next;
+		switch(select("Player Menu:Set Payment:Set Prize:Just dropping by!"))
+		{
+		case 1:
+			next;
+			goto Player_Menu;
+		case 2:
+		current_payment:
+			next;
+			mes .n$;
+			mes "Current Item Payment:";
+			mes "^008000"+.payamount+" "+getitemname(.payitem)+"s^000000";
+			mes " ";
+			mes "Current Zeny Payment:";
+			mes "^008000"+.zeny+"^000000 zeny";
+			next;
+			switch(select("Set Item Payment:Set Zeny Payment:Go back to menu"))
+			{
+			case 1:
+				next;
+				mes .n$;
+				mes "Ok, please input the item # to be the payment for joining the game.";
+				next;
+				input .@itemid;
+				if (getitemname(.@itemid) == "null" || getitemname(.@itemid) == "") {next; mes .n$; mes "This item doesn't exists in the database.."; next; goto current_payment; }
+				set .payitem, .@itemid;
+				next;
+				mes .n$;
+				mes "How many "+getitemname(.payitem)+"s should players pay?";
+				next;
+				input .@itemamount;
+				if(.@itemamount <= 0){next; mes .n$; mes "Please input a # greater than 0!"; next; goto current_payment; }
+				set .payamount, .@itemamount;
+				next;
+				mes "So, the item payment for the entering the game:";
+				mes "^008000"+.payamount+" "+getitemname(.payitem)+"s";
+				next;
+				goto current_payment;
+			case 2:
+				next;
+				mes .n$;
+				mes "Ok, please input how much zeny players should pay for entering the game.";
+				next;
+				input .@payzeny;
+				if(.@payzeny <= 0){next; mes .n$; mes "Please input a # greater than 0!"; next; goto current_payment; }
+				set .zeny, .@payzeny;
+				next;
+				mes "So, the zeny payment for the entering the game:";
+				mes "^008000"+.zeny+" zeny.";
+				next;
+				goto current_payment;
+			case 3:
+				next;
+				goto Admin_Menu;
+			}
+		case 3:
+		current_prize:
+			next;
+			mes .n$;
+			mes "Current Normal Prize:";
+			mes "^008000"+.rewardamount+" "+getitemname(.rewarditem)+"s^000000";
+			mes " ";
+			mes "Current Winner Prize:";
+			mes "^008000"+.w_rewardamount+" "+getitemname(.w_rewarditem)+"s^000000";
+			next;
+			switch(select("Set Normal Prize:Set Winner Prize:Enable/Disable Prize:Go back to menu"))
+			{
+			case 1:
+				next;
+				mes .n$;
+				mes "Ok, please input the item to be given if the player finds a pair!";
+				next;
+				input .@rewardid;
+				if (getitemname(.@rewardid) == "null" || getitemname(.@rewardid) == "") {next; mes .n$; mes "This item doesn't exists in the database.."; next; goto current_prize; }
+				set .rewarditem, .@rewardid;
+				next;
+				mes .n$;
+				mes "How many "+getitemname(.rewarditem)+"s should players get?";
+				next;
+				input .@rewardamount;
+				if(.@rewardamount <= 0){next; mes .n$; mes "Please input a # greater than 0!"; next; goto current_prize; }
+				set .rewardamount, .@rewardamount;
+				next;
+				mes "So, the current normal prize:";
+				mes "^008000"+.rewardamount+" "+getitemname(.rewarditem)+"s";
+				next;
+				goto current_prize;
+			case 2:
+				next;
+				mes .n$;
+				mes "Ok, please input the item to be given if the player wins the game!";
+				next;
+				input .@w_rewardid;
+				if (getitemname(.@w_rewardid) == "null" || getitemname(.@w_rewardid) == "") {next; mes .n$; mes "This item doesn't exists in the database.."; next; goto current_prize; }
+				set .w_rewarditem, .@w_rewardid;
+				next;
+				mes .n$;
+				mes "How many "+getitemname(.w_rewarditem)+"s should the winner get?";
+				next;
+				input .@w_rewardamount;
+				if(.@w_rewardamount <= 0){next; mes .n$; mes "Please input a # greater than 0!"; next; goto current_prize; }
+				set .w_rewardamount, .@w_rewardamount;
+				next;
+				mes "So, the current winner prize:";
+				mes "^008000"+.w_rewardamount+" "+getitemname(.w_rewarditem)+"s";
+				next;
+				goto current_prize;
+			case 3:
+			enable_disable:
+				next;
+				mes .n$;
+				mes "What would you like to do?";
+				next;
+				switch(select("^FF0000Disable Normal Prize Distribution^000000:^0000FFEnable Normal Prize Distribution^000000:^FF0000Disable Winner Prize Distribution^000000:^0000FFEnable Winner Prize Distribution^000000"))
+				{
+				case 1:
+					next;
+					if(.give_prize == 0){ mes .n$; mes "Normal Prize Distribution is already disabled!"; next; goto enable_disable; }
+					mes .n$;
+					mes "Normal Prize Distribution has been disabled!";
+					set .give_prize,0;
+					goto enable_disable;
+				case 2:
+					next;
+					if(.give_prize == 1){ mes .n$; mes "Normal Prize Distribution is already enabled!"; next; goto enable_disable; }
+					mes .n$;
+					mes "Normal Prize Distribution has been enabled!";
+					set .give_prize,1;
+					goto enable_disable;
+				case 3:
+					next;
+					if(.w_give_prize == 0){ mes .n$; mes "Winner Prize Distribution is already disabled!"; next; goto enable_disable; }
+					mes .n$;
+					mes "Winner Prize Distribution has been disabled!";
+					set .w_give_prize,0;
+					goto enable_disable;
+				case 4:
+					next;
+					if(.w_give_prize == 1){ mes .n$; mes "Winner Prize Distribution is already enabled!"; next; goto enable_disable; }
+					mes .n$;
+					mes "Winner Prize Distribution has been enabled!";
+					set .w_give_prize,1;
+					goto enable_disable;
+				case 5:
+					close;
+				}
+			case 4:
+				next;
+				goto Admin_Menu;
+			}
+		case 4:
+			close;
+		}
+	}
+	
+
+OnInit:
+	//•••••••••••••••••••••••• C O N F I G U R A T I O N ••••••••••••••••••••••••//
+	
+	set .n$, "[ ^FFA500Mavis Vermillion^000000 ]"; // NPC Header
+	
+	set .attempts, 19; // Change this one to how many attempts you like, n+1 , if you input 5, attempts will be 5+1 = 6
+	set .intervalmavis, 300; // [ Seconds ] Time interval before a player can join the game again!
+	set .kicktimeifafk,120; // [ Seconds ] If afk for 120 seconds, kicked to Savepoint	
+	set $skillmatchgame_based, 0; // Timer Interval [ Account Based - 0 / Character Based - 1 ]
+	
+	set .payamount, 2; // Default item amount payment
+	set .payitem, 675; // Default item payment
+	set .zeny, 1000000; // Default zeny payment
+	set .w_rewardamount, 1; // Default Winner Prize amount
+	set .w_rewarditem, 677; // Default Winner Prize
+	set .rewarditem, 674; // Default Normal Prize
+	set .rewardamount, 1; // Default Normal Prize amount
+	
+	// These things here were due to my laziness. lol when writing the script. XD
+	set .mapname$, "quiz_02"; // Event Map Location
+	set .warpx, 305; // warp to Event Map x coordinate
+	set .warpy, 253; // warp to Event Map y coordinate
+	set .areax1, 295; // Event map areannounce x1
+	set .areay1, 261; // Event map areannounce y1
+	set .areax2, 314; // Event map areannounce x2
+	set .areay2, 242; // Event map areannounce y2	
+	set .maintown$, "prontera"; // Spawn location when game ends
+	set .mainx, 155; // spawn location x coordinate
+	set .mainy, 179; // spawn location y coordinate
+	
+	set .w_give_prize, 1; // Default setting enable/disable winner prize ( Disable = 0, Enable = 1)
+	set .give_prize, 1; // Default setting enable/disable normal prize ( Disable = 0, Enable = 1)
+	
+	set .gmlvl, 70; // Gm level to  access admin menu
+	
+	set .gameon, 0;
+	
+	setwall .mapname$,296,260,18,6,0,"1wallqz";
+	setwall .mapname$,296,243,18,6,0,"2wallqz";
+	setwall .mapname$,296,259,16,4,0,"3wallqz";
+	setwall .mapname$,313,259,16,4,0,"4wallqz";
+
+}
+
+quiz_02,297,259,4	script	Togepi#0::SkillEffect0	463,{
+
+	if( getvariableofnpc(.gameon,"Mavis Vermillion") < 2 || getvariableofnpc(.Char_ID,"Mavis Vermillion") != getcharid(3) )
+		end;
+	
+	set Already_Played, getcharid(3);
+	set #Already_Played, getcharid(3);
+	set @matchnpc, atoi(strnpcinfo(2));
+	set .mapname$,getvariableofnpc(.mapname$,"Mavis Vermillion");
+	set .areax1,getvariableofnpc(.areax1,"Mavis Vermillion");
+	set .areay1,getvariableofnpc(.areay1,"Mavis Vermillion");
+	set .areax2,getvariableofnpc(.areax2,"Mavis Vermillion");
+	set .areay2,getvariableofnpc(.areay2,"Mavis Vermillion");
+	set .intervalmavis,getvariableofnpc(.intervalmavis,"Mavis Vermillion");
+	specialeffect getvariableofnpc(.skill_effects[@matchnpc],"Mavis Vermillion");
+	if( getvariableofnpc(.gameon,"Mavis Vermillion") == 2 )
+	{
+		set getvariableofnpc(.event_showeffect,"Mavis Vermillion"), @matchnpc;
+		set getvariableofnpc(.gameon,"Mavis Vermillion"), 3;
+	}
+	else if( @matchnpc != getvariableofnpc(.event_showeffect,"Mavis Vermillion") )
+	{
+		set @npc_showeffects, getvariableofnpc(.event_showeffect,"Mavis Vermillion");
+		if( getvariableofnpc(.skill_effects[@npc_showeffects],"Mavis Vermillion") == getvariableofnpc(.skill_effects[@matchnpc],"Mavis Vermillion") )
+		{
+			set .rewarditem, getvariableofnpc(.rewarditem,"Mavis Vermillion");
+			set .rewardamount, getvariableofnpc(.rewardamount,"Mavis Vermillion");
+			set .w_rewarditem, getvariableofnpc(.w_rewarditem,"Mavis Vermillion");
+			set .w_rewardamount, getvariableofnpc(.w_rewardamount,"Mavis Vermillion");
+			set .w_give_prize, getvariableofnpc(.w_give_prize,"Mavis Vermillion");
+			set .give_prize, getvariableofnpc(.give_prize,"Mavis Vermillion");
+			set getvariableofnpc(.gamepair,"Mavis Vermillion"), getvariableofnpc(.gamepair,"Mavis Vermillion") + 1;
+
+			if( getvariableofnpc(.gamepair,"Mavis Vermillion") > 0 )
+				{ if(.give_prize == 1){getitem .rewarditem, .rewardamount;}}
+
+			set getvariableofnpc(.gameon,"Mavis Vermillion"), 2;
+
+			donpcevent "SkillEffect" + @npc_showeffects + "::OnHideTogepi";
+			donpcevent "SkillEffect" + @matchnpc + "::OnHideTogepi";
+			
+			set getvariableofnpc(.event_showeffect,"Mavis Vermillion"), -1;
+
+			if( getvariableofnpc(.gamepair,"Mavis Vermillion") > 17 ){ // This 17 here, is the number of Pairs - 1
+				if(.w_give_prize == 1){
+				getitem .w_rewarditem, .w_rewardamount;
+				}
+				if(getareausers(.mapname$,.areax1,.areay1,.areax2,.areay2) > 0 )
+				{
+					if ( $skillmatchgame_based == 0 )
+					{
+						set #Already_Played, gettimetick(2)+.intervalmavis;
+						detachnpctimer;
+					}
+					if ( $skillmatchgame_based == 1 )
+					{
+						set Already_Played, gettimetick(2)+.intervalmavis;
+						detachnpctimer;
+					}
+				}
+				donpcevent "Mavis Vermillion::OnWinner";
+				}
+			else
+				donpcevent "Mavis Vermillion::OnDoingGood";
+				
+		}
+		else
+		{
+			set getvariableofnpc(.gameon,"Mavis Vermillion"), 2;
+			set getvariableofnpc(.event_showeffect,"Mavis Vermillion"), -1;
+			set getvariableofnpc(.attempt,"Mavis Vermillion"), getvariableofnpc(.attempt,"Mavis Vermillion") - 1;
+			if( getvariableofnpc(.attempt,"Mavis Vermillion") < 1 ){
+				if(getareausers(.mapname$,.areax1,.areay1,.areax2,.areay2) > 0 )
+				{
+				if ( $skillmatchgame_based == 0 )
+					{
+						set #Already_Played, gettimetick(2)+.intervalmavis;
+						detachnpctimer;
+					}
+					if ( $skillmatchgame_based == 1 )
+					{
+						set Already_Played, gettimetick(2)+.intervalmavis;
+						detachnpctimer;
+					}
+				}
+				donpcevent "Mavis Vermillion::OnLose";
+				}
+			else
+				donpcevent "Mavis Vermillion::OnDoingBad";
+		}
+	}
+	end;
+
+OnShowSkillEffects:
+	specialeffect getvariableofnpc(.skill_effects[atoi(strnpcinfo(2))],"Mavis Vermillion");
+	end;
+	
+OnHideTogepi:
+	disablenpc "SkillEffect" + atoi(strnpcinfo(2)) + "";
+	end;
+	
+OnShowTogepi:
+	enablenpc "SkillEffect" + atoi(strnpcinfo(2)) + "";
+	end;
+
+}
+
+/* Note : Checks if character is afk or not, set time at the above CONFIGURATIONS.
+   This script triggers with OnPCLoadMapEvent.
+   OnPCLoadMapEvent triggers when the map has a mapflag *loadevent*.
+   If you want to disable this script, because it triggers with other 
+   scripts on the same map, just remove the mapflag loadevent,
+   and/or remove the entire *IfAfkFor2Minutes* script.*/
+   
+-	script	IfAfkFor2Minutes	-1,{
+
+OnPCLoadMapEvent:
+
+	set .@kicktimeifafk,getvariableofnpc(.kicktimeifafk,"Mavis Vermillion");
+	set .intervalmavis,getvariableofnpc(.intervalmavis,"Mavis Vermillion");
+	set Already_Played, getcharid(3);
+	set #Already_Played, getcharid(3);
+	
+    while ( !getmapxy ( .@afkmap$, .@afkx, .@afky, 0) && .@afkmap$ == "quiz_02" ) {
+        if ( .@afkx == .@afkmapx && .@afky == .@afkmapy ) {
+            if( .@afkcountifidle < .@kicktimeifafk ){
+                set .@afkcountifidle,.@afkcountifidle+1;
+                if(.@afkcountifidle==(.@kicktimeifafk-20)){ dispbottom "You have 20 seconds to move or you will be tagged as AFK"; }
+            } else {
+                dispbottom "You've been kicked for being afk.";
+				if ( $skillmatchgame_based == 0 )
+				{
+					set #Already_Played, gettimetick(2)+.intervalmavis;
+					detachnpctimer;
+				}
+				if ( $skillmatchgame_based == 1 )
+				{
+					set Already_Played, gettimetick(2)+.intervalmavis;
+					detachnpctimer;
+				}
+				set getvariableofnpc(.gameon,"Mavis Vermillion"), 0;
+				donpcevent "Mavis Vermillion::OnAfk";
+                warp "SavePoint",0,0;
+                break;
+            }
+        } else {
+            set .@afkmapx,.@afkx;
+            set .@afkmapy,.@afky;
+            set .@afkcountifidle,0;
+        }
+        sleep2 1000;
+    }
+}
+
+quiz_02,300,259,4	duplicate(SkillEffect0)	Togepi#1::SkillEffect1	463
+quiz_02,303,259,4	duplicate(SkillEffect0)	Togepi#2::SkillEffect2	463
+quiz_02,306,259,4	duplicate(SkillEffect0)	Togepi#3::SkillEffect3	463
+quiz_02,309,259,4	duplicate(SkillEffect0)	Togepi#4::SkillEffect4	463
+quiz_02,312,259,4	duplicate(SkillEffect0)	Togepi#5::SkillEffect5	463
+
+quiz_02,297,256,4	duplicate(SkillEffect0)	Togepi#6::SkillEffect6	463
+quiz_02,300,256,4	duplicate(SkillEffect0)	Togepi#7::SkillEffect7	463
+quiz_02,303,256,4	duplicate(SkillEffect0)	Togepi#8::SkillEffect8	463
+quiz_02,306,256,4	duplicate(SkillEffect0)	Togepi#9::SkillEffect9	463
+quiz_02,309,256,4	duplicate(SkillEffect0)	Togepi#10::SkillEffect10	463
+quiz_02,312,256,4	duplicate(SkillEffect0)	Togepi#11::SkillEffect11	463
+
+quiz_02,297,253,4	duplicate(SkillEffect0)	Togepi#12::SkillEffect12	463
+quiz_02,300,253,4	duplicate(SkillEffect0)	Togepi#13::SkillEffect13	463
+quiz_02,303,253,4	duplicate(SkillEffect0)	Togepi#14::SkillEffect14	463
+quiz_02,306,253,4	duplicate(SkillEffect0)	Togepi#15::SkillEffect15	463
+quiz_02,309,253,4	duplicate(SkillEffect0)	Togepi#16::SkillEffect16	463
+quiz_02,312,253,4	duplicate(SkillEffect0)	Togepi#17::SkillEffect17	463
+
+quiz_02,297,250,4	duplicate(SkillEffect0)	Togepi#18::SkillEffect18	463
+quiz_02,300,250,4	duplicate(SkillEffect0)	Togepi#19::SkillEffect19	463
+quiz_02,303,250,4	duplicate(SkillEffect0)	Togepi#20::SkillEffect20	463
+quiz_02,306,250,4	duplicate(SkillEffect0)	Togepi#21::SkillEffect21	463
+quiz_02,309,250,4	duplicate(SkillEffect0)	Togepi#22::SkillEffect22	463
+quiz_02,312,250,4	duplicate(SkillEffect0)	Togepi#23::SkillEffect23	463
+
+quiz_02,297,247,4	duplicate(SkillEffect0)	Togepi#24::SkillEffect24	463
+quiz_02,300,247,4	duplicate(SkillEffect0)	Togepi#25::SkillEffect25	463
+quiz_02,303,247,4	duplicate(SkillEffect0)	Togepi#26::SkillEffect26	463
+quiz_02,306,247,4	duplicate(SkillEffect0)	Togepi#27::SkillEffect27	463
+quiz_02,309,247,4	duplicate(SkillEffect0)	Togepi#28::SkillEffect28	463
+quiz_02,312,247,4	duplicate(SkillEffect0)	Togepi#29::SkillEffect29	463
+
+quiz_02,297,244,4	duplicate(SkillEffect0)	Togepi#30::SkillEffect30	463
+quiz_02,300,244,4	duplicate(SkillEffect0)	Togepi#31::SkillEffect31	463
+quiz_02,303,244,4	duplicate(SkillEffect0)	Togepi#32::SkillEffect32	463
+quiz_02,306,244,4	duplicate(SkillEffect0)	Togepi#33::SkillEffect33	463
+quiz_02,309,244,4	duplicate(SkillEffect0)	Togepi#34::SkillEffect34	463
+quiz_02,312,244,4	duplicate(SkillEffect0)	Togepi#35::SkillEffect35	463
+
+quiz_02	mapflag	nowarp
+quiz_02	mapflag	nowarpto
+quiz_02	mapflag	nosave
+quiz_02	mapflag	nomemo
+quiz_02	mapflag	noteleport
+quiz_02	mapflag	nochat
+quiz_02	mapflag	novending
+quiz_02	mapflag	loadevent

@@ -1,0 +1,483 @@
+//===== Atual Versão: ========================================
+//	3.2
+//===== Descrição: ===========================================
+//	Ativa contas VIPs, retira dias vips automaticamente,
+//	e quando acaba os dias vips, a VIP é retirada.
+//===== Comentários Adicionais: ==============================
+//	- 1.0 Criado SVRO 
+//	- 2.0 Script Otimizado e adicionado opção que mostra o 
+//		total de contas VIP que há no servidor. 
+//	- 2.5 Adicionado possibilidade de setar o level da conta 
+//		VIP do seu servidor. 
+//	- 2.6 Script Otimizado e reestruturado. 
+//	- 2.6b Readicionado o waitingroom e corrigido um 
+// 		pequeno erro. 
+//	- 2.7 Script Otimizado. 
+//	- 2.8 Adicionado novo modo de adicionar VIP (pelo nome do char). 
+//	- 2.9 Adicionado nova opção de ter ou não ter o comando @reloadgmdb. 
+//	- 3.0 Script Otimizado , e modificado pequenas coisas. 
+//	- 3.0b Feita uma mini modificação.
+//	- 3.1 Varias modificações no sistema.
+//	- 3.2 Modificados comandos para ficar compatível com eAthena. [ Lord ]
+// 	- 3.2 OBSERVAÇÂO TABELA SQL A SER IMPORTADA PARA SEU BANCO DE DADOS --> ALTER TABLE `login` ADD `diasvip` INT( 11 ) NOT NULL DEFAULT '0';
+//============================================================
+-	script	SVRO#config	-1,{
+//===== Configuraçõe: ========================================
+//
+OnInit:
+//
+// Level Mínimo de GM para ele poder mecher no Sistema VIP in-game:
+// Lembre-se: alem do Level Minimo o GM terá também que saber a
+// senha. ( deffault: 80 )
+set $minlvgm,"80";
+//
+// Level da conta VIP (deffault: 1)
+set $levelvip, 1;
+//
+// Seu emulador possui o comando: @reloadgmdb ?
+// (0 para não, 1 para sim) (deffault: 0)
+set $reload, 0;
+//
+// Senha para mexer no Sistema VIP in-game :
+set $vipsen$,"271094275";
+//
+// Quantidade de contas a mostrar por página
+// na opção de listar contas vips.
+// Maximo: 100 por página. ( deffault: 30 )
+set $mesVIPs, 30;
+//
+// Coordenadas da Sala VIP :
+set $mapavip$,"sec_in01.gat";
+set $cordx,169;
+set $cordy,177;
+//
+// Site do seu servidor : 
+// OBSERVAÇÂO, se não houver deixe em branco (como está).
+set $site$,"";
+//
+//Nome do npc:
+set $namenpc$, "^CD0000[Porteiro VIP]^000000";
+//
+end;
+//
+//============================================================
+}
+
+prontera.gat,166,187,4	script	Porteiro VIP	89,{
+if (getgmlevel() < $levelvip){
+mes $namenpc$;
+mes "Você não é VIP";	
+if ($site$ == ""){mes "Informe-se como ser VIP!";
+} else {mes "Entre no site ^FF0000"+$site$+"^000000 e saiba como ser VIP !";}
+close;
+}
+set .@loop,1;
+while(.@loop){
+mes $namenpc$;
+mes "Olá "+strcharinfo(0)+"!";
+mes "O que deseja?";
+next;
+if (getgmlevel() >= $minlvgm)
+set .@menu$,select("- Entrar na sala VIP","- Administrar VIPs","","- Nada");
+else
+set .@menu$,select("- Entrar na sala VIP","","- Dias restantes de VIP","- Nada");
+switch(.@menu$){
+		case 1:
+			next;
+			mes $namenpc$;
+			mes "Você gostaria de ir para sala vip?";
+			if(select("- Sim:- Não") == 1){
+			warp $mapavip$,$cordx,$cordy; end;
+			}
+			next;
+			break;
+			
+		case 2:
+			next;
+			mes ""+$namenpc$+" - ^FF0000Administração^000000";
+			mes "inpute a senha para acessar essa Area:";
+			input @admvipssenha$;
+			next;
+			if (@admvipssenha$ != $vipsen$){
+			mes ""+$namenpc$+" - ^FF0000Administração^000000"; 
+			mes "Senha Incorreta!";
+			next;
+			break;
+			}
+			mes ""+$namenpc$+" - ^FF0000Administração^000000";
+			mes "Senha Correta...";
+			mes "Levando à Administração de Contas VIP...";
+			set .@loop2,1;
+			while(.@loop2) {
+			next;
+			mes ""+$namenpc$+" - ^FF0000Administração^000000";
+			mes "Oque você gostaria de fazer?";
+			switch(select("- Adicionar VIP:- Editar conta VIP:- Listar contas VIP:- Total de Contas VIP:- Opções Extras:- Sair")){
+
+				case 1:
+					set .@loop6,1;
+					while(.@loop6) {
+					next;
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "Como deseja adicionar a VIP?";
+					switch(select("- Pelo Login:- Nome de um Char:- Voltar")){
+						
+						case 1:
+							next;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";	
+							mes "inpute o Login da Conta que deseja Adicionar:";
+							mes "Observação: Não é possível adicionar conta que ja é VIP.";
+							input @login$;
+							next;
+							set @accid,0;
+							set @acclogin$,"";
+							query_sql "SELECT `account_id` FROM `login` WHERE `group_id`='0' AND `diasvip`='0' AND `userid`='"+@login$+"'",@accid;
+							if (@accid[0] == 0){
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Está conta não existe ou ja é VIP!";
+							break;
+							}
+							query_sql "SELECT `userid` FROM `login` WHERE `account_id`='"+@accid+"'",@acclogin$;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "^FF0000ID da conta : ^000000"+@accid+"";
+							mes "^FF0000Login : ^000000"+@acclogin$+"";
+							mes "Quantos dias VIP deseja adicionar a essa conta?";
+							mes "Observação: Não existe dias VIP 0";
+							input @numdias;
+							next;
+							if (@numdias == 0){
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Não é possível adicionar 0 dia(s) VIP!";
+							break;
+							}
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Adicionar ^FF0000"+@numdias+"^000000 dia(s) VIP à conta de ^FF0000"+@acclogin$+"^000000.";
+							mes "Proseguir?";
+							if(select("- Sim:- Não") == 2) break;
+							query_sql "UPDATE `login` SET `group_id`='"+$levelvip+"',`diasvip`='"+@numdias+"' WHERE `account_id`='"+@accid+"'";
+							next;
+							if($reload) atcommand "@reloadgmdb";
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Conta VIP adicionada!";
+							break;
+							
+						case 2:
+							next;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";	
+							mes "inpute o nome do Char que deseja Adicionar VIP:";
+							mes "Observação: Não é possível adicionar VIP a chars VIP.";
+							input @name$;
+							next;
+							set @accid2,0;
+							set @acclogin2$,"";
+							query_sql "SELECT `account_id` FROM `char` WHERE `name`='"+@name$+"'",@accid2;
+							if (@accid2[0] == 0){
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Este char não existe!";
+							break;
+							}
+							query_sql "SELECT `userid` FROM `login` WHERE `group_id`='0' AND `diasvip`='0' AND `account_id`='"+@accid2+"'",@acclogin2$;
+							if (@acclogin2$[0] == ""){
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "A conta referente a este char ja é VIP!";
+							break;
+							}
+							query_sql "SELECT `name` FROM `char` WHERE `account_id`='"+@accid2+"'",@charname$;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "O char: ^FF0000"+@charname$+"^000000 pertence a:";
+							mes "^FF0000ID da conta : ^000000"+@accid2+"";
+							mes "^FF0000Login : ^000000"+@acclogin2$+"";
+							mes "Quantos dias VIP deseja adicionar a essa conta?";
+							mes "Observação: Não existe dias VIP 0";
+							input @numdias2;
+							next;
+							if (@numdias2 == 0){
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Não é possível adicionar 0 dia(s) VIP!";
+							break;
+							}
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Adicionar ^FF0000"+@numdias2+"^000000 dia(s) VIP à conta de ^FF0000"+@acclogin2$+"^000000 cujo char pertencente é: ^FF0000"+@charname$+"^000000.";
+							mes "Proseguir?";
+							if(select("- Sim:- Não") == 2) break;
+							query_sql "UPDATE `login` SET `group_id`='"+$levelvip+"',`diasvip`='"+@numdias2+"' WHERE `account_id`='"+@accid2+"'";
+							next;
+							if($reload) atcommand "@reloadgmdb";
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Conta VIP adicionada!";
+							break;
+						
+						case 3:
+							set .@loop6,0;
+							break;
+					
+					}
+					}
+					break;
+					
+					
+				case 2:
+					next;
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "inpute o Login da Conta que você deseja editar:";
+					mes "Observação: Não é possível editar contas que não são VIPs.";
+					input @login$;
+					set @accid,0;
+					set @diasr,0;
+					set @acclogin$,"";
+					set @EColor$, "^000000";
+					query_sql "SELECT `account_id` FROM `login` WHERE `group_id`='"+$levelvip+"' AND `userid`='"+@login$+"'",@accid;
+					if (@accid[0] == 0) {
+					next;
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "Está conta não é VIP ou não existe!";
+					break;
+					}
+					set .@loop3,1;
+					while(.@loop3) {
+					next;
+					query_sql "SELECT `userid` FROM `login` WHERE `account_id`='"+@accid+"'",@acclogin$;
+					query_sql "SELECT `diasvip` FROM `login` WHERE `account_id`='"+@accid+"'",@diasr;
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "A conta selecionada foi:";
+					if (@diasr[0] <= 1) set @Color$, "^FF0000";
+					if (@diasr[0] >= 2 && @diasr[0] < 7) set @Color$, "^FFA200";
+					if (@diasr[0] >= 7 && @diasr[0] < 15) set @Color$, "^C4CB00";
+					if (@diasr[0] >= 15) set @Color$, "^008000";
+					mes "===========================";
+					mes "ID da conta: "+ @Color$ + @accid + @EColor$;
+					mes "Login da conta: "+ @Color$ + @acclogin$ + @EColor$;
+					mes "Dias VIPs restantes: "+ @Color$ + @diasr + @EColor$;
+					mes "===========================";
+					mes "O que deseja fazer?";
+					switch(select("- Editar dias VIP:- Cancelar conta VIP:- Voltar")){
+
+						case 1:
+							next;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Modificar Dias VIPs restantes da";
+							mes "Conta: ^FF0000"+@acclogin$+"^000000 de ^FF0000"+@diasr+"^000000 dia(s) VIP";
+							mes "Para?";
+							mes "Observação: Não da para modificar para 0 dias VIP!";
+							input @numdiase;
+							next;
+							if (@numdiase == 0){
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Não é possível modificar para 0 dia(s) VIP!";
+							break;
+							}
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Modificar de ^FF0000"+@diasr+"^000000 dia(s) VIP para ^FF0000"+@numdiase+"^000000 dia(s) VIP ?";
+							if(select("- Sim:- Não") == 2) break;
+							query_sql "UPDATE `login` SET `diasvip`='"+@numdiase+"' WHERE `account_id`='"+@accid+"'";
+							next;
+							if($reload) atcommand "@reloadgmdb";
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Dias Restantes VIP modificado!";
+							break;
+
+						case 2:
+							next;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Deseja cancelar a VIP da";
+							mes "Conta: ^FF0000"+@acclogin$+"^000000 ?";
+							if(select("- Sim:- Não") == 2) break;
+							query_sql "UPDATE `login` SET `group_id`='0',`diasvip`='0' WHERE `account_id`='"+@accid+"'";
+							next;
+							if($reload) atcommand "@reloadgmdb";
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Vip Cancelada!";
+							break;
+								
+						case 3:
+							set .@loop3,0;
+							break;
+						}
+					}
+					break;
+
+				case 3:
+					set .@Page, 0;
+					set .@Found, 0;
+					set .@loop5,1;
+					while(.@loop5){
+					deletearray .@UserID$[0], 128;
+					deletearray .@AccID[0], 128;
+					deletearray .@VipDia[0], 128;
+					if ($mesVIPs > 100) set $mesVIPs, 100;
+					set @EColor$, "^000000";
+					set .@Page, .@Page + 1;
+					next;
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "Lista de Contas VIPs:";
+					query_sql "SELECT `userid`, `account_id`, `diasvip` FROM `login` WHERE `group_id`='"+$levelvip+"' LIMIT " + (.@Page - 1) * $mesVIPs + ", " + ($mesVIPs + 1), .@UserID$, .@AccID, .@VipDia;
+					for (set .@i, 0; .@i < $mesVIPs; set .@i, .@i + 1) {
+						if (.@VipDia[.@i] <= 1) set @Color$, "^FF0000";
+						if (.@VipDia[.@i] >= 2 && .@VipDia[.@i] < 7) set @Color$, "^FFA200";
+						if (.@VipDia[.@i] >= 7 && .@VipDia[.@i] < 15) set @Color$, "^C4CB00";
+						if (.@VipDia[.@i] >= 15) set @Color$, "^008000";
+						if (.@AccID[.@i]) {
+						mes "ID da conta: "+ @Color$ + .@AccID[.@i] + @EColor$;
+						mes "Login da conta: "+ @Color$ + .@UserID$[.@i] + @EColor$;
+						mes "Dias VIPs restantes: "+ @Color$ + .@VipDia[.@i] + @EColor$;
+						mes "===========================";
+						set .@Found, 1;
+						}
+					}
+					setarray .@Mnu$[0], "", "";
+					if (.@Page > 1) set .@Mnu$[0], "- Página anterior";
+					if (.@AccID[$mesVIPs]) set .@Mnu$[1], "- Próxima página";
+					if (!.@Found) mes "Não existe nenhum VIP ainda.";
+					switch(select(""+.@Mnu$[0]+"",""+.@Mnu$[1]+"","- Voltar")){
+						
+						case 1:
+							set .@Page, .@Page - 2;
+							break;
+						
+						case 2:
+							break;
+
+						case 3:
+						set .@loop5,0;
+						break;
+						}
+					}
+					break;
+
+				case 4:
+					next;
+					set @totalvip,0;
+					set @desbug,0;
+					query_sql "SELECT COUNT(1) FROM `login` WHERE `group_id`='"+$levelvip+"'",@totalvip;
+					query_sql "SELECT COUNT(1) FROM `login` WHERE `group_id`='"+$levelvip+"' AND `diasvip`<= '0'",@desbug;
+					if (@desbug[0] > 0){
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "Seu servidor tem um total de ^008000"+@totalvip+"^000000 conta VIP, mas há ^FF0000"+@desbug+"^000000 contas VIP que eram para estar canceladas.";
+					mes "Deseja cancelar as Contas VIPs com dias acabados?";
+					if(select("- Sim:- Não") == 2) break;
+					query_sql "UPDATE `login` SET `group_id`='0' WHERE `diasvip`<='0' AND `group_id`='"+$levelvip+"'";
+					next;
+					if($reload) atcommand "@reloadgmdb";
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "Contas com dias vip acabados canceladas com sucesso.";
+					break;
+					}
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "Seu servidor tem um total de ^008000"+@totalvip+"^000000 conta VIP.";
+					select("- Voltar");
+					break;
+					
+				case 5:
+					set .@loop4,1;
+					while(.@loop4) {
+					next;
+					mes ""+$namenpc$+" - ^FF0000Administração^000000";
+					mes "O que deseja fazer?";
+					switch(select("- Processar Contas VIP:- Cancelar TODAS contas VIPs:- Voltar")){
+			
+						case 1:
+							next;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Processando as Contas VIP você ";
+							mes "retirará 1 dia de todas contas VIP ";
+							mes "e se alguma conta chegar a 0 dias VIP ";
+							mes "ela será cancelada.";
+							mes "Deseja fazer isto?";
+							if(select("Sim:Não") == 2) break;
+							query_sql "UPDATE `login` SET `diasvip`=`diasvip`-1 WHERE `group_id`='"+$levelvip+"'";
+							query_sql "UPDATE `login` SET `group_id`='0' WHERE `diasvip`<='0' AND `group_id`='"+$levelvip+"'";
+							next;
+							if($reload) atcommand "@reloadgmdb";
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Contas Processadas com sucesso!";
+							break;
+
+						case 2:
+							next;
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Fazendo isto você irá cancelar";
+							mes "TODAS contas VIP do servidor.";
+							mes "Deseja fazer isto?";
+							next;
+							if(select("Sim:Não") == 2) break;
+							query_sql "UPDATE `login` SET `group_id`='0',`diasvip`='0' WHERE `group_id`='"+$levelvip+"'";
+							next;
+							if($reload) atcommand "@reloadgmdb";
+							mes ""+$namenpc$+" - ^FF0000Administração^000000";
+							mes "Todas as contas VIP foram Canceladas!";
+							break;
+			
+						case 3:
+							set .@loop4,0;
+							break;
+						}
+					}
+					break;
+
+				case 6:
+					set .@loop2,0;
+					break;
+				}
+			}
+			close;
+
+		case 3:
+			next;
+			query_sql "SELECT `diasvip` FROM `login` WHERE `account_id` = '"+ getcharid(3) +"'", @dias;
+			if (@dias[0] <= 5){
+			mes $namenpc$;
+			mes "Você só tem "+@dias+" dia(s) de VIP restando,";
+			mes "recarregue sua VIP e Ajude o Servidor !!!";
+			select("- Voltar");
+			next;
+			break;
+			}
+			mes $namenpc$;
+			mes "Você ainda tem "+@dias+" dia(s) de VIP.";
+			select("- Voltar");
+			next;
+			break;
+		
+		case 4:
+			next;
+			mes $namenpc$;
+			mes "Ok! Volte quando quiser!";
+			set .@loop,0;
+			break;
+	}
+}
+close;
+
+OnInit:
+waitingroom "Porteiro VIP",0;	
+end;
+}
+
+
+-	script	SVRO#T-1	-1,{
+	end;
+
+OnClock0001:
+	query_sql "UPDATE `login` SET `diasvip`=`diasvip`-1 WHERE `group_id`='"+$levelvip+"'";
+	end;
+
+OnClock0002:
+	query_sql "UPDATE `login` SET `group_id`='0' WHERE `diasvip`<='0' AND `group_id`='"+$levelvip+"'";
+	if($reload) atcommand "@reloadgmdb";
+	end;
+}
+
+-	script	SVRO#L-1	-1,{
+OnPCLoginEvent:
+	if (getgmlevel() != $levelvip) end;
+	query_sql "SELECT `diasvip` FROM `login` WHERE `account_id` = '"+ getcharid(3) +"'", @dias;
+	if (@dias[0] <= 5){
+	dispbottom "[Controle VIP]";
+	dispbottom "Você só tem "+@dias+" dia(s) de VIP restando,";
+	dispbottom "Recarregue sua VIP e Ajude o Servidor !!!";
+	end;
+	}
+	dispbottom "[Controle VIP]";
+	dispbottom "Você ainda tem "+@dias+" dia(s) de VIP.";
+	end;
+}
