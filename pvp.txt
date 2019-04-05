@@ -1,0 +1,34 @@
+prontera.gat,164,184,4	script	PvP	434,{
+//    ___________             .__       ____  ___
+//    \_   _____/____    ____ |__| _____\   \/  /
+//     |    __) \__  \  /    \|  |/  ___/\     / 
+//     |     \   / __ \|   |  \  |\___ \ /     \ 
+//     \___  /  (____  /___|  /__/____  >___/\  \
+//         \/        \/     \/        \/      \_/
+//===== Por: =================================================
+//= FanisX
+//===== Versão Atual: ========================================
+//= 1.0 - Script Criado                               [FanisX]
+//===== Compatível Com: ======================================
+//= Cronus-Emulator
+//===== Descrição: ===========================================
+//= Teleporta o jogador para uma arena de PvP
+//============================================================
+
+mes "[ ^FF8000PvP^000000 ]";
+mes "Olá, gostaria de ser teletransportado para a Arena PvP?";
+menu "Claro,vou Owna",Sim,"Nem",Nao;
+
+sim:
+mes "[ ^FF8000PvP^000000 ]";
+mes "Obrigado tenha uma boa luta!";
+warp "guild_vs2", 0,		0;	end;
+
+
+OnInit:
+waitingroom "   PVP "+.server$+" ",0,"",0;
+end;
+
+nao:
+close;
+}

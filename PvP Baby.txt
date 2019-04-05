@@ -1,0 +1,32 @@
+prontera,168,184,3	script	PvP Baby	703,{
+
+mes "[PvP Baby]";
+mes "Olá "+StrCharInfo(0)+"!!";
+mes "Deseja ir para a arena dos Bebês ?";
+next;
+menu "- Claro!!",-,"- Não..",L_exit;
+next;
+if (Class >= 4023 && Class <= 4045){
+mes "[PvP Baby]";
+mes "Ok.. até mais então!!";
+warp "bat_c01",0,0;
+close;
+}
+mes "[PvP Baby]";
+mes "Como você quer ir sem ser um Bebê ?";
+close;
+
+L_exit:
+mes "[PvP Baby]";
+mes "OK "+StrCharInfo(0)+"..";
+mes "Volte quando precisar de mim!!";
+close;
+}
+//============== MAP FLAG ===============
+bat_c01	mapflag	gvg	off
+bat_c01	mapflag	pvp
+bat_c01	mapflag	nomemo
+bat_c01	mapflag	nosave
+bat_c01	mapflag	nowarpto
+bat_c01	mapflag	nowarp
+bat_c01	mapflag	nobranch

@@ -1,0 +1,13 @@
+- script Sample -1,{
+OnInit:
+set .Delay,180;
+end;
+OnPCKillEvent:
+if( @Delay < gettimetick(2) ){
+set .@Amount,rand(1,4);
+set #CASHPOINTS,#CASHPOINTS + .@Amount;
+dispbottom "Gained "+.@Amount+" Cash Point. Total = "+#CASHPOINTS+" Cash Points.";
+if( .Delay ) set @Delay,gettimetick(2) + .Delay;
+}
+end;
+}

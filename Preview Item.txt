@@ -1,0 +1,71 @@
+//============================================================
+//= Preview Item Script
+//===== By: ==================================================
+//= iHeart
+//===== Current Version: =====================================
+//= 1.01
+//===== Description: =========================================
+//= A method to allow headgear sprites to be previewed without
+//= being 'stolen'
+//===== Changelog: ===========================================
+//= 1.01
+//=   -Modified so it dynamically gets npc name for the timer
+//= 1.00 
+//=   -Initial Release
+//============================================================
+
+fayon,94,134,4	script	Item Previewer	73,{
+
+    //save current look for later
+    set @bottomview, getlook(3);
+    set @topview, getlook(4);
+    set @midview, getlook(5);
+
+    //doesn't actually execute until just before a 'close' statement, or when the char leaves the npc's control
+    addtimer 1000, strnpcinfo(3)+"::On_Leave";
+
+	mes "[^FF6633 Previewer ^000000]";
+    mes "Welcome! I'm able to make you Preview our custom items!";
+	mes " ";
+	mes "I'm usually good for showing people customs and how they look!";
+INTRO:
+next;
+	mes "[^FF6633 Previewer ^000000]";
+    mes "Please input an itemID you would like to preview:";
+
+    input @itemid;
+
+    //modifies char's look based on item
+    set @equip, getiteminfo(@itemid, 5);
+    set @view, getiteminfo(@itemid, 11);
+
+    if(@equip != -1 && @view > 0) {
+            //note: yes...i'm using atcommand here cause for some reason 
+            //      'setlook' has permanent effects...last time i checked at least
+            if(@equip & 1)
+		atcommand "@changelook 3 " + @view;
+            if(@equip & 256)
+                atcommand "@changelook 1 " + @view;
+            if(@equip & 512) 
+		atcommand "@changelook 2 " + @view;
+    }
+
+    next;
+	mes "[^FF6633 Previewer ^000000]";
+    mes "Would you like to preview something else?";
+    if(select("Yes", "No") == 1) {
+        goto INTRO;
+    }
+        
+    //*preview wears off automatically here due to delayed timer*//
+
+    close;   
+
+
+
+On_Leave:
+    atcommand "@changelook 1 " + @topview;
+    atcommand "@changelook 2 " + @midview;
+    atcommand "@changelook 3 " + @bottomview;
+    close;
+}

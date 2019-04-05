@@ -1,0 +1,327 @@
+//Feito em 21/07/2013 12:49 
+//####################################################################################
+//##### Este NPC foi idealizado e produzido por Mclzeszen™ ############## ############
+//##### ©Copy Saga Brasil Ragnarok Online ############################################
+//##### Todos os direitos reservados® ################################################
+//##### Antes de qualquer modificação por favor mandar PM ############################
+//##### para mclzeszen Forum Cronus Emulator #########################################
+//##################### Player Vs Mob v1.0 #################################################
+//####################################################################################
+
+prontera,179,207,5	script	Player vs Mob	457,{
+set .npc$,"^00ff00[ PvM ]^000000";
+
+setarray .@mobid[0],1765,1373,1251,1582,1096,1039,1511,1647,1785,1832,1874,2068,1272,1046,1389,1115,1418,1252,1086,1885,1492,1734,1779,1688,1147,1059,1150,2022,1087,1190,1038,1157,1159,1502,1623,1583,1312,1685,1917,1708;  //Id dos mobs relacionados nas mesmas posições do array abaixo
+setarray .@mobnam$[0],"Valquíria","Senhor dos Mortos","Cavaleiro da Tempestade","Deviling","Angeling","Bafomé","Amon Ra","Assassin Cross Eremes","Atroce","Ifrit","Beelzebub","Boitata","Senhor dos Mortos","Doppelganger","Dracula","Eddga","Serpente Suprema","Hatii","Besouro ladrão dourado","Gorynych","Samurai Encarnado","Kiel D-01","Ktulanux","Lady Tanee","Maya","Abelha rainha","flor do luar","Sombra de NidDhog","Orc Heroi","Senhor dos Orcs","Osiris","Faraó","Freeoni","Demolidor","RSX 0806","Tao Gunka","General Tartaruga","Vesper","Morroc Ferido","Thanatos"; //Acima
+
+for(set .a,0; .a < getarraysize(.@mobnam$); set .a,.a+1){
+set .@menu$,.@menu$+.@mobnam$[.a]+":";
+}
+set .@menu$,.@menu$+"Cancelar";
+
+mes .npc$;
+mes "Oi "+strcharinfo(0);
+mes "O que posso fazer por você?";
+next;
+switch(select("Quero lutar:Assistir:Ver os mobs:Pontuação:Sobre:Sair")){
+	case 1:
+		areawarp "quiz_01",119,270,162,297,"prt_in",44,116;
+		if(PVM) goto L_LUTOU;
+		if($PlayOn) goto L_CHEIO;
+		enablenpc "CHK";
+		mes .npc$;
+		mes "Escolha com qual MVP você quer lutar.";
+		next;
+		set @choose,select(.@menu$)-1;
+		if(@choose == getarraysize(.@mobnam$)) goto L_FIM;
+		mes .npc$;
+		mes "Você tem 50 segundos para se preparar. Até ser teleportado";
+		close2;
+		
+		set PVM,1;
+		///Flags
+		setmapflag "quiz_01", mf_nomemo;
+		setmapflag "quiz_01", mf_noteleport;
+		setmapflag "quiz_01", mf_nosave;
+		setmapflag "quiz_01", mf_nobranch;
+		setmapflag "quiz_01", mf_notrade;
+		setmapflag "quiz_01", mf_nowarp;
+		setmapflag "quiz_01", mf_noicewall;
+		setmapflag "quiz_01", mf_noreturn;
+		setmapflag "quiz_01", mf_nowarpto;
+		setmapflag "quiz_01", mf_monster_noteleport;
+		setmapflag "quiz_01", mf_nostorage;
+		setmapflag "quiz_01", mf_noguildstorage;
+		///Flags
+		announce "PVM: Existe um player desafiando [ "+.@mobnam$[@choose]+" ] Alguém gostaria de assistir a luta?",bc_all,0x752EC9;
+		sleep2 1000;
+		message strcharinfo(0),"PVM: 1 minuto para o mob aparecer";
+		
+		sleep2 30000;
+		message strcharinfo(0),"PVM: 30 Segundos para o mob aparecer";
+		
+		sleep2 15000;
+		message strcharinfo(0),"PVM: 15 Segundos para o mob aparecer";
+		
+		sleep2 5000;
+		message strcharinfo(0),"PVM: 10 Segundos para o mob aparecer";
+		warp "quiz_01",149,285;
+		sleep2 5000;
+		message strcharinfo(0),"5";
+		sleep2 1000;
+		message strcharinfo(0),"4";
+		sleep2 1000;
+		message strcharinfo(0),"3";
+		sleep2 1000;
+		message strcharinfo(0),"2";
+		sleep2 1000;
+		message strcharinfo(0),"1";
+		sleep2 1000;
+		message strcharinfo(0),"Boa sorte.";
+		set $mob$,.@mobnam$[@choose];
+		monster "quiz_01",130,285,"[PVM] "+.@mobnam$[@choose],.@mobid[@choose],1,strnpcinfo(0)+"::OnKill";
+		end;
+	
+	case 2:
+		if($PlayOn){
+		close2;
+		warp "quiz_01",160,284;
+		}else{
+		mes .npc$;
+		mes "Não tem ninguém lutando no momento!!!";
+		close;
+		
+		}
+		
+	case 3:
+		mes .npc$;
+		mes "Estes são os mobs com que você poderá lutar.";
+		for(set .i,0;.i < getarraysize(.@mobnam$); set .i,.i+1)
+		mes "Nome: ^ff0000"+.@mobnam$[.i]+"^000000";
+		close;
+		
+	case 4:
+		if($Players){
+		set @per,100/$Players*YOUPVM;
+		}
+		mes .npc$;
+		mes "Você quer saber como vc anda não é?";
+		mes "Aqui estão os status geral do evento:";
+		mes "======================";
+		mes "Os mobs tem: ^ff0000"+$mobs+"^000000 Pontos";
+		mes "Os Players tem: ^ff0000"+$Players+"^000000 Pontos";
+		mes "Você tem: ^ff00cc"+YOUPVM+"^000000 Pontos.";
+		mes "Seus pontos somam: ^00ff00"+@per+"%^000000 do total dos Players.";
+		close;
+	
+	case 5:
+		goto L_INFO;
+	case 6:
+		goto L_FIM;
+}
+
+
+
+
+L_INFO:
+mes .npc$;
+mes "Eu sou o teleportador para o PvM.";
+mes "PvM é a abreveação de (Player vs Mob).";
+mes "É isso ae. você pode lutar contra um mob no modo x1";
+mes "Tenho uma lista de MVP, e você pode escolher com qual você quer ter o x1.";
+mes "^ff0000ATENÇÃO!!!^000000";
+mes "...Você só pode lutar x1 com um MVP uma vêz ao dia.";
+mes "Por isso escolha bem com qual mob vai lutar.";
+mes "E faça o possivel pra ganhar. no fiunal tem um rank Player vs Mob.";
+next;
+
+mes .npc$;
+mes "Você gostaria de lutar com algum mob agora?";
+next;
+if(select("Sim. Acho que estou pronto:Não. Deixa eu upar")==2) goto L_FIM;
+goto L_FIGHT;
+
+
+L_FIGHT:
+		
+		areawarp "quiz_01",119,270,162,297,"prt_in",44,116;
+		if(PVM) goto L_LUTOU;
+		if($PlayOn) goto L_CHEIO;
+		enablenpc "CHK";
+		mes .npc$;
+		mes "Escolha com qual MVP você quer lutar.";
+		next;
+		set @choose,select(.@menu$)-1;
+		if(@choose == getarraysize(.@mobnam$)) goto L_FIM;
+		mes .npc$;
+		mes "Você tem 50 segundos para se preparar. Até ser teleportado";
+		close2;
+		
+		set PVM,1;
+		///Flags
+		setmapflag "quiz_01", mf_nomemo;
+		setmapflag "quiz_01", mf_noteleport;
+		setmapflag "quiz_01", mf_nosave;
+		setmapflag "quiz_01", mf_nobranch;
+		setmapflag "quiz_01", mf_notrade;
+		setmapflag "quiz_01", mf_nowarp;
+		setmapflag "quiz_01", mf_noicewall;
+		setmapflag "quiz_01", mf_noreturn;
+		setmapflag "quiz_01", mf_nowarpto;
+		setmapflag "quiz_01", mf_monster_noteleport;
+		setmapflag "quiz_01", mf_nostorage;
+		setmapflag "quiz_01", mf_noguildstorage;
+		///Flags
+		announce "PVM: Existe um player desafiando [ "+.@mobnam$[@choose]+" ] Alguém gostaria de assistir a luta?",bc_all,0x752EC9;
+		sleep2 1000;
+		message strcharinfo(0),"PVM: 1 minuto para o mob aparecer";
+		
+		sleep2 30000;
+		message strcharinfo(0),"PVM: 30 Segundos para o mob aparecer";
+		
+		sleep2 15000;
+		message strcharinfo(0),"PVM: 15 Segundos para o mob aparecer";
+		
+		sleep2 5000;
+		message strcharinfo(0),"PVM: 10 Segundos para o mob aparecer";
+		warp "quiz_01",149,285;
+		sleep2 5000;
+		message strcharinfo(0),"5";
+		sleep2 1000;
+		message strcharinfo(0),"4";
+		sleep2 1000;
+		message strcharinfo(0),"3";
+		sleep2 1000;
+		message strcharinfo(0),"2";
+		sleep2 1000;
+		message strcharinfo(0),"1";
+		sleep2 1000;
+		message strcharinfo(0),"Boa sorte.";
+		set $mob$,.@mobnam$[@choose];
+		monster "quiz_01",130,285,"[PVM] "+.@mobnam$[@choose],.@mobid[@choose],1,strnpcinfo(0)+"::OnKill";
+		end;
+
+
+
+
+
+L_FIM:
+mes .npc$;
+mes "Ok então.";
+mes "Vou esperar você voltar.";
+close;
+
+L_LUTOU:
+mes .npc$;
+mes "Você já lutou hoje! Espere até amanhã para uma nova luta.";
+close;
+
+
+
+OnKill:
+		disablenpc "CHK";
+		set $Players,$Players+1;
+		set YOUPVM,YOUPVM+1;
+		removemapflag "quiz_01", mf_nomemo;
+		removemapflag "quiz_01", mf_noteleport;
+		removemapflag "quiz_01", mf_nosave;
+		removemapflag "quiz_01", mf_nobranch;
+		removemapflag "quiz_01", mf_notrade;
+		removemapflag "quiz_01", mf_nowarp;
+		removemapflag "quiz_01", mf_noicewall;
+		removemapflag "quiz_01", mf_noreturn;
+		removemapflag "quiz_01", mf_nowarpto;
+		removemapflag "quiz_01", mf_monster_noteleport;
+		removemapflag "quiz_01", mf_nostorage;
+		removemapflag "quiz_01", mf_noguildstorage;
+		
+		set #EvPoints,#EvPoints+30;
+		dispbottom "Você matou o mob, e ganhou 30 Event Points...";
+		announce "PVM: O Player "+strcharinfo(0)+" acaba de ganhar o X1 com "+$mob$+". Quém será o proximo?!!!",bc_all,0x752EC9;
+		set $mob$,"";
+		dispbottom "Você voltará em 10 segundos...";
+		sleep2 10000;
+		areawarp "quiz_01",119,270,162,297,"prt_in",44,116;
+end;
+
+
+
+		L_CHEIO:
+			mes .npc$;
+			mes "Sinto muito tem alguem lutando neste momento.";
+			mes "Você gostaria de assisitir a luta?";
+			mes "Você pode ficar na plateia vendo o vencedor ^,.^";
+			next;
+		if(select("Quero assistir:Volto depois")==2) goto L_FIM;
+			close2;
+			warp "quiz_01",160,284;
+
+
+		OnInit:
+		disablenpc "CHK";
+		end;
+
+	
+		
+}
+
+-	script	check::CHK	-1,{
+
+OnInit:
+OnTimer1000:
+set .userspvm,getareausers("quiz_01",123,276,157,293);
+if(.userspvm){
+set $PlayOn,1;
+}else{
+set $PlayOn,0;
+killmonsterall "quiz_01";
+}
+initnpctimer;
+end;
+
+
+
+OnPCDieEvent:
+	getmapxy(.map$,.X,.Y,0,strcharinfo(0));
+	if(.map$ == "quiz_01"){
+	
+		removemapflag "quiz_01", mf_nomemo;
+		removemapflag "quiz_01", mf_noteleport;
+		removemapflag "quiz_01", mf_nosave;
+		removemapflag "quiz_01", mf_nobranch;
+		removemapflag "quiz_01", mf_notrade;
+		removemapflag "quiz_01", mf_nowarp;
+		removemapflag "quiz_01", mf_noicewall;
+		removemapflag "quiz_01", mf_noreturn;
+		removemapflag "quiz_01", mf_nowarpto;
+		removemapflag "quiz_01", mf_monster_noteleport;
+		removemapflag "quiz_01", mf_nostorage;
+		removemapflag "quiz_01", mf_noguildstorage;
+	
+	
+	
+	
+		set $mobs,$mobs+1;
+		announce "PVM: O Player "+strcharinfo(0)+" acaba de perder o X1 com "+$mob$+". Quém será o proximo?!!!",bc_all,0x752EC9;
+		set $mob$,"";
+		sleep2 3000;
+		areawarp "quiz_01",119,270,162,297,"prt_in",44,116;
+		atcommand "@alive";
+		disablenpc "CHK";
+	}
+	end;
+	
+	
+	
+OnClock0000:
+query_sql "DELETE FROM `global_reg_value` WHERE `str` = 'PVM'";
+end;
+	
+	
+
+}
+
+quiz_01,120,272,0	warp	waq1	1,1,quiz_01,160,284
+quiz_01,120,295,0	warp	waq2	1,2,quiz_01,160,284
+quiz_01,161,271,0	warp	waq3	1,3,quiz_01,121,288
+quiz_01,161,297,0	warp	waq4	1,4,quiz_01,121,288

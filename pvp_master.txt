@@ -1,0 +1,156 @@
+prontera,161,187,3	script	Ultimate PvP Warper	871,{
+ 
+	mes "[PvP Warper]";
+	mes "Which arena do you want to go to?";
+	switch(select("PVP Square ["+getmapusers("guild_vs2")+"/100]:^FF0000Deathmatch PVP^000000 ["+getmapusers("guild_vs3")+"/100]:Guild vs Guild ["+getmapusers("guild_vs4")+"/100]:PVP Champion ["+getmapusers("guild_vs1")+"/10]:PVP Izlude NoPotion ["+getmapusers("pvp_y_8-2")+"/100]:Baby PvP Room ["+getmapusers("pvp_y_1-2")+"/100]")) {
+	case 1:	// PVP Square
+		if (getmapusers("guild_vs2") > 99) callsub S_full;
+		announce "Someone Enter PVP Square ",bc,0x33FF33;
+		callsub S_payment;
+		warp "guild_vs2",0,0;
+		end;
+
+	case 2:	// PVP Insane
+		if (getmapusers("guild_vs3") > 99) callsub S_full;
+		for( set .@i,0; .@i<getarraysize(.NoPotion_ids); set .@i,.@i+1 ) {
+			if (countitem(.NoPotion_ids[.@i])) {
+				mes "You can not bring potions in this pvp.";
+				close;
+			}
+		}
+		announce "Someone Enter PVP Deathmatch ",bc,0x33FF33;
+		callsub S_payment;
+		warp "guild_vs3",0,0;
+		sleep2 100;
+		sc_end SC_ALL;
+		sleep2 1000;
+		atcommand "@speed 50";
+		end;
+
+	case 3:	// PVP Guild
+		if (getmapusers("guild_vs4") > 99) callsub S_full;
+		announce "Someone Enter Guild vs Guild ",bc,0x33FF33;
+		callsub S_payment;
+		warp "guild_vs4",0,0;
+		end;
+ 
+	case 4:	// PVP Champion
+		if (getmapusers("guild_vs5") > 9) callsub S_full;
+		if (Class == 4016 || Class == 4038) {
+		announce "Someone Enter Champion PVP ",bc,0x33FF33;
+		callsub S_payment;
+		warp "guild_vs1",0,0;
+		end;
+		}
+		mes "You are not Champion !";
+		close;
+ 
+	case 5:	// PVP Izlude NoPotion
+		if (getmapusers("pvp_y_8-2") > 99) callsub S_full;
+		for( set .@i,0; .@i<getarraysize(.NoPotion_ids); set .@i,.@i+1 ) {
+			if (countitem(.NoPotion_ids[.@i])) {
+				mes "You can not bring potions in this pvp.";
+				close;
+			}
+		}
+		announce "Someone Enter PVP Izlude NoPotion ",bc,0x33FF33;
+		callsub S_payment;
+		warp "pvp_y_8-2",0,0;
+		end;
+ 
+//	case 6:	// Non Donator PVP
+//		if (getmapusers("guild_vs1") > 99) callsub S_full;
+//		for( set .@i,0; .@i<getarraysize(.NoDonator_ids); set .@i,.@i+1 ) {
+//			if (countitem(.NoDonator_ids[.@i])) {
+//				mes "You can not bring God items in this pvp.";
+//				close;
+//			}
+//		}
+//		announce "Someone Enter Non Donator PVP",bc,0x33FF33;
+//		callsub S_payment;
+//		warp "1@orcs",0,0;
+//		end;
+	case 6: // Baby PvP Room
+		if (getmapusers("pvp_y_1-2") > 99) callsub S_full;
+		if (Class < 4023 || Class > 4045) goto L_NotBaby;
+		announce "Someone Enter Baby PVP Room",bc,0x33FF33;
+		callsub S_payment;
+		warp "pvp_y_1-2",0,0;
+		end;
+L_NotBaby:
+		mes "Only baby can enter this room";
+		close;
+
+L_NotCham:
+		mes "Only champion can enter this room";
+		close;
+	}
+ 
+S_full:
+	mes " ";
+	mes "I'm sorry, this arena is full.  Please try again later...";
+	close;
+S_payment:
+	if (Zeny < (0*BaseLevel + 0)) {
+		mes "You don't have enough zeny.";
+		mes "It costs "+(0*BaseLevel + 0)+" zeny for you to enter.";
+		close;
+	}
+	set Zeny, Zeny - (0*BaseLevel + 0);
+	return;
+ 
+OnPCDieEvent:
+if(strcharinfo(3) == "guild_vs3") {
+	dispbottom "You will respawn in 3 Seconds.";
+	sleep2 3000;
+	atcommand "@alive";
+	atcommand "@heal";
+	warp "guild_vs3",0,0;
+	atcommand "@speed 50";
+	end;
+}
+
+	// items not allowed in PVP NoPotion
+	setarray .NoPotion_ids[0], 607, 608;
+ 
+//	// items not allowed in Non Donator PVP
+//	setarray .NoDonator_ids[0], 2410, 1530;
+//	end;
+}
+
+// MAPFLAG
+
+pvp_y_8-2	mapflag	nocommand	60
+pvp_y_8-2	mapflag	nosave
+pvp_y_8-2	mapflag	noteleport
+pvp_y_8-2	mapflag	nodrop
+
+pvp_y_1-2	mapflag	nocommand	60
+pvp_y_1-2	mapflag	nosave
+pvp_y_1-2	mapflag	noteleport
+pvp_y_1-2	mapflag	nodrop
+
+guild_vs1	mapflag	nocommand	60
+guild_vs1	mapflag	nosave
+guild_vs1	mapflag	noteleport
+guild_vs1	mapflag	nodrop
+
+guild_vs2	mapflag	nocommand	60
+guild_vs2	mapflag	nosave
+guild_vs2	mapflag	noteleport
+guild_vs2	mapflag	nodrop
+
+guild_vs3	mapflag	nocommand	60
+guild_vs3	mapflag	nosave
+guild_vs3	mapflag	noteleport
+guild_vs3	mapflag	nodrop
+
+guild_vs4	mapflag	nocommand	60
+guild_vs4	mapflag	nosave
+guild_vs4	mapflag	noteleport
+guild_vs4	mapflag	nodrop
+
+guild_vs5	mapflag	nocommand	60
+guild_vs5	mapflag	nosave
+guild_vs5	mapflag	noteleport
+guild_vs5	mapflag	nodrop

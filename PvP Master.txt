@@ -1,0 +1,43 @@
+prontera,162,189,3	script	PvP Master	843,{
+
+show "[PvP Master]";
+show "Olá "+strcharinfo(0)+", gostaria de entrar em qual sala?";
+menu "Arena Master ^FFA500("+getmapusers("guild_vs2")+")^000000",pvp1,"Arena Izlude ^FFA500("+getmapusers("pvp_y_2-2")+")^000000",pvp2,"Sair",-;
+close;
+
+pvp1:
+next;
+show "[PvP Master]";
+show "Faça uma boa viagem!";
+next;
+warp "guild_vs2",0,0;
+close;
+
+pvp2:
+next;
+show "[PvP Master]";
+show "Faça uma boa viagem!";
+next;
+warp "pvp_y_1-2",0,0;
+close;
+
+}
+
+guild_vs2	mapflag	nowarpto
+guild_vs2	mapflag	nowarp
+guild_vs2	mapflag	nogo
+guild_vs2	mapflag	nopenalty
+guild_vs2	mapflag	nosave	SavePoint
+guild_vs2	mapflag	nobranch
+guild_vs2	mapflag	pvp
+guild_vs2	mapflag	gvg	off
+guild_vs2	mapflag	noteleport
+pvp_y_1-2	mapflag	nowarpto
+pvp_y_1-2	mapflag	nowarp
+pvp_y_1-2	mapflag	nogo
+pvp_y_1-2	mapflag	nopenalty
+pvp_y_1-2	mapflag	nosave	SavePoint
+pvp_y_1-2	mapflag	nobranch
+pvp_y_1-2	mapflag	pvp
+pvp_y_1-2	mapflag	gvg	off
+pvp_y_1-2	mapflag	noteleport

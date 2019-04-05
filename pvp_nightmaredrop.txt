@@ -1,0 +1,29 @@
+		case 1:
+			.@m = select(implode(.MapList$,":")) - 1;
+			.@executa = 1;
+			if( .MapMode[.@m]&2 ){
+				mes "You are about to enter NIGHTMARE PvP, on death you will lose gear randomly.";
+				if(select("Nevermind:Continue") != 2) .@executa = 0;
+			}
+			
+			if(getmapusers(.MapName$[.@m]) >= .MaxPlayers[.@m]){
+				mes "Sala Cheia.";
+				.@executa = 0;
+			} else	if(.MapMode[.@m]&8 && (countitem(607) || countitem(608))){
+				mes "No "+getitemname(607)+" or "+getitemname(608)+" allowed.";
+				.@executa = 0;
+			} else 	if(.MapMode[.@m]&16){
+				mes "No 3rd Classes Allowed.";
+				.@executa = 0;
+			} else	if(.MapMode[.@m]&32){
+				mes "No Trans Classes Allowed.";
+				.@executa = 0;
+			} 
+			
+			if (.@executa == 1) { 
+				warp .MapName$[.@m],0,0;
+				announce "[ PvP Warper ] " + strcharinfo(0)+" has entered in "+((.MapMode[.@m]&1)?"GvG":"PvP")+" "+((.MapMode[.@m]&2)?"Nightmare":" "),0,((.MapMode[.@m]&1)?0x00CC99:0xEE0000);			
+			} else {
+				close;
+			}
+	}
