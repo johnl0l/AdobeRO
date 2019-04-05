@@ -1,0 +1,28 @@
+//===== Lunar1111 Scripts ======================================= 
+//===== Jane the Max Level Giver (Easy Script) ==================
+//===============================================================
+// V.1.0================Made by Lunar1111========================
+//Don't Remove theese Credits====================================
+//You can edit the place where the Max level Giver is if you want to=====
+//Have fun with it!==============================================
+
+lhz_in01,279,269,5	script	Max level Giver	864,{
+
+	mes "[Jane]";
+	mes "Hi "+strcharinfo(0)+" I'm Jane,if you want I can give you the Max lvl,do you want it?";
+	next;
+L_Menu:
+	menu "Yes,of course!",L_Yes,"No I don't want it.",L_No;
+
+L_Yes:
+	set baselevel, 999;
+	set joblevel, 255;
+	mes "[Jane]";
+	mes "Ok you've got it,bye!";
+
+L_No:
+	mes "[Jane]";
+	mes "Ok,bye!";
+	close;
+
+}

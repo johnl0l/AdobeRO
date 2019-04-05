@@ -1,0 +1,130 @@
+
+prontera,155,181,5	script	Monster Counting Game	757,{
+	function xy_wall;
+	end;
+	
+	OnInit:
+		// how many rounds
+		.max_round = 3;
+		
+		// minute each round
+		.max_duration = 3;
+		
+		// dummy mob id represent wall
+		.wall_mob_id = 1085;
+		
+		// ( x1,y1,x2,y2 ) area for event
+		setarray .xy_area,
+			151,169,		// ( x1,y1 )
+			161,179;		// ( x2,y2 )
+			
+		// monster list used in event
+		setarray .monster,
+			1002,
+			1031,
+			1836,
+			1595;
+			
+		.monster_size = getarraysize( .monster );
+		.npc_name$ = strnpcinfo(0);
+		getmapxy( .map$,.npc_x,.npc_y,1 );
+		setmapflag .map$,mf_monster_noteleport;
+		end;
+		
+	OnMinute00:	// start every hour
+	OnStartEvent:
+		if ( !.status ) {
+			areawarp .map$,.xy_area[0],.xy_area[1],.xy_area[2],.xy_area[3],.map$,.npc_x,.npc_y;
+			killmonster .map$,.npc_name$+"::OnDied";
+			killmonster .map$,.npc_name$+"::OnWallDied";
+			setcell .map$,.xy_area[0],.xy_area[1],.xy_area[2],.xy_area[3],cell_basilica,1;
+			setcell .map$,.xy_area[0],.xy_area[1],.xy_area[2],.xy_area[3],cell_walkable,1;
+			.status = 1;
+			
+			for( .@i = .xy_area[0]; .@i <= .xy_area[2]; .@i++ ){
+				xy_wall( .@i,.xy_area[1] );
+				xy_wall( .@i,.xy_area[3] );
+			}
+			for( .@i = .xy_area[1]; .@i <= .xy_area[3]; .@i++ ){
+				xy_wall( .xy_area[0],.@i,0 );
+				xy_wall( .xy_area[2],.@i );
+			}
+			
+			do{
+				.@round++;
+				npctalk "Round # "+.@round;
+				sleep 5000;
+				
+				.status = 2;
+				.@mob = .monster[ rand( .monster_size ) ];
+				.@amount = rand( 20,50 );
+				// add-on size influence ?
+				areamonster .map$,.xy_area[0],.xy_area[1],.xy_area[2],.xy_area[3],"",.@mob,.@amount,.npc_name$+"::OnDied";
+			
+				deletepset 1;
+				defpattern 1,"([^:]+):.*"+.@amount+".*", "OnRight";
+				activatepset 1;
+				waitingroom "How many's there?",0;
+				npctalk "Tell me the correct amount of monster in there.";
+				// debugmes " > "+.@amount+" "+getmonsterinfo( .@mob,MOB_NAME );
+				
+				sleep ( .max_duration * 60000 );
+				
+				killmonster .map$,.npc_name$+"::OnDied";
+				delwaitingroom;
+				deletepset 1;
+				.status = 1;
+				sleep 5000;
+				
+			}while( .@round < .max_round );
+			
+			npctalk "That's the Last, thank you for participating.";
+			emotion e_thx;
+			
+			killmonster .map$,.npc_name$+"::OnDied";
+			killmonster .map$,.npc_name$+"::OnWallDied";
+			setcell .map$,.xy_area[0],.xy_area[1],.xy_area[2],.xy_area[3],cell_basilica,0;
+			setcell .map$,.xy_area[0],.xy_area[1],.xy_area[2],.xy_area[3],cell_walkable,1;
+			.status = 0;
+		}
+		end;
+		
+	OnDied: 
+	OnWallDied: 
+		end;
+
+	OnRight:
+		getmapxy( .@map$,.@x,.@y,0 );
+		if ( .status == 0 ) {
+			dispbottom "[Counting Game] Event isnt running.";
+		}
+		else if ( .status == 1 ) {
+			dispbottom "[Counting Game] Please wait for the round to start.";
+		}
+		else if ( distance( .npc_x,.npc_y,.@x,.@y ) > 14 ) {
+			dispbottom "[Counting Game] You're too far away.";
+		}
+		else {
+			npctalk "Bravo!! "+strcharinfo(0)+" is correct!!";
+			
+			// rewards
+			getitem 512,1;
+			getitem 512,2;
+			getitem 512,3;
+			
+			specialeffect2 EF_POTION_CON;
+			awake .npc_name$;
+		}
+		end;
+		
+	function	xy_wall	{
+		.@x = getarg(0); 
+		.@y = getarg(1);
+		monster .map$,.@x,.@y,"",.wall_mob_id,1,.npc_name$+"::OnWallDied";
+		setcell .map$,.@x,.@y,.@x,.@y,cell_walkable,0;
+		// setcell .map$,.@x,.@y,.@x,.@y,cell_basilica,1;
+		return;
+	}
+
+}
+

@@ -1,0 +1,257 @@
+//===== rAthena Script =======================================
+//= Healer
+//===== By: ==================================================
+//= Euphy
+//===== Current Version: =====================================
+//= 1.1
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Basic healer script.
+//===== Additional Comments: =================================
+//= 1.0 Initial script.
+//= 1.1 Aligned coordinates with @go.
+//===============modified By:=================================
+//= AshiHanna
+//==============modified features:============================
+//= emotion script added
+//= illustration  added
+//= different reaction gender added
+//= hp and sp checker added
+//= inconvinient mode added
+//============requirements:===================================
+//= [JRO NPC] JP_ARUNA
+//= [JRO ILLUSTRATIONS]  jpn_alna01~08.bmp
+//============================================================
+-	script	Healer	-1,{
+cutin "jpn_alna01",2;
+emotion e_ok;
+mes "[Healer]";
+mes "Yes may I help you?";
+	next;
+	if(select("Can you see I'm wounded?:Ahh hi? hehe") == 2) {
+		mes "[Healer]";
+		cutin "jpn_alna04",2;
+		emotion e_omg;
+		mes "Baka chan?";
+		close2;
+		cutin "",255;
+		end;
+	}
+else{
+	if (!(Hp < ( MaxHp * 95 / 100 )) && !(Sp < ( MaxSp * 95 / 100 )) ) //change this to your likings ... default: 95% above hp and sp won't cure your broken hearted XD
+	{
+		cutin "jpn_alna06",2;
+		emotion e_what;
+		mes "[Healer]";
+		mes "Where is it?";
+		next;
+		if(sex==1){//this is male script :3
+		mes "[^32ff74"+strcharinfo(0)+"^000000]";
+		emotion e_lv2,1;
+		mes "^fb3300in here...^000000";
+		next;
+		mes "[^32ff74"+strcharinfo(0)+"^000000]";
+		emotion e_slur,1;
+		mes	"^fb3300heal my kokoro senpai!^000000";
+		next;
+		mes "[Healer]";
+		cutin "jpn_alna07",2;
+		emotion e_an;
+		mes "You want me to disect you and permanently remove your kokoro?!";
+		close2;
+		cutin "",255;
+		end;
+		}
+		else{//and this is female script :3
+		mes "[^32ff74"+strcharinfo(0)+"^000000]";
+		emotion e_sob,1;
+		mes "^fb3300waaah!^000000";
+		next;
+		cutin "jpn_alna03",2;
+		emotion e_omg;
+		mes "[Healer]";
+		mes "whuuut? what happen?";
+		next;
+		mes "[^32ff74"+strcharinfo(0)+"^000000]";
+		emotion e_loud,1;
+		mes "^fb3300HE! HE! ... waaah!^000000";
+		next;
+		cutin "jpn_alna02",2;
+		emotion e_ok;
+		mes "[Healer]";
+		mes "it's ok it's ok";
+		next;
+		emotion e_pat,1;
+		mes "[Healer]";
+		mes " don't you worry i'm here ^00fbf4pat pat*^000000";
+		close2;
+		cutin "",255;
+		end;
+		}
+	}
+	if(rand(1,100)<=5){ //change this one to your liking ... default 5% chance to go panic kawaii mode :3
+	cutin "jpn_alna02",2;
+	emotion e_dots;
+	emotion e_dots,1;
+	mes "[Healer]";
+	mes ".....";
+	next;
+	cutin "jpn_alna03",2;
+	emotion e_swt2;
+	mes "[Healer]";
+	mes "ohh! im sooo so sorry please wait for a moment i'll get my staff.";
+	next;
+	cutin "jpn_alna06",2;
+	emotion e_sigh;
+	mes "[Healer]";
+	mes "ok here goes nothin...";
+	next;
+	cutin "jpn_alna08",2;
+	mes "[Healer]";
+	mes "Tui gratia Iovis gratia sit cures!";
+	next;
+	cutin "jpn_alna07",2;
+	emotion e_loud;
+	mes "[Healer]";
+	mes	"Hiyaah!";
+	.@Price = 0;	// Zeny required for heal
+	.@Buffs = 1;	// Also buff players? (1: yes / 0: no)
+	.@Delay = 1;	// Heal delay, in seconds
+
+	if (@HD > gettimetick(2)){
+		close2;
+		cutin "",255;
+		end;}
+	if (.@Price) {
+		message strcharinfo(0), "Healing costs " + callfunc("F_InsertComma",.@Price) + " Zeny.";
+		if (Zeny < .@Price){
+			close2;
+			cutin "",255;
+			end;
+			}
+		if (select("^0055FFHeal^000000:^777777Cancel^000000") == 2){
+			close2;
+			cutin "",255;
+			end;
+			}
+		Zeny -= .@Price;
+	}
+	specialeffect2 EF_HEAL2;
+	percentheal 100,100;
+	if (.@Buffs) {
+		specialeffect2 EF_INCAGILITY;
+		sc_start SC_INCREASEAGI,240000,10;
+		specialeffect2 EF_BLESSING;
+		sc_start SC_BLESSING,240000,10;
+	}
+	if (.@Delay)
+		@HD = gettimetick(2) + .@Delay;
+	next;
+	cutin "jpn_alna05",2;
+	emotion e_wah;
+	mes	"[Healer]";
+	mes	"I'm very sorry it won't happen again. you still want to use my service right?";
+close2;
+cutin "",255;
+end;	
+}
+else{
+	cutin "jpn_alna07",2;
+	emotion e_sigh;
+	mes	"[Healer]";
+	mes	"Tui gratia Iovis gratia sit cures!";
+	mes	"Hiyaah!";
+	.@Price = 0;	// Zeny required for heal
+	.@Buffs = 1;	// Also buff players? (1: yes / 0: no)
+	.@Delay = 1;	// Heal delay, in seconds
+
+	if (@HD > gettimetick(2)){
+		close2;
+		cutin "",255;
+		end;}
+	if (.@Price) {
+		message strcharinfo(0), "Healing costs " + callfunc("F_InsertComma",.@Price) + " Zeny.";
+		if (Zeny < .@Price){
+			close2;
+			cutin "",255;
+			end;
+			}
+		if (select("^0055FFHeal^000000:^777777Cancel^000000") == 2){
+			close2;
+			cutin "",255;
+			end;
+			}
+		Zeny -= .@Price;
+	}
+	specialeffect2 EF_HEAL2;
+	percentheal 100,100;
+	if (.@Buffs) {
+		specialeffect2 EF_INCAGILITY;
+		sc_start SC_INCREASEAGI,240000,10;
+		specialeffect2 EF_BLESSING;
+		sc_start SC_BLESSING,240000,10;
+	}
+	if (.@Delay)
+		@HD = gettimetick(2) + .@Delay;
+	next;
+	cutin "jpn_alna02",2;
+	emotion e_ok,1;
+	mes	"[Healer]";
+	mes	"Be careful next time!";
+close2;
+cutin "",255;
+end;	
+	
+}
+}
+}
+
+// Duplicates
+//============================================================
+alberta,25,240,6	duplicate(Healer)	Healer#alb	532
+aldebaran,135,118,6	duplicate(Healer)	Healer#alde	532
+amatsu,200,79,4	duplicate(Healer)	Healer#ama	532
+ayothaya,207,169,6	duplicate(Healer)	Healer#ayo	532
+comodo,184,158,6	duplicate(Healer)	Healer#com	532
+einbech,57,36,6	duplicate(Healer)	Healer#einbe	532
+einbroch,57,202,6	duplicate(Healer)	Healer#einbr	532
+geffen,115,72,6	duplicate(Healer)	Healer#gef	532
+gonryun,156,122,6	duplicate(Healer)	Healer#gon	532
+hugel,89,150,6	duplicate(Healer)	Healer#hug	532
+izlude,121,150,6	duplicate(Healer)	Healer#izl	532	//Pre-RE: (125,118)
+jawaii,250,139,4	duplicate(Healer)	Healer#jaw	532
+lighthalzen,152,100,6	duplicate(Healer)	Healer#lhz	532
+louyang,226,103,4	duplicate(Healer)	Healer#lou	532
+manuk,272,144,6	duplicate(Healer)	Healer#man	532
+mid_camp,203,289,6	duplicate(Healer)	Healer#mid	532
+moc_ruins,72,164,4	duplicate(Healer)	Healer#moc	532
+morocc,153,97,6	duplicate(Healer)	Healer#mor	532
+moscovia,220,191,4	duplicate(Healer)	Healer#mos	532
+niflheim,212,182,5	duplicate(Healer)	Healer#nif	532
+payon,179,106,4	duplicate(Healer)	Healer#pay	532
+prontera,164,183,3	duplicate(Healer)	Healer#prt	532
+rachel,125,116,6	duplicate(Healer)	Healer#rac	532
+splendide,201,153,4	duplicate(Healer)	Healer#spl	532
+thor_camp,249,74,4	duplicate(Healer)	Healer#thor	532
+umbala,105,148,3	duplicate(Healer)	Healer#umb	532
+veins,217,121,4	duplicate(Healer)	Healer#ve	532
+xmas,143,136,4	duplicate(Healer)	Healer#xmas	532
+yuno,164,45,4	duplicate(Healer)	Healer#yuno	532
+
+// Duplicates (Renewal)
+//============================================================
+brasilis,194,221,6	duplicate(Healer)	Healer#bra	532
+dewata,195,187,4	duplicate(Healer)	Healer#dew	532
+dicastes01,201,194,4	duplicate(Healer)	Healer#dic	532
+ecl_in01,45,60,4	duplicate(Healer)	Healer#ecl	532
+malangdo,132,114,6	duplicate(Healer)	Healer#mal	532
+malaya,227,204,6	duplicate(Healer)	Healer#ma	532
+mora,55,152,4	duplicate(Healer)	Healer#mora	532
+
+//Duplicates(Woe Healer)
+//============================================================
+//prontera,178,198,1	duplicate(Healer)	Healer#woe1	532
+//prontera,167,221,4	duplicate(Healer)	Healer#woe2	532
+//prontera,143,219,4	duplicate(Healer)	Healer#woe3	532
+//prontera,137,194,7	duplicate(Healer)

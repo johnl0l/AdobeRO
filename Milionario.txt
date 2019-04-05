@@ -1,0 +1,48 @@
+//====== Cronus ==========================================================
+//= Milionário
+//===== Por: =============================================================
+//= Hellion
+//===== Versão Atual: ====================================================
+//= 1.0
+//===== Descrição: =======================================================
+//= NPC para servidores Hight Rate/Full-PvP que dá o máximo de zeny ou o a quantidade que você definir para o jogador.
+//===== Changelog: =======================================================
+//= 1.0 Criado o NPC
+//========================================================================
+-	script	JohnLolzinho	-1,{
+OnInit:
+
+// Máximo de Zeny's que seu servidor possui ou a quantidade de Zeny que deseja dar para o jagador.
+set $maxzeny,"2000000000";
+
+// Nome do NPC que aparecerá nos dialogos.
+set @npc$,"[Milionário]";
+end;
+}
+//========================================================================
+lhz_in01.gat,252,262,5	script	Milionário	109,{
+mes @npc$;
+mes "Olá "+strcharinfo(0)+"!";
+mes "Sou o homem mais rico de Rune-Midgard!";
+mes "Sou tão rico que distribuo meu dinheiro para os cidadãos!";
+menu "Sim *-* !! ",sim,"Não, sou bobo!!...Sai Correndo",nao;
+
+sim:
+if (Zeny >= $maxzeny) {
+next;
+mes @npc$;
+mes "Já te dei dinheiro o bastante!";
+mes "Não se contenta com 1 bilhão de Zenys?!";
+close;
+}
+next;
+set Zeny,$maxzeny;
+mes @npc$;
+mes "Pronto!! Você está rico como eu!";
+mes "Seja Feliz!!";
+close;
+
+nao:
+warp "prontera",156,191;
+close;
+}

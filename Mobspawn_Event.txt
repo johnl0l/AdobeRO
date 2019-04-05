@@ -1,0 +1,98 @@
+//===== eAthena Script =======================================
+//= Monster Spawn Event
+//===== By ===================================================
+//= WhiteEagle
+//===== Version ==============================================
+//= 1.0      
+//============================================================
+//How to start/stop the event?
+//- Whisper the npc with "npc:MSE" and write a random word.
+
+
+-	script	MSE	-1,{
+
+	set .gm,99;	// GM Level
+
+OnWhisperGlobal:
+	if(getgmlevel() >= .gm) {
+	if (.mob_left) {
+	mes "^FF0000[Nidhoggr's Shadow Event]^000000";
+	mes "The Nidhoggr's Shadow Event is already in progress!";
+	mes "Would you stop it?";
+	switch(select("Yes:No")){
+case 1:
+	close2;
+	goto OnStop2;
+case 2:
+	close;
+	}
+}
+	mes "^FF0000[Nidhoggr's Shadow Event]^000000";
+	mes "This is the Control Panel for the Nidhoggr's Shadow Event.";
+	mes "How can I help you?";
+	next;
+	switch(select("Start:Stop:Cancel")){
+	
+case 1:
+	mes "^FF0000[Nidhoggr's Shadow Event]^000000";
+	mes "The Nidhoggr's Shadow Event will now start.";
+	close2;
+	goto OnStart;
+	
+case 2:
+
+case 3:
+	close;
+	}
+}
+	close;
+
+OnMinute90:
+OnStart:
+	donpcevent "MSE::OnTimer1800000";
+	set (.mobid,2022);	//Monster ID
+	set (.mobname$,"Nidhoggr's Shadow");	//Monster Name
+	set (.moba,1);	//Monster Anzahl
+	set .@rand,rand(1,6);
+	if (.@rand == 1) set .map$,"comodo";
+	if (.@rand == 2) set .map$,"geffen";
+	if (.@rand == 3) set .map$,"morocc";
+	if (.@rand == 4) set .map$,"payon";
+	if (.@rand == 5) set .map$,"alberta";
+	if (.@rand == 6) set .map$,"izlude";
+	sleep2 1000;
+	announce ("[Nidhoggr's Shadow Event]: "+.moba+" "+.mobname$+" spawn at "+.map$+"",bc_all);
+	monster(.map$,0,0,.mobname$,.mobid,.moba,"MSE::OnMyMobDead");
+	set .mob_left,.moba;
+	sleep2 1798000;
+	donpcevent "MSE::OnTimer1800000";
+	end;
+
+OnTimer1800000:
+	killmonster .map$,"MSE::OnMyMobDead";
+	set .mob_left,0;
+	end;
+
+OnStop2:
+	killmonster .map$,"MSE::OnMyMobDead";
+	announce "The Event was stopped by an Admin.",bc_all;
+	set .mob_left,0;
+	end;
+
+OnStop:
+	sleep2 2000;
+	announce "The Event start every half and full hour.",bc_all;
+	end;
+
+OnMyMobDead:
+	set .mob_left,.mob_left-1;
+	if (.mob_left == 0) {
+               announce "[Nidhoggr's Shadow Event]: "+strcharinfo(0)+" has killed the last "+.mobname$+".",bc_all;
+               donpcevent "MSE::OnStop";	
+        } else {
+               announce "["+.mob_left+"/"+.moba+"] "+.mobname$+" left.",bc_all;
+        }
+        end;
+}
+	
+	

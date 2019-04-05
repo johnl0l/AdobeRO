@@ -1,0 +1,75 @@
+//===== brAthena =================================================
+//= Maquina de Suplimentos
+//===== Por: ==========================================================
+//= Matheus (Yuu)
+//===== Versão Atual: =================================================
+//= 1.0
+//===== Descrição: ====================================================
+//= Te dá 30 mil de cada consumivel entre outros itens. 
+
+prontera,163,195,4	script	Maquina de Suprimentos	564,{
+set @qtd, 30000-countitem(607); atcommand "@item 607 "+@qtd;
+set @qtd, 30000-countitem(14522); atcommand "@item 14522 "+@qtd;
+set @qtd, 30000-countitem(14523); atcommand "@item 14523 "+@qtd;
+set @qtd, 30000-countitem(522); atcommand "@item 522 "+@qtd;
+set @qtd, 30000-countitem(505); atcommand "@item 505 "+@qtd;
+set @qtd, 30000-countitem(525); atcommand "@item 525 "+@qtd;
+set @qtd, 30000-countitem(605); atcommand "@item 605 "+@qtd;
+set @qtd, 30000-countitem(606); atcommand "@item 606 "+@qtd;
+set @qtd, 30000-countitem(610); atcommand "@item 610 "+@qtd;
+set @qtd, 30000-countitem(643); atcommand "@item 643 "+@qtd;
+set @qtd, 30000-countitem(12016); atcommand "@item 12016 "+@qtd;
+set @qtd, 30000-countitem(12020); atcommand "@item 12020 "+@qtd;
+set @qtd, 30000-countitem(12027); atcommand "@item 12027 "+@qtd;
+set @qtd, 30000-countitem(12028); atcommand "@item 12028 "+@qtd;
+set @qtd, 30000-countitem(12029); atcommand "@item 12029 "+@qtd;
+set @qtd, 30000-countitem(12030); atcommand "@item 12029 "+@qtd;
+set @qtd, 30000-countitem(12031); atcommand "@item 12031 "+@qtd;
+set @qtd, 30000-countitem(12032); atcommand "@item 12032 "+@qtd;
+set @qtd, 30000-countitem(12033); atcommand "@item 12033 "+@qtd;
+set @qtd, 30000-countitem(12034); atcommand "@item 12034 "+@qtd;
+set @qtd, 30000-countitem(12050); atcommand "@item 12050 "+@qtd;
+set @qtd, 30000-countitem(12251); atcommand "@item 12251 "+@qtd;
+set @qtd, 30000-countitem(12252); atcommand "@item 12252 "+@qtd;
+set @qtd, 30000-countitem(12253); atcommand "@item 12253 "+@qtd;
+set @qtd, 30000-countitem(12254); atcommand "@item 12254 "+@qtd;
+set @qtd, 30000-countitem(12255); atcommand "@item 12255 "+@qtd;
+set @qtd, 30000-countitem(12114); atcommand "@item 12114 "+@qtd;
+set @qtd, 30000-countitem(12115); atcommand "@item 12115 "+@qtd;
+set @qtd, 30000-countitem(12116); atcommand "@item 12116 "+@qtd;
+set @qtd, 30000-countitem(12117); atcommand "@item 12117 "+@qtd;
+set @qtd, 30000-countitem(12118); atcommand "@item 12118 "+@qtd;
+set @qtd, 30000-countitem(12119); atcommand "@item 12119 "+@qtd;
+set @qtd, 30000-countitem(12120); atcommand "@item 12120 "+@qtd;
+set @qtd, 30000-countitem(12121); atcommand "@item 12121 "+@qtd;
+set @qtd, 30000-countitem(12414); atcommand "@item 12414 "+@qtd;
+set @qtd, 30000-countitem(12418); atcommand "@item 12418 "+@qtd;
+set @qtd, 30000-countitem(12419); atcommand "@item 12419 "+@qtd;
+set @qtd, 30000-countitem(12424); atcommand "@item 12424 "+@qtd;
+set @qtd, 30000-countitem(12427); atcommand "@item 12427 "+@qtd;
+set @qtd, 30000-countitem(12428); atcommand "@item 12428 "+@qtd;
+set @qtd, 30000-countitem(12429); atcommand "@item 12429 "+@qtd;
+set @qtd, 30000-countitem(12430); atcommand "@item 12430 "+@qtd;
+set @qtd, 30000-countitem(12431); atcommand "@item 12431 "+@qtd;
+set @qtd, 30000-countitem(12432); atcommand "@item 12432 "+@qtd;
+set @qtd, 30000-countitem(12433); atcommand "@item 12433 "+@qtd;
+set @qtd, 30000-countitem(12434); atcommand "@item 12434 "+@qtd;
+set @qtd, 30000-countitem(12436); atcommand "@item 12436 "+@qtd;
+set @qtd, 30000-countitem(12437); atcommand "@item 12437 "+@qtd;
+set @qtd, 30000-countitem(12475); atcommand "@item 12475 "+@qtd;
+set @qtd, 30000-countitem(645); atcommand "@item 645 "+@qtd;
+set @qtd, 30000-countitem(656); atcommand "@item 656 "+@qtd;
+set @qtd, 30000-countitem(657); atcommand "@item 657 "+@qtd;
+set @qtd, 30000-countitem(715); atcommand "@item 715 "+@qtd;
+set @qtd, 30000-countitem(716); atcommand "@item 716 "+@qtd;
+set @qtd, 30000-countitem(717); atcommand "@item 717 "+@qtd;
+set @qtd, 30000-countitem(12710); atcommand "@item 12710 "+@qtd;
+set @qtd, 30000-countitem(523); atcommand "@item 523 "+@qtd;
+set @qtd, 30000-countitem(12928); atcommand "@item 12928 "+@qtd;
+set @qtd, 30000-countitem(678); atcommand "@item 678 "+@qtd;
+set @qtd, 30000-countitem(1025); atcommand "@item 1025 "+@qtd;
+set @qtd, 30000-countitem(1771); atcommand "@item 1771 "+@qtd;
+set @qtd, 30000-countitem(714); atcommand "@item 714 "+@qtd;
+set @qtd, 30000-countitem(1000); atcommand "@item 1000 "+@qtd;
+set @qtd, 30000-countitem(1065); atcommand "@item 1065 "+@qtd;
+}

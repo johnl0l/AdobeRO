@@ -1,0 +1,179 @@
+prontera,155,228,5	script	Monster Wiki	439,{
+while( 1 ){
+mes "Event Status : "+((!.WikiStatus )?"^FF0000OFF":"^0000FFON")+" ^000000";
+mes "^00FF00_______________________________^000000";
+mes "How may i assist you, ^0000FF"+strcharinfo(0)+"^000000 ?";
+next;
+switch( select( ( !.WikiStatus || !.MonsterID )?"":"Write Answer",
+				"^00FF00Information^000000",
+				( getgmlevel() < 60 )?"":"^FF0000[GM]^000000 "+(( !.WikiStatus )?"Start Event":"Stop Event"),
+				( getgmlevel() < 80 )?"":"^FF0000[GM]^000000 Setting" )){
+Case 1:
+	if( getgmlevel() >= 80 ) mes "Answer : ^FF0000"+.Answer$+"^000000";
+	switch( .Mode ){
+		Case 0:
+			mes "Please Input the ^FF0000NAME^000000 of monster.";
+			mes "^0000FFRemind^000000 : It is ^FF0000Case-Sensitive^000000";
+			mes "Example : ^0000FFPoring^000000";
+			break;
+		Case 1:	
+			mes "Please Input the ^FF0000LEVEL^000000 of monster.";
+			mes "Example. ^0000FF10 / 20 / 35 / 75^000000";
+			set .Hint,getmonsterinfo( .MonsterID,1 ) - rand(30);
+			mes "^FF0000Hint^000000 : Between "+( (( .Hint ) < 1 )?"0":.Hint)+" ~ "+( getmonsterinfo( .MonsterID,1 ) + rand(30) )+" ";
+			break;
+		Case 2:
+			mes "Please Input the ^FF0000SIZE^000000 of monster.";
+			mes "^0000FFRemind^000000 : It is ^FF0000Case-Sensitive^000000";
+			mes "Example. ^0000FFSmall / Medium / Large^000000";
+			break;
+		Case 3:
+			mes "Please Input the ^FF0000RACE^000000 of monster.";
+			mes "^0000FFRemind^000000 : It is ^FF0000Case-Sensitive^000000";
+			mes "^FF0000List of Available Answer^000000";
+			mes "^00FF00_______________________________^000000";
+			for( set .@i,0; .@i < getarraysize( .Race$ ); set .@i,.@i + 1 ){
+				mes " - ^0000FF"+.Race$[.@i]+"^000000";
+				}
+			break;
+		Case 4:	
+			mes "Please Input the ^FF0000ELEMENT^000000 of monster.";
+			mes "^0000FFRemind^000000 : It is ^FF0000Case-Sensitive^000000";
+			mes "^FF0000List of Available Answer^000000";
+			mes "^00FF00_______________________________^000000";
+			for( set .@i,0; .@i < getarraysize( .Element$ ); set .@i,.@i + 1 ){
+				mes " - ^0000FF"+.Element$[.@i]+"^000000";
+				}
+			break;
+		}
+	input @Guess$;
+	if( .MonsterID == 0 || @Guess$ != .Answer$ ){
+		mes "Sorry, you are ^FF0000WRONG^000000 or ^FF0000Too Late^000000 for the Answer.";
+		close;
+	}else{
+		mes "^FF0000Correct^000000 !! I wonder how good are you in this.";
+		stopnpctimer;
+		getitem $WikiItemID,$WikiAmount;
+		close2;
+		setnpcdisplay( strnpcinfo(0),rand( 436,439 ) );
+		announce "You're Right [ "+strcharinfo(0)+" ] . The Answer is [ "+.Answer$+" ]",bc_npc,0xED1ADC;
+		set .MonsterID,0;
+		doevent strnpcinfo(0)+"::OnStart";
+	}
+	end;
+	
+Case 2:
+	mes "This is a ^FF0000Monster Wiki^000000";
+	mes "I will ask you everything about ^FF0000Monster^000000.";
+	mes "^00FF00_______________________________^000000";
+	mes "The ^0000FFQuestions^000000 could be either in ^FF0000Name , Race , Element , Level , Size ^000000 of Monster.";
+	next;
+	break;
+Case 3:
+	if( !$WikiRound || getitemname( $WikiItemID ) == "null" ){
+		mes "Please Configure your ^FF0000NPC Setting^000000 before you start.";
+		next;
+		break;
+		}
+	set .WikiStatus,( .WikiStatus )?"0":"1";
+	mes "Event is now "+( .WikiStatus )?"^0000FFStarted":"^FF0000Stopped"+"^000000";
+	announce "Monster Wiki Event is now "+( .WikiStatus )?"Started":"Stopped"+"^000000",bc_blue;
+	close2;
+	if( .WikiStatus ){
+		set .Round,0;
+		doevent strnpcinfo(0)+"::OnStart";
+		}
+	end;
+Case 4:
+	while( 1 ){
+	mes "How can i assist you ^FF0000GM^000000?";
+	next;
+	switch( select( "Prize [ ^0000FF"+$WikiAmount+" x "+getitemname( $WikiItemID )+"^000000 ]",
+					"Round [ ^0000FF"+$WikiRound+"^000000 ]",
+					"^0000FFBack^000000" )){
+		Case 1:
+			mes "Input the ^FF0000Item ID^000000";
+			do{
+				input $WikiItemID,501,32767;
+			}while( getitemname( $WikiItemID ) == "null" );
+			mes "Input the ^FF0000Amount^000000";
+			input $WikiAmount,1,32767;
+			next;
+			break;
+		Case 2:
+			mes "Input the ^FF0000Max. Round^000000";
+			input $WikiRound,1,50;
+			next;
+			break;
+		Case 3:
+			mes "Redirect back to menu...";
+			next;
+			}
+			break;
+		}
+	break;
+	}
+}
+
+OnMinute00:
+for( set .@i,3; .@i > 0 ; set .@i,.@i - 1 ){
+announce "Monster Wiki Event will take place in Prontera within "+.@i+" Minutes",bc_blue;
+sleep 60000;
+}
+set .Round,0;
+set .WikiStatus,1;
+
+OnStart:
+sleep2 5000;
+set .Round,.Round + 1;
+if( .Round > $WikiRound ){
+mapannounce .Map$,"Monster Wiki Event has Ended. Thank for Participate in this Event.",bc_map,0x7766EE;
+set .WikiStatus,0;
+sleep2 5000;
+//mapwarp .Map$,"prontera",155,171;
+setnpcdisplay( strnpcinfo(0),rand( 436,439 ) );
+}else{
+npctalk "Round [ "+.Round+" ] within 5 Seconds.";
+sleep2 5000;
+	do{
+		set .MonsterID,rand( 1001,2380 );
+	}while( getmonsterinfo( .MonsterID,0 ) == "null" || getmonsterinfo( .MonsterID,0 ) == "" || getmonsterinfo( .MonsterID,1 ) == -1 );
+	set .Mode,rand(5);
+	switch( .Mode ){
+		Case 0:	set .Answer$, getmonsterinfo( .MonsterID,0 );	break;	// Name
+		Case 1:	set .Answer$, getmonsterinfo( .MonsterID,1 );	break;	// Level
+		Case 2:	set .Answer$, .Size$[ getmonsterinfo( .MonsterID,18 ) ];	break;	// Size
+		Case 3:	set .Answer$, .Race$[ getmonsterinfo( .MonsterID,19 ) ];	break;	// Race
+		Case 4:	set .Answer$, .Element$[ getmonsterinfo( .MonsterID,20 ) ];	break;	// Element
+		}
+	setnpcdisplay( strnpcinfo(0),.MonsterID );
+	npctalk "Click me to view the Question of this Round..";
+	initnpctimer;
+}
+end;
+
+OnTimer10000:
+	npctalk "20 Seconds to go...";
+	end;
+
+OnTimer20000:
+	npctalk "10 Seconds to go...";
+	end;
+
+OnTimer30000:
+mapannounce .Map$,"Time's Up. All Failed in this Round.",bc_map,0x00FF00;
+donpcevent strnpcinfo(0)+"::OnStart";
+set .MonsterID,0;
+stopnpctimer;
+end;
+
+OnInit:
+OnWhisperGlobal:
+set .Map$,"prontera";
+setarray .Size$[0],"Small","Medium","Large";
+setarray .Race$[0],"Formless","Undead","Brute","Plant","Insect","Fish","Demon","Demi Human","Angel","Dragon";
+setarray .Element$[0],"Neutral","Water","Earth","Fire","Wind","Poison","Holy","Dark","Spirit","Undead";
+end;
+	
+	
+}
