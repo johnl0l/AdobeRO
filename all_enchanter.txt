@@ -1,0 +1,442 @@
+//===== rAthena Script ======================================= 
+//= Any-Equipment Enchanter
+//===== By: ================================================== 
+//= SoulDestroyer (souldestroyer1030)
+//===== Current Version: ===================================== 
+//= 1.0
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Add ANY enchant to ANY piece of equipment
+//===== Additional Comments: ================================= 
+//= N/A
+//============================================================ 
+
+prontera,164,160,4	script	Master Craftsman	109,{
+	disable_items;
+	set .@action, 0;
+	mes "[Master Craftsman]";
+	mes "I have mastered the art of equipment enchantment.";
+	mes "Would you like to enchant something or reset enchantment?";
+	next;
+	switch(select("Enchant Equipment:Reset Enchantment:Maybe next time.")) {
+	case 1:
+		set .@action,1;
+		break;
+	case 2:
+		set .@action,2;
+		break;
+	case 3:
+		mes "[Master Craftsman]";
+		mes "Okay, come again.";
+		close;
+	}
+	
+	if (.@action == 1) {
+		next;
+		mes "[Master Craftsman]";
+		mes "Choose any of the equipment you're wearing that you'd like to enchant.";
+		next;
+		setarray .@position$[1], "Head","Body","Left hand","Right hand","Robe","Shoes","Accessory 1","Accessory 2","Head 2","Head 3";
+		set .@menu$,"";
+		for(set .@i,1; .@i<=10; set .@i,.@i+1) {
+			if(getequipisequiped(.@i)) {
+				set .@menu$, .@menu$ + .@position$[.@i] + "-" + "[" + getequipname(.@i) + "]";
+				set .@equipped,1;
+			}
+			set .@menu$, .@menu$ + ":";
+		}
+		if (.@equipped == 0) {
+			mes "[Master Craftsman]";
+			mes "Despite my exceptional skill,";
+			mes "I don't think I can enchant anything you have.";
+			close;
+		}
+		set .@part, select(.@menu$);
+		next;
+
+		if(!getequipisequiped(.@part)) { //custom check
+			mes "[Master Craftsman]";
+			mes "Sorry, I can only enchant equipment,";
+			mes "not body parts. Come back when you're wearing something";
+			mes "on that slot.";
+			close;
+		}
+		
+		mes "[Master Craftsman]";
+		mes "What kind of enchantment do you desire?";
+		switch(select("Strength:Intelligence:Dexterity:Agility:Vitality:Luck:MATK:Evasion:Critical:ATK:Defense:MDEF:HP/SP:ASPD:Fighting Spirit:Spell:Sharp:Expert Archer:Fatal:DelayafterAttack:OGH Enchants:Cancel")) {
+			case 1:
+				switch(select("STR+1:STR+2:STR+3:STR+4:STR+5:STR+6:STR+7:STR+8:STR+9:STR+10:Cancel")) {
+					case 1: set .@enchantstoneid,4700; break;
+					case 2: set .@enchantstoneid,4701; break;
+					case 3: set .@enchantstoneid,4702; break;
+					case 4: set .@enchantstoneid,4703; break;
+					case 5: set .@enchantstoneid,4704; break;
+					case 6: set .@enchantstoneid,4705; break;
+					case 7: set .@enchantstoneid,4706; break;
+					case 8: set .@enchantstoneid,4707; break;
+					case 9: set .@enchantstoneid,4708; break;
+					case 10: set .@enchantstoneid,4709; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 2:
+				switch(select("INT+1:INT+2:INT+3:INT+4:INT+5:INT+6:INT+7:INT+8:INT+9:INT+10:Cancel")) {
+					case 1: set .@enchantstoneid,4710; break;
+					case 2: set .@enchantstoneid,4711; break;
+					case 3: set .@enchantstoneid,4712; break;
+					case 4: set .@enchantstoneid,4713; break;
+					case 5: set .@enchantstoneid,4714; break;
+					case 6: set .@enchantstoneid,4715; break;
+					case 7: set .@enchantstoneid,4716; break;
+					case 8: set .@enchantstoneid,4717; break;
+					case 9: set .@enchantstoneid,4718; break;
+					case 10: set .@enchantstoneid,4719; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 3:
+				switch(select("DEX+1:DEX+2:DEX+3:DEX+4:DEX+5:DEX+6:DEX+7:DEX+8:DEX+9:DEX+10:Cancel")) {
+					case 1: set .@enchantstoneid,4720; break;
+					case 2: set .@enchantstoneid,4721; break;
+					case 3: set .@enchantstoneid,4722; break;
+					case 4: set .@enchantstoneid,4723; break;
+					case 5: set .@enchantstoneid,4724; break;
+					case 6: set .@enchantstoneid,4725; break;
+					case 7: set .@enchantstoneid,4726; break;
+					case 8: set .@enchantstoneid,4727; break;
+					case 9: set .@enchantstoneid,4728; break;
+					case 10: set .@enchantstoneid,4729; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 4:
+				switch(select("AGI+1:AGI+2:AGI+3:AGI+4:AGI+5:AGI+6:AGI+7:AGI+8:AGI+9:AGI+10:Cancel")) {
+					case 1: set .@enchantstoneid,4730; break;
+					case 2: set .@enchantstoneid,4731; break;
+					case 3: set .@enchantstoneid,4732; break;
+					case 4: set .@enchantstoneid,4733; break;
+					case 5: set .@enchantstoneid,4734; break;
+					case 6: set .@enchantstoneid,4735; break;
+					case 7: set .@enchantstoneid,4736; break;
+					case 8: set .@enchantstoneid,4737; break;
+					case 9: set .@enchantstoneid,4738; break;
+					case 10: set .@enchantstoneid,4739; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 5:
+				switch(select("VIT+1:VIT+2:VIT+3:VIT+4:VIT+5:VIT+6:VIT+7:VIT+8:VIT+9:VIT+10:Cancel")) {
+					case 1: set .@enchantstoneid,4740; break;
+					case 2: set .@enchantstoneid,4741; break;
+					case 3: set .@enchantstoneid,4742; break;
+					case 4: set .@enchantstoneid,4743; break;
+					case 5: set .@enchantstoneid,4744; break;
+					case 6: set .@enchantstoneid,4745; break;
+					case 7: set .@enchantstoneid,4746; break;
+					case 8: set .@enchantstoneid,4747; break;
+					case 9: set .@enchantstoneid,4748; break;
+					case 10: set .@enchantstoneid,4749; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 6:
+				switch(select("LUK+1:LUK+2:LUK+3:LUK+4:LUK+5:LUK+6:LUK+7:LUK+8:LUK+9:LUK+10:Cancel")) {
+					case 1: set .@enchantstoneid,4750; break;
+					case 2: set .@enchantstoneid,4751; break;
+					case 3: set .@enchantstoneid,4752; break;
+					case 4: set .@enchantstoneid,4753; break;
+					case 5: set .@enchantstoneid,4754; break;
+					case 6: set .@enchantstoneid,4755; break;
+					case 7: set .@enchantstoneid,4756; break;
+					case 8: set .@enchantstoneid,4757; break;
+					case 9: set .@enchantstoneid,4758; break;
+					case 10: set .@enchantstoneid,4759; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 7:
+				switch(select("MATK+1%:MATK+2%:MATK+3%:Cancel")) {
+					case 1: set .@enchantstoneid,4760; break;
+					case 2: set .@enchantstoneid,4761; break;
+					case 3: set .@enchantstoneid,4806; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 8:
+				switch(select("Evasion1:Evasion3:Evasion6:Evasion12:Cancel")) {
+					case 1: set .@enchantstoneid,4859; break;
+					case 2: set .@enchantstoneid,4860; break;
+					case 3: set .@enchantstoneid,4762; break;
+					case 4: set .@enchantstoneid,4763; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 9:
+				switch(select("Critical1:Critical2:Critical4:Critical5:Critical7")) {
+					case 1: set .@enchantstoneid,4926; break;
+					case 2: set .@enchantstoneid,4939; break;
+					case 3: set .@enchantstoneid,4941; break;
+					case 4: set .@enchantstoneid,4764; break;
+					case 5: set .@enchantstoneid,4765; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 10:
+				switch(select("Atk+1:Atk+2:Atk+3:Atk+1%:Atk+4%:Atk+5%:Atk+6%:Atk+7%:Cancel")) {
+					case 1: set .@enchantstoneid,4819; break;
+					case 2: set .@enchantstoneid,4766; break;
+					case 3: set .@enchantstoneid,4767; break;
+					case 4: set .@enchantstoneid,4882; break;
+					case 5: set .@enchantstoneid,4894; break;
+					case 6: set .@enchantstoneid,4895; break;
+					case 7: set .@enchantstoneid,4904; break;
+					case 8: set .@enchantstoneid,4905; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 11:
+				switch(select("Def+3:Def+6:Def+9:Def+12:Def+15:Def+18:Def+21:Cancel")) {
+					case 1: set .@enchantstoneid,4791; break;
+					case 2: set .@enchantstoneid,4792; break;
+					case 3: set .@enchantstoneid,4793; break;
+					case 4: set .@enchantstoneid,4794; break;
+					case 5: set .@enchantstoneid,4893; break;
+					case 6: set .@enchantstoneid,4902; break;
+					case 7: set .@enchantstoneid,4903; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 12:
+				switch(select("Mdef+1:Mdef+2:Mdef+3:Mdef+4:Mdef+5:Mdef+6:Mdef+8:Mdef+10:Cancel")) {
+					case 1: set .@enchantstoneid,4890; break;
+					case 2: set .@enchantstoneid,4786; break;
+					case 3: set .@enchantstoneid,4891; break;
+					case 4: set .@enchantstoneid,4787; break;
+					case 5: set .@enchantstoneid,4892; break;
+					case 6: set .@enchantstoneid,4788; break;
+					case 7: set .@enchantstoneid,4789; break;
+					case 8: set .@enchantstoneid,4790; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 13:
+				switch(select("HP100:HP200:HP300:HP400:HP500:SP25:SP50:SP75:SP100:SP150:Cancel")) {
+					case 1: set .@enchantstoneid,4795; break;
+					case 2: set .@enchantstoneid,4796; break;
+					case 3: set .@enchantstoneid,4797; break;
+					case 4: set .@enchantstoneid,4798; break;
+					case 5: set .@enchantstoneid,4799; break;
+					case 6: set .@enchantstoneid,4870; break;
+					case 7: set .@enchantstoneid,4800; break;
+					case 8: set .@enchantstoneid,4871; break;
+					case 9: set .@enchantstoneid,4801; break;
+					case 10: set .@enchantstoneid,4802; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 14:
+				switch(select("Atk Speed1:Atk Speed2")) {
+					case 1: set .@enchantstoneid,4807; break;
+					case 2: set .@enchantstoneid,4842; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 15:
+				switch(select("Fighting Spirit1:Fighting Spirit2:Fighting Spirit3:Fighting Spirit4:Fighting Spirit5:Fighting Spirit6:Fighting Spirit7:Fighting Spirit8:Fighting Spirit9:Fighting Spirit10:Cancel")) {
+					case 1: set .@enchantstoneid,4811; break;
+					case 2: set .@enchantstoneid,4810; break;
+					case 3: set .@enchantstoneid,4809; break;
+					case 4: set .@enchantstoneid,4808; break;
+					case 5: set .@enchantstoneid,4820; break;
+					case 6: set .@enchantstoneid,4821; break;
+					case 7: set .@enchantstoneid,4822; break;
+					case 8: set .@enchantstoneid,4823; break;
+					case 9: set .@enchantstoneid,4824; break;
+					case 10: set .@enchantstoneid,4825; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 16:
+				switch(select("Spell1:Spell2:Spell3:Spell4:Spell5:Spell6:Spell7:Spell8:Spell9:Spell10:Cancel")) {
+					case 1: set .@enchantstoneid,4815; break;
+					case 2: set .@enchantstoneid,4814; break;
+					case 3: set .@enchantstoneid,4813; break;
+					case 4: set .@enchantstoneid,4812; break;
+					case 5: set .@enchantstoneid,4826; break;
+					case 6: set .@enchantstoneid,4827; break;
+					case 7: set .@enchantstoneid,4828; break;
+					case 8: set .@enchantstoneid,4829; break;
+					case 9: set .@enchantstoneid,4830; break;
+					case 10: set .@enchantstoneid,4831; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 17:
+				switch(select("Sharp1:Sharp2:Sharp3:Sharp4:Sharp5:Cancel")) {
+					case 1: set .@enchantstoneid,4818; break;
+					case 2: set .@enchantstoneid,4817; break;
+					case 3: set .@enchantstoneid,4816; break;
+					case 4: set .@enchantstoneid,4843; break;
+					case 5: set .@enchantstoneid,4844; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 18:
+				switch(select("Expert Archer1:Expert Archer2:Expert Archer3:Expert Archer4:Expert Archer5:Expert Archer6:Expert Archer7:Expert Archer8:Expert Archer9:Expert Archer10:Cancel")) {
+					case 1: set .@enchantstoneid,4832; break;
+					case 2: set .@enchantstoneid,4833; break;
+					case 3: set .@enchantstoneid,4834; break;
+					case 4: set .@enchantstoneid,4835; break;
+					case 5: set .@enchantstoneid,4836; break;
+					case 6: set .@enchantstoneid,4837; break;
+					case 7: set .@enchantstoneid,4838; break;
+					case 8: set .@enchantstoneid,4839; break;
+					case 9: set .@enchantstoneid,4840; break;
+					case 10: set .@enchantstoneid,4841; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 19:
+				switch(select("Fatal1Lv:Fatal2Lv:Fatal3Lv:Fatal4Lv:Cancel")) {
+					case 1: set .@enchantstoneid,4863; break;
+					case 2: set .@enchantstoneid,4864; break;
+					case 3: set .@enchantstoneid,4865; break;
+					case 4: set .@enchantstoneid,4866; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 20:
+				switch(select("DelayafterAttackLv1:DelayafterAttackLv2:DelayafterAttackLv3:DelayafterAttackLv4:Cancel")) {
+					case 1: set .@enchantstoneid,4869; break;
+					case 2: set .@enchantstoneid,4872; break;
+					case 3: set .@enchantstoneid,4873; break;
+					case 4: set .@enchantstoneid,4881; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			case 21:
+				switch(select("Bear's Power:Hawkeye:Lucky Day:Muscle Fool:Runaway Magic:Speed of Light:Cancel")) {
+					case 1: set .@enchantstoneid,4875; break;
+					case 2: set .@enchantstoneid,4879; break;
+					case 3: set .@enchantstoneid,4880; break;
+					case 4: set .@enchantstoneid,4878; break;
+					case 5: set .@enchantstoneid,4876; break;
+					case 6: set .@enchantstoneid,4877; break;
+					default: set .@enchantstoneid,0; break;
+				}
+				break;
+			default:
+				set .@enchantstoneid,0;
+				break;
+		}
+		
+		set .@enchantitemid, getequipid(.@part); // save id of the item
+		set .@slots, getitemslots(.@enchantitemid); // slots of the item
+		set .@refinelevel, getequiprefinerycnt(.@part); // refine level of the item
+		setarray .@equip_card[0], getequipcardid(.@part,0),getequipcardid(.@part,1),getequipcardid(.@part,2),getequipcardid(.@part,3); // get current cards
+		next;
+		if (.@enchantstoneid == 0) {
+			mes "[Master Craftsman]";
+			mes "Stop wasting my time...";
+		}
+		else {
+			// anti-hack
+			if (callfunc("F_IsEquipIDHack", .@part, .@enchantitemid) ||
+				callfunc("F_IsEquipCardHack", .@part, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3])) {
+				mes "[Master Craftsman]";
+				mes "Hey! What do you think you're doing!";
+				mes "Don't you dare switch your gear while I'm working on them, okay?";
+				close;
+			}
+			
+			if (.@equip_card[3] == 0 && .@slots < 4) {
+				set .@equip_card[3],.@enchantstoneid;
+			}
+			else if (.@equip_card[2] == 0 && .@slots < 3) {
+				set .@equip_card[2],.@enchantstoneid;
+			}
+			else if (.@equip_card[1] == 0 && .@slots < 2) {
+				set .@equip_card[1],.@enchantstoneid;
+			}
+			else if (.@equip_card[0] == 0 && .@slots < 1) {
+				set .@equip_card[0],.@enchantstoneid;
+			}
+			else {
+				mes "[Master Craftsman]";
+				mes "I don't think I can fit any more enchantments";
+				mes "onto this piece of equipment.";
+				close;
+			}
+			
+			specialeffect2 EF_REPAIRWEAPON;
+			delequip .@part;
+			getitem2 .@enchantitemid,1,1,.@refinelevel,0,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3];
+			mes "[Master Craftsman]";
+			mes "All done!";
+		}
+	}
+	else if (.@action == 2) {
+		next;
+		mes "[Master Craftsman]";
+		mes "Choose any of the equipment you're wearing that you'd like to have the enchants reset.";
+		next;
+		setarray .@position$[1], "Head","Body","Left hand","Right hand","Robe","Shoes","Accessory 1","Accessory 2","Head 2","Head 3";
+		set .@menu$,"";
+		for(set .@i,1; .@i<=10; set .@i,.@i+1) {
+			if(getequipisequiped(.@i)) {
+				set .@menu$, .@menu$ + .@position$[.@i] + "-" + "[" + getequipname(.@i) + "]";
+				set .@equipped,1;
+			}
+			set .@menu$, .@menu$ + ":";
+		}
+		if (.@equipped == 0) {
+			mes "[Master Craftsman]";
+			mes "I don't think I can work on this.";
+			close;
+		}
+		set .@part, select(.@menu$);
+		next;
+
+		if(!getequipisequiped(.@part)) { //custom check
+			mes "[Master Craftsman]";
+			mes "Are you kidding me? You're not wearing anything on that slot.";
+			close;
+		}
+		
+		set .@enchantitemid, getequipid(.@part); // save id of the item
+		set .@slots, getitemslots(.@enchantitemid); // slots of the item
+		set .@refinelevel, getequiprefinerycnt(.@part); // refine level of the item
+		setarray .@equip_card[0], getequipcardid(.@part,0),getequipcardid(.@part,1),getequipcardid(.@part,2),getequipcardid(.@part,3); // get current cards
+			
+		// anti-hack
+		if (callfunc("F_IsEquipIDHack", .@part, .@enchantitemid) ||
+			callfunc("F_IsEquipCardHack", .@part, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3])) {
+			mes "[Master Craftsman]";
+			mes "Hey! What do you think you're doing!";
+			mes "Don't you dare switch your gear while I'm working on them, okay?";
+			close;
+		}
+		
+		if (.@equip_card[3] != 0 && .@slots < 4) {
+			set .@equip_card[3], 0;
+		}
+		if (.@equip_card[2] != 0 && .@slots < 3) {
+			set .@equip_card[2], 0;
+		}
+		if (.@equip_card[1] != 0 && .@slots < 2) {
+			set .@equip_card[1], 0;
+		}
+		if (.@equip_card[0] != 0 && .@slots < 1) {
+			set .@equip_card[0], 0;
+		}
+		
+		specialeffect2 EF_REPAIRWEAPON;
+		delequip .@part;
+		getitem2 .@enchantitemid,1,1,.@refinelevel,0,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3];
+		mes "[Master Craftsman]";
+		mes "All done!";
+	}
+	close;
+}

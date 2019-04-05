@@ -1,0 +1,49 @@
+//FEITO POR FILIPE ARRUDA - SCRIPTER
+//----------------------------------------------
+-	script	Seu Servidor Aqui	-1,{
+	OnPCLoginEvent:
+	set @maximo, 999999;// O Número máximo que pode aparecer
+	set @n,rand(0,@maximo);
+	set @site$, "Seu Site";
+	set @cp$, "Sua CP";
+	
+	query_sql ("SELECT `diasvip` FROM `login` WHERE `account_id` = '"+getcharid(3)+"'", .@diasvip);
+	if(getgmlevel() < 99){
+	pcblockmove getcharid(3),1;
+	atcommand "@option 2 0 0";
+	mes "^ff0000["+strnpcinfo(0)+"]^000000";
+	mes "Seja Bem-Vindo ao ^ff0000"+strnpcinfo(0)+"^000000";
+	mes "Você possui ^ff0000"+#CASHPOINTS+"^000000 cash's";
+	mes "Você possui ^ff5500"+.@diasvip+"^000000 Dias vip.";
+	mes "Entre no site: ^ff0000"+@site$+"^000000";
+	mes "Nossa CP: ^ff0000"+@cp$+"^000000";
+	next;
+	mes "^ff0000["+strnpcinfo(0)+"]^000000";
+	mes "Olá, ^ff0000"+strcharinfo(0)+"^000000";
+	mes "Agora, temos que nos certificar que você nao é um BOT. Vamos lá!";
+	next;
+	mes "^ff0000["+strnpcinfo(0)+"]^000000";
+	mes "Você irá ver uma sequência de números. digite-as corretamente ou será kickado!";
+	next;
+	mes "^ff0000["+strnpcinfo(0)+"]^000000";
+	mes "^ff0000"+@n+"^000000";
+	input @numero;
+	next;
+	if(@numero == @n ){
+		pcblockmove getcharid(3),0;
+		mes "^ff0000["+strnpcinfo(0)+"]^000000";
+		mes "Ok, você passou. Bom Jogo!";
+		close2;
+		atcommand "@option 0 0 0";
+		announce "["+strnpcinfo(0)+"]: O Player "+strcharinfo(0)+" Passou no teste ! Não está usando Bot !!!",bc_all,0xFFFF00;
+		end;
+	}
+	mes "^ff0000["+strnpcinfo(0)+"]^000000";
+	mes "Você não passou! será kickado!!!";
+	announce "["+strnpcinfo(0)+"]: O Player "+strcharinfo(0)+" é suspeito de usar bot e foi kickado",bc_all, 0xFFFF00;
+	close2;
+	atcommand "@kick " +strcharinfo(0);
+	end;
+	}
+	end;
+}

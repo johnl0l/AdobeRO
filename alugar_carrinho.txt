@@ -1,0 +1,45 @@
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%           _____    _____   _____   _____   _____    _   _____   _   _            %%
+//%%          |  _  \  /  _  \ |  _  \ | ____| |  _  \  | | /  ___| | | / /           %%
+//%%          | |_| |  | | | | | | | | | |__   | |_| |  | | | |     | |/ /            %%
+//%%          |  _  /  | | | | | | | | |  __|  |  _  /  | | | |     | |\ \            %%
+//%%          | | \ \  | |_| | | |_| | | |___  | | \ \  | | | |___  | | \ \           %%
+//%%          |_|  \_\ \_____/ |_____/ |_____| |_|  \_\ |_| \_____| |_|  \_\          %%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//%%==================================================================================%%
+//%% | Desenvolvido Por [ADM] Roderick | Cronus | Por Favor, Não Retire Os Créditos | %%
+//%%==================================================================================%%
+prontera,127,203,6	script	Alguel de Carrinho	726,{ 											//%%
+//%% Configuração do level mínimo necessário pra usar o npc.							  %%
+//%% No Caso de querer colocar só pra VIPS.            									  %%
+set .@vip,0;	//mudar aqui																		  %%
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if(getgroupid()<.@vip){mes "Desculpe mas você não pode usar este npc";close;end;}
+	if(cart!=0 || checkcart()){
+		mes "[^0000FFGarota Negociante^000000]";
+		mes "Você já possui um carrinho, quer remove-lo ou trocar??";
+			switch(select("^339966Trocar de carrinho:^FF0000REMOVER Carrinho:^000000^000000Cancelar")){
+				case 1: goto Trocar;
+				case 2: atcommand "@cart 0";set cart,0;
+				next; mes "[^0000FFGarota Negociante^000000]";
+				mes "Prontinho";close;
+				case 3: close;
+			}}
+mes "[^0000FFGarota Negociante^000000]";
+mes "Olá ^339966"+strcharinfo(0)+"^000000!";
+mes "Posso te alugar um Carrinho Personalizado, quer dar uma olhada?";
+if(select("Sim:Não")==2)close;
+Trocar:
+next;
+set .@trocar,1;
+mes "[^0000FFGarota Negociante^000000]";
+if(cart==0){mes "^FF0000Sem Carrinho^000000";} else{mes "Carrinho ^FF0000"+cart+"^000000";}
+	while(.@trocar==1){
+			switch(select("^0000FFAnterior:^339966Proximo:^FF0000Este ficou bom^000000^000000^000000")){
+				case 1: cart--;if(cart>9){set cart,0;}if(cart<0){set cart,9;}if(cart==0){mes "^FF0000Sem Carrinho^000000";} else{mes "Carrinho ^FF0000"+cart+"^000000";} specialeffect2 170; atcommand "@cart "+cart; break;
+				case 2: cart++;if(cart>9){set cart,0;}if(cart<0){set cart,9;}if(cart==0){mes "^FF0000Sem Carrinho^000000";} else{mes "Carrinho ^FF0000"+cart+"^000000";} specialeffect2 170; atcommand "@cart "+cart; break;
+				case 3: set .@trocar,0; close;
+			}
+	}
+end;
+}

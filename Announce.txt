@@ -1,0 +1,30 @@
+////=========================[ CreaTeD 10 august 2009 ]======================////
+////========================[ Created By Andrew RicozTa ]==========================////
+////=======================[ Special Thanks To Aozi & GM Ocean ]=====================////
+////======================[ Auto Announce Script For Your Server ]=================////
+////====================[ Tested On MiracLe Ragnarok - Stable 13887 ]============////
+////=====================[ Version 2.0 ]============////
+////==========================[ Fixed Bug Timer =p ]===============////
+- script Andrew Ric0zTa Inside -1,{
+
+OnInit:
+while(1) {
+announce "Welcome To Adobe-Ro Ragnarok Online",bc_all;
+sleep 35000;
+
+announce "Please Vote This Server in Ratemyserver.net",bc_all;
+sleep 35000;
+
+announce "Enjoy This Server ^_^",bc_all;
+sleep 35000;
+
+announce "If You Find Any Bug's Please Report It To GM",bc_all;
+sleep 35000;
+
+announce "Take You Adventure Here ^_^",bc_all;
+sleep 35000;
+
+announce "Happy RO",bc_blue;
+sleep 35000;
+}
+}

@@ -1,0 +1,130 @@
+//                  ...^ .... ^
+//                  ._/ \ .. / \_
+//                  ./ ___ __ _ \
+//                  / / @ \/ @ \ \
+//                  \ \___/\___/ /\
+//                  .\____\/____/||
+//                  ... / .... /\\\\\     Shiraz Scripts~
+//                  .. | .... |\\\\\\     Versão 1.0
+//                  .. \ ..... \\\\\\     www.supremebro.com
+//                  ... \____/\\\\\       www.fantasy-ro.org
+//                  ... _||_||_
+//                  ... -- --
+
+prontera,150,150,5	script	Ajudante	1275,{
+
+OnInit:
+npcspeed 300;
+	sc_start 23,  240000, 10;	// Improve Concentrate	Duração: 999 sec
+	sc_start 32,  240000, 10;	// Increase Agi		Duração: 999 sec
+	sc_start 29,  300000, 10;	// Angelus		Duração: 999 sec
+	sc_start 30,  240000, 10;	// Blessing		Duração: 999 sec
+	sc_start 35,   60000,  5;	// Impositio Manus	Duração: 600 sec
+	sc_start 39,  120000, 10;	// Kyrie Eleison	Duração: 120 sec
+	sc_start 40,   90000,  5;	// Magnificat		Duração: 999 sec
+	sc_start 41,   30000,  5;	// Gloria		Duração: 400 sec
+	sc_start 110,  45000,  5;	// Concentration	Duração: 999 sec
+	sc_start 118,  30000, 10;	// Mystical Amplify	Duração: first followup
+	sc_start 123,  60000,  1;	// Cart Boost		Duração: 500 Sec
+	sc_start 115, 100000,  5;	// Assumptio		Duração: 100 sec
+initnpctimer;
+end;
+Ontimer15000:
+	sc_start 23,  240000, 10;	// Improve Concentrate	Duração: 999 sec
+	sc_start 32,  240000, 10;	// Increase Agi		Duração: 999 sec
+	sc_start 29,  300000, 10;	// Angelus		Duração: 999 sec
+	sc_start 30,  240000, 10;	// Blessing		Duração: 999 sec
+	sc_start 35,   60000,  5;	// Impositio Manus	Duração: 600 sec
+	sc_start 39,  120000, 10;	// Kyrie Eleison	Duração: 120 sec
+	sc_start 40,   90000,  5;	// Magnificat		Duração: 999 sec
+	sc_start 41,   30000,  5;	// Gloria		Duração: 400 sec
+	sc_start 110,  45000,  5;	// Concentration	Duração: 999 sec
+	sc_start 118,  30000, 10;	// Mystical Amplify	Duração: first followup
+	sc_start 123,  60000,  1;	// Cart Boost		Duração: 500 Sec
+	sc_start 115, 100000,  5;	// Assumptio		Duração: 100 sec
+npcspeed 300;
+npcwalkto 170,184;
+end;
+Ontimer20000:
+	sc_start 23,  240000, 10;	// Improve Concentrate	Duração: 999 sec
+	sc_start 32,  240000, 10;	// Increase Agi		Duração: 999 sec
+	sc_start 29,  300000, 10;	// Angelus		Duração: 999 sec
+	sc_start 30,  240000, 10;	// Blessing		Duração: 999 sec
+	sc_start 35,   60000,  5;	// Impositio Manus	Duração: 600 sec
+	sc_start 39,  120000, 10;	// Kyrie Eleison	Duração: 120 sec
+	sc_start 40,   90000,  5;	// Magnificat		Duração: 999 sec
+	sc_start 41,   30000,  5;	// Gloria		Duração: 400 sec
+	sc_start 110,  45000,  5;	// Concentration	Duração: 999 sec
+	sc_start 118,  30000, 10;	// Mystical Amplify	Duração: first followup
+	sc_start 123,  60000,  1;	// Cart Boost		Duração: 500 Sec
+	sc_start 115, 100000,  5;	// Assumptio		Duração: 100 sec
+npcspeed 300;
+npcwalkto 161,177;
+end;
+Ontimer30000:
+	sc_start 23,  240000, 10;	// Improve Concentrate	Duração: 999 sec
+	sc_start 32,  240000, 10;	// Increase Agi		Duração: 999 sec
+	sc_start 29,  300000, 10;	// Angelus		Duração: 999 sec
+	sc_start 30,  240000, 10;	// Blessing		Duração: 999 sec
+	sc_start 35,   60000,  5;	// Impositio Manus	Duração: 600 sec
+	sc_start 39,  120000, 10;	// Kyrie Eleison	Duração: 120 sec
+	sc_start 40,   90000,  5;	// Magnificat		Duração: 999 sec
+	sc_start 41,   30000,  5;	// Gloria		Duração: 400 sec
+	sc_start 110,  45000,  5;	// Concentration	Duração: 999 sec
+	sc_start 118,  30000, 10;	// Mystical Amplify	Duração: first followup
+	sc_start 123,  60000,  1;	// Cart Boost		Duração: 500 Sec
+	sc_start 115, 100000,  5;	// Assumptio		Duração: 100 sec
+npcspeed 300;
+npcwalkto 152,175;
+end;
+Ontimer40000:
+	sc_start 23,  240000, 10;	// Improve Concentrate	Duração: 999 sec
+	sc_start 32,  240000, 10;	// Increase Agi		Duração: 999 sec
+	sc_start 29,  300000, 10;	// Angelus		Duração: 999 sec
+	sc_start 30,  240000, 10;	// Blessing		Duração: 999 sec
+	sc_start 35,   60000,  5;	// Impositio Manus	Duração: 600 sec
+	sc_start 39,  120000, 10;	// Kyrie Eleison	Duração: 120 sec
+	sc_start 40,   90000,  5;	// Magnificat		Duração: 999 sec
+	sc_start 41,   30000,  5;	// Gloria		Duração: 400 sec
+	sc_start 110,  45000,  5;	// Concentration	Duração: 999 sec
+	sc_start 118,  30000, 10;	// Mystical Amplify	Duração: first followup
+	sc_start 123,  60000,  1;	// Cart Boost		Duração: 500 Sec
+	sc_start 115, 100000,  5;	// Assumptio		Duração: 100 sec
+npcspeed 300;
+npcwalkto 168,174;
+end;
+Ontimer150000:
+	sc_start 23,  240000, 10;	// Improve Concentrate	Duração: 999 sec
+	sc_start 32,  240000, 10;	// Increase Agi		Duração: 999 sec
+	sc_start 29,  300000, 10;	// Angelus		Duração: 999 sec
+	sc_start 30,  240000, 10;	// Blessing		Duração: 999 sec
+	sc_start 35,   60000,  5;	// Impositio Manus	Duração: 600 sec
+	sc_start 39,  120000, 10;	// Kyrie Eleison	Duração: 120 sec
+	sc_start 40,   90000,  5;	// Magnificat		Duração: 999 sec
+	sc_start 41,   30000,  5;	// Gloria		Duração: 400 sec
+	sc_start 110,  45000,  5;	// Concentration	Duração: 999 sec
+	sc_start 118,  30000, 10;	// Mystical Amplify	Duração: first followup spell
+	sc_start 123,  60000,  1;	// Cart Boost		Duração: 500 Sec
+	sc_start 115, 100000,  5;	// Assumptio		Duração: 100 sec
+npcspeed 300;
+npcwalkto 170,163;
+end;
+Ontimer1500000:
+	sc_start 23,  240000, 10;	// Improve Concentrate	Duração: 999 sec
+	sc_start 32,  240000, 10;	// Increase Agi		Duração: 999 sec
+	sc_start 29,  300000, 10;	// Angelus		Duração: 999 sec
+	sc_start 30,  240000, 10;	// Blessing		Duração: 999 sec
+	sc_start 35,   60000,  5;	// Impositio Manus	Duração: 600 sec
+	sc_start 39,  120000, 10;	// Kyrie Eleison	Duração: 120 sec
+	sc_start 40,   90000,  5;	// Magnificat		Duração: 999 sec
+	sc_start 41,   30000,  5;	// Gloria		Duração: 400 sec
+	sc_start 110,  45000,  5;	// Concentration	Duração: 999 sec
+	sc_start 118,  30000, 10;	// Mystical Amplify	Duração: first followup spell
+	sc_start 123,  60000,  1;	// Cart Boost		Duração: 500 Sec
+	sc_start 115, 100000,  5;	// Assumptio		Duração: 100 sec
+npcspeed 300;
+npcwalkto 177,170;
+stopnpctimer;
+initnpctimer;
+end;
+}

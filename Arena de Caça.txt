@@ -1,0 +1,361 @@
+// .----------------------------------------------------------.
+// .----------------------------------------------------------.
+// . Script:                                                  .
+// .  Arena de Caça                                           .
+// .----------------------------------------------------------.
+// .----------------------------------------------------------.
+// . Descrição:                                               .
+// .  Arena de Caça que invoca monstros que ao ser derrotados .
+// .  dá pontos para ser trocado por itens.                   .
+// .----------------------------------------------------------.
+// . Changelog da Versão:                                     .
+// .  * 1.0                                      .
+// .	- Iniciado NPC.                                       .
+// .  * 1.1                                      .
+// .    - Corrigido a linha de tempo e menu de itens.         .
+// *----------------------------------------------------------*
+ayothaya,146,174,4	script	Arena de Caça#hunter_01::HunterArena	4_M_JOB_ASSASSIN,{
+	// Configurações dos itens de troca.
+	setarray .@item_id[0], 12210, 12103, 7180, 12211, 14533;	// Id dos itens a ser trocado em array.
+	setarray .@item_qt[0], 1000, 5000, 300, 200, 500;	// Valor de pontos equivalente ao vetor do array que será trocado o item.
+
+	mes "^6A5ACD[Recepcionista]^000000";
+	mes "Bem-vindo a Arena de Caça!";
+
+	if( $@hunterarena_flag == 2 )
+		mes "No momemento nossos portais estão fechado por estar correndo uma Caçada neste momento.";
+
+	mes "Mais em que posso te ajudar?";
+	next;
+	switch( select( ($@hunterarena_flag==1?"- Entrar na Arena.":""), "- Trocar pontos por item.", "- Sobre a Arena de Caça.", "^FF0000- Saír.^000000") )
+	{
+		case 1:
+			if( $@hunterarena_flag != 1 )
+			{
+				mes "^6A5ACD[Recepcionista]^000000";
+				mes "Me desculpe, mais a arena não está aberta.";
+				mes "Volte mais tarde!";
+				close;
+			}
+
+			mes "^6A5ACD[Recepcionista]^000000";
+			mes "Tem certeza que deseja entrar na arena?";
+			next;
+			if( select("- Sim.", "- Não.") == 1 )
+			{
+				mes "^6A5ACD[Recepcionista]^000000";
+				mes "Boa sorte, vou te mandar pra lá agora!";
+				close2;
+				warp "ordeal_1-2", 154, 153;
+				end;
+			}
+			break;
+		case 2:
+			set .@m_1, 1;
+			while( .@m_1 )
+			{
+				mes "^6A5ACD[Recepcionista]^000000";
+				mes "Bom, escolha o item que deseja trocar por seus pontos.";
+				mes "Lembrando que você tem " + hunterarena_points + " pontos!";
+				next;
+
+				set .@menu$, "";
+				for( set .@i, 0; .@i < getarraysize(.@item_id); set .@i, .@i + 1 )
+					set .@menu$, .@menu$ +"- " + getitemname(.@item_id[.@i]) + " [" + .@item_qt[.@i] + " pnts]:";
+
+				set .@choose, select(.@menu$  + "^FF0000- Cancelar.^000000")-1;
+
+				if( .@choose >= getarraysize(.@item_id) )
+					set .@m_1, 0;
+				else {
+					mes "^6A5ACD[Recepcionista]^000000";
+					mes "O item que você selecionou para uma possível troca foi o ^FF0000" + getitemname(.@item_id[.@choose]) + "^000000, correto?";
+					next;
+					switch( select("- Sim, continue.", "- Não, desejo trocar o item.", "- Cancelar negociação.") )
+					{
+						case 1:
+							set .@m_2, 1;
+							while( .@m_2 )
+							{
+								mes "^6A5ACD[Recepcionista]^000000";
+								mes "Por quantos ^FF0000" + getitemname(.@item_id[.@choose]) + "^000000 você deseja trocar seus pontos?";
+								mes "^FF0000Se não quiser mais nenhum, apenas digite 0.^000000";
+								next;
+								input .@amount;
+
+								if( .@amount == 0 )
+								{
+									mes "^6A5ACD[Recepcionista]^000000";
+									mes "Você não deseja mais trocar seus pontos pelo ^FF0000" + getitemname(.@item_id[.@choose]) + "^000000?";
+									next;
+									switch( select("- Sim, desejo trocar por outro item.", "- Não, deixa-me tentar novamente.", "^FF0000- Cancelar negociação.^000000" ) )
+									{
+										case 1:
+											set .@m_2, 0;
+											break;
+										case 2:
+											break;
+										case 3:
+											set .@m_1, 0;
+											set .@m_2, 0;
+											break;
+									}
+								}
+								else if( hunterarena_points < (.@amount*.@item_qt[.@choose]) )
+								{
+									mes "^6A5ACD[Recepcionista]^000000";
+									mes "Você não tem pontos suficiente para trocar por esta quantidade de item, tente novamente!";
+									next;
+								}
+								else if( !checkweight(.@item_id[.@choose], .@amount) )
+								{
+									mes "^6A5ACD[Recepcionista]^000000";
+									mes "Você não pode carregar todos esses itens, tente novamente!";
+									next;
+								}
+								else {
+									mes "^6A5ACD[Recepcionista]^000000";
+									mes "Deseja trocar ^FF0000" + (.@amount*.@item_id[.@choose]) + "^000000 pontos por ^FF0000" + .@amount + "x " + getitemname(.@item_id[.@choose]) + "^000000?";
+									next;
+									switch( select("- Sim, desejo trocar.", "- Não, desejo trocar o item.", "- Não, desejo trocar a quantidade.", "^FF0000- Cancelar negociação.^000000" ) )
+									{
+										case 1:
+											getitem .@item_id[.@choose], .@amount;
+											set hunterarena_points, hunterarena_points - (.@amount*.@item_qt[.@choose]);
+
+											mes "^6A5ACD[Recepcionista]^000000";
+											mes "Muito bem, aqui estão seus ^FF0000" + .@amount + "x " + getitemname(.@item_id[.@choose]) + "^000000.";
+											next;
+											set .@m_2, 0;
+											break;
+										case 2:
+											set .@m_2, 0;
+											break;
+										case 3:
+											break;
+										case 4:
+											set .@m_1, 0;
+											set .@m_2, 0;
+											break;
+									}
+								}
+							}
+							break;
+						case 2:
+							break;
+						case 3:
+							set .@m_1, 0;
+							break;
+					}
+				}
+			}
+			break;
+		case 3:
+			mes "^6A5ACD[Recepcionista]^000000";
+			mes "Você ganha pontos atribuidos pela classes do monstro que você matar na arena.";
+			mes "Com esses pontos você pode trocar por diversos itens.";
+			mes " ";
+			mes "A arena é aberta pelos seguintes horários:";
+			mes "^0000FF00:40AM^000000 - ^0000FF14:40PM^000000";
+			mes "^0000FF08:40AM^000000 - ^0000FF16:40PM^000000";
+			mes "^0000FF10:40AM^000000 - ^0000FF18:40PM^000000";
+			mes "^0000FF12:40PM^000000 - ^0000FF20:40PM^000000";
+			close;
+		case 4:
+			break;
+	}
+
+	mes "^6A5ACD[Recepcionista]^000000";
+	mes "Muito bem, volte quando desejar trocar seus pontos por itens ou quando desejar entrar na arena!";
+	close;
+
+// O Evento irá começar neste esquema de hora:
+//
+//	08:40AM - 10:40AM - 12:40PM - 14:40PM
+//	16:40PM - 18:40PM - 20:40PM - 00:40PM
+//
+OnMinute40:
+	if( !$@hunterarena_flag && (gettime(3) == 0 || gettime(3) == 8 || gettime(3) == 10 || gettime(3) == 12 || gettime(3) == 14 || gettime(3) == 16 || gettime(3) == 18 || gettime(3) == 20) )
+		donpcevent "HunterArena::OnStartArena";
+	
+	end;
+
+OnStartArena:
+	killmonsterall "ordeal_1-2";
+
+	// Para desabilitar as mensagem no mapa, altere o primeiro valor para 0.
+	setarray $@hunter_arena[0], 1, 82, 250, 200, 200, 200, 140, 200, 10, 1;
+
+	// Monstros Alvos de 1 Ponto
+	monster "ordeal_1-2",0,0,"Alvo de 1 Ponto",1002,40,"HunterArena::OnMobKill01";
+	monster "ordeal_1-2",0,0,"Alvo de 1 Ponto",1324,2,"HunterArena::OnMobKill01";
+	monster "ordeal_1-2",0,0,"Alvo de 1 Ponto",1229,40,"HunterArena::OnMobKill01";
+	// Monstros Alvos de 10 Pontos
+	monster "ordeal_1-2",0,0,"Alvo de 10 Pontos",1054,100,"HunterArena::OnMobKill10";
+	monster "ordeal_1-2",0,0,"Alvo de 10 Pontos",1034,100,"HunterArena::OnMobKill10";
+	monster "ordeal_1-2",0,0,"Alvo de 10 Pontos",1295,50,"HunterArena::OnMobKill10";
+	// Monstros Alvos de 15 Pontos
+	monster "ordeal_1-2",0,0,"Alvo de 15 Pontos",1111,100,"HunterArena::OnMobKill15";
+	monster "ordeal_1-2",0,0,"Alvo de 15 Pontos",1152,100,"HunterArena::OnMobKill15";
+	// Monstros Alvos de 20 Pontos
+	monster "ordeal_1-2",0,0,"Alvo de 20 Pontos",1177,100,"HunterArena::OnMobKill20";
+	monster "ordeal_1-2",0,0,"Alvo de 20 Pontos",1499,100,"HunterArena::OnMobKill20";
+
+	// MapFlags
+	setmapflag "ordeal_1-2", mf_noteleport;
+	setmapflag "ordeal_1-2", mf_nomemo;
+	setmapflag "ordeal_1-2", mf_nosave;
+	setmapflag "ordeal_1-2", mf_nowarp;
+	setmapflag "ordeal_1-2", mf_nowarpto;
+
+
+	waitingroom "Aberta a Arena de Caça", 0;
+
+	announce "[Arena de Caça]: O Portal está aberto e será fechado dentro de 5 minutos.", 8;
+	set $@hunterarena_flag, 1;
+	initnpctimer;
+	startnpctimer;
+	end;
+
+OnTimer60000:
+	announce "[Arena de Caça]: O Portal está aberto e será fechado dentro de 4 minutos.", 8;
+	end;
+
+OnTimer120000:
+	announce "[Arena de Caça]: O Portal está aberto e será fechado dentro de 3 minutos.", 8;
+	end;
+
+OnTimer180000:
+	announce "[Arena de Caça]: O Portal está aberto e será fechado dentro de 2 minutos.", 8;
+	end;
+
+OnTimer240000:
+	announce "[Arena de Caça]: O Portal está aberto e será fechado dentro de um minuto.", 8;
+	end;
+
+OnTimer300000:
+	// Monstros Alvos de 30 Pontos
+	monster "ordeal_1-2",0,0,"Alvo de 30 Pontos",1412,100,"HunterArena::OnMobKill30";
+	monster "ordeal_1-2",0,0,"Alvo de 30 Pontos",1410,100,"HunterArena::OnMobKill30";
+	// Monstros Alvos de 50 Pontos
+	monster "ordeal_1-2",0,0,"Alvo de 50 Pontos",1194,100,"HunterArena::OnMobKill50";
+	monster "ordeal_1-2",0,0,"Alvo de 50 Pontos",1211,40,"HunterArena::OnMobKill50";
+	// Monstros Alvos de 100 Pontos
+	monster "ordeal_1-2",0,0,"Alvo de 100 Pontos",1295,200,"HunterArena::OnMobKill100";
+	// Monstros Alvos de 1000 Pontos
+	monster "ordeal_1-2",0,0,"Alvo de 1.000 Pontos",1039,2,"HunterArena::OnMobKill1000";
+	monster "ordeal_1-2",0,0,"Alvo de 1.000 Pontos",1159,2,"HunterArena::OnMobKill1000";
+	monster "ordeal_1-2",0,0,"Alvo de 1.000 Pontos",1583,2,"HunterArena::OnMobKill1000";
+	monster "ordeal_1-2",0,0,"Alvo de 1.000 Pontos",1272,2,"HunterArena::OnMobKill1000";
+	monster "ordeal_1-2",0,0,"Alvo de 1.000 Pontos",1373,2,"HunterArena::OnMobKill1000";
+	// Monstros Alvos de 2000Pontos
+	monster "ordeal_1-2",0,0,"Alvo de 2.000 Pontos",1708,1,"HunterArena::OnMobKill2000";
+
+	announce "[Arena de Caça]: O Portal está fechado, aqueles que não tiveram oportunidade podem tentar na próxima vez!", 8;
+	mapannounce "ordeal_1-2", "[Arena de Caça]: Vocês tem mais 5 minutos de caçada, bom proveito!", 8;
+	set $@hunterarena_flag, 2;
+	delwaitingroom;
+	end;
+
+OnTimer600000:
+	mapannounce "ordeal_1-2", "[Arena de Caça]: Falta um minuto para acabar a caçada.", 8;
+	end;
+
+OnTimer660000:
+	mapannounce "ordeal_1-2", "[Arena de Caça]: A Caçada terminou, obrigado pela participação!", 8;
+	set $@hunterarena_flag, 0;
+	killmonsterall "ordeal_1-2";
+	removemapflag "ordeal_1-2", mf_noteleport;
+	removemapflag "ordeal_1-2", mf_nomemo;
+	removemapflag "ordeal_1-2", mf_nosave;
+	removemapflag "ordeal_1-2", mf_nowarp;
+	removemapflag "ordeal_1-2", mf_nowarpto;
+	end;
+
+OnTimer670000:
+	mapwarp "ordeal_1-2", "quiz_02", 349, 378;
+	stopnpctimer;
+	end;
+
+OnMobKill01:
+	if( $@hunterarena_flag )
+	{
+		set $@hunter_arena[1], $@hunter_arena[1] - 1;
+		if( $@hunter_arena[0] ) mapannounce "ordeal_1-2", "[Arena de Caça]: Falta " + $@hunter_arena[1] + " alvo(s) de 1 ponto!", 8;
+		set hunterarena_points, hunterarena_points + 1;
+	}
+	end;
+
+OnMobKill10:
+	if( $@hunterarena_flag )
+	{
+		set $@hunter_arena[2], $@hunter_arena[2] - 1;
+		if( $@hunter_arena[0] ) mapannounce "ordeal_1-2", "[Arena de Caça]: Falta " + $@hunter_arena[2] + " alvo(s) de 10 pontos!", 8;
+		set hunterarena_points, hunterarena_points + 10;
+	}
+	end;
+
+OnMobKill15:
+	if( $@hunterarena_flag )
+	{
+		set $@hunter_arena[3], $@hunter_arena[3] - 1;
+		if( $@hunter_arena[0] ) mapannounce "ordeal_1-2", "[Arena de Caça]: Falta " + $@hunter_arena[3] + " alvo(s) de 15 pontos!", 8;
+		set hunterarena_points, hunterarena_points + 15;
+	}
+	end;
+
+OnMobKill20:
+	if( $@hunterarena_flag )
+	{
+		set $@hunter_arena[4], $@hunter_arena[4] - 1;
+		if( $@hunter_arena[0] ) mapannounce "ordeal_1-2", "[Arena de Caça]: Falta " + $@hunter_arena[4] + " alvo(s) de 20 pontos!", 8;
+		set hunterarena_points, hunterarena_points + 20;
+	}
+	end;
+
+OnMobKill30:
+	if( $@hunterarena_flag )
+	{
+		set $@hunter_arena[5], $@hunter_arena[5] - 1;
+		if( $@hunter_arena[0] ) mapannounce "ordeal_1-2", "[Arena de Caça]: Falta " + $@hunter_arena[5] + " alvo(s) de 30 pontos!", 8;
+		set hunterarena_points, hunterarena_points + 30;
+	}
+	end;
+	end;
+
+OnMobKill50:
+	if( $@hunterarena_flag )
+	{
+		set $@hunter_arena[6], $@hunter_arena[6] - 1;
+		if( $@hunter_arena[0] ) mapannounce "ordeal_1-2", "[Arena de Caça]: Falta " + $@hunter_arena[6] + " alvo(s) de 50 pontos!", 8;
+		set hunterarena_points, hunterarena_points + 50;
+	}
+	end;
+
+OnMobKill100:
+	if( $@hunterarena_flag )
+	{
+		set $@hunter_arena[7], $@hunter_arena[7] - 1;
+		if( $@hunter_arena[0] ) mapannounce "ordeal_1-2", "[Arena de Caça]: Falta " + $@hunter_arena[7] + " alvo(s) de 100 pontos!", 8;
+		set hunterarena_points, hunterarena_points + 100;
+	}
+	end;
+
+OnMobKill1000:
+	if( $@hunterarena_flag )
+	{
+		set $@hunter_arena[8], $@hunter_arena[8] - 1;
+		if( $@hunter_arena[0] ) mapannounce "ordeal_1-2", "[Arena de Caça]: Falta " + $@hunter_arena[8] + " alvo(s) de 1.000 pontos!", 8;
+		set hunterarena_points, hunterarena_points + 1000;
+	}
+	end;
+
+OnMobKill20000:
+	if( $@hunterarena_flag )
+	{
+		set $@hunter_arena[9], $@hunter_arena[9] - 1;
+		if( $@hunter_arena[0] ) mapannounce "ordeal_1-2", "[Arena de Caça]: Falta " + $@hunter_arena[9] + " alvo(s) de 2.000 pontos!", 8;
+		set hunterarena_points, hunterarena_points + 15;
+	}
+	end;
+}

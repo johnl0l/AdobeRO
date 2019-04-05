@@ -1,0 +1,290 @@
+// Created By ~ Rosemount
+// Current Version ~ v1.1
+
+prontera,147,173,6	script	Arena Warper	459,{
+Main:
+menu "~ Normal PvP Room",L_Normal,"~ Non Donation",L_Non,"~ Non Buffer",L_NBuff,"~ Guild Vs Guild",L_GvG;
+
+L_Normal:
+menu "~ Prontera [ "+getmapusers("pvp_y_1-1")+" / 30 ]",L01,"~ Izlude [ "+getmapusers("pvp_y_1-2")+" / 30 ]",L02,"~ Alberta [ "+getmapusers("pvp_y_1-4")+" / 30 ]",L03,"~ Back to Main Menu",Main;
+L_Non:
+menu "~ Prontera Non Donation [ "+getmapusers("pvp_y_2-1")+" / 30 ]",Non1,"~ Izlude Non Donation [ "+getmapusers("pvp_y_2-2")+" / 30 ]",Non2,"~ Alberta Non Donation "+getmapusers("pvp_y_2-4")+" / 30 ]",Non3,"~ Back to Main Menu",Main;
+L_NBuff:
+menu "~ Prontera Non Buffer [ "+getmapusers("pvp_y_3-1")+" / 30 ]",NB1,"~ Izlude Non Buffer [ "+getmapusers("pvp_y_3-2")+" / 30 ]",NB2,"~ Alberta Non Buffer "+getmapusers("pvp_y_3-4")+" / 30 ]",NB3,"~ Back to Main Menu",Main;
+L_GvG:
+menu "~ Prontera GvG [ "+getmapusers("pvp_y_4-1")+" / 30 ]",GvG1,"~ Alberta GVG [ "+getmapusers("pvp_y_4-4")+" / 30 ]",GvG2,"~ Back to Main Menu",Main;
+
+L01:
+mes "0 ~ Cancel Room : 1 ~ Join Room";
+input .pron;
+if( .pron == 0) end;
+if( .pron == 1) {
+if(getmapusers("pvp_y_1-1") == 29) goto Full; 
+specialeffect2 EF_EARTHSPIKE;
+specialeffect2 EF_DEVIL;
+specialeffect2 EF_COIN;
+specialeffect2 EF_SIGHTRASHER;
+sleep2 1500;
+warp "pvp_y_1-1",0,0;
+announce "[ Arena Warper ] : "+strcharinfo(0)+" Join Prontera Arena Room.",bc_all;
+end;
+
+L02:
+mes "0 ~ Cancel Room : 1 ~ Join Room";
+input .izl;
+if( .izl == 0) end;
+if( .izl == 1) {
+if(getmapusers("pvp_y_1-2") == 29) goto Full; 
+specialeffect2 EF_EARTHSPIKE;
+specialeffect2 EF_DEVIL;
+specialeffect2 EF_COIN;
+specialeffect2 EF_SIGHTRASHER;
+sleep2 1500;
+warp "pvp_y_1-2",0,0;
+announce "[ Arena Warper ] : "+strcharinfo(0)+" Join Izlude Arena Room.",bc_all;
+end;
+
+L03:
+mes "0 ~ Cancel Room : 1 ~ Join Room";
+input .pron;
+if( .alb == 0) end;
+if( .alb == 1) {
+if(getmapusers("pvp_y_1-4") == 29) goto Full; 
+specialeffect2 EF_EARTHSPIKE;
+specialeffect2 EF_DEVIL;
+specialeffect2 EF_COIN;
+specialeffect2 EF_SIGHTRASHER;
+sleep2 1500;
+warp "pvp_y_1-4",0,0;
+announce "[ Arena Warper ] : "+strcharinfo(0)+" Join Alberta Arena Room.",bc_all;
+end;
+
+Non1:
+mes "0 ~ Cancel Room : 1 ~ Join Room";
+input .npron;
+if( .npron == 0) end;
+if( .npron == 1) goto GoN1;
+GoN1:
+if ( getmapusers("pvp_y_2-1") == 29) goto Full; 
+for ( set .x, 0; .x < getarraysize(.Itemban); set .x, .x + 1)
+if ( countitem(.Itemban[.x])) { 
+next;
+mes "You Cannot Bring Donation Item";
+close;
+}
+specialeffect2 EF_EARTHSPIKE;
+specialeffect2 EF_DEVIL;
+specialeffect2 EF_COIN;
+specialeffect2 EF_SIGHTRASHER;
+sleep2 1500;
+warp "pvp_y_2-1",0,0;
+announce "[ Arena Warper ] : "+strcharinfo(0)+" Join Prontera Non Donation Room.",bc_all;
+end;
+
+Non2:
+mes "0 ~ Cancel Room : 1 ~ Join Room";
+input .nizl;
+if( .nizl == 0) end;
+if( .nizl == 1) goto GoN2;
+GoN2:
+if( getmapusers("pvp_y_2-2") == 29) goto Full; 
+for ( set .x, 0; .x < getarraysize(.Itemban); set .x, .x + 1)
+if ( countitem(.Itemban[.x])) { 
+next;
+mes "You Cannot Bring Donation Item";
+close;
+}
+specialeffect2 EF_EARTHSPIKE;
+specialeffect2 EF_DEVIL;
+specialeffect2 EF_COIN;
+specialeffect2 EF_SIGHTRASHER;
+sleep2 1500;
+warp "pvp_y_2-2",0,0;
+announce "[ Arena Warper ] : "+strcharinfo(0)+" Join Izlude Non Donation Room.",bc_all;
+end;
+
+Non3:
+mes "0 ~ Cancel Room : 1 ~ Join Room";
+input .nalber;
+if( .nalber == 0) end;
+if( .nalber == 1) goto GoN3;
+GoN3:
+if(getmapusers("pvp_y_2-4") == 29) goto Full; 
+for ( set .x, 0; .x < getarraysize(.Itemban); set .x, .x + 1)
+if ( countitem(.Itemban[.x])) { 
+next;
+mes "You Cannot Bring Donation Item";
+close;
+}
+specialeffect2 EF_EARTHSPIKE;
+specialeffect2 EF_DEVIL;
+specialeffect2 EF_COIN;
+specialeffect2 EF_SIGHTRASHER;
+sleep2 1500;
+warp "pvp_y_2-4",0,0;
+announce "[ Arena Warper ] : "+strcharinfo(0)+" Join Alberta Non Donation Room.",bc_all;
+end;
+
+NB1:
+mes "0 ~ Cancel Room : 1 ~ Join Room";
+input .NBP;
+if( .NBP == 0) end;
+if( .NBP == 1) {
+if(getmapusers("pvp_y_3-1") == 29) goto Full;
+sc_end sc_all;
+specialeffect2 EF_EARTHSPIKE;
+specialeffect2 EF_DEVIL;
+specialeffect2 EF_COIN;
+specialeffect2 EF_SIGHTRASHER;
+sleep2 1500;
+warp "pvp_y_3-1",0,0;
+announce "[ Arena Warper ] : "+strcharinfo(0)+" Join Prontera Non Buffer Room.",bc_all;
+end;
+
+NB2:
+mes "0 ~ Cancel Room : 1 ~ Join Room";
+input .NBI;
+if( .NBI == 0) end;
+if( .NBI == 1) {
+if(getmapusers("pvp_y_3-2") == 29) goto Full;
+sc_end sc_all;
+specialeffect2 EF_EARTHSPIKE;
+specialeffect2 EF_DEVIL;
+specialeffect2 EF_COIN;
+specialeffect2 EF_SIGHTRASHER;
+sleep2 1500;
+warp "pvp_y_3-2",0,0;
+announce "[ Arena Warper ] : "+strcharinfo(0)+" Join Izlude Non Buffer Room.",bc_all;
+end;
+
+NB3:
+mes "0 ~ Cancel Room : 1 ~ Join Room";
+input .NBP;
+if( .NBA == 0) end;
+if( .NBA == 1) {
+if(getmapusers("pvp_y_3-4") == 29) goto Full;
+sc_end sc_all;
+specialeffect2 EF_EARTHSPIKE;
+specialeffect2 EF_DEVIL;
+specialeffect2 EF_COIN;
+specialeffect2 EF_SIGHTRASHER;
+sleep2 1500;
+warp "pvp_y_3-4",0,0;
+announce "[ Arena Warper ] : "+strcharinfo(0)+" Join Alberta Non Buffer Room.",bc_all;
+end;
+
+GvG1:
+if( !getcharid(2) ){
+mes "You dont have a guild"; close;
+}
+mes "0 ~ Cancel Room : 1 ~ Join Room";
+input .GvGP;
+if( .GvGP == 0) end;
+if( .GvGP == 1) {
+if(getmapusers("pvp_y_4-1") == 29) goto Full;
+pvpoff "pvp_y_4-1";
+gvgon "pvp_y_4-1";
+specialeffect2 EF_EARTHSPIKE;
+specialeffect2 EF_DEVIL;
+specialeffect2 EF_COIN;
+specialeffect2 EF_SIGHTRASHER;
+sleep2 1500;
+warp "pvp_y_4-1",0,0;
+announce "[ Arena Warper ] : "+strcharinfo(0)+" Join GvG Prontera Room.",bc_all;
+end;
+
+GvG2:
+if( !getcharid(2) ){
+mes "You dont have a guild"; close;
+}
+mes "0 ~ Cancel Room : 1 ~ Join Room";
+input .GvGP;
+if( .GvGA == 0) end;
+if( .GvGA == 1) {
+if(getmapusers("pvp_y_4-4") == 29) goto Full;
+pvpoff "pvp_y_4-4";
+gvgon "pvp_y_4-4";
+specialeffect2 EF_EARTHSPIKE;
+specialeffect2 EF_DEVIL;
+specialeffect2 EF_COIN;
+specialeffect2 EF_SIGHTRASHER;
+sleep2 1500;
+warp "pvp_y_4-4",0,0;
+announce "[ Arena Warper ] : "+strcharinfo(0)+" Join GvG Alberta Room.",bc_all;
+end;
+
+Full:
+mes "Room is Full"; next; mes "Please Choose Another Room"; close;
+
+OnInit:
+setarray .Itemban[0], 5022,1000;
+waitingroom "Arena PVP",0;
+end;
+}
+}
+}
+}
+}
+}
+}
+}
+}
+
+// -------- MapFlag --------------
+
+// Normal Pvp 
+pvp_y_1-1	mapflag	nobranch
+pvp_y_1-1	mapflag	novending
+pvp_y_1-1	mapflag	nosave
+pvp_y_1-1	mapflag	nowarp
+pvp_y_1-2	mapflag	nobranch
+pvp_y_1-2	mapflag	novending
+pvp_y_1-2	mapflag	nosave
+pvp_y_1-2	mapflag	nowarp
+pvp_y_1-4	mapflag	nobranch
+pvp_y_1-4	mapflag	novending
+pvp_y_1-4	mapflag	nosave
+pvp_y_1-4	mapflag	nowarp
+
+// Non Donation  
+pvp_y_2-1	mapflag	nobranch
+pvp_y_2-1	mapflag	novending
+pvp_y_2-1	mapflag	nosave
+pvp_y_2-1	mapflag	nowarp
+pvp_y_2-2	mapflag	nobranch
+pvp_y_2-2	mapflag	novending
+pvp_y_2-2	mapflag	nosave
+pvp_y_2-2	mapflag	nowarp
+pvp_y_2-4	mapflag	nobranch
+pvp_y_2-4	mapflag	novending
+pvp_y_2-4	mapflag	nosave
+pvp_y_2-4	mapflag	nowarp
+
+// Non Buffer
+pvp_y_3-1	mapflag	nobranch
+pvp_y_3-1	mapflag	novending
+pvp_y_3-1	mapflag	nosave
+pvp_y_3-1	mapflag	nowarp
+pvp_y_3-2	mapflag	nobranch
+pvp_y_3-2	mapflag	novending
+pvp_y_3-2	mapflag	nosave
+pvp_y_3-2	mapflag	nowarp
+pvp_y_3-4	mapflag	nobranch
+pvp_y_3-4	mapflag	novending
+pvp_y_3-4	mapflag	nosave
+pvp_y_3-4	mapflag	nowarp
+
+
+// Gvg
+pvp_y_4-1	mapflag	nobranch
+pvp_y_4-1	mapflag	novending
+pvp_y_4-1	mapflag	nosave
+pvp_y_4-1	mapflag	nowarp
+pvp_y_4-4	mapflag	nobranch
+pvp_y_4-4	mapflag	novending
+pvp_y_4-4	mapflag	nosave
+pvp_y_4-4	mapflag	nowarp
+
+
+  
+    

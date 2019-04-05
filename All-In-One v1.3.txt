@@ -1,0 +1,320 @@
+//===== eAthena Script =======================================
+//= All-in-One NPC
+//===== By: ==================================================
+//= Euphy
+//===== Current Version: =====================================
+//= 1.3
+//===== Description: =========================================
+//= A compilation of commonly-used NPC scripts.
+//== Includes job changer, stylist, refiner, card remover,
+//== coin exchanger, rentals, resetter, platinum skills,
+//== sex changer, identifier, healer, buffer, and repairman.
+//============================================================
+
+prt_in,90,72,6	script	All-in-One	550,{
+function Get_Platinum; function Equip_Menu;
+
+	if (getarraysize(.OnClick)) {
+		if (.OnClick[0]) { specialeffect2 313; percentheal 100,100; }
+		if (.OnClick[1]) { specialeffect2 42; sc_start SC_BLESSING,240000,10; specialeffect2 37; sc_start SC_INCREASEAGI,240000,10; }
+		if (.OnClick[2] && getbrokenid(1)) { specialeffect2 101; atcommand "@repairall"; } }
+	set .@menu$,"";
+	for (set .@i,0; .@i < getarraysize(.MainMenu$); set .@i,.@i+1) {
+		if (.MenuOption & pow(2,.@i))
+			set .@menu$, .@menu$+" ~ "+.MainMenu$[.@i];
+		set .@menu$, .@menu$+":"; }
+	switch(select(.@menu$)) {
+		case 1:
+			function Job_Menu; function A_An;
+			if (checkfalcon() || checkcart() || checkriding()) {
+				message strcharinfo(0),"Please remove your "+((checkfalcon())?"falcon":"")+((checkcart())?"cart":"")+((checkriding())?"Peco":"")+" before proceeding.";
+				close; }
+			if (.SkillPointCheck && SkillPoint) { message strcharinfo(0),"Please use all your skill points before proceeding."; close; }
+			if (Class > 6 && Class < 22) {
+				if (BaseLevel < .Rebirth[0] || JobLevel < .Rebirth[1]) {
+					set .@blvl, .Rebirth[0]-BaseLevel; set .@jlvl, .Rebirth[1]-JobLevel;
+					message strcharinfo(0),"You need "+((.@blvl>0)?.@blvl+" more base levels "+((.@jlvl>0)?"/ ":""):"")+((.@jlvl>0)?.@jlvl+" more job levels ":"")+"to rebirth.";
+					close; }
+				message strcharinfo(0),"Change into a High Novice?";
+				if(select(" ~ ^0055FFRebirth^000000: ~ ^777777Cancel^000000")==2) close;
+				jobchange 4001; resetlvl(1); specialeffect2 432;
+				close; }
+			set .@eac, eaclass();
+			set .@j1, roclass(.@eac|EAJL_2_1); set .@j2,roclass(.@eac|EAJL_2_2);
+			if (.@eac&EAJL_2)
+				if (.@eac&(EAJL_UPPER|EAJL_BABY) || roclass(.@eac|EAJL_UPPER) == -1) {
+					message strcharinfo(0),"No more jobs are available."; close; }
+			if ((.@eac&EAJ_BASEMASK) == EAJ_NOVICE) {
+				if (JobLevel < .JobReq[0]) message strcharinfo(0),"A job level of "+.JobReq[0]+" is required to change into the 1st Class.";
+				else switch(Class) {
+					case 0: Job_Menu(11,1,2,3,4,5,6,23,4046,24,25,4023);
+					case 4001: Job_Menu(6,4002,4003,4004,4005,4006,4007);
+					case 4023: Job_Menu(7,4024,4025,4026,4027,4028,4029,4045);
+					default: message strcharinfo(0),"An error has occurred."; break; }
+				close; }
+			if (roclass(.@eac|EAJL_2_1) == -1 || roclass(.@eac|EAJL_2_2) == -1) {
+				message strcharinfo(0),"No more jobs are available."; close; }
+			if (!(.@eac&EAJL_2) && JobLevel < .JobReq[1]) { message strcharinfo(0),"A job level of "+.JobReq[1]+" is required to change into the 2nd Class."; close; }
+			Job_Menu(2,.@j1,.@j2);
+			end;
+			function Job_Menu {
+				set .@menu$,"";
+				for(set .@i,1; .@i<=getarg(0); set .@i,.@i+1)
+					set .@menu$, .@menu$+" ~ "+jobname(getarg(.@i))+":";
+				set .@menu$, .@menu$+" ~ ^777777Cancel^000000";
+				while(1) {
+					set .@i, getarg(select(.@menu$),0);
+					if (!.@i) close;
+					if ((.@i == 23 || .@i == 4045) && BaseLevel < .SNovice) {
+						message strcharinfo(0),"A base level of "+.SNovice+" is required to turn into a Super "+((.@i==23)?"Novice":"Baby")+"."; }
+					else if (select(" ~ Change into ^0055FF"+jobname(.@i)+"^000000 class: ~ ^777777Go back^000000")==1) {
+						message strcharinfo(0),"Became "+A_An(jobname(.@i))+"!";
+						jobchange .@i; specialeffect2 338;
+						if (.Platinum) Get_Platinum;
+						close; }
+				} end; }
+			function Get_Platinum {
+				skill 142,1,0;
+				switch(BaseClass) {
+					case 0: if (Class !=23) skill 143,1,0; break;
+					case 1: skill 144,1,0; skill 145,1,0; skill 146,1,0; break;
+					case 2: skill 157,1,0; break;
+					case 3: skill 147,1,0; skill 148,1,0; break;
+					case 4: skill 156,1,0; break;
+					case 5: skill 153,1,0; skill 154,1,0; skill 155,1,0; break;
+					case 6: skill 149,1,0; skill 150,1,0; skill 151,1,0; skill 152,1,0; break;
+					default: break; }
+				switch(roclass(eaclass()&EAJ_UPPERMASK)) {
+					case 7: skill 1001,1,0; break;
+					case 8: skill 1014,1,0; break;
+					case 9: skill 1006,1,0; break;
+					case 10: skill 1012,1,0; skill 1013,1,0; break;
+					case 11: skill 1009,1,0; break;
+					case 12: skill 1003,1,0; skill 1004,1,0; break;
+					case 14: skill 1002,1,0; break;
+					case 15: skill 1015,1,0; skill 1016,1,0; break;
+					case 16: skill 1007,1,0; skill 1008,1,0; skill 1017,1,0; skill 1018,1,0; skill 1019,1,0; break;
+					case 17: skill 1005,1,0; break;
+					case 18: skill 238,1,0; break;
+					case 19: skill 1010,1,0; break;
+					case 20: skill 1011,1,0; break;
+					default: break; }
+				return; }
+			function A_An {
+				setarray .@A$[0],"a","e","i","o","u";
+				set .@B$, "_"+getarg(0);
+				for(set .@i,0; .@i<5; set .@i,.@i+1)
+					if (compare(.@B$,"_"+.@A$[.@i])) return "an "+getarg(0);
+				return "a "+getarg(0); }
+		case 2:
+			setarray .@Look[1],7,1,6;
+			set .@s, select(" ~ Cloth color: ~ Hairstyle: ~ Hair color");
+			set .@Revert, getlook(.@Look[.@s]); set .@Style,1;
+			while(1) {
+				setlook .@Look[.@s], .@Style;
+				message strcharinfo(0),"This is style #"+.@Style+".";
+				set .@menu$, " ~ Next (^0055FF"+((.@Style!=.Styles[.@s])?.@Style+1:1)+"^000000): ~ Previous (^0055FF"+((.@Style!=1)?.@Style-1:.Styles[.@s])+"^000000): ~ Jump to...: ~ Revert to original (^0055FF"+.@Revert+"^000000)";
+				switch(select(.@menu$)) {
+					case 1: set .@Style, ((.@Style!=.Styles[.@s])?.@Style+1:1); break;
+					case 2: set .@Style, ((.@Style!=1)?.@Style-1:.Styles[.@s]); break;
+					case 3: message strcharinfo(0),"Choose a style between 1 - "+.Styles[.@s]+".";
+						input .@Style,0,.Styles[.@s];
+						if (!.@Style) set .@Style, rand(1,.Styles[.@s]);
+						break;
+					case 4: set .@Style, .@Revert; setlook .@Look[.@s], .@Revert; break; }
+			} end;
+		case 3:
+			function Refine_Item;
+			if (.EnrichedRefine)
+				if (select(" ~ Normal Refiner: ~ Enriched Refiner")==2) {
+					Equip_Menu(1);
+					setarray .@Materials[0],7619,7620,7620,7620,7620;
+					setarray .@Safe[0],4,7,6,5,4;
+					set .@WLv, getequipweaponlv(@i);
+					message strcharinfo(0),"Item: +"+getequiprefinerycnt(@i)+" "+getequipname(@i);
+					if(select(" ~ Refine item (2 * ^0055FF"+getequippercentrefinery(@i)+"^000000% success): ~ ^777777Cancel^000000")==2) close;
+					Refine_Item(1, .@Materials[.@WLv], .RP[.@WLv], .@Safe[.@WLv], 1);
+					close; }
+			Equip_Menu(1);
+			setarray .@Materials[0],985,1010,1011,984,984;
+			setarray .@Safe[0],4,7,6,5,4;
+			set .@WLv, getequipweaponlv(@i);
+			set .@SafeCount, .@Safe[.@WLv]-getequiprefinerycnt(@i);
+			message strcharinfo(0),"Item: +"+getequiprefinerycnt(@i)+" "+getequipname(@i);
+			switch(select(" ~ Refine once (^0055FF"+getequippercentrefinery(@i)+"^000000% success): ~ Refine multiple times (up to "+(10-getequiprefinerycnt(@i))+"): ~ Refine to safe limit ("+((.@SafeCount>0)?.@SafeCount+" refines":"^777777disabled^000000")+"): ~ ^777777Cancel^000000")) {
+				case 1: Refine_Item(1, .@Materials[.@WLv], .RP[.@WLv], .@Safe[.@WLv]); close;
+				case 2:
+					input .@Refines;
+					if (.@Refines+getequiprefinerycnt(@i) > 10 || .@Refines < 1) message strcharinfo(0),"Invalid number ("+.@Refines+").";
+					else Refine_Item(.@Refines, .@Materials[.@WLv], .RP[.@WLv], .@Safe[.@WLv]);
+					close;
+				case 3:
+					if (.@SafeCount < 1) message strcharinfo(0),"The item has already reached the safe limit.";
+					else Refine_Item(.@SafeCount, .@Materials[.@WLv], .RP[.@WLv], .@Safe[.@WLv]);
+					close;  
+				case 4: close; }
+			function Equip_Menu {
+				setarray .@pos$[1],"Upper Headgear","Armor","Left hand","Right hand","Garment","Footgear","Left Accessory","Right Accessory","Mid Headgear","Lower Headgear";
+				set .@menu$,"";
+				for (set .@i,1; .@i <= 10; set .@i,.@i+1) {
+					if (getequipisequiped(.@i))
+						set .@menu$, .@menu$+.@pos$[.@i]+" [^0055FF"+getequipname(.@i)+"^000000]";
+					set .@menu$, .@menu$+":"; }
+				set @i, select(.@menu$);
+				if (!getequipisequiped(@i)) { message strcharinfo(0),"Nothing is equipped there!"; close; }
+				if (getarg(0)) {
+					if (!getequipisenableref(@i)) { message strcharinfo(0),getequipname(@i)+" cannot be refined."; close; }
+					if (getequiprefinerycnt(@i) >= 10 ) { message strcharinfo(0),"+"+getequiprefinerycnt(@i)+" "+getequipname(@i)+" cannot be refined any further."; close; } }
+				return; }
+			function Refine_Item {
+				message strcharinfo(0),"I'll need "+getarg(0)+"x "+getitemname(getarg(1))+" and "+getarg(0)*getarg(2)+" Zeny.";
+				if (countitem(getarg(1)) < getarg(0) || Zeny < getarg(0)*getarg(2)) {
+					sleep2 500; message strcharinfo(0),"Come back when you have the required materials."; close; }
+				if (getequiprefinerycnt(@i)+getarg(0) > getarg(3)) {
+					sleep2 500; message strcharinfo(0),"The item will be refined above the safe limit. It may break."; }
+				sleep2 500;
+				if(select(" ~ ^0055FFContinue^000000: ~ ^777777Cancel^000000")==2) close;
+				set .@j, getarg(0);
+				while(.@j) {
+					delitem getarg(1), 1;
+					set Zeny, Zeny-getarg(2);
+					if (getarg(4,0)) {
+						if (getequippercentrefinery(@i) <= rand(100) && getequippercentrefinery(@i) <= rand(100)) {
+							message strcharinfo(0),getequipname(@i)+" broke while refining."; failedrefitem @i; close; } }
+					else {
+						if (getequippercentrefinery(@i) <= rand(100)) {
+							message strcharinfo(0),getequipname(@i)+" broke while refining."; failedrefitem @i; close; } }
+					successrefitem @i;
+					set .@j, .@j-1; }
+				message strcharinfo(0),"All done!";
+				close; }
+		case 4:
+			if (.Prices[0]) message strcharinfo(0),"It costs "+.Prices[0]+" Zeny to remove cards.";
+			Equip_Menu(0);
+			if (Zeny < .Prices[0]) { message strcharinfo(0),"You don't have enough Zeny."; close; }
+			set .@j,getequipcardcnt(@i);
+			if (!.@j) { message strcharinfo(0),"There are no cards compounded to "+getequipname(@i)+"."; close; }
+			if (!checkweight(4001,(.@j+1))) { message strcharinfo(0),"You're carrying too many items!"; close; }
+			message strcharinfo(0),"Item: "+getequipname(@i);
+			if (select(" ~ Remove "+.@j+" card(s): ~ ^777777Cancel^000000")==2) close;
+			set Zeny, Zeny-.Prices[0];
+			successremovecards @i;
+			message strcharinfo(0),"Cards successfully removed!";
+			close;
+		case 5:
+			message strcharinfo(0),"Coins are worth "+.Coin[1]+" Zeny each.";
+			switch(select(" ~ Zeny to coins: ~ Coins to Zeny: ~ Close")) {
+				case 1:
+					message strcharinfo(0),"How many coins do you want?";
+					input .@coins,0,(1000000000/.Coin[1]);
+					if (.@coins*.Coin[1] > Zeny) { message strcharinfo(0),"You don't have enough Zeny."; close; }
+					if (!checkweight(.Coin[0],.@coins)) { message strcharinfo(0),"You don't have enough inventory space."; close; }
+					set Zeny, Zeny-(.Coin[1]*.@coins);
+					getitem .Coin[0], .@coins;
+					message strcharinfo(0),"Purchased "+.@coins+" coins.";
+					close;
+				case 2:
+					message strcharinfo(0),"How many coins do you want to trade in?";
+					input .@coins,0,(1000000000/.Coin[1]);
+					if (countitem(.Coin[0]) < .@coins) { message strcharinfo(0),"You don't have that many coins!"; close; }
+					if ((Zeny+(.Coin[1]*.@coins)) > 1000000000) { message strcharinfo(0),"You have too much Zeny!"; close; }
+					delitem .Coin[0], .@coins;
+					set Zeny, Zeny+(.Coin[1]*.@coins);
+					message strcharinfo(0),"Exchanged "+.@coins+" coins.";
+					close;
+				case 3:
+					close; }
+		case 6:
+			if (.Prices[2]) message strcharinfo(0),"It costs "+.Prices[2]+" Zeny to rent.";
+			set .@i, select(" ~ Cart: ~ Falcon: ~ Peco");
+			if (Zeny < .Prices[2]) { message strcharinfo(0),"You don't have enough Zeny."; close; }
+			if (.@i==1 && !checkcart() && getskilllv(39)) setcart;
+			else if (.@i==2 && !checkfalcon() && getskilllv(127)) setfalcon;
+			else if (.@i==3 && !checkriding() && getskilllv(63)) setriding;
+			else { message strcharinfo(0),"You do not meet skill the requirements to rent."; close; }
+			set Zeny, Zeny-.Prices[2];
+			close;
+		case 7:
+			if (.Prices[1]) message strcharinfo(0),"It costs "+.Prices[1]+" Zeny to reset stats or skills.";
+			set .@i, select(" ~ Stat reset: ~ Skill reset: ~ Cancel");
+			if (.@i==3) close;
+			if (Zeny < .Prices[1]) { message strcharinfo(0),"You don't have enough Zeny."; close; }
+			set Zeny, Zeny-.Prices[1];
+			if (.@i==1) ResetStatus;
+			else ResetSkill;
+			message strcharinfo(0),((.@i==1)?"Stats":"Skills")+" reset!";
+			close;
+		case 8:
+			Get_Platinum;
+			specialeffect2 441;
+			message strcharinfo(0),"Platinum skills received!";
+			close;
+		case 9:
+			set .@Var$, ".SexChange"+((Sex)?"F":"M");
+			if (getarraysize(getd(.@Var$))) {
+				message strcharinfo(0),"To turn into a "+((Sex)?"female":"male")+" you need the following items:";
+				sleep2 1000;
+				for(set .@i,0; .@i<getarraysize(getd(.@Var$)); set .@i,.@i+2) {
+					message strcharinfo(0),getd(.@Var$+"["+(.@i+1)+"]")+"x "+getitemname(getd(.@Var$+"["+.@i+"]"));
+					if (countitem(getd(.@Var$+"["+.@i+"]")) < getd(.@Var$+"["+(.@i+1)+"]")) set .@nreq,1;
+					sleep2 500; }
+				if (.@nreq) close; }
+			if(select(" ~ Change into a "+((Sex)?"female":"male")+": ~ Cancel")==2) close;
+			if (getarraysize(getd(.@Var$)))
+				for(set .@i,0; .@i<getarraysize(getd(.@Var$)); set .@i,.@i+2)
+					delitem getd(.@Var$+"["+.@i+"]"), getd(.@Var$+"["+(.@i+1)+"]");
+			changesex;
+			end;
+		case 10:
+			setarray .@Total[0],0,0;
+			getinventorylist;
+			for(set .@i,0; .@i<@inventorylist_count; set .@i,.@i+1) {
+				if (@inventorylist_identify[.@i]) continue;
+				if (Zeny < .Prices[3]) {
+					dispbottom "It costs "+.Prices[3]+" to identify an item."; break; }
+				set Zeny, Zeny-.Prices[3];
+				delitem2 @inventorylist_id[.@i],1,0,0,0,0,0,0,0;
+				getitem @inventorylist_id[.@i],1;
+				setarray .@Total[0], .@Total[0]+1, .@Total[1]+.Prices[3]; }
+			if (!.@Total[0]) { message strcharinfo(0),"No items identified."; close; }
+			specialeffect2 154;
+			message strcharinfo(0),"Identified "+.@Total[0]+" items"+((.@Total[1])?" for "+.@Total[1]+" Zeny":"")+".";
+			close;
+	}
+OnInit:
+
+// --------------------- Config ---------------------
+	setarray .MainMenu$[0],	// Set menu options!
+		"Change Jobs",		// [1]
+		"Stylist",		// [2]
+		"Refiner",		// [4]
+		"Remove Cards",		// [8]
+		"Exchange Coins",	// [16]
+		"Rentals",		// [32]
+		"Reset Stats/Skills",	// [64]
+		"Platinum Skills",	// [128]
+		"Change Sex",		// [256]
+		"Identify All";		// [512]
+
+	set .MenuOption,1|2|4|8|16|32|64|128|256|512;
+
+	setarray .OnClick[0],1,1,1;		// When clicked: heal [0], buff [1], repair [2] (1: yes / 0: no)
+	setarray .Styles[1],553,37,250;		// Maximum dye, hair style, and hair color
+	setarray .Coin[0],674,1000000;		// Coin item ID, coin price
+	setarray .Prices[0],50000,10000,0,100;	// Zeny to remove cards [0], reset [1], rent [2], identify [3]
+
+	setarray .Rebirth[0],99,50;	// Minimum base level, job level to rebirth
+	setarray .JobReq[0],10,40;	// Minimum job level to turn into 1st class, 2nd class
+	set .SNovice,45;		// Minimum base level to turn into Super Novice
+	set .SkillPointCheck,0;		// Force player to use up all skill points? (1: yes / 0: no)
+	set .Platinum,1;		// Get platinum skills automatically? (1: yes / 0: no)
+
+	set .EnrichedRefine,1;			// Allow enriched refiner option? (1: yes / 0: no)
+	setarray .RP[0],2000,50,200,5000,20000;	// Zeny for armor, lv1, lv2, lv3, lv4 refines
+
+	setarray .SexChangeF[0],2213,1,1558,1,7152,50;	// Items to turn into Female (ID,Count)
+	setarray .SexChangeM[0],5016,1,2241,1,1017,50;	// Items to turn into Male (ID,Count)
+
+// --------------------------------------------------
+	end;
+}

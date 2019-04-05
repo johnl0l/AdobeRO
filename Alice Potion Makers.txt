@@ -1,0 +1,493 @@
+// --------------------------------------------------------------------------------------------* 
+//                                                                                             //
+// ______                                           _                                          // 
+// | ___ \                                         | |                                         //
+// | |_/ /___  ___  ___ _ __ ___   ___  _   _ _ __ | |_                                        //
+// |    // _ \/ __|/ _ \ '_ ` _ \ / _ \| | | | '_ \| __|                                       // 
+// | |\ \ (_) \__ \  __/ | | | | | (_) | |_| | | | | |_                                        //
+// \_| \_\___/|___/\___|_| |_| |_|\___/ \__,_|_| |_|\__|                                       //
+//                                                                                             //
+//                                         _____           _       _                           //
+//                                        /  ___|         (_)     | |                          //
+//                                        \ `--.  ___ _ __ _ _ __ | |_                         //
+//                                         `--. \/ __| '__| | '_ \| __|                        //
+//                                        /\__/ / (__| |  | | |_) | |_                         //
+//                                        \____/ \___|_|  |_| .__/ \__|                        //
+//                                                          | |                                //
+//                                                          |_|                                //
+// --------------------------------------------------------------------------------------------*
+//					Create By ~ Rosemount				       //
+//					Current Version ~ v1.0	                               //
+//					Tested ~ Latest Rathena                                //
+// --------------------------------------------------------------------------------------------*
+
+prontera,147,174,4	script	Alice Potion Makers	665,{
+menu "~ Red Potion",L_RPotion,"~ Yellow Potion",L_YPotion,"~ White Potion",L_WPotion,"~ Blue Potion",L_BPotion,"~ Condensed Red Pot",L_CRPotion,"~ Condensed Yellow Pot",L_CYPotion,"~ Condensed White Pot",L_CWPotion,"~ Anodyne",L_Ano,"~ Aloevera",L_Aloe,"~ Alcohol",L_Alco,"~ Bottle Grenade",L_BG,"~ Acid Bottle",L_Acid,"~ Plant Bottle",L_PB,"~ Marine Sphere Bottle",L_MSB,"~ Glistening Coat",L_GC,"~ Embryo",L_EMB,"~ Fireproof Potion",L_FP,"~ Coldproof Potion",L_CP,"~ Earthproof Potion",L_EP,"~ Thunderproof Potion",L_TP,"~ Cancel",L_no;
+
+L_TP:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto TP_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+TP_Check:
+if(countitem(717)<1 || countitem(1057)<3 || countitem(1093)<1 ||countitem(7134)<1 || countitem(7434)<1) goto L_error;
+delitem 717,1;
+delitem 1057,3;
+delitem 1093,1;
+delitem 7134,1;
+if(rand(100)< 85){
+specialeffect2 305;
+getitem 12121,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_TP;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_TP;
+
+
+L_EP:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto EP_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+EP_Check:
+if(countitem(715)<1 || countitem(1093)<1 || countitem(7126)<2 || countitem(7134)<1 || countitem(7434)<1) goto L_error;
+delitem 715,1;
+delitem 1093,1;
+delitem 7126,1;
+delitem 7134,1;
+if(rand(100)< 85){
+specialeffect2 305;
+getitem 12120,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_EP;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_EP;
+
+
+L_CP:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto CP_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+CP_Check:
+if(countitem(717)<1 || countitem(950)<3 || countitem(1093)<1 || countitem(7134)<1 || countitem(7434)<1) goto L_error;
+delitem 717,1;
+delitem 950,3;
+delitem 1093,1;
+delitem 7134,1;
+if(rand(100)< 85){
+specialeffect2 305;
+getitem 12119,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_CP;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_CP;
+
+L_FP:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto FP_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+FP_Check:
+if(countitem(716)<1 || countitem(1012)<2 || countitem(1093)<1 || countitem(7134)<1 || countitem(7434)<1) goto L_error;
+delitem 716,1;
+delitem 1012,2;
+delitem 1093,1;
+delitem 7134,1;
+if(rand(100)< 85){
+specialeffect2 305;
+getitem 12118,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_FP;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_FP;
+
+
+L_EMB:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto EMB_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+EMB_Check:
+if(countitem(7140)<1 || countitem(7141)<1 || countitem(7143)<1 || countitem(7134)<1 || countitem(7144)<1) goto L_error;
+delitem 7140,1;
+delitem 7141,1;
+delitem 7143,1;
+delitem 7134,1;
+if(rand(100)< 85){
+specialeffect2 305;
+getitem 7142,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_EMB;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_EMB;
+
+L_GC:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto GC_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+GC_Check:
+if(countitem(713)<1 || countitem(950)<1 || countitem(970)<1 || countitem(1044)< 1 || countitem(7134)<1 || countitem(7132)<1) goto L_error;
+delitem 713,1;
+delitem 950,1;
+delitem 970,1;
+delitem 1044,1;
+delitem 7134,1;
+if(rand(100)< 85){
+specialeffect2 305;
+getitem 7139,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_GC;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_GC;
+
+L_MSB:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto MSB_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+MSB_Check:
+if(countitem(713)<1 || countitem(1050)<1 || countitem(1051)<1 || countitem(7134)<1 || countitem(7131)<1) goto L_error;
+delitem 713,1;
+delitem 1050,1;
+delitem 1051,1;
+delitem 7134,1;
+if(rand(100)< 85){
+specialeffect2 305;
+getitem 7138,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_MSB;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_MSB;
+
+L_PB:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto PB_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+PB_Check:
+if(countitem(713)<1 ||countitem(1032)<2 || countitem(7134)<1 || countitem(7130)<1) goto L_error;
+delitem 713,1;
+delitem 1032,2;
+delitem 7134,1;
+if(rand(100)< 85){
+specialeffect2 305;
+getitem 7137,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_PB;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_PB;
+
+L_BG:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto BG_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+BG_Check:
+if(countitem(713)<1 || countitem(970)<1 || countitem(1059)<1 || countitem(7134)<1 || countitem(7128)<1) goto L_error;
+delitem 713,1;
+delitem 970,1;
+delitem 1059,1;
+delitem 7134,1;
+if(rand(100)< 85){
+specialeffect2 305;
+getitem 7135,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_BC;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_BC;
+
+L_Alco:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto Alco_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+Alco_Check:
+if(countitem(713)<1 || countitem(905)<5 || countitem(1092)<1 || countitem(7033)<5 || countitem(7134)<1 || countitem(7127)<1) goto L_error;
+delitem 713,1;
+delitem 905,5;
+delitem 1092,1;
+delitem 7033,5;
+delitem 7134,1;
+if(rand(100)< 85){
+specialeffect2 305;
+getitem 970,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_Alco;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_Alco;
+
+L_Aloe:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto Aloe_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+Aloe_Check:
+if(countitem(518)<1 || countitem(704)<1 || countitem(713)<1 || countitem(7134)<1 || countitem(7144)<1) goto L_error;
+delitem 518,1;
+delitem 704,1;
+delitem 713,1;
+delitem 7134,1;
+if(rand(100)< 85){
+specialeffect2 305;
+getitem 606,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_Aloe;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_Aloe;
+
+L_Ano:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto Ano_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+Ano_Check:
+if(countitem(708)<1 || countitem(713)<1 || countitem(970)<1 || countitem(7134)<1 || countitem(7144)<1) goto L_error;
+delitem 708,1;
+delitem 713,1;
+delitem 970,1;
+delitem 7134,1;
+if(rand(100)< 85){
+specialeffect2 305;
+getitem 605,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_Ano;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_Ano;
+
+L_CWPotion:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto CWPotion_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+CWPotion_Check:
+if(countitem(504)<1 || countitem(1064)<1 || countitem(1092)<1 || countitem(7134)<1 || countitem(7133)<1) goto L_error;
+delitem 504,1;
+delitem 1064,1;
+delitem 1092,1;
+delitem 7134,1;
+if(rand(100)< 85){
+specialeffect2 305;
+getitem 547,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_CWPotion;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_CWPotion;
+
+L_CYPotion:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto CYPotion_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+CYPotion_Check:
+if(countitem(503)<1 || countitem(1017)<1 || countitem(1092)<1 || countitem(7134)<1 || countitem(7133)<1) goto L_error;
+delitem 503,1;
+delitem 1017,1;
+delitem 1092,1;
+delitem 7134,1;
+if(rand(100)< 85){
+specialeffect2 305;
+getitem 546,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_CYPotion;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_CRPotion;
+
+L_CRPotion:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto CRPotion_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+CRPotion_Check:
+if(countitem(501)<1 || countitem(952)<1 || countitem(1092)<1 || countitem(7134)<1 || countitem(7133)<1) goto L_error;
+delitem 501,1;
+delitem 952,1;
+delitem 1092,1;
+delitem 7134,1;
+if(rand(100)< 85) {
+specialeffect2 305;
+getitem 545,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_CRPotion;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_CRPotion;
+
+L_BPotion:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto BPotion_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+BPotion_Check:
+if(countitem(510)<1 || countitem(911)<1 || countitem(1093)<1 || countitem(7134)<1 || countitem(7144)<1) goto L_error;
+delitem 510,1;
+delitem 911,1;
+delitem 1093,1;
+delitem 7134,1;
+if(rand(100)< 85){
+specialeffect2 305;
+getitem 505,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_BPotion;
+}
+specialeffect2 506;
+set .CountFailed,.CountFailed +1;
+goto L_BPotion;
+
+L_WPotion:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto WPotion_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+WPotion_Check:
+if(countitem(509)<1 || countitem(1093)<1 || countitem(7134)<1 || countitem(7144)<1) goto L_error;
+delitem 509,1;
+delitem 1093,1;
+delitem 7134,1;
+if(rand(100)< 85) {
+specialeffect2 305;
+getitem 504,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_WPotion;
+}
+set .CountFailed,.CountFailed +1;
+specialeffect2 306;
+goto L_WPotion;
+
+L_YPotion:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto YPotion_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+YPotion_Check:
+if(countitem(508)<1 || countitem(1093)<1 || countitem(7134)<1 || countitem(7144)<1) goto L_error;
+delitem 508,1;
+delitem 1093,1;
+delitem 7134,1;
+if(rand(100)< 85) {
+specialeffect2 305;
+getitem 503,1;
+set .CountSuccess,.CountSuccess +1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 200;
+goto L_YPotion;
+}
+set .CountFailed,.CountFailed +1;
+specialeffect2 306;
+goto L_YPotion;
+
+L_RPotion:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto RPotion_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+RPotion_Check:
+if(countitem(507)<1 || countitem(1093)<1 || countitem(7134)<1 || countitem(7144)<1) goto L_error;
+delitem 507,1;
+delitem 1093,1;
+delitem 7134,1;
+if(rand(100)< 85) {
+specialeffect2 305;
+getitem 501,1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 100;
+goto L_RPotion;
+}
+set .CountFailed,.CountFailed +1;
+specialeffect2 306;
+goto L_RPotion;
+
+L_Acid:
+if(Class == 4019 && getskilllv(228) || Class == 18 && getskilllv(228)) goto Acid_Check;
+dispbottom "Alchemist Job And Minimum Skill Pharmacy Lvl 1";
+end;
+Acid_Check:
+if(countitem(713)< 1 || countitem(950)<1 || countitem(7134)<1 || countitem(7129)<1) goto L_error;
+delitem 713,1;
+delitem 950,1;
+delitem 7134,1;
+if(rand(100) < 85) {
+specialeffect2 305;
+getitem 7136,1;
+dispbottom "[ Alice ] : "+.CountSuccess+" Successful";
+dispbottom "[ Alice ] : "+.CountFailed+" Failed";
+sleep2 100; 
+goto L_Acid;
+}
+set .CountFailed,.CountFailed +1;
+specialeffect2 306;
+goto L_Acid;
+
+L_no:
+end;
+
+L_error:
+dispbottom "It seems like an item you do not have sufficient";
+set .CountSuccess,0;
+set .CountFailed,0;
+end;
+}
