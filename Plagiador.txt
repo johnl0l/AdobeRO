@@ -1,0 +1,100 @@
+prontera,147,168,6	script	Plagiador™	711,{
+
+if(Class != 4018)goto nstk;
+mes "Olá, ^339966"+strcharinfo(0)+"!!^000000 ";
+mes "Sou o ^FF0000plagiador de magias para stalker^000000";
+
+next;
+mes "Deixa eu explicar melhor";
+mes "Tenho uma lista com varias magias que podem ser ^FF0000 copiadas ^000000";
+mes "basta escolher uma magia que eu plagio para você.";
+mes "Mais primeiro deixar eu ver se você é ^FF0000Rogues/Stalkers^000000...";
+next;
+
+if(Class == Job_4018 || Class == Job_17 ){
+mes "Você não pode Plagiar!!";
+mes "Apenas ^FF0000Rogues/Stalkers^000000 podem usar o plagiador™";
+close;
+OnInit:
+waitingroom "Plagiador",0;
+end;
+}
+
+mes "Tudo certo boa escolha";
+mes "Quando precisar de uma nova habilidade";
+mes "Basta vin até min";
+next;
+
+menu"Esfera d'Água",es,"Fogo Grego",fo,"Grande Floco de Neve",ne,"Impacto de Tyr",ty,"Lamina de Vento",la,"Laminas Congelantes",co,"Pétalas de Flamejantes",pe,"Terror Ácido",ad,"Nada Talvez mais tarde...",na;
+close;
+
+es:
+mes"pronto você já está plagiado";
+mes "Até mais"; 
+skill 86,5,0;
+skilleffect 86, 86;
+emotion 51;
+close;
+
+fo:
+mes"pronto você já está plagiado";
+mes "Até mais"; 
+Skill 229,5,0;
+skilleffect 229, 229;
+emotion 51;
+close;
+
+ne:
+mes"pronto você já está plagiado";
+mes "Até mais"; 
+Skill 539,5,0;
+skilleffect 539, 539;
+emotion 51;
+close;
+
+ty:
+mes"pronto você já está plagiado";
+Skill 62,10,0;
+skilleffect 62, 62;
+emotion 51;
+close;
+
+
+la:
+mes"pronto você já está com a plagiado";
+Skill 540,10,0;
+emotion 51;
+close;
+
+co:
+mes"pronto você já está com a plagiado"; 
+Skill 537,10,0;
+emotion 51;
+close;
+
+pe:
+mes"pronto você já está com a plagiado";
+Skill 534,10,0;
+emotion 51;
+close;
+
+ad:
+mes"pronto você já está com a plagiado";
+Skill 230,5,0;
+emotion 51;
+close;
+
+na:
+mes "estarei aqui novamente se precisar";
+mes "Até mais";
+emotion 20;
+close;
+
+nstk:
+mes "[Plagio]";
+mes "Desculpe"+strcharinfo(0)+" você não e um Stalker !";
+close;
+dispbottom "NPC Criador por Yumi x";
+dispbottom "Para o servido RagnArte";
+dispbottom "Volte sempre";
+}

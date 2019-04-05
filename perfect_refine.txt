@@ -1,0 +1,136 @@
+//===== rAthena Script ======================================= 
+//= Perfect Refiner
+//===== By: ================================================== 
+//= SoulDestroyer (souldestroyer1030)
+//===== Current Version: ===================================== 
+//= 1.0
+//===== Compatible With: ===================================== 
+//= rAthena Project
+//===== Description: ========================================= 
+//= Refine -refinable- items to whatever level (even downgrade)
+//===== Additional Comments: ================================= 
+//= N/A
+//============================================================ 
+
+prontera,165,189,4	script	Legendary Blacksmith	813,{
+	disable_items;
+	set .@action, 0;
+	mes "[Legendary Blacksmith]";
+	mes "Heya! I'm the best blacksmith in the whole of Midgard!";
+	mes "How can I help you?";
+	next;
+	switch(select("Upgrade Equipment:Downgrade Equipment:Repair Equipment:Maybe next time.")) {
+	case 1:
+		set .@action,1;
+		break;
+	case 2:
+		set .@action,2;
+		break;
+	case 3:
+		set .@action,3;
+		break;
+	default:
+		mes "[Legendary Blacksmith]";
+		mes "Come back if you change your mind!";
+		close;
+	}
+	
+	if (.@action == 1 || .@action == 2) {
+		next;
+		if (.@action == 1) {
+			set actionword$,"upgrade";
+		} else if (.@action == 2) {
+			set actionword$,"downgrade";
+		}
+		mes "[Legendary Blacksmith]";
+		mes "Choose any of the equipment you're wearing that you'd like to " + actionword$ + ".";
+		next;
+		setarray .@position$[1], "Head","Body","Left hand","Right hand","Robe","Shoes","Accessory 1","Accessory 2","Head 2","Head 3";
+		set .@menu$,"";
+		for(set .@i,1; .@i<=10; set .@i,.@i+1) {
+			if(getequipisequiped(.@i)) {
+				set .@menu$, .@menu$ + .@position$[.@i] + "-" + "[" + getequipname(.@i) + "]";
+				set .@equipped,1;
+			}
+			set .@menu$, .@menu$ + ":";
+		}
+		if (.@equipped == 0) {
+			mes "[Legendary Blacksmith]";
+			mes "What? You're not wearing anything there.";
+			close;
+		}
+		set .@part, select(.@menu$);
+		next;
+		
+		//Check if the item is refinable...
+		if(!getequipisenableref(.@part)) {
+			mes "[Legendary Blacksmith]";
+			mes "Even with my exceptional skill,";
+			mes "there are things that just cannot be touched";
+			mes "by a blacksmith's hammer.";
+			close;
+		}
+		
+		mes "[Legendary Blacksmith]";
+		mes "By how much do you want me to " + actionword$ + " this item?";
+		input .@refineamount;
+		next;
+		
+		if (.@refineamount == 0) {
+			mes "[Legendary Blacksmith]";
+			mes "Oh, did you change your mind?";
+			close;
+		}
+		
+		set .@refineitem, getequipid(.@part); // save id of the item
+		set .@refinelevel,getequiprefinerycnt(.@part); // save refine level of the item
+		setarray .@equip_card[0], getequipcardid(.@part,0),getequipcardid(.@part,1),getequipcardid(.@part,2),getequipcardid(.@part,3); // get current cards
+
+		if(!getequipisequiped(.@part)) { //custom check
+			mes "[Legendary Blacksmith]";
+			mes "Please equip the gear that you want me to ";
+			mes "work on before coming to me!";
+			close;
+		}
+		//Check to see if the items is already maxed out
+		if((.@action == 1 && .@refinelevel >= 20) || (.@action == 2 && .@refinelevel <= 0)) {
+			mes "[Legendary Blacksmith]";
+			mes "I can no longer work on this.";
+			mes "Everything in this world has limits, you know!";
+			close;
+		}
+			
+		// anti-hack
+		if (callfunc("F_IsEquipIDHack", .@part, .@refineitem) ||
+			callfunc("F_IsEquipCardHack", .@part, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3])) {
+			mes "[Legendary Blacksmith]";
+			mes "You switched gears... while I'm working.";
+			mes "That disappoints me more than anything. Go away.";
+			close;
+		}
+		
+		if (.@action == 1) {
+			successrefitem .@part, .@refineamount;
+		} else if (.@action == 2) {
+			downrefitem .@part, .@refineamount;
+		}
+		mes "[Legendary Blacksmith]";
+		mes "Clang! Clang! Clang!";
+		next;
+		mes "[Legendary Blacksmith]";
+		mes "It's things like these that make me really proud";
+		mes "of who and what I am. Perfection!";
+		close;
+	}
+	else if (.@action == 3) {
+		next;
+		mes "[Legendary Blacksmith]";
+		mes "Okay, let me have a look at your equipment...";
+		next;
+		repairall getcharid(0);
+		mes "[Legendary Blacksmith]";
+		mes "There you go, I've repaired everything that needs repairing!";
+		close;
+	}
+	close;
+}

@@ -1,0 +1,137 @@
+//		 	Autor original & ideia inicial: ganjaman	(rAthena)		//
+// 			Autor da modificação: Ian Kawanami	(Cronus-Emulator)  		//
+//================================================
+// Changelog:
+// Script realizado - ganjaman
+// Tradução & Implementação de arrays. - Ian Kawanami
+// Adicionado configurações inciais, podendo o usuário definir os prêmios. - Ian Kawanami
+// Adicionado janelas de exibições dos prêmios disponíveis. - Ian Kawanami
+// Corrigido o problema no Menu - Ian Kawanami
+//================================================
+
+prontera,164,107,3	script	Pontos de Emperium	790,{
+
+//Configure aqui!
+
+setarray $points[0],1,1;										/*-			Quantidade de pontos necessários para trocar por algum item. */
+setarray $premios[0],ItemID,ItemID,ItemID;								/*-			ID's dos prêmios.											 */
+setarray $quantidade[0],1,1;						/*-			Quantidade dos prêmios a serem recebidos					 */
+
+// Não altere nada apartir daqui!
+
+
+query_sql "SELECT `char`.char_id,`char`.`name`,global_reg_value.`value` FROM global_reg_value LEFT JOIN `char` ON global_reg_value.char_id=`char`.char_id WHERE global_reg_value.str='brokeemp' ORDER BY CAST(`global_reg_value`.`value` AS UNSIGNED) DESC LIMIT 10", .@char_id, .@name$, .@count;
+
+
+
+mes "[ ^00FF00 Líder dos Emperiums ^000000 ]";
+mes "Olá "+strcharinfo(0)+", o que você deseja?";
+menu "Checar meus pontos de emperium",-,"Trocar pontos",L_troca,"Ver prêmios disponíveis",L_itens,"Nada",L_nada;
+next;
+
+next;
+mes "[ ^00FF00 Líder dos Emperiums ^000000 ]";
+mes "Ok, aguarde um segundo para eu checar em meus dados...";
+next;
+mes "Você tem atualmente ^FF0000"+brokeemp+"^000000 Ponto(s)";
+close;
+
+L_nada:
+next;
+mes "[ ^00FF00 Líder dos Emperiums ^000000 ]";
+mes "Volte quando desejar...";
+close;
+
+L_itens:
+next;
+mes "[ ^00FF00 Líder dos Emperiums ^000000 ]";
+mes "Eu ofereço os seguinte itens: ";
+for(set @n, 0; @n < getarraysize($premios); set @n, @n+1)
+mes " "+$quantidade[@n]+" - "+getitemname($premios[@n])+".";
+close;
+
+L_troca:
+next;
+mes "[ ^00FF00 Líder dos Emperiums ^000000 ]";
+mes "Que tipo de pontos você gostaria de trocar?";
+mes "^FF0000Nota: Verifique seu inventário/peso antes de trocar comigo!";
+menu "Pontos de emperium",-,"Nenhum",L_nada;
+next;
+mes "Qual dos itens você gostaria de obter?";
+menu getitemname($premios[0]),-,getitemname($premios[1]),L1,getitemname($premios[2]),L2,getitemname($premios[3]),L3,getitemname($premios[4]),L4;
+next;
+mes "[ ^00FF00 Líder dos Emperiums ^000000 ]";
+mes "Você precisa de "+$points[0]+" pontos para adquirir o "+getitemname($premios[0])+".";
+mes "Você deseja mesmo trocar seus pontos?";
+menu "Sim",-,"Não",L_nada;
+if(brokeemp < $points[0]) goto L_points;
+if(brokeemp >= $points[0])
+next;
+mes "Aqui está o seu item!";
+getitem $premios[0],$quantidade[0];
+set brokeemp,brokeemp-$points[0];
+close;
+
+
+L_points:
+next;
+mes "[ ^00FF00 Líder dos Emperiums ^000000 ]";
+mes "Você não tem pontos o suficiente!";
+close;
+
+L1:
+next;
+mes "[ ^00FF00 Líder dos Emperiums ^000000 ]";
+mes "Você precisa de "+$points[1]+" pontos para adquirir o "+getitemname($premios[1])+".";
+mes "Você deseja mesmo trocar seus pontos?";
+menu "Sim",-,"Não",L_nada;
+next;
+if(brokeemp < $points[1]) goto L_points;
+if(brokeemp >= $points[1])
+mes "[ ^00FF00 Líder dos Emperiums ^000000 ]";
+mes "Aqui está o seu item!";
+getitem $premios[1],$quantidade[1];
+set brokeemp,brokeemp-points[1];
+close;
+
+L2:
+mes "[ ^00FF00 Líder dos Emperiums ^000000 ]";
+mes "Você precisa de "+$points[2]+" pontos para adquirir o "+getitemname($premios[2])+".";
+mes "Você deseja mesmo trocar seus pontos?";
+menu "Sim",-,"Não",L_nada;
+if(brokeemp < $points[2]) goto L_points;
+if(brokeemp >= $points[2])
+next;
+mes "Aqui está o seu item!";
+getitem $premios[2],$quantidade[2];
+set brokeemp,brokeemp-$points[2];
+close;
+
+L4:
+mes "[ ^00FF00 Líder dos Emperiums ^000000 ]";
+mes "Você precisa de "+$points[4]+" pontos para adquirir o "+getitemname($premios[4])+".";
+mes "Você deseja mesmo trocar seus pontos?";
+menu "Sim",-,"No",L_nada;
+if(brokeemp < $points[4]) goto L_points;
+if(brokeemp >= $points[4])
+next;
+mes "Aqui está seu item!";
+getitem $premios[4],$quantidade[4];
+set brokeemp,brokeemp-$points[4];
+close;
+
+L3:
+mes "[ ^00FF00 Líder dos Emperiums ^000000 ]";
+mes "Você precisa de "+$points[3]+" pontos para adquirir o "+getitemname($premios[3])+".";
+mes "Você deseja mesmo trocar seus pontos?";
+menu "Sim",-,"No",L_nada;
+if(brokeemp < $points[3]) goto L_points;
+if(brokeemp >= $points[3])
+next;
+mes "Aqui está o seu item!";
+getitem $premios[3],$quantidade[3];
+set brokeemp,brokeemp-$points[3];
+close;
+
+
+}

@@ -1,0 +1,75 @@
+prontera,148,166,3	script	Plagiador	93,{
+mes "[ ^ff0000Plagiador^000000 ]";
+mes "•Posso plagiar uma habilidade para você por 5.000 zenys.";
+mes "•Quer escolher a habilidade para ser plagiada agora?";
+mes "•Lembrando que você precisa ser ^FF0000Arruaceiro/Desordeiro^000000.";
+next;
+switch(select("[+]Sim:[-]Não"))
+{
+case 1:
+next;
+mes "[ ^ff0000Plagiador^000000 ]";
+mes "•Qual habilidade deseja plagiar?";
+mes "•OBS1: ^ff0000Recomenda-se esquiva menor que 230 para evitar Miss em caso de plagio de skill física.^000000";
+mes "•OBS2: ^ff0000Recomenda-se ficar perto do Npc para que skills sem target pegarem em você.^000000";
+next;
+switch(select("Impacto de Tyr:Esfera d'Água:Grande Floco de Neve:Fogo Grego:Lâmina de Vento:Lança Congelante:Pétalas de Flamejantes:Terror Ácido:Nenhuma"))
+{
+case 1:
+if(zeny < 5000) {mes "[ ^ff0000Plagiador^000000 ]"; mes "Desculpe, você não tem zenys suficientes."; close;}
+if(Class == 17 || Class ==4018){ set zeny,zeny-5000; dispbottom "[Plagiador] Bom uso."; npcskill 62, 10, 99, 99;close;}
+mes "[ ^ff0000Plagiador^000000 ]"; mes "Eu deixei bem claro que apenas as classes ^FF0000Arruaceiro/Desordeiro^000000 podem plagiar habilidades .";
+close;
+
+case 2:
+if(zeny < 5000) {mes "[ ^ff0000Plagiador^000000 ]"; mes "Desculpe, você não tem zenys suficientes."; close;}
+if(Class == 17 || Class ==4018){ set zeny,zeny-5000; dispbottom "[Plagiador] Bom uso."; npcskill 86, 5, 99, 99;close;}
+mes "[ ^ff0000Plagiador^000000 ]"; mes "Eu deixei bem claro que apenas as classes ^FF0000Arruaceiro/Desordeiro^000000 podem plagiar habilidades .";
+close;
+
+case 3:
+if(zeny < 5000) {mes "[ ^ff0000Plagiador^000000 ]"; mes "Desculpe, você não tem zenys suficientes."; close;}
+if(Class == 17 || Class ==4018){ set zeny,zeny-5000; dispbottom "[Plagiador] Bom uso."; npcskill 539, 5, 99, 99;close;}
+mes "[ ^ff0000Plagiador^000000 ]"; mes "Eu deixei bem claro que apenas as classes ^FF0000Arruaceiro/Desordeiro^000000 podem plagiar habilidades .";
+close;
+
+case 4:
+if(zeny < 5000) {mes "[ ^ff0000Plagiador^000000 ]"; mes "Desculpe, você não tem zenys suficientes."; close;}
+if(Class == 17 || Class ==4018){ set zeny,zeny-5000; dispbottom "[Plagiador] Bom uso."; npcskill 229, 5, 99, 99;close;}
+mes "[ ^ff0000Plagiador^000000 ]"; mes "Eu deixei bem claro que apenas as classes ^FF0000Arruaceiro/Desordeiro^000000 podem plagiar habilidades .";
+close;
+
+case 5:
+if(zeny < 5000) {mes "[ ^ff0000Plagiador^000000 ]"; mes "Desculpe, você não tem zenys suficientes."; close;}
+if(Class == 17 || Class ==4018){ set zeny,zeny-5000; dispbottom "[Plagiador] Bom uso."; npcskill 540, 10, 99, 99;close;}
+mes "[ ^ff0000Plagiador^000000 ]"; mes "Eu deixei bem claro que apenas as classes ^FF0000Arruaceiro/Desordeiro^000000 podem plagiar habilidades .";
+close;
+
+case 6:
+if(zeny < 5000) {mes "[ ^ff0000Plagiador^000000 ]"; mes "Desculpe, você não tem zenys suficientes."; close;}
+if(Class == 17 || Class ==4018){ set zeny,zeny-5000; dispbottom "[Plagiador] Bom uso."; npcskill 537, 10, 99, 99;close;}
+mes "[ ^ff0000Plagiador^000000 ]"; mes "Eu deixei bem claro que apenas as classes ^FF0000Arruaceiro/Desordeiro^000000 podem plagiar habilidades .";
+close;
+
+case 7:
+if(zeny < 5000) {mes "[ ^ff0000Plagiador^000000 ]"; mes "Desculpe, você não tem zenys suficientes."; close;}
+if(Class == 17 || Class ==4018){ set zeny,zeny-5000; dispbottom "[Plagiador] Bom uso."; npcskill 534, 10, 99, 99;close;}
+mes "[ ^ff0000Plagiador^000000 ]"; mes "Eu deixei bem claro que apenas as classes ^FF0000Arruaceiro/Desordeiro^000000 podem plagiar habilidades .";
+close;
+
+case 8:
+if(zeny < 5000) {mes "[ ^ff0000Plagiador^000000 ]"; mes "Desculpe, você não tem zenys suficientes."; close;}
+if(Class == 17 || Class ==4018){ set zeny,zeny-5000; dispbottom "[Plagiador] Bom uso."; npcskill 230, 5, 99, 99;close;}
+mes "[ ^ff0000Plagiador^000000 ]"; mes "Eu deixei bem claro que apenas as classes ^FF0000Arruaceiro/Desordeiro^000000 podem plagiar habilidades .";
+close;
+
+case 9:
+close;
+}
+
+case 2:
+mes "[ ^ff0000Plagiador^000000 ]";
+mes "Volte quando quizer";
+close;
+}
+}

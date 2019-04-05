@@ -1,0 +1,448 @@
+//You may use this template to create the skills offered by the function if called by a player.
+//I have used skill ids, but you may also use skill names with the script command.
+//The player is not required to have the Plagiarism skill for this work, but they will need it to retain it.
+//To call this function: callfunc "plagiarizer"; 
+//~rootKid
+
+function	script	plagiarizer	{
+	
+L_MAIN:	
+	menu	"Melee Skills",L_MELEE,
+			"Magic Skills",L_MAGIC,
+			"Support Skills",L_SUPPORT;
+
+//===========================MELEE SKILLS==============================	
+L_MELEE:			
+	menu	"^FF0000Back^000000",L_MAIN,
+			"Bash",L_BASH,
+			"Magnum Break",L_MAGNUM,
+			"Pierce",L_PIERCE,
+			"Brandish Spear",L_BRANDISHSPEAR,
+			"Spear Stab",L_SPEARSTAB,
+			"Spear Boomerang",L_SPEARBOOMERANG,
+			"Bowling Bash",L_BOWLINGBASH,
+			"Mammonite",L_MAMMONITE,
+			"Head Crush",L_HEADCRUSH,
+			"Joint Beat",L_JOINTBEAT,
+			"Charge Attack",L_CHARGEATK,
+			"Sonic Blow",L_SONICBLOW,
+			"Grimtooth",L_GRIMTOOTH,
+			"Venom Splasher",L_SPLASHER,
+			"Soul Breaker",L_BREAKER,
+			"Meteor Assault",L_METEORASSAULT,
+			"Throw Venom Knife",L_VENOMKNIFE,
+			"Charge Arrow",L_CHARGEARROW,
+			"Arrow Shower",L_SHOWER,
+			"Sharpshooter",L_SHARPSHOOTING,
+			"Demonstration",L_DEMONSTRATION,
+			"Acid Terror",L_ACIDTERROR,
+			"Acid Demonstration",L_ACIDDEMONSTRATION,
+			"Shield Charge",L_SHIELDCHARGE,
+			"Shield Boomerand",L_SHIELDBOOMERANG,
+			"Grand Cross",L_GRANDCROSS,
+			"Sacrifice",L_SACRIFICE,
+			"Pressure",L_PRESSURE,
+			"Triple Attack",L_TRIPLEATTACK,
+			"Investigate",L_INVESTIGATE,
+			"Finger Offensive",L_FINGEROFFENSIVE,
+			"Asura Strike",L_EXTREMITYFIST,
+			"Chain Combo",L_CHAINCOMBO,
+			"Comb Finish",L_COMBOFINISH,
+			"Palm Push Strike",L_PALMSTRIKE,
+			"Tiger Knuckle Fist",L_TIGERFIST,
+			"Chain Crush Combo",L_CHAINCRUSH,
+			"Throw Zeny",L_ZENYNAGE,
+			"Throw Shuriken",L_SYURIKEN,
+			"Throw Kunai",L_KUNAI,
+			"Throw Huuma",L_HUUMA,
+			"Shadow Slash",L_KIRIKAGE,
+			"Final Strike",L_ISSEN,
+			"Tarot Card of Fate",L_TAROTCARD;
+	
+			L_BASH:			
+				plagiarize 5,10;
+				close;
+				end;
+
+			L_MAGNUM:			
+				plagiarize 7,10;
+				close;
+				end;
+
+			L_MAMMONITE:			
+				plagiarize 42,10;
+				close;
+				end;
+
+			L_SHOWER:			
+				plagiarize 47,10;
+				close;
+				end;
+
+			L_PIERCE:			
+				plagiarize 56,10;
+				close;
+				end;
+
+			L_BRANDISHSPEAR:			
+				plagiarize 57,10;
+				close;
+				end;
+
+			L_SPEARSTAB:			
+				plagiarize 58,10;
+				close;
+				end;
+
+			L_SPEARBOOMERANG:			
+				plagiarize 59,5;
+				close;
+				end;
+
+			L_BOWLINGBASH:
+				plagiarize 62,10;
+				close;
+				end;
+
+			L_SONICBLOW:
+				plagiarize 136,10;
+				close;
+				end;
+
+			L_GRIMTOOTH:
+				plagiarize 137,10;
+				close;
+				end;
+
+			L_SPLASHER:
+				plagiarize 141,10;
+				close;
+				end;
+
+			L_CHARGEARROW:
+				plagiarize 148,1;
+				close;
+				end;
+
+			L_DEMONSTRATION:
+				plagiarize 229,5;
+				close;
+				end;
+
+			L_ACIDTERROR:
+				plagiarize 230,5;
+				close;
+				end;
+
+			L_ACIDDEMONSTRATION:
+				plagiarize 490,10;
+				close;
+				end;
+
+			L_SHIELDCHARGE:
+				plagiarize 250,5;
+				close;
+				end;
+
+			L_SHIELDBOOMERANG:
+				plagiarize 251,5;
+				close;
+				end;
+
+			L_GRANDCROSS:
+				plagiarize 254,10;
+				close;
+				end;
+
+			L_TRIPLEATTACK:
+				plagiarize 263,10;
+				close;
+				end;
+
+			L_INVESTIGATE:
+				plagiarize 266,10;
+				close;
+				end;
+
+			L_FINGEROFFENSIVE:
+				plagiarize 267,5;
+				close;
+				end;
+
+			L_EXTREMITYFIST:
+				plagiarize 271,5;
+				close;
+				end;
+
+			L_CHAINCOMBO:
+				plagiarize 272,5;
+				close;
+				end;
+
+			L_COMBOFINISH:
+				plagiarize 273,5;
+				close;
+				end;
+
+			L_SACRIFICE:
+				plagiarize 368,5;
+				close;
+				end;
+
+			L_PRESSURE:
+				plagiarize 367,5;
+				close;
+				end;
+
+			L_PALMSTRIKE:
+				plagiarize 370,5;
+				close;
+				end;
+
+			L_TIGERFIST:
+				plagiarize 371,5;
+				close;
+				end;
+
+			L_CHAINCRUSH:
+				plagiarize 372,10;
+				close;
+				end;
+
+			L_BREAKER:
+				plagiarize 379,10;
+				close;
+				end;
+
+			L_SHARPSHOOTING:
+				plagiarize 382,5;
+				close;
+				end;
+
+			L_HEADCRUSH:
+				plagiarize 398,5;
+				close;
+				end;
+
+			L_JOINTBEAT:
+				plagiarize 399,10;
+				close;
+				end;
+
+			L_METEORASSAULT:
+				plagiarize 406,10;
+				close;
+				end;
+
+			L_TAROTCARD:
+				plagiarize 489,5;
+				close;
+				end;
+
+			L_ZENYNAGE:
+				plagiarize 526,10;
+				close;
+				end;
+
+			L_SYURIKEN:
+				plagiarize 423,10;
+				close;
+				end;
+
+			L_KUNAI:
+				plagiarize 524,5;
+				close;
+				end;
+
+			L_HUUMA:
+				plagiarize 525,5;
+				close;
+				end;
+
+			L_KIRIKAGE:
+				plagiarize 530,5;
+				close;
+				end;
+
+			L_ISSEN:
+				plagiarize 544,10;
+				close;
+				end;
+
+			L_HOOKSHOT:
+				plagiarize 920,1;
+				close;
+				end;
+
+			L_DUSTDEVIL:
+				plagiarize 921,1;
+				close;
+				end;
+
+			L_TOXICSTORM:
+				plagiarize 927,1;
+				close;
+				end;
+
+			L_CHARGEATK:
+			plagiarize 1001,1;
+				close;
+				end;
+
+			L_VENOMKNIFE:
+				plagiarize 1004,1;
+				close;
+				end;
+
+//===========================MAGIC SKILLS==============================
+L_MAGIC:			
+	menu	"^FF0000Back^000000",L_MAIN,
+			"Napalm Beat",L_NAPALMBEAT,
+			"Soul Strike",L_SOULSTRIKE,
+			"Cold Bolt",L_COLDBOLT,
+			"Frost Diver",L_FROSTDIVER,
+			"Fire Ball",L_FIREBALL,
+			"Fire Wall",L_FIREWALL,
+			"Fire Bolt",L_FIREBOLT,
+			"Lightning Bolt",L_LIGHTNINGBOLT,
+			"Magnus Exorcismus",L_MAGNUS,
+			"Fire Pillar",L_FIREPILLAR,
+			"Sight Trasher",L_SIGHTRASHER,
+			"Meteor Storm",L_METEOR,
+			"Jupitel Thunder",L_JUPITEL,
+			"Lord of Vermilion",L_VERMILION,
+			"Water Ball",L_WATERBALL,
+			"Frost Nova",L_FROSTNOVA,
+			"Storm Gust",L_STORMGUST,
+			"Earth Spike",L_EARTHSPIKE,
+			"Heaven's Drive",L_HEAVENDRIVE,
+			"Sight Blaster",L_SIGHTBLASTER;
+	
+			L_NAPALMBEAT:			
+				plagiarize 11,10;
+				close;
+				end;		
+
+			L_SOULSTRIKE:			
+				plagiarize 13,10;
+				close;
+				end;
+
+			L_COLDBOLT:			
+				plagiarize 14,10;
+				close;
+				end;
+
+			L_FROSTDIVER:			
+				plagiarize 15,10;
+				close;
+				end;
+
+			L_FIREBALL:
+				plagiarize 17,10;
+				close;
+				end;
+
+			L_FIREWALL:
+				plagiarize 18,10;
+				close;
+				end;
+
+			L_FIREBOLT:
+				plagiarize 19,10;
+				close;
+				end;
+
+			L_LIGHTNINGBOLT:
+				plagiarize 20,10;
+				close;
+				end;
+
+			L_MAGNUS:
+				plagiarize 79,10;
+				close;
+				end;
+
+			L_FIREPILLAR:
+				plagiarize 80,10;
+				close;
+				end;
+
+			L_SIGHTRASHER:
+				plagiarize 81,10;
+				close;
+				end;
+
+			L_METEOR:
+				plagiarize 83,10;
+				close;
+				end;
+
+			L_JUPITEL:
+				plagiarize 84,10;
+				close;
+				end;
+
+			L_VERMILION:
+				plagiarize 85,10;
+				close;
+				end;
+
+			L_WATERBALL:
+				plagiarize 86,10;
+				close;
+				end;
+
+			L_FROSTNOVA:
+				plagiarize 88,10;
+				close;
+				end;
+
+			L_STORMGUST:
+				plagiarize 89,10;
+				close;
+				end;
+
+			L_EARTHSPIKE:
+				plagiarize 90,10;
+				close;
+				end;
+
+			L_HEAVENDRIVE:
+				plagiarize 91,5;
+				close;
+				end;
+
+			L_SIGHTBLASTER:
+				plagiarize 1006,1;
+				close;
+				end;
+
+//===========================SUPPORT SKILLS==============================			
+L_SUPPORT:			
+	menu	"^FF0000Back^000000",L_MAIN,
+			"Ruwach",L_RUWACH,
+			"Heal",L_HEAL,
+			"Aspersio",L_ASPERSIO,
+			"Reverse Tatami",L_TATAMIGAESHI;	
+
+			L_RUWACH:
+				plagiarize 24,1;
+				close;
+				end;
+
+			L_HEAL:
+				plagiarize 28,10;
+				close;
+				end;			
+
+			L_ASPERSIO:
+				plagiarize 68,5;
+				close;
+				end;	
+						
+			L_TATAMIGAESHI:
+				plagiarize 527,5;
+				close;
+				end;
+}

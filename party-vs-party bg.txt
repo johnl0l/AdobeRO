@@ -1,0 +1,343 @@
+-	script	bg_emp#control	-1,{
+OnInit:
+	setarray .rewarditem, 29003, 5; // reward to the winning team
+	set .winningscore, 3; // final score to win
+	set .eventlasting, 20 * 60; // abort the system if there's no progress, 20 mins * seconds
+	set .register_lasting, 1 * 60; // 3 minutes to joins, else abort registration, 10 mins * seconds
+	sleep 1;
+	disablenpc .rednpcname$;
+	disablenpc .bluenpcname$;
+	end;
+OnStart:
+	if ( getwaitingroomstate( 0, .rednpcname$ ) < .minplayer2start || getwaitingroomstate( 0, .bluenpcname$ ) < .minplayer2start ) end;
+	set .red, waitingroom2bg( "bat_a01", 171,346, strnpcinfo(0)+"::OnRedQuit", strnpcinfo(0)+"::OnRedDead", .rednpcname$ );
+	copyarray .team1aid, $@arenamembers, $@arenamembersnum;
+	set .blue, waitingroom2bg( "bat_a01", 162,50, strnpcinfo(0)+"::OnBlueQuit", strnpcinfo(0)+"::OnBlueDead", .bluenpcname$ );
+	copyarray .team2aid, $@arenamembers, $@arenamembersnum;
+	.inprogress = 2;
+	bg_warp .red, "bat_a01", 171,346;
+	bg_warp .blue, "bat_a01", 162,50;
+	setwall "bat_a01", 154,51, 6, 4, 0, "bg_emp_town_blue";
+	setwall "bat_a01", 164,347, 6, 4, 0, "bg_emp_town_red";
+	bg_updatescore "bat_a01", 0, 0;
+	sleep 6000; if ( .inprogress == 0 ) goto L_Abort;
+	mapannounce "bat_a01", "Rules are simple. The first one to break the opponent's emperium will get a score.", 0;
+	sleep 3000; if ( .inprogress == 0 ) goto L_Abort;
+	mapannounce "bat_a01", "Score "+ .winningscore +" rounds to win ! ... GET READY", 0;
+	sleep 2000; if ( .inprogress == 0 ) goto L_Abort;
+	while (1) {
+		for ( .@i = 5; .@i > 0; .@i-- ) {
+			mapannounce "bat_a01", .@i +"", 0;
+			sleep 1000; if ( .inprogress == 0 ) goto L_Abort;
+		}
+		if ( .score[1] == .winningscore -1 && .score[2] == .winningscore -1 )
+			mapannounce "bat_a01", "Final Round start!", 0;
+		else
+			mapannounce "bat_a01", "Round "+ .round++ +" start!", 0;
+		bg_monster .red,"bat_a01",157,346, "--ja--",1915, strnpcinfo(3)+"::OnRedDown";
+		bg_monster .blue,"bat_a01",148,50, "--ja--",1914, strnpcinfo(3)+"::OnBlueDown";
+		bg_monster .red,"bat_a01",171,346, "--ja--",1285, strnpcinfo(3)+"::Onguardian";
+		bg_monster .red,"bat_a01",171,346, "--ja--",1286, strnpcinfo(3)+"::Onguardian";
+		bg_monster .red,"bat_a01",171,346, "--ja--",1287, strnpcinfo(3)+"::Onguardian";	
+		bg_monster .blue,"bat_a01",162,50, "--ja--",1285, strnpcinfo(3)+"::Onguardian";
+		bg_monster .blue,"bat_a01",162,50, "--ja--",1286, strnpcinfo(3)+"::Onguardian";
+		bg_monster .blue,"bat_a01",162,50, "--ja--",1287, strnpcinfo(3)+"::Onguardian";
+		//Outside
+		bg_monster .red,"bat_a01",193,271, "--ja--",1285, strnpcinfo(3)+"::Onguardian";
+		bg_monster .red,"bat_a01",193,271, "--ja--",1286, strnpcinfo(3)+"::Onguardian";
+		bg_monster .red,"bat_a01",193,271, "--ja--",1287, strnpcinfo(3)+"::Onguardian";
+		bg_monster .blue,"bat_a01",177,123, "--ja--",1285, strnpcinfo(3)+"::Onguardian";
+		bg_monster .blue,"bat_a01",177,123, "--ja--",1286, strnpcinfo(3)+"::Onguardian";
+		bg_monster .blue,"bat_a01",177,123, "--ja--",1287, strnpcinfo(3)+"::Onguardian";	
+		//Outside Left Side
+		bg_monster .red,"bat_a01",279,235, "--ja--",1285, strnpcinfo(3)+"::Onguardian";
+		bg_monster .red,"bat_a01",279,235, "--ja--",1286, strnpcinfo(3)+"::Onguardian";
+		bg_monster .red,"bat_a01",279,235, "--ja--",1287, strnpcinfo(3)+"::Onguardian";
+		bg_monster .red,"bat_a01",279,235, "--ja--",1285, strnpcinfo(3)+"::Onguardian";
+		bg_monster .red,"bat_a01",279,235, "--ja--",1286, strnpcinfo(3)+"::Onguardian";
+		bg_monster .red,"bat_a01",279,235, "--ja--",1287, strnpcinfo(3)+"::Onguardian";
+		bg_monster .blue,"bat_a01",268,163, "--ja--",1285, strnpcinfo(3)+"::Onguardian";
+		bg_monster .blue,"bat_a01",268,163, "--ja--",1286, strnpcinfo(3)+"::Onguardian";
+		bg_monster .blue,"bat_a01",268,163, "--ja--",1287, strnpcinfo(3)+"::Onguardian";
+		bg_monster .blue,"bat_a01",268,163, "--ja--",1285, strnpcinfo(3)+"::Onguardian";
+		bg_monster .blue,"bat_a01",268,163, "--ja--",1286, strnpcinfo(3)+"::Onguardian";
+		bg_monster .blue,"bat_a01",268,163, "--ja--",1287, strnpcinfo(3)+"::Onguardian";
+		delwall "bg_emp_town_red";
+		delwall "bg_emp_town_blue";
+		sleep .eventlasting * 1000; if ( .inprogress == 0 ) goto L_Abort;
+		.score[ .winside ]++;
+		bg_updatescore "bat_a01", .score[1], .score[2];
+		killmonster "bat_a01", strnpcinfo(3)+"::OnRedDown";
+		killmonster "bat_a01", strnpcinfo(3)+"::OnBlueDown";
+		killmonster "bat_a01", strnpcinfo(3)+"::Onguardian";
+		if ( .winside )
+			mapannounce "bat_a01", .empkiller$ +" has Destroy "+( ( .winside == 1 )?"Blue":"Red" )+"'s side Emperium. "+( ( .winside == 1 )?"Red":"Blue" )+" team score a point !", 0;
+		if ( .score[1] == .winningscore || .score[2] == .winningscore || !.winside ) break;
+		sleep 5000; if ( .inprogress == 0 ) goto L_Abort;
+		bg_warp .red, "bat_a01", 171,346;
+		bg_warp .blue, "bat_a01", 162,50;
+		setwall "bat_a01", 154,51, 6, 4, 0, "bg_emp_town_blue";
+		setwall "bat_a01", 164,347, 6, 4, 0, "bg_emp_town_red";
+		.winside = 0;
+	}
+	if ( .winside ) {
+		mapannounce "bat_a01", ( ( .winside == 1 )?"Red":"Blue" )+" side wins !", 0;
+		.@size = getarraysize( getd(".team"+ .winside +"aid") );
+		for ( .@i = 0; .@i < .@size; .@i++ )
+			getitem .rewarditem[0], .rewarditem[1], getd(".team"+ .winside +"aid["+ .@i +"]" );
+			goto L_Abort;
+	} else
+		mapannounce "bat_a01", "Time Out. Aborting the match.", 0;
+		goto L_Abort;
+	sleep 5000;
+L_Abort:
+	bg_warp .red, "prontera", 155,182;
+	bg_warp .blue, "prontera", 158,182;
+	bg_destroy .red;
+	bg_destroy .blue;
+	set $@startE,0;
+	set $@TeamRed,0;
+	set $@TeamBlue,0;
+	killmonster "bat_a01", strnpcinfo(3)+"::OnRedDown";
+	killmonster "bat_a01", strnpcinfo(3)+"::OnBlueDown";
+	killmonster "bat_a01", strnpcinfo(3)+"::Onguardian";
+	delwall "bg_emp_town_red";
+	delwall "bg_emp_town_blue";
+	deletearray .team1aid;
+	deletearray .team2aid;
+	.round = .winside = .score[2] = .score[1] = .inprogress = 0;
+	end;
+OnRedDown: callsub L_EmpDown, 2;
+OnBlueDown: callsub L_EmpDown, 1;
+L_EmpDown:
+	.empkiller$ = strcharinfo(0);
+	.winside = getarg(0);
+	awake strnpcinfo(3);
+OnRedDead:
+OnBlueDead:
+	sleep2 1500;
+	percentheal 100,100;
+	sc_start SC_BASILICA,5000,1;
+	end;
+Onguardian: 
+end;
+OnRedQuit: callsub L_quit, .red, "Red", "Blue", 2;
+OnBlueQuit: callsub L_quit, .blue, "Blue", "Red", 1;
+L_quit:
+	if ( bg_get_data( getarg(0), 0 ) ) end;
+	mapannounce "bat_a01", "All "+ getarg(1) +" team members has Quit ! "+ getarg(2) +" side wins !", 0;
+	.@size = getarraysize( getd(".team"+ getarg(3) +"aid") );
+	for ( .@i = 0; .@i < .@size; .@i++ )
+		getitem .rewarditem[0], .rewarditem[1], getd(".team"+ getarg(3) +"aid["+ .@i +"]" );
+	goto L_Abort;
+OnAutoAbort:
+	sleep .register_lasting * 1000;
+	delwaitingroom .rednpcname$;
+	delwaitingroom .bluenpcname$;
+	disablenpc .rednpcname$;
+	disablenpc .bluenpcname$;
+	set $@startE,0;
+	set $@TeamRed,0;
+	set $@TeamBlue,0;
+	mapwarp "quiz_01","prontera",156,191;
+	if ( .inprogress == 1 ) {
+		.inprogress = 0;
+		announce "battleground has self-aborted because not enough members", 0;
+	}
+	end;
+}
+gonryun,151,110,6	script	Crystal Wars::crystalwar	456,{
+	if (getgmlevel() >= 99){
+		menu "Register Team",standard,"Reset",lend;
+	}
+standard:
+	set .@a,7; // number of party members change this to your party size you want
+	set $@members,7; // number of party members change this to your party size you want
+	set getvariableofnpc( .minplayer2start, "bg_emp#control" ), .@a;
+	set getvariableofnpc( .inprogress, "bg_emp#control" ), 1;
+	set $@startE,0;
+	getpartymember(getcharid(1));
+	set @partymembercount,$@partymembercount;
+	if ( $@startE == 1 ) {
+		mes "The Sign Ups are currently unavailable because a match is in progress. Don't hesitate to try again in a few minutes!";
+		close;
+	}
+	if ( @partymembercount == $@members ) {
+		if ( $@TeamRed == getcharid(1) ) {
+			mes "Do you wish to sign out your team in crystal wars?";	
+			next;	
+			if (select("I Give up ~.","Never Say Quit !!")==2) close;	
+			announce "Team 1 : [ " + getpartyname($@TeamRed) + " ] has sign out. We need another Party to sign up now!",bc_yellow|bc_map;	
+			set $@TeamRed, 0;
+			close;	
+		}
+		if ($@TeamID2==getcharid(1)) {	
+			mes "Do you wish to sign out your team in crystal wars?";
+			next;	
+			if (select("I Give up ~.","Never Say Quit !!")==2) close;
+			announce "Team 2 : [ " + getpartyname($@TeamBlue) + " ] has sign out. We need another Party to sign up now!",bc_yellow|bc_map;	
+			set $@TeamBlue, 0;	
+			close;	
+		}
+		mes "Hello "+strcharinfo(0)+" what do you want?";
+		if (($@TeamRed!=0) && ($@TeamBlue!=0)) {
+			mes "The Sign Ups are currently unavailable because a match is in progress. Don't hesitate to try again in a few minutes!";
+			close;
+		}
+		if ( getpartyleader(getcharid(1),2) != getcharid(0) ) {
+			mes "Only party leader have the right to sign up / out from the game with me..";
+			close;
+		}
+		mes "Choose your team to register.";
+		switch(select("Red Team - [" + getpartyname($@TeamRed) + "] :Blue Team - [" + getpartyname($@TeamBlue) + "]")) {
+		case 1:	mes "[  Crystal War  ]";
+			if ($@TeamRed==0 || getpartyname($@TeamRed)=="null") {
+				getpartymember(getcharid(1)),1;
+				getpartymember(getcharid(1)),2;
+				copyarray $@partymembercidt1[0],$@partymembercid[0],$@members;
+				copyarray $@partymemberaidt1[0],$@partymemberaid[0],$@members;
+				for (set .@i,0; .@i<$@members; set .@i,.@i+1) {
+					if(isloggedin($@partymemberaidt1[.@i],$@partymembercidt1[.@i]))  set .@count,.@count+1;
+				}
+				if(.@count < $@members) {
+					mes "You need all your party members to be online to Register";
+					close;
+				}
+				set $@TeamRed, getcharid(1);	
+				initnpctimer;	
+				mes "Your Party is now subscribed, good luck!";	
+				announce "Team 1 : [ " +getpartyname($@TeamRed)+ " ] has sign up For the Crystal Wars!",bc_blue|bc_map;	
+				donpcevent "bg_emp#control::OnAutoAbort";
+				doevent "crystalwar::OnSubscriptionTeam";	
+				close;	
+			} else {
+				mes "I'm sorry! Another Team has sign up before you...";	
+				close;	
+			}
+		case 2:	mes "[  Crystal War  ]";
+			if ($@TeamBlue==0 || getpartyname($@TeamBlue)=="null") {	
+				getpartymember(getcharid(1)),1;
+				getpartymember(getcharid(1)),2;
+				copyarray $@partymembercidt2[0],$@partymembercid[0],$@members;
+				copyarray $@partymemberaidt2[0],$@partymemberaid[0],$@members;
+				for (set .@i,0; .@i<$@members; set .@i,.@i+1) {
+					if(isloggedin($@partymemberaidt2[.@i],$@partymembercidt2[.@i])) set .@count,.@count+1;
+				}
+				if(.@count < $@members) {
+					mes "You need all your party members to be online to Register";
+					close;
+				}
+				set $@TeamBlue, getcharid(1);	
+				initnpctimer;	
+				mes "Your Party is now subscribed, good luck!";	
+				announce "Team 2 : [ " +getpartyname($@TeamBlue)+ " ] has sign up For the Crystal Wars!",bc_blue|bc_map;
+				donpcevent "bg_emp#control::OnAutoAbort";
+				doevent "crystalwar::OnSubscriptionTeam";	
+				close;	
+			} else {	
+				mes "I'm sorry! Another Team has sign up before you...";	
+				close;
+			}
+		}
+	} else {
+		mes "[Event Handler]";
+		mes "Please contact your party leader.";
+		mes "Your team must have a party consisting of "+$@members+" members.";
+		close;
+	}
+
+OnSubscriptionTeam:
+	getpartymember($@TeamBlue),1;
+	getpartymember($@TeamBlue),2;
+	copyarray $@partymembercidtc2[0],$@partymembercid[0],$@members;
+	copyarray $@partymemberaidc2[0],$@partymemberaid[0],$@members;
+	for (set .@i,0; .@i<$@members; set .@i,.@i+1) {
+		if(isloggedin($@partymemberaidc2[.@i],$@partymembercidtc2[.@i])) set .@countx,.@countx+1;
+	}
+	if(.@countx < $@members) {
+		announce "Crystal War : "+getpartyname($@TeamBlue)+"are not all online the match has been canceled",0;
+		announce "Crystal War : Registration for [2] New Team is now Available",0;
+		goto lend;
+	}
+	if ( $@TeamBlue && $@partymembercount != $@members ) {
+		announce getpartyname($@TeamBlue) +" has extra party members, Registration is now Reset!", 0;
+		goto lend;
+	}
+	getpartymember($@TeamRed),1;
+	getpartymember($@TeamRed),2;
+	copyarray $@partymembercidtc1[0],$@partymembercid[0],$@members;
+	copyarray $@partymemberaidc1[0],$@partymemberaid[0],$@members;
+	for (set .@i,0; .@i<$@members; set .@i,.@i+1) {
+		if(isloggedin($@partymemberaidc1[.@i],$@partymembercidtc1[.@i])) set .@countz,.@countz+1;
+	}
+	if(.@countz < $@members) {
+		announce "Crystal War : "+getpartyname($@TeamRed)+"are not all online the match has been canceled",0;
+		announce "Crystal War : Registration for [2] New Team is now Available",0;
+		goto lend;
+	}
+	if ( $@TeamRed &&  $@partymembercount != $@members ) {
+		announce getpartyname($@TeamRed) +" has extra party members !", 0;
+		goto lend;
+	}
+	if($@TeamRed!=0 && $@TeamBlue!=0){
+		announce "Crystal War : We have 2 Teams signed up now : "+getpartyname($@TeamRed)+" and "+getpartyname($@TeamBlue)+".",bc_blue|bc_map;
+		warpparty "quiz_01",37,74,$@TeamRed;
+		warpparty "quiz_01",73,73,$@TeamBlue;
+		setcell "quiz_01",34,81,40,81,cell_walkable,0;
+		setcell "quiz_01",70,81,76,81,cell_walkable,0;
+	enablenpc getvariableofnpc( .rednpcname$, "bg_emp#control" );
+	enablenpc getvariableofnpc( .bluenpcname$, "bg_emp#control" );
+	donpcevent getvariableofnpc( .rednpcname$, "bg_emp#control" ) +"::OnStart";
+	donpcevent getvariableofnpc( .bluenpcname$, "bg_emp#control" ) +"::OnStart";
+	set getvariableofnpc( .inprogress, "bg_emp#control" ), 1;
+	}
+	end;
+
+lend:
+	stopnpctimer;
+	set $@TeamRed,0;
+	set $@TeamBlue,0;
+	set $@startE,0;
+	set @partymembercount,$@members;
+	awake "bg_emp#control";
+	killmonster "bat_a01", strnpcinfo(3)+"::OnRedDown";
+	killmonster "bat_a01", strnpcinfo(3)+"::OnBlueDown";
+	delwaitingroom getvariableofnpc( .rednpcname$, "bg_emp#control" );
+	delwaitingroom getvariableofnpc( .bluenpcname$, "bg_emp#control" );
+	disablenpc getvariableofnpc( .rednpcname$, "bg_emp#control" );
+	disablenpc getvariableofnpc( .bluenpcname$, "bg_emp#control" );
+	announce "Thanks for playing",0;
+	if ( playerattached() )
+		close;
+	end;
+}
+
+quiz_01,37,74,5	script	Red side#bg_emp	100,{
+	end;
+OnStart:
+	waitingroom "Red side", getvariableofnpc( .minplayer2start, "bg_emp#control" ) +1, "bg_emp#control::OnStart", getvariableofnpc( .minplayer2start, "bg_emp#control" );
+	end;
+OnInit:
+	set getvariableofnpc( .rednpcname$, "bg_emp#control" ), strnpcinfo(0);
+	end;
+}
+
+quiz_01,73,76,5	script	Blue side#bg_emp	100,{
+	end;
+OnStart:
+	waitingroom "Blue side", getvariableofnpc( .minplayer2start, "bg_emp#control" ) +1, "bg_emp#control::OnStart", getvariableofnpc( .minplayer2start, "bg_emp#control" );
+	end;
+OnInit:
+	set getvariableofnpc( .bluenpcname$, "bg_emp#control" ), strnpcinfo(0);
+	end;
+}
+
+bat_a01	mapflag	battleground	2
+bat_a01	mapflag	nosave	SavePoint
+bat_a01	mapflag	nowarp
+bat_a01	mapflag	nowarpto
+bat_a01	mapflag	noteleport
+bat_a01	mapflag	nomemo
+bat_a01	mapflag	nopenalty
+bat_a01	mapflag	nobranch
+bat_a01	mapflag	noicewall

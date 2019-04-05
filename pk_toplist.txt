@@ -1,0 +1,2510 @@
+/*
+
+ __                  ____                       __              
+/\ \                /\  _`\   __              /'__`\            
+\ \ \____  __  __   \ \,\L\_\/\_\    ___ ___ /\ \/\ \    ___    
+ \ \ '__`\/\ \/\ \   \/_\__ \\/\ \ /' __` __`\ \ \ \ \ /' _ `\  
+  \ \ \L\ \ \ \_\ \    /\ \L\ \ \ \/\ \/\ \/\ \ \ \_\ \/\ \/\ \ 
+   \ \_,__/\/`____ \   \ `\____\ \_\ \_\ \_\ \_\ \____/\ \_\ \_\
+    \/___/  `/___/> \   \/_____/\/_/\/_/\/_/\/_/\/___/  \/_/\/_/
+               /\___/                                           
+               \/__/                                            
+
+>>===== eAthena Script ============================================<<
+>>= PK Top List 
+>>=================================================================<<
+>>===== By ========================================================<<
+>>= [Simon] 
+>>===== Version ===================================================<<
+>>= 1.2.4.5 BETA RELEASE 
+>>===== Compatible With ===========================================<<
+>>= eAthena SVN SQL  13000+
+>>===== Description ===============================================<<
+>>= Das ganze ist ein PK Toplisten System. 
+>>= Wenn ein Spieler jemanden anderen killt wird er in eine Liste 
+>>= eingetragen und seine Kills werden mit jedem getöteten 
+>>= mehr. Man kann sich die die TopListen per NPC Board anschauen 
+>>= oder auch indem man einen NPC anwhispert. Die Listen sind 
+>>= nach Jobklassen sortiert und es gibt eine Funktion die 10 
+>>= besten Pker zu sehn. 
+>>= Das ganze besitzt außerdem ein Killingspree System, welches 
+>>= ein- und ausschaltbar ist.
+>>===== Version Info ==============================================<<
+>>= 1.0 - Fertigstellung und Veröffentlichung [Simon] 
+>>= 1.1.1 - Arrays werden nur noch mit 10 Einträgen gefüllt, 
+>>= anstatt volle 128 [Simon] 
+>>= 1.1.1 - Bug behoben, dass wenn ein Spieler einen Char löscht 
+>>=	und einen neuen mit dem selben Namen erstellt er die selben 
+>>=	kills hat (Jetz über CharID) [Simon] 
+>>= 1.1.1 - Einfügen des EXP Systems  (Alpha) [Simon] 
+>>= 1.1.2 - GM Menu 2 sprachig  [Simon] 
+>>= 1.1.3 - Fertigstellung EXP System [Simon] 
+>>= 1.1.4 - Einfügen des Levelsystems [Simon] 
+>>= 1.1.5 - Einfügen des Bonus Stats Systems [Simon] 
+>>= 1.1.6 - Liste jetzt nach Verhältnis von Tode und Kills [Simon] 
+>>= 1.1.7 - Effect View Script [Simon] 
+>>= 1.1.8 - Admin Panel für EXP System [Simon] 
+>>= 1.1.9 - Map Controll (Alpha) [Simon] 
+>>= 1.2.0 - Spieler kann seinen Rang ansehen [Simon]
+>>= 1.2.0.1 - Einige Bug fixes [Simon]
+>>= 1.2.0.2 - Überarbeitung des Scripts [Simon]
+>>= 1.2.1.2 - Achievement System [Simon]
+>>= 1.2.1.3 - Bug Fixes + Stat BonusSystem nun ausschaltbar 
+>>=	Einstellung für die Anzahl der Spieler die auf der Toplist gezeigt werden[Simon]
+>>= 1.2.1.4 - Einige Bug fixes, bei der Anzeige der Topliste
+>>= 1.2.2.4 - Pk EXP Event eingebaut
+>>= 1.2.3.4 - Pk Kill Event eingebaut
+>>= 1.2.4.4 - Hilfe NPC
+>>= 1.2.4.5 - Optionale Mob EXP
+>>===== Todo ======================================================<<
+>>= TXT Support (SPÄÄTER)
+>>= Achievement System:				N		Var
+>>= - Töte 1000 Spieler 				0	X	PK_achievement_0
+>>= - Töte 2 Spieler auf einmal			1	X	PK_achievement_1
+>>= - Töte 100 Spieler ohne zu sterben	2	X	PK_achievement_2
+>>= - Töte 10 Spieler in einer Minute		3	X	PK_achievement_3
+>>= - Erreiche PK Level 10			4	X	PK_achievement_4
+>>= - Sterbe 1000 mal				5	X	PK_achievement_5
+>>= - Erreiche Platz X (alle)			6
+>>= - Erreiche Platz X (job)			7
+>>= - Bleibe 10 Tage Platz 1 (alle)		8	
+>>= - Bleibe 10 Tage Platz 1 (Job)		9
+>>= - Bleibe 10 Tage in Top 10 (alle)		10
+>>= - Bleibe 10 Tage in Top 10 (job)		11
+>>= PK Arena
+>>= PK Kill Event (wer als erster 100 gekillt hat)
+>>===== FAQ =======================================================<<
+>>= Q: Jeder Spieler hat nur 1nen kill, warum? 
+>>= A: Geh in die conf/script_athena.conf und stell 
+>>= "event_script_type:" auf 1. Außerdem solltest du alle 
+>>= Events, die als NPC Name stehn in Labels abändern. 
+>>= Q: Wie mach ich das? 
+>>= A: Ein Beispiel: "- script OnPCKillEvent -1,{" 
+>>= Das wird zu: "- script Player_Gets_killed -1,{" 
+>>= in den NPC schreibst du dann "OnPCKillEvent:" oben hin und 
+>>= darunter was dann passiern soll ;P 
+>>===== Thanks to =================================================<<
+>>= Kaze <3 
+>>= Koibito <3 
+>>= xXDarkDevineXx 
+>>= Kryprik
+>>= digitalHamster
+>>= Für ihre Hilfe =) 
+>>=================================================================<<
+*/
+
+
+//==============\\
+//= Configuration
+//================================================================================================================================\\
+
+
+-	script	PK_Config	-1,{
+	
+	//Konfigurationen || Configuration	
+	OnInit:
+	
+	//------------------------------------------------------->	
+	//> EXP Konfigurationen || EXP Configuration
+	//------------------------------------------------------->
+	//[GER] Maximale Stats die man als Bonus bekommt auf PK Level (Index steht für level) 
+	//[ENG] Maximal value of stats that you can gain for your PK Level
+	setarray $PK_max_stats[1],3, //PK Level 2
+							5,	//PK Level 3
+							7,	//PK Level 4
+							9,	//PK Level 5
+							11,	//PK Level 6
+							13,	//PK Level 7
+							15,	//PK Level 8
+							17,	//PK Level 9
+							19;	//PK Level 10
+	
+	
+	//[GER] Minimale Stats die man als Bonus bekommt auf PK Level (Index steht für level) 
+	//[ENG] Minimal value of stats that you can gain for your PK Level
+	setarray $PK_min_stats[1],1,	//PK Level 2
+							2,	//PK Level 3
+							3,	//PK Level 4
+							4,	//PK Level 5
+							5,	//PK Level 6
+							6,	//PK Level 7
+							7,	//PK Level 8
+							8,	//PK Level 9
+							9;	//PK Level 10
+
+	
+	//[GER] EXP die man für die einzelnen Level benötigt 
+	//[ENG] EXP which you need for each level
+	setarray $PK_level_exp[0],1,		//DUMMY
+							100,		//PK Level 2
+							200,		//PK Level 3
+							400,		//PK Level 4
+							800,		//PK Level 5
+							1600,		//PK Level 6
+							3200,		//PK Level 7
+							6400,		//PK Level 8
+							12800,		//PK Level 9
+							25600;		//PK Level 10
+
+	
+	//[GER] Mindest Level des Spielers der getötet wird um EXP zu bekommen 
+	//[ENG] Minimal level from a player to get EXP
+	set $PK_min_lvl,50; 
+	
+	//[GER] 1 = Man verliert EXP wenn man stirbt  0 = Man verliert keine EXP wenn man stirbt
+	//[ENG] 1 = You loses EXP if you die  0 = you dont lose any exp if you die
+	set $PK_exp_verlust,1; 
+	
+	//[GER] Man bekommt PK Exp wenn man einen Mob tötet (1= Ja 0 = Nein)
+	//[ENG] You gain PK EXP if you kill a mob (1 =  Yes 0 = No)
+	set $PK_mob_exp,0;
+	
+	
+	//------------------------------------------------------->
+	//> Allgemeine Einstellungen || Misc settings
+	//------------------------------------------------------->
+	//[GER] Setzt GM Menü Sprache (0: Eng 1: Ger)
+	//[ENG] Sets GM menu language (0: Eng 1: Ger)
+	set $PK_GM_lang,0; 
+	
+	 //[GER] Anzahl der Stats die man bekommen kann 0 = Bonus Stats ausgeschaltet / 1 = nur einer per Zufall / 2 = 2 per Zufall / 3 = alle 3 
+	 //[ENG] Amount of stats you can get 0 = Bonus Stats disabled / 1 = 1 random stat of 3 / 2 = 2 random stats of 3 / 3 = all 3 stats
+	set $PK_bonis_vergabe,1;
+	
+	//[GER] GMs werden auch in die Toplist aufgenommen 0 = Nein 1 = Ja 
+	//[ENG] GMs will be also listed on the Toplist 0 = No 1 = Yes
+	set $PK_GM_kill,1; 
+	
+	//[GER] Wieviele Spieler in der Liste angezeigt werden (in 10ner schritten 1 = 10, 2 = 20) max: 12
+	//[ENG] How many players are listed on the toplist (in 10 steps 1= 10, 2=20) max: 12
+	set $PK_list_amount,2;
+	
+	
+	//------------------------------------------------------->
+	//> Map Control
+	//------------------------------------------------------->
+	//[GER] Ob das script nur auf bestimmten Maps funktionieren soll (siehe $PK_maps$) 0 = Nein 1 = Ja 
+	//[ENG] If the script shall work only on certain maps (see $PK_maps$) 0 = No 1 = Yes
+	set $PK_map_limitation,0; 
+	
+	//[GER] Der Modus (0 = auf den Maps die im Array sind funktionierts 1 = auf den Maps die im Array sind funktionierts nicht ($PK_maps$)) 
+	//[ENG] The mode (0 = it works on the maps of the array 1 = it doesnt work on the maps in the array ($PK_maps$))
+	set $PK_map_limitation_mode,0; 
+	
+	 //[GER] Maps (siehe PK_map Variablen) 
+	 //[ENG] Maps (see PK_map vars)
+	setarray $PK_maps$[0],"morroc";
+		
+	//[GER] Multiplikator für die PK EXP (für EXP Event, siehe Admin NPC)
+	//[ENG] Multiplicator for PK EXP (for the EXP event, see admin NPC)
+	set $PK_exp_multi,1;
+	
+	
+	//------------------------------------------------------->
+	//> Achievement System
+	//------------------------------------------------------->
+	//[GER] Achievemnt System  1 = aktiviern / 0 = deaktivieren 
+	//[ENG] Achievement System 1 = activate / 0 = deactivate
+	set $PK_achievement_on,1; 
+	
+	//[GER] Belohnungen die man für jedes abgeschlossene Achievement bekommt 
+	//[ENG] Rewards which you get for each finished achievement
+	setarray $PK_achievement_rewards[0],512,	//0 - Kill 1000 players
+										512,	//1 - Kill 2 players at once
+										512,	//2 - Kill 100 players without dying
+										512,	//3 - Kill 10 players in 1 minute
+										512,	//4 - Reach PK level 10
+										512,	//5 - Die 1000 times
+										511;	//6 -> [GER] Wenn man alle hat || [ENG] If you got all
+	
+	//[GER]  Menge der Items die man bekommt
+	//[ENG] Amount of the items you will get
+	setarray $PK_achievement_rewards_amount[0],1,	//0 - Kill 1000 players
+												1,	//1 - Kill 2 players at once 
+												1,	//2 - Kill 100 players without dying
+												1,	//3 - Kill 10 players in 1 minute
+												1,	//4 - Reach PK level 10
+												1,	//5 - Die 1000 times
+												1;	//6 -> [GER] Wenn man alle hat || [ENG] If you got all
+	
+	
+	
+	//------------------------------------------------------->
+	//> PK Arena
+	//------------------------------------------------------->
+	
+	//[GER] Maps die als Arenen agieren sollen
+	//[ENG] Maps which should act as arena
+	setarray $PK_open_arena_maps$[0],"pvp_n_1-5.gat","pvp_n_2-5.gat";
+	setarray $PK_duell_arena_maps$[0],"pvp_n_1-2.gat","pvp_n_2-2.gat","pvp_n_3-2.gat","pvp_n_4-2.gat";
+	setarray $PK_team_arena_maps$[0],"pvp_n_1-1.gat","pvp_n_2-1.gat","pvp_n_3-1.gat","pvp_n_4-1.gat";
+	setarray $PK_guild_arena_maps$[0],"guild_vs1-1.gat","guild_vs1-2.gat","guild_vs1-3.gat","guild_vs1-4.gat";
+	
+	for (set .@i,0; .@i < getarraysize($PK_open_arena_maps$); set .@i,.@i+1) {
+		setmapflag $PK_open_arena_maps$[.@i],mf_nowarp;
+		setmapflag $PK_open_arena_maps$[.@i],mf_noteleport;
+		setmapflag $PK_open_arena_maps$[.@i],mf_nosave;
+		setmapflag $PK_open_arena_maps$[.@i],mf_nobranch;
+		setmapflag $PK_open_arena_maps$[.@i],mf_pvp;
+		setmapflag $PK_open_arena_maps$[.@i],mf_nowarpto;
+	}
+	
+	for (set .@i,0; .@i < getarraysize($PK_open_duell_maps$); set .@i,.@i+1) {
+		setmapflag $PK_open_arena_maps$[.@i],mf_nowarp;
+		setmapflag $PK_open_arena_maps$[.@i],mf_noteleport;
+		setmapflag $PK_open_arena_maps$[.@i],mf_nosave;
+		setmapflag $PK_open_arena_maps$[.@i],mf_nobranch;
+		setmapflag $PK_open_arena_maps$[.@i],mf_pvp;
+		setmapflag $PK_open_arena_maps$[.@i],mf_nowarpto;
+	}
+	
+	for (set .@i,0; .@i < getarraysize($PK_open_team_maps$); set .@i,.@i+1) {
+		setmapflag $PK_open_arena_maps$[.@i],mf_nowarp;
+		setmapflag $PK_open_arena_maps$[.@i],mf_noteleport;
+		setmapflag $PK_open_arena_maps$[.@i],mf_nosave;
+		setmapflag $PK_open_arena_maps$[.@i],mf_nobranch;
+		setmapflag $PK_open_arena_maps$[.@i],mf_pvp;
+		setmapflag $PK_open_arena_maps$[.@i],mf_nowarpto;
+	}
+	
+	for (set .@i,0; .@i < getarraysize($PK_open_guild_maps$); set .@i,.@i+1) {
+		setmapflag $PK_open_arena_maps$[.@i],mf_nowarp;
+		setmapflag $PK_open_arena_maps$[.@i],mf_noteleport;
+		setmapflag $PK_open_arena_maps$[.@i],mf_nosave;
+		setmapflag $PK_open_arena_maps$[.@i],mf_nobranch;
+		setmapflag $PK_open_arena_maps$[.@i],mf_pvp;
+		setmapflag $PK_open_arena_maps$[.@i],mf_nowarpto;
+	}
+	
+	/*
+	set $PK_DB_mode$,"SQL"; //SQL / TXT (Not included)
+	*/
+	
+	end;
+	
+}
+
+
+//==============\\
+//= Visible NPCs
+//================================================================================================================================\\
+
+//==========================\\
+//> PK Setup NPC
+//==========================\\
+
+kh_vila.gat,20,44,6	script	PK Toplist Setup	874,{
+
+	set @gmlvl,60;
+	set @n$,"[^FF0000PK Toplist Setup^000000]";
+	if (!$PK_GM_lang) setarray @menu_names$[0],"^0000FF•^000000 Delete table","^0000FF•^000000 Show lists","^0000FF•^000000 Nothing","^0000FF•^000000 Yes","^0000FF•^000000 No";
+		else
+	setarray @menu_names$[0],"^0000FF•^000000 Tabelle löschen","^0000FF•^000000 Listen ansehen","^0000FF•^000000 Nix","^0000FF•^000000 Ja","^0000FF•^000000 Nein";
+	
+	if (getgmlevel() >= @gmlvl) {
+		if ($pk_table_created) {
+			mes @n$;
+			mes (!$PK_GM_lang) ? "What do you want?" : "Was willst du tun?";
+			next;
+			mes @n$;
+			switch(select("^0000FF•^000000 Killing Spree System",@menu_names$[0],@menu_names$[1],"^0000FF•^000000 Help","^0000FF•^000000 PK Arena",@menu_names$[2])) {
+				case 1:
+					if ($spree_system == 1) {
+						mes (!$PK_GM_lang) ? "The system is already ^00FF00enabled^000000" : "Das System ist schon ^00FF00eingeschaltet^000000";
+						mes (!$PK_GM_lang) ? "Do you want to deactivate it?" : "Willst du es deaktivieren?";
+						next;
+						if (select(@menu_names$[4],@menu_names$[3]) -1) {
+							set $spree_system,0;
+							mes @n$;
+							mes (!$PK_GM_lang) ? "The system was ^FF0000disabled^000000" : "Das System wurde ^FF0000ausgeschaltet^000000";
+							close;
+						} else { close; }
+					} else {
+					mes (!$PK_GM_lang) ? "The system is ^FF0000disabled^000000" : "Das System ist ^FF0000ausgeschaltet^000000";
+					mes (!$PK_GM_lang) ? "Do you want to enable it?" : "Willst du es einschalten?";
+					if (select(@menu_names$[4],@menu_names$[3]) -1) {
+						set $spree_system,1;
+						mes @n$;
+						mes (!$PK_GM_lang) ? "The system is ^00FF00enabled^000000 now" : "Das System ist nun ^00FF00eingeschaltet^000000";
+						close;
+					} else { close; }
+					}
+					
+				case 2:
+					mes (!$PK_GM_lang) ? "Do you realy want to delete the tables?" : "Willst du die Tabellen wirklich löschen?";
+					next;
+					if (select(@menu_names$[4],@menu_names$[3]) -1) {
+						mes @n$;
+						query_sql "DROP TABLE `pk_list`";
+						set $pk_table_created,0;
+						mes (!$PK_GM_lang) ? "The tables were deleted" : "Die Tabellen wurden gelöscht.";
+						close;
+					} else { close; }
+					
+				case 3:
+					next;
+					callfunc "Show Lists";
+				
+				case 4:
+					next;
+					callfunc "PK Help";
+					
+				case 5:
+					next;
+					mes @n$;
+					mes "Here you can setup the PK Arena.";
+					mes "What do you want?";
+					switch(select("^0000FF•^000000 Add PK Arena","^0000FF•^000000 Nothing")) {
+						
+						case 1:
+							next;
+							mes @n$;
+							mes "[^FF0000WARNING!^000000]";
+							mes "If you already created the '^999999pk_list'^000000 with this version, you dont need to add this.";
+							if (select("^0000FF•^000000 Cancel:^0000FF•^000000 Next") - 1) {
+								
+								query_sql "ALTER TABLE `pk_list` ADD IF NOT EXISTS `arena_kills` INT( 11 ) AFTER `b_stat_v_3` , ADD IF NOT EXISTS `arena_dies` INT( 11 ) AFTER `arena_kills` ,  ADD IF NOT EXISTS `arena_ratio` INT( 11 ) AFTER `arena_dies` ,  ADD IF NOT EXISTS `arena_team` CHAR( 255 ) AFTER `arena_ratio` ,  ADD IF NOT EXISTS `arena_team_id` INT( 11 ) AFTER `arena_team` ,  ADD IF NOT EXISTS `arena_guild` CHAR( 255 ) AFTER `arena_team_id`";
+										
+								next;
+								mes @n$;
+								mes "The data was succesfull added.";
+								close;		
+								
+							} else break;
+							
+							
+						default: break;
+						
+					}
+					close;
+				
+				default: close;
+			}
+			close;
+		} else {
+		mes @n$;
+		mes (!$PK_GM_lang) ? "There are no tables in the database." : "Es sind noch keine Tabellen in der SQL Datenbank.";
+		mes (!$PK_GM_lang) ? "Do you want to create one?" : "Willst du eine erstellen?";
+		next;
+		if (select(@menu_names$[4],@menu_names$[3]) -1) {
+			query_sql "CREATE TABLE IF NOT EXISTS `pk_list` ( `acc_id` INT( 11 ) , `char_id` INT( 11 ) , `char_name` CHAR( 255 ) , `job_id` INT( 11 ) , `killed_player` INT( 11 ) , `dies` INT( 11 ) , `killed_player-dies` INT( 11 ) , `exp` INT( 11 ) , `pk_level` INT( 11 ) , `b_stat_n_1` CHAR( 4 ) , `b_stat_n_2` CHAR( 4 ) , `b_stat_n_3` CHAR( 4 ) , `b_stat_v_1` INT( 2 ) , `b_stat_v_2` INT( 2 ) , `b_stat_v_3` INT( 2 ) , `arena_kills` INT( 11 )  ,  `arena_dies`  INT( 11 ) , `arena_ratio`  INT( 11 ) , `arena_team` CHAR( 255)  ,  arena_team_id` INT( 11)   , `arena_guild` CHAR( 255))  ";
+			set $pk_table_created,1;
+			mes @n$;
+			mes (!$PK_GM_lang) ? "The table was created." : "Die Tabelle wurde erstellt.";
+			close;
+		} else { close; }
+		}
+	} else { end; }
+
+}
+
+
+
+//==========================\\
+//> Toplist Board NPC
+//==========================\\
+
+prontera.gat,147,165,4	script	PK Toplist Board	837,{
+	
+	
+	set @n$,"[^FF0000PK Toplist Board^000000]"; 
+	mes @n$;
+	mes "Which List do you want to see?";
+	next;
+		switch(select("^0000FF•^000000 List of all:^0000FF•^000000 List of a special Jobclass:^0000FF•^000000 Show my rank(all):^0000FF•^000000 Show my rank(job):^0000FF•^000000 Show my Achievements:^0000FF•^000000 How to use it without the board?:^0000FF•^000000 Nothing")) {
+			case 1:
+				callfunc "Show All List";
+
+			case 2:
+				callfunc "Show Lists";
+			
+			case 3:
+				next;
+				
+				if(!query_sql("SELECT `char_id` FROM `pk_list` WHERE  `char_id` ='"+getcharid(0)+"'")) { mes @n$; mes "You are not in the list."; close; };
+				
+				set @current,0;
+				set @run,0;
+				set @index,0;
+				
+				callfunc "PK Del Arrays";
+				
+				query_sql("SELECT count(`char_id`) FROM `pk_list`",@anzahl);
+				
+				while(@current <= @anzahl[0]) {
+					query_sql("SELECT `char_id` FROM `pk_list` ORDER BY `killed_player-dies` DESC LIMIT 100 OFFSET "+@current, @char_id);
+					
+			
+					
+					for (set @x,0; @x < getarraysize(@char_id); set @x,@x+1) setd("@char_id_"+@run+"["+@x+"]"),@char_id[@x]; 
+				
+					for (set @i,0; @i < 100; set @i,@i+1) {
+				
+						 
+						if (@char_id[@i] == getcharid(0)) { 
+							set @index,@i; 
+							
+							deletearray @char_id[0],getarraysize(@char_id);
+							set @current,@current+100;
+							set @run,@run+1;
+							query_sql("SELECT `char_id` FROM `pk_list` ORDER BY `killed_player-dies` DESC LIMIT 100 OFFSET "+@current, @char_id);
+							for (set @x,0; @x < getarraysize(@char_id); set @x,@x+1) setd("@char_id_"+@run+"["+@x+"]"),@char_id[@x]; 
+							goto L_Found;
+						}
+									
+					}
+					
+						
+					deletearray @char_id[0],getarraysize(@char_id);
+					set @current,@current+100;
+					set @run,@run+1;
+				}
+				close;
+				
+				L_Found:
+					
+					deletearray @char_id[0],getarraysize(@char_id);
+					set @position,@current+@index+1-100;
+					
+					if (@index == 0 || @index == 100) {
+						
+						switch(@index) {
+							case 100:
+
+								setarray @char_id[0],getd("@char_id_"+@run+"[1]");
+
+								setarray @char_id[1],getd("@char_id_"+(@run-1)+"[100]"); //PlayerID
+
+								setarray @char_id[2],getd("@char_id_"+(@run-1)+"[99]");
+
+								goto L_Ausgabe;
+							
+							default:
+
+								setarray @char_id[0],getd("@char_id_"+(@run-2)+"[99]");
+
+								setarray @char_id[1],getd("@char_id_"+(@run-1)+"[0]"); //PlayerID
+
+								setarray @char_id[2],getd("@char_id_"+(@run-1)+"[1]");
+
+								goto L_Ausgabe;
+						}
+						
+					} else {
+
+						setarray @char_id[0],getd("@char_id_"+(@run-1)+"["+(@index-1)+"]");
+
+						setarray @char_id[1],getd("@char_id_"+(@run-1)+"["+@index+"]"); //PlayerID
+
+						setarray @char_id[2],getd("@char_id_"+(@run-1)+"["+(@index+1)+"]");
+
+					
+					}
+					
+					L_Ausgabe:
+					
+					query_sql ("SELECT `char_name` , `killed_player` , `job_id` , `dies` FROM `pk_list` WHERE  `char_id` ='"+@char_id[0]+"'", @char_name$, @killed_player, @job_id, @killed_player_dies);
+					query_sql ("SELECT `char_name` , `killed_player` , `job_id` , `dies` FROM `pk_list` WHERE  `char_id` ='"+@char_id[1]+"'", @char_name_1$, @killed_player_1, @job_id_1, @killed_player_dies_1);
+					query_sql ("SELECT `char_name` , `killed_player` , `job_id` , `dies` FROM `pk_list` WHERE  `char_id` ='"+@char_id[2]+"'", @char_name_2$, @killed_player_2, @job_id_2, @killed_player_dies_2);
+					
+					
+
+					mes @n$;
+					mes "You are on position ^0000FF"+@position+"^000000.";
+					mes "Name^0000FF||^000000Job^0000FF||^000000Kills^0000FF||^000000Deaths";
+					mes "^0000FF<================================>^000000";
+					if (@position != 1) mes "^FF0000"+(@position-1)+"^000000. "+@char_name$[0]+"^0000FF||^000000"+jobname(@job_id[0])+"^0000FF||^000000"+@killed_player[0]+"^0000FF||^000000"+@killed_player_dies[0];
+					
+					mes "^FF0000"+(@position)+"^000000. "+@char_name_1$[0]+"^0000FF||^000000"+jobname(@job_id_1[0])+"^0000FF||^000000"+@killed_player_1[0]+"^0000FF||^000000"+@killed_player_dies_1[0];
+					
+					if (@position != @anzahl) mes "^FF0000"+(@position+1)+"^000000. "+@char_name_2$[0]+"^0000FF||^000000"+jobname(@job_id_2[0])+"^0000FF||^000000"+@killed_player_2[0]+"^0000FF||^000000"+@killed_player_dies_2[0];
+					close;
+					
+			case 4:
+				next;
+				
+				if(!query_sql("SELECT `char_id` FROM `pk_list` WHERE  `char_id` ='"+getcharid(0)+"'")) { mes @n$; mes "You are not in the list."; close; };
+				
+				set @current,0;
+				set @run,0;
+				set @index,0;
+				
+				callfunc "PK Del Arrays";
+				
+				query_sql("SELECT count(`char_id`) FROM `pk_list`",@anzahl);
+				
+
+				
+				while(@current <= @anzahl[0]) {
+					query_sql("SELECT `char_id` FROM `pk_list` WHERE `job_id` = '"+Class+"' ORDER BY `killed_player-dies` DESC LIMIT 100 OFFSET "+@current, @char_id);
+
+					
+					for (set @x,0; @x < getarraysize(@char_id); set @x,@x+1) setd("@char_id_"+@run+"["+@x+"]"),@char_id[@x]; 
+				
+					for (set @i,0; @i < 100; set @i,@i+1) {
+						 
+						if (@char_id[@i] == getcharid(0)) { 
+							set @index,@i; 
+							deletearray @char_id[0],getarraysize(@char_id);
+							set @current,@current+100;
+							set @run,@run+1;
+							query_sql("SELECT `char_id` FROM `pk_list` WHERE `job_id` = '"+Class+"' ORDER BY `killed_player-dies` DESC LIMIT 100 OFFSET "+@current, @char_id);
+							for (set @x,0; @x < getarraysize(@char_id); set @x,@x+1) setd("@char_id_"+@run+"["+@x+"]"),@char_id[@x]; 
+							goto L_Found_job;
+						}
+									
+					}
+					
+					
+					deletearray @char_id[0],getarraysize(@char_id);
+					set @current,@current+100;
+					set @run,@run+1;
+				}
+				close;
+				
+				L_Found_job:
+					
+					deletearray @char_id[0],getarraysize(@char_id);
+					set @position,@current+@index+1-100;
+					
+					if (@index == 0 || @index == 100) {
+						
+						switch(@index) {
+							case 100:
+
+								setarray @char_id[0],getd("@char_id_"+@run+"[1]");
+
+								setarray @char_id[1],getd("@char_id_"+(@run-1)+"[100]"); //PlayerID
+
+								setarray @char_id[2],getd("@char_id_"+(@run-1)+"[99]");
+
+								goto L_Ausgabe_job;
+							
+							default:
+
+								setarray @char_id[0],getd("@char_id_"+(@run-2)+"[99]");
+
+								setarray @char_id[1],getd("@char_id_"+(@run-1)+"[0]"); //PlayerID
+
+								setarray @char_id[2],getd("@char_id_"+(@run-1)+"[1]");
+
+								goto L_Ausgabe_job;
+						}
+						
+					} else {
+
+						setarray @char_id[0],getd("@char_id_"+(@run-1)+"["+(@index-1)+"]");
+
+						setarray @char_id[1],getd("@char_id_"+(@run-1)+"["+@index+"]"); //PlayerID
+
+						setarray @char_id[2],getd("@char_id_"+(@run-1)+"["+(@index+1)+"]");
+
+					
+					}
+					
+					L_Ausgabe_job:
+					
+					query_sql ("SELECT `char_name` , `killed_player`  , `dies` FROM `pk_list` WHERE  `char_id` ='"+@char_id[0]+"'", @char_name$, @killed_player, @killed_player_dies);
+					query_sql ("SELECT `char_name` , `killed_player` , `dies` FROM `pk_list` WHERE  `char_id` ='"+@char_id[1]+"'", @char_name_1$, @killed_player_1, @killed_player_dies_1);
+					query_sql ("SELECT `char_name` , `killed_player` , `dies` FROM `pk_list` WHERE  `char_id` ='"+@char_id[2]+"'", @char_name_2$, @killed_player_2, @killed_player_dies_2);
+					
+					
+
+					mes @n$;
+					mes "You are on position ^0000FF"+@position+"^000000 in your jobclass.";
+					mes "Name^0000FF||^000000Kills^0000FF||^000000Deaths";
+					mes "^0000FF<================================>^000000";
+					if (@position != 1) mes "^FF0000"+(@position-1)+"^000000. "+@char_name$[0]+"^0000FF||^000000"+@killed_player[0]+"^0000FF||^000000"+@killed_player_dies[0];
+					
+					mes "^FF0000"+(@position)+"^000000. "+@char_name_1$[0]+"^0000FF||^000000"+@killed_player_1[0]+"^0000FF||^000000"+@killed_player_dies_1[0];
+					if (@position != @anzahl) mes "^FF0000"+(@position+1)+"^000000. "+@char_name_2$[0]+"^0000FF||^000000"+@killed_player_2[0]+"^0000FF||^000000Deaths:"+@killed_player_dies_2[0];
+					close;
+			
+			
+			case 5:
+				next;
+				mes @n$;
+				/*
+				>>= - Töte 1000 Spieler 				0	X	PK_achievement_0
+				>>= - Töte 2 Spieler auf einmal			1	X	PK_achievement_1
+				>>= - Töte 100 Spieler ohne zu sterben	2	X	PK_achievement_2
+				>>= - Töte 10 Spieler in einer Minute		3	X	PK_achievement_3
+				>>= - Erreiche PK Level 10			4	X	PK_achievement_4
+				>>= - Sterbe 1000 mal				5	X	PK_achievement_5
+				*/
+				
+				set @done,1;
+				
+				for (set @i,0; @i < 6; set @i,@i+1)  {
+				
+					if (getd("PK_achievement_"+@i)) { 
+						
+						set @done,@done+1;
+						setarray @status$[@i],"[^00FF00DONE^000000]"; 
+						
+					} else setarray @status$[@i],"[^FF0000LEFT^000000]";
+					
+				}
+				
+				mes "^0000FFA^000000chievements:";
+				mes "Kill 1000 players: "+@status$[0];
+				mes "Kill 2 players at once: "+@status$[1];
+				mes "Kill 100 players without dying: "+@status$[2];
+				mes "Kill 10 player in 1 minute: "+@status$[3];
+				mes "Reach PK Level 10: "+@status$[4];
+				mes "Die 1000 times: "+@status$[5];
+				
+				if (@done >= 5 && PK_achievement_done != 0) {
+					next;
+					mes @n$;
+					mes "WoW you finished all the achievements!";
+					mes "Here's your reward.";
+					getitem $PK_achievement_rewards[6],$PK_achievement_rewards_amount[6];
+					specialeffect2 691;
+					set PK_achievement_done,1;
+					close;
+					
+				}
+				
+				close;
+			
+			
+			case 6:
+				next;
+				mes @n$;
+				mes "Type in the whisper field:";
+				mes "'^0000FFnpc:top^000000'"; //Muss je nach NPC Name geändert werden || Need to change with the NPC name
+				mes "Then type in chat field the jobclass";
+				next;
+				mes @n$;
+				mes "It works like the same if you whisper to a player";
+				next;
+				mes @n$;
+				mes "For a list of all type:";
+				mes "'^0000FFAll^000000'";
+				mes "In the chat field";
+				close;
+				
+			default: close;
+	}
+	
+	OnInit:
+		//Chatroom message
+				
+		query_sql "SELECT `char_name` FROM `pk_list` ORDER BY `killed_player-dies` DESC LIMIT 3", .@char_name$;
+		
+		set .@i,0;
+		
+		while (.@char_name$[0] != "") {
+			 if (.@i == getarraysize(.@char_name$)) set .@i,0;
+			 query_sql "SELECT `char_name` FROM `pk_list` ORDER BY `killed_player-dies` DESC LIMIT 3", .@char_name$;
+			 waitingroom (.@i+1)+". "+.@char_name$[.@i]+"",0;
+			 sleep2 5000;
+			 set .@i,.@i+1;
+			 delwaitingroom;
+		}
+	end;
+}
+
+
+
+//==============================\\
+//= Invisible Scripts (WhsiperScripts)
+//================================================================================================================================\\
+
+//==========================\\
+//> Player Kill Event
+//==========================\\
+
+-	script	Player_Gets_killed	-1,{
+	
+	//Wenn ein Spieler einen anderen tötet || If a player kills another player
+	OnPCKillEvent:
+	
+	if ($PK_map_limitation) {
+		callfunc "PK Limitation";
+	}
+	
+	if (getgmlevel() < 10 || $PK_GM_kill == 1) {
+		
+		if (getcharid(3) == killerrid) end; //Wenn man sich selbst tötet passiert nichts || If you kill yourself, nothing happens
+		
+		callfunc "PK Get Info";
+		
+		set @killed_player[0],@killed_player[0]+1;
+		set @killed_player_dies,@killed_player[0]-@dies[0];
+		set spree,($spree_system) ? spree+1 : spree+0;
+		dispbottom "[PK] "+@killed_player[0]+" player(s) killed";
+		
+		if ($kill_start) {
+			
+			set event_killed,event_killed+1;
+			
+			if (event_killed >= $PK_kill_status) {
+				set $PK_kill_status,event_killed;
+				set $PK_kill_first$,strcharinfo(0);
+			}
+			
+			if (event_killed >= $PK_kill_limit) {
+			
+				set $kill_start,0;
+				announce strcharinfo(0)+" has won the event!",bc_red|bc_all;
+				set event_killed,0;
+		
+			} else dispbottom "[PK Kill Event] You need to kill "+($PK_kill_limit-event_killed)+" player(s) to win.";
+				
+		}
+		
+		if ($PK_achievement_on) {
+			//Achievement: kill 1000 Player
+			//-------------------------------------------------------------------------------------------------------------
+			if (@killed_player[0] >= 1000 && PK_achievement_0 == 0) {
+				specialeffect2 225;
+				dispbottom "[PK] WoW! You've killed 1000 players!";
+				getitem $PK_achievement_rewards[0],$PK_achievement_rewards_amount[0];
+				set PK_achievement_0,1;
+			}
+			
+			//Achievement: kill 2 Players at once
+			//-------------------------------------------------------------------------------------------------------------
+			if (!PK_achievement_1) {
+				specialeffect2 225;
+				dispbottom "[PK] WoW! You've killed 2 players at once!";
+				getitem $PK_achievement_rewards[1],$PK_achievement_rewards_amount[1];
+				set PK_achievement_1,1;
+			}
+			
+			//Achievement: kill 100 Players without dieing
+			//-------------------------------------------------------------------------------------------------------------
+			if (!PK_achievement_2) {
+				set pk_a_killed,pk_a_killed+1;
+				if (pk_a_killed >= 100) {
+					specialeffect2 225;
+					dispbottom "[PK] WoW! You've killed 100 players without dying!";
+					getitem $PK_achievement_rewards[2],$PK_achievement_rewards_amount[2];
+					set PK_achievement_2,1;
+				}
+			}
+			
+			//Achievement: kill 10 players in 1 minute
+			//-------------------------------------------------------------------------------------------------------------
+			if (!PK_achievement_3) {
+				set @pk_a_10_killed,@pk_a_10_killed+1;
+				if (@pk_a_10_killed >= 10) {
+					specialeffect2 225;
+					dispbottom "[PK] WoW! You've killed 10 players in 1 minute!";
+					getitem $PK_achievement_rewards[3],$PK_achievement_rewards_amount[3];
+					set PK_achievement_3,1;
+				}
+			}
+		}
+		
+		//=======================\\
+		//= KillingSpree System =\\
+		//=======================\\
+		getmapxy @mapname$,@mapx,@mapy,0;
+			if ($spree_system == 1) {
+			switch(spree) {
+				case 20:
+					announce strcharinfo(0)+" has a KILLING SPREE on "+@mapname$,bc_red|bc_all;
+					break;
+				case 40:
+					announce strcharinfo(0)+" is KILLING 40 players on "+@mapname$,bc_red|bc_all;
+					break;
+				case 60:
+					announce strcharinfo(0)+" kills everything what (s)he see on "+@mapname$,bc_red|bc_all;
+					break;
+				case 80:
+					announce strcharinfo(0)+" is KILLING 80 player on "+@mapname$,bc_red|bc_all;
+					break;
+				case 100:
+					announce strcharinfo(0)+" is the GOD of PK on "+@mapname$,bc_red|bc_all;
+					break;
+			}
+		}
+		//======================\\
+
+		
+	
+	
+	//Eintragen der Kills in die SQL DB || Entry the kills in the SQL DB
+	if (!@char_id[0]) 
+		query_sql "INSERT INTO `pk_list` ( `acc_id` , `char_id` , `char_name` , `job_id` , `killed_player` , `exp` , `pk_level` , `killed_player-dies`  ) VALUES ('"+getcharid(3)+"' , '"+getcharid(0)+"' , '"+strcharinfo(0)+"' , '"+Class+"' , '"+@killed_player[0]+"' , '0' , '1' , '"+@killed_player_dies+"')";
+	 else 
+		query_sql "UPDATE `pk_list` SET `killed_player` = '"+@killed_player[0]+"' , `killed_player-dies` = '"+@killed_player_dies+"' WHERE `char_id` = '"+getcharid(0)+"'";
+	
+		//EXP 
+		query_sql "SELECT `base_level` FROM `char` WHERE `name` = '"+rid2name(killedrid)+"' ", @pked_lvl; //Level des getöteten Spieler auslesen  || Getting the BaseLevel of the killed player
+				
+	if (@pked_lvl[0] >= $PK_min_lvl) {
+		set @pk_exp[0],@pk_exp[0] + (@pked_lvl[0] / rand(5,10) * $PK_exp_multi);
+		set @exp_left,$PK_level_exp[@pk_level[0]+1]-@pk_exp[0];
+		dispbottom "[PK] Your PK Exp is now: "+@pk_exp[0]; 
+		query_sql "UPDATE `pk_list` SET `exp` = '"+@pk_exp[0]+"' WHERE `char_id` = '"+getcharid(0)+"'";
+		if (@pk_level[0] < 10) {
+			dispbottom @exp_left+" Exp left till next level.";
+			callfunc "PK Level";
+		}
+	} else dispbottom "[PK] The Player you've killed has a too low level to get any EXP.";
+	
+	if ($PK_achievement_on) {
+		if (!PK_achievement_1 && @player_killed == 0) {
+			set @player_killed,1;
+			sleep2 1000;
+			set @player_killed,0;
+		}	
+		
+		if (!PK_achievement_3 && @pk_a_10_killed == 0) {
+			sleep2 60000;
+			set @pk_a_10_killed,0;
+		}	
+	}
+	end;
+	
+
+	} else { end; }
+}
+
+
+
+//==========================\\
+//> Mob Kill Event
+//==========================\\
+
+-	script	Mob_Gets_killed	-1,{
+
+OnNPCKillEvent:
+
+	if ($PK_mob_exp) {
+		callfunc "PK Get Info";
+		set @pk_exp[0],@pk_exp[0] + (strmobinfo(3,killedrid) + strmobinfo(4,killedrid)) / rand(100,1000) * $PK_exp_multi;
+		set @exp_left,$PK_level_exp[@pk_level[0]+1]-@pk_exp[0];
+		if (!@pk_exp[0]) dispbottom "[PK MobKill] This mob is too weak to get any EXP from it..."; dispbottom "[PK MobKill] Your PK Exp is now: "+@pk_exp[0]; 
+		query_sql "UPDATE `pk_list` SET `exp` = '"+@pk_exp[0]+"' WHERE `char_id` = '"+getcharid(0)+"'";
+		if (@pk_level[0] < 10) {
+			dispbottom @exp_left+" Exp left till next level.";
+			callfunc "PK Level";
+		}
+	}
+
+end;
+
+}
+
+
+
+//==========================\\
+//> Die Event
+//==========================\\
+
+-	script	Player_dies	-1,{
+
+	//Wenn ein Spieler selber stirbt || If a player dies
+	OnPCDieEvent:
+	
+	if (killerrid < 2000000) end;
+	
+	if ($PK_map_limitation) {
+		callfunc "PK Limitation";
+	}
+	
+	callfunc "PK Get Info";
+	
+	if ((getgmlevel() < 10) && ($spree_system == 1)) set spree,0; //Resetten des Killing Sprees || Resetting the killing spree 
+	set @dies[0],@dies[0]+1;
+	set @killed_player_dies,@killed_player[0]-@dies[0];
+	
+	if ($PK_achievement_on) {
+		//Achievement: die 1000 times
+		//-------------------------------------------------------------------------------------------------------------
+		if (@dies[0] >= 1000 && PK_achievement_5 == 0) {
+			specialeffect2 225;
+			dispbottom "[PK] WoW! You died 1000 times!";
+			getitem $PK_achievement_rewards[5],$PK_achievement_rewards_amount[5];
+			set PK_achievement_5,1;
+		}
+			
+		set pk_a_killed,0; //Achievement kill 100 players without dieing
+	}
+	
+	if (!@char_id[0]) 
+	//Eintragung der Anzahl der Tode || Entry of the amount of Deaths
+			query_sql "INSERT INTO `pk_list` ( `acc_id` , `char_id` , `char_name` , `job_id` , `dies` , `exp` , `pk_level` , `killed_player-dies` ) VALUES ('"+getcharid(3)+"' , '"+getcharid(0)+"' , '"+strcharinfo(0)+"' , '"+Class+"' , '"+@dies[0]+"' , '0' , '1' , '"+@killed_player_dies+"')";
+	else
+	query_sql "UPDATE `pk_list` SET `dies` = '"+@dies[0]+"' , `killed_player-dies` = '"+@killed_player_dies+"' WHERE `char_id` = '"+getcharid(0)+"'";
+	
+	//EXP Verlust bei Tot || Loses EXP if you die
+	if ($PK_exp_verlust) {
+		set @pk_verlust_summe,@pk_exp[0]-@pk_level[0]*BaseLevel/rand(5,10);
+		if (@pk_verlust_summe < 0) set @pk_verlust_summe,0;
+		if (@pk_verlust_summe) dispbottom "[PK] You losed PK EXP("+@pk_verlust_summe+" left)";
+		query_sql "UPDATE `pk_list` SET `exp` = '"+@pk_verlust_summe+"' WHERE `char_id` = '"+getcharid(0)+"'";
+		callfunc "PK Level";
+	}
+	end;
+	
+}
+
+
+
+//==========================\\
+//> Effect Script to view effects
+//==========================\\
+
+-	script	effect	-1,{
+
+
+
+	OnWhisperGlobal:
+	
+	if (getgmlevel() < 99) end;
+	
+	if (@whispervar0$ == "help") {
+		dispbottom "[EFFECT] usage: effect#<delay>{#<start effect id>} (delay in ms, may ID= 700)";
+		dispbottom "[EFFECT] While the script is running type anything to stop the script.";
+	}
+	
+	if (@whispervar0$ == "effect" && @whispervar1$ != "") {
+		
+		if (atoi(@whispervar1$) < 500) { dispbottom "[EFFECT] Maybe you'll crash your client with that speed.."; end; }
+		
+		if (atoi(@whispervar2$) > 700) { dispbottom "[EFFECT] The Effect-Start-ID is to big."; end; }
+		
+		set @delay, atoi(@whispervar1$);
+		
+		if (atoi(@whispervar1$) == 0) set @i,1; else set @i,atoi(@whispervar2$);
+		
+		while(@whispervar0$ == "effect" && @i < 700) {
+			
+			set @started,1;
+			set @i, @i + (@i == 19 || @i == 243); //invalid effect ids;
+			specialeffect2 @i;
+			dispbottom "EffectID: "+@i;
+			sleep2 @delay;
+			set @i,@i+1;
+			
+		}
+	} else if (@started) { dispbottom "STOPPED"; set @started,0; }  
+	
+	if (@whispervar0$ == "reset" && @i > 1) { set @i,1; dispbottom "EffectID has been resetted"; }
+
+	end;
+
+}
+
+
+
+//=======================================================\\
+//= Small Admin Controll for your setting the exp and pk level 
+//= Commands: exp#<value> , level#<value> , kills#<value>, dies#value
+//========================================================\\
+
+-	script	pk_admin	-1,{
+
+	OnWhisperGlobal:
+	
+	if (getgmlevel() < 99) end;
+	
+	if (@whispervar0$ == "level" && @whispervar1$ != "") {
+		
+		if (atoi(@whispervar1$) > 10) { dispbottom "The entered level is to high!"; end; }
+		
+		query_sql "UPDATE `pk_list` SET `pk_level` = '"+atoi(@whispervar1$)+"' WHERE `char_id` = '"+getcharid(0)+"'";
+		
+		dispbottom "[PK ADMIN] The level have been changed to "+atoi(@whispervar1$);
+			
+	} else if (@whispervar0$ == "exp" && @whispervar1$ != "") {
+	
+		query_sql "UPDATE `pk_list` SET `exp` = '"+atoi(@whispervar1$)+"' WHERE `char_id` = '"+getcharid(0)+"'";
+		
+		dispbottom "[PK ADMIN] The EXP have been changed to "+atoi(@whispervar1$);
+		
+	} else if (@whispervar0$ == "kills" && @whispervar1$ != "") {	
+	
+		query_sql "UPDATE `pk_list` SET `killed_player` = '"+atoi(@whispervar1$)+"' WHERE `char_id` = '"+getcharid(0)+"'";
+		
+		dispbottom "[[PK ADMIN] The kills have been changed to "+atoi(@whispervar1$);
+		
+	} else if (@whispervar0$ == "dies" && @whispervar1$ != "") {	
+	
+		query_sql "UPDATE `pk_list` SET `dies` = '"+atoi(@whispervar1$)+"' WHERE `char_id` = '"+getcharid(0)+"'";
+		
+		dispbottom "[PK ADMIN] The dies have been changed to "+atoi(@whispervar1$);
+	
+	} else dispbottom "[PK ADMIN] commands: level#<value>, exp#<value>, kills#<value>";
+	
+	end;
+}
+
+
+
+//====================\\
+//> TopLists
+//====================\\
+
+-	script	top	-,{
+
+	//Ausgabe der Toplisten bei anwhispern des NPCs (usage: npc:TopLists) -> Name kann beliebig angepasst werden || Output of the toplists by whispering the NPC  (usage: npc:TopLists)  -> can be changed
+	OnWhisperGlobal:
+
+	//Löschung der Arrays für Aktualisierung || Deleting the arrays for actualisation
+	deletearray @char_name$, getarraysize(@char_name$);
+	deletearray @killed_player, getarraysize(@killed_player);
+	deletearray @job_id, getarraysize(@job_id);
+	deletearray @dies, getarraysize(@dies);
+
+	//Überprüfung des eingegeben Wortes + Ausgabe der Top 10 || Checking the entered word + Outpot of the toplists
+	if (@whispervar0$ == "all" || @whispervar0$ == "All") {
+		query_sql "SELECT `char_name` , `killed_player` , `job_id` , `dies` FROM `pk_list` ORDER BY `killed_player-dies` DESC LIMIT "+($PK_list_amount*10), @char_name$, @killed_player, @job_id, @killed_player_dies;
+		
+		
+
+		
+		if(@char_name$[0] != ""){
+			set @add,0;
+			dispbottom "[PK] Heres the top of all PKers";
+			dispbottom "<==========================>";
+			for ( set @x,0; @x < $PK_list_amount ; set @x, @x+1 ){
+				for ( set @i,0; @i < getarraysize(@char_name$) ; set @i, @i+1 ){
+					if ((@i+@add) == getarraysize(@char_name$)) break;
+					dispbottom (@i + 1 + @add)+". "+@char_name$[@i + @add]+" || Job: "+jobname(@job_id[@i + @add])+" || Kills: "+@killed_player[@i + @add]+" || Deaths: "+@killed_player_dies[@i + @add];
+				}
+				set @add,@add+10;
+			}
+			dispbottom "<==========================>";
+			end;
+		} else { dispbottom "[PK] Nobody is on the list"; end; }
+	}
+
+	//Setzen der existierenden JobIDs (kann beliebig erweitert werden: max 128) || Setting the JobIDs
+	setarray @job_id_all[0],0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,23,4001,400,4003,4004,4005,4006,4007,4008,4009,4010,4011,4012,4013,4014,4015,4016,4017,4018,4019,4020,4021,4046,4047,4049,24,25,4023,4024,4025,4026,4027,4028,4029,4030,4031,4032,4033,4034,4035,4036,4037,4038,4039,4040,4041,4042,4043,4045;
+
+	//Kontrollnummer || Controll number
+	set @number,1000;
+
+	deletearray @job_name$, getarraysize(@job_name$);
+
+	//Setzen der Jobnamen aus den JobIDs || Setting the jobnames out of the JobIDs
+	for(set @i,0; @i < getarraysize(@job_id_all); set @i, @i + 1) set @job_name$[@i],jobname(@job_id_all[@i]);
+
+	//Suche nach dem Jobnamen || Searching for the jobname
+	for(set @i,0; @i < getarraysize(@job_name$); set @i, @i + 1) {
+		if (@job_name$[@i] == @whispervar0$) {
+			set @number,@i;
+			break;
+		}
+	}
+
+	//Error bei Falscheingabe || Error caused by a wrong entry
+	if (@number == 1000) {
+		dispbottom "[PK] ERROR!";
+		dispbottom "[PK] The correct usage is:";
+		dispbottom "All";
+		for(set @i,0; @i < getarraysize(@job_name$); set @i, @i + 1) dispbottom @job_name$[@i];
+		dispbottom "[PK] TAKE CARE OF THE CORRECT WRITING!";
+		end;
+	}
+
+	//Auslesen der Daten aus der SQL DB || Reading data from the SQL DB
+	query_sql "SELECT `char_name` , `killed_player` , `dies` FROM `pk_list` WHERE `job_id` = '"+@job_id_all[@number]+"' ORDER BY `killed_player-dies` DESC LIMIT "+($PK_list_amount*10), @char_name$, @killed_player, @dies;
+
+	//Ausgabe der Top 10 || Output of top 10
+	if(@char_name$[0] != ""){
+		set @add,0;
+		dispbottom "[PK] Here are the Top of all "+jobname(@job_id_all[@number])+"'s";
+		dispbottom "<==========================>";
+		for ( set @x,0; @x < $PK_list_amount ; set @x, @x+1 ){
+			for ( set @i,0; @i < getarraysize(@char_name$) ; set @i, @i+1 ){
+				if ((@i+@add) == getarraysize(@char_name$)) break;
+				dispbottom (@i + 1 + @add)+". "+@char_name$[@i + @add]+" || Kills: "+@killed_player[@i + @add]+" || Deaths: "+@dies[@i + @add];
+			}
+		set @add,@add+10;
+		}
+		dispbottom "<==========================>";
+		end;
+	} else { dispbottom "[PK] Nobody is on the list"; end; }
+
+}
+
+
+
+//==========================\\
+//> Bonus script
+//==========================\\
+
+-	script	PK_Bonus	-1,{
+	
+		
+	OnPCLoadMapEvent:
+		
+		callfunc "PK Get Info";
+		
+		if (@pk_level[0] == 10) specialeffect2 687;
+		
+		if (PK_achievement_done) specialeffect2 691;
+		
+	end;
+	
+	
+	OnPCLoginEvent:
+		
+		callfunc "PK Get Info";
+		
+		if (@pk_level[0] == 10) specialeffect2 687;
+		
+		if (@pk_level[0] > 1) {
+			
+			switch($PK_bonis_vergabe) {
+				
+				case 1:
+					
+					callfunc "PK GetStatName",@b_stat_n_1$[0],@b_stat_v_1[0];
+					break;
+									
+				case 2:
+					
+					callfunc "PK GetStatName",@b_stat_n_1$[0],@b_stat_v_1[0];
+					callfunc "PK GetStatName",@b_stat_n_2$[0],@b_stat_v_2[0];
+					break;
+				
+				case 3:
+					
+					callfunc "PK GetStatName",@b_stat_n_1$[0],@b_stat_v_1[0];
+					callfunc "PK GetStatName",@b_stat_n_2$[0],@b_stat_v_2[0];
+					callfunc "PK GetStatName",@b_stat_n_3$[0],@b_stat_v_3[0];
+					break;
+				
+				default: end;
+				
+			
+			}
+		
+			
+		}
+
+		
+		
+	end;
+
+	
+	
+	/*
+	
+	BONIS(3):
+	- Baby / Super Baby / Novice / Super Novice: 					Int / Dex / Agi
+	- Baby Thief/Baby Assa/Thief / Assassin / Sinx:					Str / Agi / Luk
+	- Baby Swordman / Baby Knight / Swordman / Knight / Lordknight: 		Str / Vit / Dex
+	- Baby Bard / Baby Dancer / Bard / Dancer / Clown / Gypsy: 			Agi/ Dex / Str
+	- Baby Mage / Baby Wizard / Mage / Wizzard / High Wizz: 			Int / Dex / Vit
+	- Baby Acolyte / Baby Monk / Acolyte / Monk / Champion: 			Str / Dex / Int
+	- Baby Rouge /Rouge / Stalker:							 Agi / Str / Dex
+	- Baby Sage / Sage / Prof: 								Int / Dex / Agi
+	- Baby Archer / Archer / Hunter / Sniper: 						Agi / Dex / Luk
+	- Baby Crusader / Crusader / Paladin: 						Str / Vit / Int
+	- Baby Alche / Alche / Creator: 							Int / Str / Dex
+	- Baby Merchant / Merchant / Blacksmith / WhiteSmith:			 Dex / Str / Luk
+	- Baby Priest / Priest / HighPriest: 							Int / Dex / Luk
+	- Teak: 											Str / Agi / Dex
+	- Star Gladiator: 										Str / Agi / Dex
+	- Soul Linker: 										Int / Dex / Vit
+	- Gunslinger: 										Agi / Dex / Luk
+	- Ninja: 											Int / Str / Agi 
+	
+	1 = STR
+	2 = AGI
+	3= VIT
+	4 = DEX
+	5 = INT
+	6 = LUK
+	
+	
+	*/ 
+}
+
+
+
+//====================================\\
+//= PK Exp Event
+//= usage: exp#<time>#<multi>
+//= <time> in minutes
+//= <multi> is the multiplicator for the PK EXP
+//= to stop: exp#stop
+//= to see the status: exp#status
+//=====================================\\
+//= PK Killing Event
+//= usage: kill#start#<limit>
+//= <limit> is the amount of the players that another player needs to kill
+//= to stop: kill#stop
+//= to see the status: kill#status
+//================================================================================================================================\\
+
+-	script	event	-1,{
+
+
+OnWhisperGlobal:
+	
+	if (getgmlevel() < 99) end;
+	
+	if(@whispervar0$ == "exp" && @whispervar1$ != "" && @whispervar2$ != "") {
+
+		if (!.start) {
+			
+			set .exp_start,1;
+			set .exp_minutes,axtoi(@whispervar1$);
+			set $PK_exp_multi,axtoi(@whispervar2$);
+			
+			announce "The PK EXP event has started!!",bc_red|bc_all;
+			announce "You'll get "+$PK_exp_multi+"x EXP.",bc_red|bc_all;
+			
+			while(.exp_minutes_gone < .exp_minutes && .exp_start == 1) {
+				
+				sleep2 60000; 
+				set .exp_minutes_gone,.exp_minutes_gone+1;
+			
+			}
+			
+			set .exp_start,0;
+			set .exp_minutes,0;
+			set .exp_minutes_gone,0;
+			set $PK_exp_multi,1;
+			
+			announce "The PK EXP event has ended!!",bc_red|bc_all;
+			
+			
+		} else {
+		
+			dispbottom "[PK EXP Event] The event is already running. You can stop it with 'exp#stop'.";
+		
+		}
+
+	} else if (@whispervar0$ == "exp" && @whispervar1$ == "stop") {
+
+		
+		if (.exp_start) {
+		
+			set .exp_start,0;
+			set .exp_minutes,0;
+			set .exp_minutes_gone,0;
+			set $PK_exp_multi,1;
+			dispbottom "[PK EXP Event] The Event has been canceled.";
+	
+		} else {
+		
+			dispbottom "[PK EXP Event] The event isn't running. You can start it with 'exp#<time>#<multi>'";
+		
+		}
+		
+
+	} else if (@whispervar0$ == "exp" && @whispervar1$ == "status") {
+
+		if (.exp_start) {
+		
+			dispbottom "[PK EXP Event] time past: "+.exp_minutes_gone+ "min(s)";
+			dispbottom "[PK EXP Event] time left: "+(.exp_minutes-.exp_minutes_gone)+"min(s)";
+			dispbottom "[PK EXP Event] multiplicator: "+$PK_exp_multi+"x";
+		
+		} else {
+		
+			dispbottom "[PK EXP Event] The event isn't running. You can start it with 'event#<time>#<multi>'";
+		
+		}
+	
+	} else if (@whispervar0$ == "kill" && @whispervar1$ == "start" && @whispervar2$ != "") {
+
+		if (!$kill_start) {
+			
+			set $kill_start,1;
+			set $PK_kill_limit,axtoi(@whispervar2$);
+			
+			announce "The PK Killing event has started!!",bc_red|bc_all;
+			announce "You'll need to kill "+$PK_kill_limit+" players.",bc_red|bc_all;
+			
+			while($kill_start) {
+				
+				sleep2 60000; 
+				set .kill_minutes_gone,.kill_minutes_gone+1;
+			
+			}
+			
+			announce "The PK Killing event has ended!!",bc_red|bc_all;
+
+			set $PK_kill_status,0;
+			set $PK_kill_first$,"";
+			set $kill_start,0;
+			set .kill_minutes_gone,0;
+			set $PK_kill_limit,1;
+			
+		} else dispbottom "[PK Kill Event] The PK Killing event is already running. You can see the status with 'kill#status'.";
+		
+	} else if (@whispervar0$ == "kill" && @whispervar1$ == "status") {
+	
+		if ($kill_start) {
+		
+			dispbottom "[PK Kill Event] time past: "+.kill_minutes_gone+ "min(s)";
+			dispbottom "[PK Kill Event] limit: "+$PK_kill_limit+" player(s)";
+			dispbottom "[PK Kill Event] first: "+$PK_kill_first$+ " with "+$PK_kill_status+" kill(s)";
+		
+		} else {
+		
+			dispbottom "[PK Kill Event] The event isn't running. You can start it with 'kill#start#<limit>'";
+		
+		}
+		
+	} else if (@whispervar0$ == "kill" && @whispervar1$ == "stop") {
+
+		if ($kill_start) {
+			
+			set $PK_kill_status,0;
+			set $PK_kill_first$,"";
+			set $kill_start,0;
+			set .kill_minutes_gone,0;
+			set $PK_kill_limit,0;
+			dispbottom "[PK Kill Event] The Event has been canceled.";
+			announce "The PK Killing event has ended!!",bc_red|bc_all;
+			
+		
+		} else {
+		
+			dispbottom "[PK EXP Event] The event isn't running. You can start it with 'exp#<time>#<multi>'";
+		
+		}
+		
+	} else {
+		
+		dispbottom "[PK EXP Event] usage: 'exp#<time>#<multi>' to start the event.";
+		dispbottom "[PK EXP Event] <time> in minutes";
+		dispbottom "[PK EXP Event] usage: 'exp#stop' to stop the event.";
+		dispbottom "[PK EXP Event] usage: 'exp#status' to see the status of the event.";
+		dispbottom "------------------------------------------------------------------------------";
+		dispbottom "[PK Kill Event] usage: 'kill#start#<limit>' to start the event.";
+		dispbottom "[PK Kill Event] <limit> is the amount of players that another player needs to kill.";
+		dispbottom "[PK Kill Event] usage: 'kill#status' to see the status of the event.";
+		dispbottom "[PK Kill Event] usage: 'kill#stop' to stop the event.";
+
+	}
+	end;
+
+}
+
+
+
+//==========================\\
+//> Helping NPC
+//==========================\\
+
+-	script	pk_help	-1,{
+
+OnWhisperGlobal:
+	
+	callfunc "PK Help"; 
+
+}
+
+
+
+//==========================\\
+//> PK Arena
+//==========================\\
+
+-	script	pk_arena	-1,{
+
+
+
+}
+
+//===========\\
+//= Functions
+//================================================================================================================================\\
+
+//==========================\\
+//> Show Lists Function (Job)
+//==========================\\
+
+function	script	Show Lists	{
+	
+	set @n$,"[^FF0000PK Toplists^000000]";
+	
+	//Setzen der existierenden JobIDs (kann beliebig erweitert werden: max 128) || Setting the JobIDs
+	setarray @job_id_all[0],0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,23,4001,400,4003,4004,4005,4006,4007,4008,4009,4010,4011,4012,4013,4014,4015,4016,4017,4018,4019,4020,4021,4046,4047,4049,24,25,4023,4024,4025,4026,4027,4028,4029,4030,4031,4032,4033,4034,4035,4036,4037,4038,4039,4040,4041,4042,4043,4045;
+	
+	//Löschung der Arrays für Aktualisierung || Deleting the arrays for actualisation
+	deletearray @menu$, getarraysize(@menu$);
+	deletearray @char_name$, getarraysize(@char_name$);
+	deletearray @killed_player, getarraysize(@killed_player);
+	
+	
+	mes @n$;
+	mes "Choose the Job.";
+	
+	//Generierung des Menüs aus den JobIDs (@job_id_all) || Generating the Menus out of the JobIDs
+	for( set @i,0; @i < getarraysize(@job_id_all); set @i, @i + 1) set @menu$[@i],"^0000FF•^000000 "+jobname(@job_id_all[@i])+"";
+		set @menu_d$,"";
+	for (set @i,0; @i <= getarraysize(@menu$); set @i, @i +1 ) set @menu_d$, @menu_d$ +":"+ @menu$[@i];
+		set @menu_d$,@menu_d$ +":^0000FF•^000000 Close";
+		set @m, select ( @menu_d$ )-2;
+		
+	
+	//Auslesen der Daten aus der SQL DB || Reading data from the SQL DB
+	query_sql "SELECT `char_name` , `killed_player` , `dies` FROM `pk_list` WHERE `job_id` = '"+@job_id_all[@m]+"'ORDER BY `killed_player-dies` DESC LIMIT "+($PK_list_amount*10), @char_name$, @killed_player, @dies;
+	
+	
+	//Ausgabe der Topliste eines Jobs || Output of the toplist of a job
+	if(@char_name$[0] != ""){
+			mes "Here are the Top of all "+jobname(@job_id_all[@m])+"'s";
+			mes "Name^0000FF||^000000Kills^0000FF||^000000Deaths";
+		
+		set @sites,(getarraysize(@char_name$)%10) ? getarraysize(@char_name$)/10+1 : getarraysize(@char_name$)/10;		
+		
+		set @add,0;
+		
+		
+		for ( set @x,0; @x < @sites; set @x, @x+1 ){
+			mes "^0000FF<==========================>^000000";
+			for ( set @i,0; @i < 10 ; set @i, @i+1 ){
+				if ((@i+@add) == getarraysize(@char_name$)) break;
+				mes (@i + 1 + @add)+"^0000FF.^000000 "+@char_name$[@i + @add]+"^0000FF||^000000"+@killed_player[@i + @add]+"^0000FF||^000000"+@dies[@i + @add];
+			}
+			set @add,@add+10;
+			mes "^0000FF<==========================>^000000";
+			next;
+		}
+			
+			close;
+	} else { mes "Nobody is on the list"; close; }
+}
+
+
+
+//==========================\\
+//> Show List Function (All)
+//==========================\\
+
+function	script	Show All List	{
+	
+	//Löschung der Arrays für Aktualisierung || Deleting the arrays for actualisation
+	deletearray @char_name$, getarraysize(@char_name$);
+	deletearray @killed_player, getarraysize(@killed_player);
+	deletearray @job_id, getarraysize(@job_id);
+	
+	//Auslesen der Daten aus der SQL DB || Reading data from the SQL DB
+	query_sql ("SELECT `char_name` ,  `job_id` , `killed_player` , `dies` FROM `pk_list` ORDER BY `killed_player-dies` DESC LIMIT "+($PK_list_amount*10)), @char_name$, @job_id, @killed_player, @dies;
+	
+	//Ausgabe der Topliste aller || Output of the toplist of all
+	if(@char_name$[0] != ""){
+			mes " Heres the top of all PKers";
+			mes "Name^0000FF||^000000Job^0000FF||^000000Kills^0000FF||^000000Deaths";
+			
+			set @sites,(getarraysize(@char_name$)%10) ? getarraysize(@char_name$)/10+1 : getarraysize(@char_name$)/10;
+			
+			set @add,0;
+			
+		for ( set @x,0; @x < @sites; set @x, @x+1 ){
+			mes "^0000FF<==========================>^000000";
+			for ( set @i,0; @i < 10 ; set @i, @i+1 ){
+				if ((@i+@add) == getarraysize(@char_name$)) break;
+				mes (@i + 1 + @add)+"^0000FF.^000000 "+@char_name$[@i + @add]+"^0000FF||^000000"+jobname(@job_id[@i + @add])+"^0000FF||^000000"+@killed_player[@i + @add]+"^0000FF||^000000"+@dies[@i + @add];
+			}
+			set @add,@add+10;
+			mes "^0000FF<==========================>^000000";
+		next;
+		}
+			
+			close;
+	} else { mes "Nobody is on the list"; mes @char_name$[0]; close; }
+
+
+}
+
+
+
+//==========================\\
+//> Pk Level Raise Function
+//==========================\\
+
+function	script	PK Level	{
+	
+	callfunc "PK Get Info";	
+
+	if (@pk_exp[0] >= $PK_level_exp[@pk_level[0]]) {
+		
+		set @pk_level[0],@pk_level[0]+1;
+		
+		if (@pk_level[0] == 10 && PK_achievement_4 == 0 && $PK_achievement_on == 1) { 
+			
+			//Achievement Reach PK level 10
+			specialeffect2 225;
+			dispbottom "[PK] WoW! You reached PK Level 10!"; 
+			getitem $PK_achievement_rewards[4],$PK_achievement_rewards_amount[4]; 
+			set PK_achievement_4,1; 
+			
+		} 
+		
+		query_sql "UPDATE `pk_list` SET `pk_level` = '"+@pk_level[0]+"' WHERE `char_id` = '"+getcharid(0)+"'";
+		specialeffect2 8;
+		dispbottom "Congratulations! Your PK level raised to level "+@pk_level[0]+".";
+		if ($PK_bonis_vergabe) callfunc "PK Stats";
+		
+	} else if (pk_exp < $PK_level_exp[@pk_level[0]-1] && pk_level != 1) {
+		
+		if (@pk_level[0] > 1) set @pk_level[0],@pk_level[0]-1;
+		
+		query_sql "UPDATE `pk_list` SET `pk_level` = '"+@pk_level[0]+"' WHERE `char_id` = '"+getcharid(0)+"'";
+		specialeffect2 7;
+		dispbottom "Oh noooo! Your PK decreased to level "+@pk_level[0]+".";
+		
+		if ($PK_bonis_vergabe) callfunc "PK Stats";
+	}
+	
+	
+	
+}
+
+
+
+//==========================\\
+//> Stat Allocation Function
+//==========================\\
+
+function	script	PK Stats	{
+	
+	callfunc "PK Get Info";
+	
+	if (@pk_level[0] > 1) {
+		
+		query_sql "SELECT `stat_1` , `stat_2` , `stat_3` FROM `pk_stats` WHERE `jobid_1` OR `jobid_2` OR `jobid_3`OR `jobid_4`OR `jobid_5` OR `jobid_6` = '"+Class+"' ", @stat_1, @stat_2, @stat_3;
+		
+	
+		for ( set @i,1; @i < 4 ; set @i, @i+1 ){
+		
+			switch(getd("@stat_"+@i+"[0]")) {
+			
+				case 1:
+					setd "@b_stat_n_"+@i+"$","bStr";
+					break;
+				case 2:
+					setd "@b_stat_n_"+@i+"$","bAgi";
+					break;
+				case 3:
+					setd "@b_stat_n_"+@i+"$","bVit";
+					break;
+				case 4:
+					setd "@b_stat_n_"+@i+"$","bDex";
+					break;
+				case 5:
+					setd "@b_stat_n_"+@i+"$","bInt";
+					break;
+				case 6:
+					setd "@b_stat_n_"+@i+"$","bLuk";
+					break;
+			}
+		}
+		
+		switch($PK_bonis_vergabe) {
+			
+			case 1:
+				
+				set @b_stat_v_1,rand($PK_min_stats[@pk_level[0]],$PK_max_stats[@pk_level[0]]);
+				set @b_stat_n_1_tmp$,getd("@b_stat_n_"+rand(1,3)+"$");
+				query_sql "UPDATE `pk_list` SET `b_stat_n_1` = '"+@b_stat_n_1_tmp$+"' , `b_stat_v_1` = '"+@b_stat_v_1+"' WHERE `char_id` = '"+getcharid(0)+"' ";
+				callfunc "PK GetStatName",@b_stat_n_1_tmp$,@b_stat_v_1;
+				break;
+				
+			case 2:
+				
+				set @b_stat_v_1,rand($PK_min_stats[@pk_level[0]],$PK_max_stats[@pk_level[0]]);
+				set @b_stat_v_2,rand($PK_min_stats[@pk_level[0]],$PK_max_stats[@pk_level[0]]);
+				set @b_stat_n_1_tmp$,getd("@b_stat_n_"+rand(1,3)+"$");
+				set @b_stat_n_2_tmp$,getd("@b_stat_n_"+rand(1,3)+"$");
+				query_sql "UPDATE `pk_list` SET `b_stat_n_1` = '"+@b_stat_n_1_tmp$+"' , `b_stat_v_1` = '"+@b_stat_v_1+"' WHERE `char_id` = '"+getcharid(0)+"'";
+				query_sql "UPDATE `pk_list` SET `b_stat_n_2` = '"+@b_stat_n_2_tmp$+"' , `b_stat_v_2` = '"+@b_stat_v_2+"' WHERE `char_id` = '"+getcharid(0)+"'";
+				callfunc "PK GetStatName",@b_stat_n_1_tmp$,@b_stat_v_1;
+				callfunc "PK GetStatName",@b_stat_n_2_tmp$,@b_stat_v_2;
+				break;
+				
+			case 3:
+				
+							
+				set @b_stat_v_1,rand($PK_min_stats[@pk_level[0]],$PK_max_stats[@pk_level[0]]);
+				set @b_stat_v_2,rand($PK_min_stats[@pk_level[0]],$PK_max_stats[@pk_level[0]]);
+				set @b_stat_v_3,rand($PK_min_stats[@pk_level[0]],$PK_max_stats[@pk_level[0]]);
+				set @b_stat_n_1_tmp$,@b_stat_n_1;
+				set @b_stat_n_2_tmp$,@b_stat_n_2;
+				set @b_stat_n_3_tmp$,@b_stat_n_3;
+				query_sql "UPDATE `pk_list` SET `b_stat_n_1` = '"+@b_stat_n_1_tmp$+"' , `b_stat_v_1` = '"+@b_stat_v_1+"' WHERE `char_id` = '"+getcharid(0)+"'";
+				query_sql "UPDATE `pk_list` SET `b_stat_n_2` = '"+@b_stat_n_2_tmp$+"' , `b_stat_v_2` = '"+@b_stat_v_2+"' WHERE `char_id` = '"+getcharid(0)+"'";
+				query_sql "UPDATE `pk_list` SET `b_stat_n_3` = '"+@b_stat_n_3_tmp$+"' , `b_stat_v_3` = '"+@b_stat_v_3+"' WHERE `char_id` = '"+getcharid(0)+"'";
+				callfunc "PK GetStatName",@b_stat_n_1_tmp$,@b_stat_v_1;
+				callfunc "PK GetStatName",@b_stat_n_2_tmp$,@b_stat_v_2;
+				callfunc "PK GetStatName",@b_stat_n_3_tmp$,@b_stat_v_3;
+				break;
+			
+			default: end;
+		}
+		
+			
+	} 
+	end;
+}
+
+
+
+//==========================\\
+//> Set Bonus Function
+//==========================\\
+
+function	script	PK GetStatName	{
+		
+		specialeffect2 622;
+		
+	if (getarg(0) == "bAgi") {
+		
+		bonus bAgi,getarg(1);
+		dispbottom "[PK] You got Agi+"+getarg(1);
+		
+	} else if (getarg(0) == "bStr") {
+		
+		bonus bStr,getarg(1);
+		dispbottom "[PK] You got Str+"+getarg(1);
+
+	} else if (getarg(0) == "bInt") {
+		
+		bonus bInt,getarg(1);
+		dispbottom "[PK] You got Int+"+getarg(1);
+
+	} else if (getarg(0) == "bVit") {
+		
+		bonus bVit,getarg(1);
+		dispbottom "[PK] You got Vit+"+getarg(1);
+
+	} else if (getarg(0) == "bDex") {
+		
+		bonus bDex,getarg(1);
+		dispbottom "[PK] You got Dex+"+getarg(1);
+
+	} else if (getarg(0) == "bLuk") {
+		
+		bonus bLuk,getarg(1);
+		dispbottom "[PK] You got Luk+"+getarg(1);
+
+	} else {
+		
+		dispbottom  "ERROR GetStatName Function!!! Report it to an Admin.";
+		
+	}
+
+	return;
+
+}
+
+
+
+//==========================\\
+//> Map Controll Function
+//==========================\\
+
+function	script	PK Limitation	{
+
+	if (!$PK_map_limitation_mode) {
+		for (set @i,0; @i < getarraysize($PK_maps$); set @i,@i+1) {
+			if (getmapxy($PK_maps$[@i],@x,@y,0) == 0) 
+				return;
+			else end;
+		}
+	} else {
+	for (set @i,0; @i < getarraysize($PK_maps$); set @i,@i+1) {
+			if (getmapxy($PK_maps$[@i],@x,@y,0) == 0) 
+				end;
+			else return;
+		}
+	}
+
+}
+
+
+
+//==========================\\
+//> Clean Arrays Function
+//==========================\\
+
+function	script	PK Del Arrays	{
+
+	deletearray @char_name$[0],getarraysize(@char_name$);
+	deletearray @char_name_1$[0],getarraysize(@char_name_1$);
+	deletearray @char_name_2$[0],getarraysize(@char_name_2$);
+	deletearray @killed_player_dies[0],getarraysize(@killed_player_dies);
+	deletearray @killed_player_dies_1[0],getarraysize(@killed_player_dies_1);
+	deletearray @killed_player_dies_2[0],getarraysize(@killed_player_dies_2);
+	deletearray @killed_player_[0],getarraysize(@killed_player);
+	deletearray @killed_player_1[0],getarraysize(@killed_player_1);
+	deletearray @killed_player_2[0],getarraysize(@killed_player_2);
+	deletearray @job_id[0],getarraysize(@job_id);
+	deletearray @job_id_1[0],getarraysize(@job_id_1);
+	deletearray @job_id_2[0],getarraysize(@job_id_2);
+
+	return;
+	
+}
+
+
+
+//==========================\\
+//> Reading SQL Function
+//==========================\\
+
+function	script	PK Get Info	{
+
+	query_sql "SELECT `char_name` , `char_id` ,  `killed_player` , `job_id` , `dies` , `exp` , `pk_level` , `killed_player-dies` , `b_stat_n_1` , `b_stat_n_2` , `b_stat_n_3` , `b_stat_v_1` , `b_stat_v_2` , `b_stat_v_3` FROM `pk_list` WHERE `char_id` = '"+getcharid(0)+"'", @char_name$, @char_id, @killed_player, @job_id, @dies, @pk_exp, @pk_level, @killed_player_dies, @b_stat_n_1$, @b_stat_n_2$, @b_stat_n_3$, @b_stat_v_1, @b_stat_v_2, @b_stat_v_3;
+
+	//dispbottom "@char_name$: "+@char_name$[0]+" @char_id: "+@char_id[0]+" @killed_player: "+@killed_player[0]+" @job_id: "+@job_id[0]+" @dies: "+@dies[0]+" @pk_exp: "+@pk_exp[0]+" @pk_level: "+@pk_level[0]+" @killed_player_dies: "+@killed_player_dies[0]+" @b_stat_n_1$: "+@b_stat_n_1$[0]+" @b_stat_n_2$: "+@b_stat_n_2$[0]+" @b_stat_n_3$: "+@b_stat_n_3$[0]+" @b_stat_v_1: "+@b_stat_v_1[0]+" @b_stat_v_2: "+@b_stat_v_2[0]+" @b_stat_v_3: "+@b_stat_v_3[0];
+
+	return;
+	
+}
+
+
+
+//==========================\\
+//> Help NPC Function
+//==========================\\
+
+function	script	PK Help	{
+
+	if (getgmlevel() < 99) end;
+	set @n$,"[^FF0000Pk Help^000000]";
+	cutin "kafra_02.bmp",0;
+	mes @n$;
+	mes "Hello, I'll help you with the functions of this script.";
+	next;
+	switch(select("^0000FF•^000000 Events:^0000FF•^000000 Effect Script:^0000FF•^000000 Admin Tool:^0000FF•^000000 Nothing")) {
+	
+		case 1:
+			
+			mes @n$;
+			mes "There are 2 events you can start.";
+			mes "1. ^0000FFEXP Event^000000";
+			mes "2. ^0000FFKilling Event^000000";
+			mes "From which do you want to know more?";
+			next;
+			switch(select("^0000FF•^000000 EXP Event:^0000FF•^000000 Killing Event:^0000FF•^000000 Nothing")) {
+				
+				case 1:
+				
+					mes @n$;
+					mes "You can start the event by whispering the NPC '^FF0000npc:event^000000' with '^FF0000exp#<time>#<multi>^000000'.";
+					next;
+					mes @n$;
+					mes "^999999<time>^000000 is the time in that the event will run (in minutes).";
+					mes "^999999<multi>^000000 is the multiplicator for the PK EXP.";
+					next;
+					mes @n$;
+					mes "You can stop the event with the command:  '^FF0000exp#stop^000000'";
+					mes "And you can see the status of the event with: '^FF0000exp#status^000000'";
+					break;
+				
+				case 2:
+					
+					mes "You can start the event by whispering the NPC '^FF0000npc:event^000000' with '^FF0000kill#start#<limit>^000000'.";
+					next;
+					mes @n$;
+					mes "^999999<limit>^000000 is the amount of players that another player needs to kill to win the event.";
+					next;
+					mes @n$;
+					mes "You can stop the event with the command:  '^FF0000kill#stop^000000'";
+					mes "And you can see the status of the event with: '^FF0000kill#status^000000'";
+					break;
+					
+				default:
+				
+					break;	
+				
+			}
+			
+			close2;
+			cutin "kafra_02.bmp",255;
+			end;
+			
+		case 2:
+			
+			mes @n$;
+			mes "Whisper to the NPC '^FF0000npc:effect^000000' with '^FF0000effect#<delay>^000000' (the delay is in ms) ";
+			next;
+			mes @n$;
+			mes "While the script is running you can stop it by whispering the NPC anything you want, e.g. '^FF0000fiowehf^000000'.";
+			mes "After the stop, the NPC saves the point where it stoped and you can start again from there.";
+			next;
+			mes @n$;
+			mes "You can also reset the point with the command: '^0000FFreset^000000.'";
+			mes "You can also optionaly start from a certain ID: '^0000FFeffect#<delay>#<EffectID>^000000'";
+			break;
+		
+		case 3:
+			
+			mes @n$;
+			mes "With this small tool you can set your PK EXP, level, kills and dies.";
+			mes "Whsiper to the '^0000FFnpc:pk_admin^000000': ";
+			mes "^0000FF•^000000 'exp#<value>'";
+			mes "^0000FF•^000000 'level#<value>'";
+			mes "^0000FF•^000000 'kills#<value>'";
+			mes "^0000FF•^000000 'dies#<value>'";
+			next;
+			mes @n$;
+			mes "The NPC will set the value.";
+			break;
+		
+		default: 
+			
+			break;
+		
+	}
+	
+	close2;
+	cutin "kafra_02.bmp",255;
+	end;
+
+}
+
+	
+
+
+
+
+//SHITTY MAPFLAGS!!!!!!!
+
+alb_ship.gat	mapflag	loadevent
+alb2trea.gat	mapflag	loadevent
+alberta.gat	mapflag	loadevent
+alberta_in.gat	mapflag	loadevent
+alde_dun01.gat	mapflag	loadevent
+alde_dun02.gat	mapflag	loadevent
+alde_dun03.gat	mapflag	loadevent
+alde_dun04.gat	mapflag	loadevent
+aldeba_in.gat	mapflag	loadevent
+aldebaran.gat	mapflag	loadevent
+anthell01.gat	mapflag	loadevent
+anthell02.gat	mapflag	loadevent
+arena_room.gat	mapflag	loadevent
+c_tower1.gat	mapflag	loadevent
+c_tower2.gat	mapflag	loadevent
+c_tower3.gat	mapflag	loadevent
+c_tower4.gat	mapflag	loadevent
+force_1-1.gat	mapflag	loadevent
+force_1-2.gat	mapflag	loadevent
+force_1-3.gat	mapflag	loadevent
+force_2-1.gat	mapflag	loadevent
+force_2-2.gat	mapflag	loadevent
+force_2-3.gat	mapflag	loadevent
+force_3-1.gat	mapflag	loadevent
+force_3-2.gat	mapflag	loadevent
+force_3-3.gat	mapflag	loadevent
+gef_dun00.gat	mapflag	loadevent
+gef_dun01.gat	mapflag	loadevent
+gef_dun02.gat	mapflag	loadevent
+gef_dun03.gat	mapflag	loadevent
+gef_fild00.gat	mapflag	loadevent
+gef_fild01.gat	mapflag	loadevent
+gef_fild02.gat	mapflag	loadevent
+gef_fild03.gat	mapflag	loadevent
+gef_fild04.gat	mapflag	loadevent
+gef_fild05.gat	mapflag	loadevent
+gef_fild06.gat	mapflag	loadevent
+gef_fild07.gat	mapflag	loadevent
+gef_fild08.gat	mapflag	loadevent
+gef_fild09.gat	mapflag	loadevent
+gef_fild10.gat	mapflag	loadevent
+gef_fild11.gat	mapflag	loadevent
+gef_fild12.gat	mapflag	loadevent
+gef_fild13.gat	mapflag	loadevent
+gef_fild14.gat	mapflag	loadevent
+gef_tower.gat	mapflag	loadevent
+geffen.gat	mapflag	loadevent
+geffen_in.gat	mapflag	loadevent
+gl_cas01.gat	mapflag	loadevent
+gl_cas02.gat	mapflag	loadevent
+gl_church.gat	mapflag	loadevent
+gl_chyard.gat	mapflag	loadevent
+gl_dun01.gat	mapflag	loadevent
+gl_dun02.gat	mapflag	loadevent
+gl_in01.gat	mapflag	loadevent
+gl_knt01.gat	mapflag	loadevent
+gl_knt02.gat	mapflag	loadevent
+gl_prison.gat	mapflag	loadevent
+gl_prison1.gat	mapflag	loadevent
+gl_sew01.gat	mapflag	loadevent
+gl_sew02.gat	mapflag	loadevent
+gl_sew03.gat	mapflag	loadevent
+gl_sew04.gat	mapflag	loadevent
+gl_step.gat	mapflag	loadevent
+glast_01.gat	mapflag	loadevent
+in_hunter.gat	mapflag	loadevent
+in_moc_16.gat	mapflag	loadevent
+in_orcs01.gat	mapflag	loadevent
+in_sphinx1.gat	mapflag	loadevent
+in_sphinx2.gat	mapflag	loadevent
+in_sphinx3.gat	mapflag	loadevent
+in_sphinx4.gat	mapflag	loadevent
+in_sphinx5.gat	mapflag	loadevent
+iz_dun00.gat	mapflag	loadevent
+iz_dun01.gat	mapflag	loadevent
+iz_dun02.gat	mapflag	loadevent
+iz_dun03.gat	mapflag	loadevent
+iz_dun04.gat	mapflag	loadevent
+izlu2dun.gat	mapflag	loadevent
+izlude.gat	mapflag	loadevent
+izlude_in.gat	mapflag	loadevent
+job_thief1.gat	mapflag	loadevent
+mjo_dun01.gat	mapflag	loadevent
+mjo_dun02.gat	mapflag	loadevent
+mjo_dun03.gat	mapflag	loadevent
+mjolnir_01.gat	mapflag	loadevent
+mjolnir_02.gat	mapflag	loadevent
+mjolnir_03.gat	mapflag	loadevent
+mjolnir_04.gat	mapflag	loadevent
+mjolnir_05.gat	mapflag	loadevent
+mjolnir_06.gat	mapflag	loadevent
+mjolnir_07.gat	mapflag	loadevent
+mjolnir_08.gat	mapflag	loadevent
+mjolnir_09.gat	mapflag	loadevent
+mjolnir_10.gat	mapflag	loadevent
+mjolnir_11.gat	mapflag	loadevent
+mjolnir_12.gat	mapflag	loadevent
+moc_castle.gat	mapflag	loadevent
+moc_fild01.gat	mapflag	loadevent
+moc_fild02.gat	mapflag	loadevent
+moc_fild03.gat	mapflag	loadevent
+moc_fild04.gat	mapflag	loadevent
+moc_fild05.gat	mapflag	loadevent
+moc_fild06.gat	mapflag	loadevent
+moc_fild07.gat	mapflag	loadevent
+moc_fild08.gat	mapflag	loadevent
+moc_fild09.gat	mapflag	loadevent
+moc_fild10.gat	mapflag	loadevent
+moc_fild11.gat	mapflag	loadevent
+moc_fild12.gat	mapflag	loadevent
+moc_fild13.gat	mapflag	loadevent
+moc_fild14.gat	mapflag	loadevent
+moc_fild15.gat	mapflag	loadevent
+moc_fild16.gat	mapflag	loadevent
+moc_fild17.gat	mapflag	loadevent
+moc_fild18.gat	mapflag	loadevent
+moc_fild19.gat	mapflag	loadevent
+moc_pryd01.gat	mapflag	loadevent
+moc_pryd02.gat	mapflag	loadevent
+moc_pryd03.gat	mapflag	loadevent
+moc_pryd04.gat	mapflag	loadevent
+moc_pryd05.gat	mapflag	loadevent
+moc_pryd06.gat	mapflag	loadevent
+moc_prydb1.gat	mapflag	loadevent
+moc_ruins.gat	mapflag	loadevent
+monk_in.gat	mapflag	loadevent
+morocc.gat	mapflag	loadevent
+morocc_in.gat	mapflag	loadevent
+new_zone01.gat	mapflag	loadevent
+new_zone02.gat	mapflag	loadevent
+new_zone03.gat	mapflag	loadevent
+new_zone04.gat	mapflag	loadevent
+orcsdun01.gat	mapflag	loadevent
+orcsdun02.gat	mapflag	loadevent
+ordeal_1-1.gat	mapflag	loadevent
+ordeal_1-2.gat	mapflag	loadevent
+ordeal_2-1.gat	mapflag	loadevent
+ordeal_2-2.gat	mapflag	loadevent
+ordeal_3-1.gat	mapflag	loadevent
+ordeal_3-2.gat	mapflag	loadevent
+pay_arche.gat	mapflag	loadevent
+pay_dun00.gat	mapflag	loadevent
+pay_dun01.gat	mapflag	loadevent
+pay_dun02.gat	mapflag	loadevent
+pay_dun03.gat	mapflag	loadevent
+pay_dun04.gat	mapflag	loadevent
+pay_fild01.gat	mapflag	loadevent
+pay_fild02.gat	mapflag	loadevent
+pay_fild03.gat	mapflag	loadevent
+pay_fild04.gat	mapflag	loadevent
+pay_fild05.gat	mapflag	loadevent
+pay_fild06.gat	mapflag	loadevent
+pay_fild07.gat	mapflag	loadevent
+pay_fild08.gat	mapflag	loadevent
+pay_fild09.gat	mapflag	loadevent
+pay_fild10.gat	mapflag	loadevent
+pay_fild11.gat	mapflag	loadevent
+prontera.gat	mapflag	loadevent
+prt_are_in.gat	mapflag	loadevent
+prt_are01.gat	mapflag	loadevent
+prt_castle.gat	mapflag	loadevent
+prt_church.gat	mapflag	loadevent
+prt_fild00.gat	mapflag	loadevent
+prt_fild01.gat	mapflag	loadevent
+prt_fild02.gat	mapflag	loadevent
+prt_fild03.gat	mapflag	loadevent
+prt_fild04.gat	mapflag	loadevent
+prt_fild05.gat	mapflag	loadevent
+prt_fild06.gat	mapflag	loadevent
+prt_fild07.gat	mapflag	loadevent
+prt_fild08.gat	mapflag	loadevent
+prt_fild09.gat	mapflag	loadevent
+prt_fild10.gat	mapflag	loadevent
+prt_fild11.gat	mapflag	loadevent
+prt_in.gat	mapflag	loadevent
+prt_maze01.gat	mapflag	loadevent
+prt_maze02.gat	mapflag	loadevent
+prt_maze03.gat	mapflag	loadevent
+prt_monk.gat	mapflag	loadevent
+prt_sewb1.gat	mapflag	loadevent
+prt_sewb2.gat	mapflag	loadevent
+prt_sewb3.gat	mapflag	loadevent
+prt_sewb4.gat	mapflag	loadevent
+pvp_2vs2.gat	mapflag	loadevent
+pvp_c_room.gat	mapflag	loadevent
+pvp_n_1-1.gat	mapflag	loadevent
+pvp_n_1-2.gat	mapflag	loadevent
+pvp_n_1-3.gat	mapflag	loadevent
+pvp_n_1-4.gat	mapflag	loadevent
+pvp_n_1-5.gat	mapflag	loadevent
+pvp_n_2-1.gat	mapflag	loadevent
+pvp_n_2-2.gat	mapflag	loadevent
+pvp_n_2-3.gat	mapflag	loadevent
+pvp_n_2-4.gat	mapflag	loadevent
+pvp_n_2-5.gat	mapflag	loadevent
+pvp_n_3-1.gat	mapflag	loadevent
+pvp_n_3-2.gat	mapflag	loadevent
+pvp_n_3-3.gat	mapflag	loadevent
+pvp_n_3-4.gat	mapflag	loadevent
+pvp_n_3-5.gat	mapflag	loadevent
+pvp_n_4-1.gat	mapflag	loadevent
+pvp_n_4-2.gat	mapflag	loadevent
+pvp_n_4-3.gat	mapflag	loadevent
+pvp_n_4-4.gat	mapflag	loadevent
+pvp_n_4-5.gat	mapflag	loadevent
+pvp_n_5-1.gat	mapflag	loadevent
+pvp_n_5-2.gat	mapflag	loadevent
+pvp_n_5-3.gat	mapflag	loadevent
+pvp_n_5-4.gat	mapflag	loadevent
+pvp_n_5-5.gat	mapflag	loadevent
+pvp_n_6-1.gat	mapflag	loadevent
+pvp_n_6-2.gat	mapflag	loadevent
+pvp_n_6-3.gat	mapflag	loadevent
+pvp_n_6-4.gat	mapflag	loadevent
+pvp_n_6-5.gat	mapflag	loadevent
+pvp_n_7-1.gat	mapflag	loadevent
+pvp_n_7-2.gat	mapflag	loadevent
+pvp_n_7-3.gat	mapflag	loadevent
+pvp_n_7-4.gat	mapflag	loadevent
+pvp_n_7-5.gat	mapflag	loadevent
+pvp_n_8-1.gat	mapflag	loadevent
+pvp_n_8-2.gat	mapflag	loadevent
+pvp_n_8-3.gat	mapflag	loadevent
+pvp_n_8-4.gat	mapflag	loadevent
+pvp_n_8-5.gat	mapflag	loadevent
+pvp_n_room.gat	mapflag	loadevent
+pvp_y_1-1.gat	mapflag	loadevent
+pvp_y_1-2.gat	mapflag	loadevent
+pvp_y_1-3.gat	mapflag	loadevent
+pvp_y_1-4.gat	mapflag	loadevent
+pvp_y_1-5.gat	mapflag	loadevent
+pvp_y_2-1.gat	mapflag	loadevent
+pvp_y_2-2.gat	mapflag	loadevent
+pvp_y_2-3.gat	mapflag	loadevent
+pvp_y_2-4.gat	mapflag	loadevent
+pvp_y_2-5.gat	mapflag	loadevent
+pvp_y_3-1.gat	mapflag	loadevent
+pvp_y_3-2.gat	mapflag	loadevent
+pvp_y_3-3.gat	mapflag	loadevent
+pvp_y_3-4.gat	mapflag	loadevent
+pvp_y_3-5.gat	mapflag	loadevent
+pvp_y_4-1.gat	mapflag	loadevent
+pvp_y_4-2.gat	mapflag	loadevent
+pvp_y_4-3.gat	mapflag	loadevent
+pvp_y_4-4.gat	mapflag	loadevent
+pvp_y_4-5.gat	mapflag	loadevent
+pvp_y_5-1.gat	mapflag	loadevent
+pvp_y_5-2.gat	mapflag	loadevent
+pvp_y_5-3.gat	mapflag	loadevent
+pvp_y_5-4.gat	mapflag	loadevent
+pvp_y_5-5.gat	mapflag	loadevent
+pvp_y_6-1.gat	mapflag	loadevent
+pvp_y_6-2.gat	mapflag	loadevent
+pvp_y_6-3.gat	mapflag	loadevent
+pvp_y_6-4.gat	mapflag	loadevent
+pvp_y_6-5.gat	mapflag	loadevent
+pvp_y_7-1.gat	mapflag	loadevent
+pvp_y_7-2.gat	mapflag	loadevent
+pvp_y_7-3.gat	mapflag	loadevent
+pvp_y_7-4.gat	mapflag	loadevent
+pvp_y_7-5.gat	mapflag	loadevent
+pvp_y_8-1.gat	mapflag	loadevent
+pvp_y_8-2.gat	mapflag	loadevent
+pvp_y_8-3.gat	mapflag	loadevent
+pvp_y_8-4.gat	mapflag	loadevent
+pvp_y_8-5.gat	mapflag	loadevent
+pvp_y_room.gat	mapflag	loadevent
+treasure01.gat	mapflag	loadevent
+treasure02.gat	mapflag	loadevent
+xmas.gat	mapflag	loadevent
+xmas_dun01.gat	mapflag	loadevent
+xmas_dun02.gat	mapflag	loadevent
+xmas_fild01.gat	mapflag	loadevent
+xmas_in.gat	mapflag	loadevent
+beach_dun.gat	mapflag	loadevent
+beach_dun2.gat	mapflag	loadevent
+beach_dun3.gat	mapflag	loadevent
+cmd_fild01.gat	mapflag	loadevent
+cmd_fild02.gat	mapflag	loadevent
+cmd_fild03.gat	mapflag	loadevent
+cmd_fild04.gat	mapflag	loadevent
+cmd_fild05.gat	mapflag	loadevent
+cmd_fild06.gat	mapflag	loadevent
+cmd_fild07.gat	mapflag	loadevent
+cmd_fild08.gat	mapflag	loadevent
+cmd_fild09.gat	mapflag	loadevent
+cmd_in01.gat	mapflag	loadevent
+cmd_in02.gat	mapflag	loadevent
+comodo.gat	mapflag	loadevent
+quiz_00.gat	mapflag	loadevent
+quiz_01.gat	mapflag	loadevent
+g_room1-1.gat	mapflag	loadevent
+g_room1-2.gat	mapflag	loadevent
+g_room1-3.gat	mapflag	loadevent
+g_room2.gat	mapflag	loadevent
+tur_dun01.gat	mapflag	loadevent
+tur_dun02.gat	mapflag	loadevent
+tur_dun03.gat	mapflag	loadevent
+tur_dun04.gat	mapflag	loadevent
+tur_dun05.gat	mapflag	loadevent
+tur_dun06.gat	mapflag	loadevent
+alde_gld.gat	mapflag	loadevent
+aldeg_cas01.gat	mapflag	loadevent
+aldeg_cas02.gat	mapflag	loadevent
+aldeg_cas03.gat	mapflag	loadevent
+aldeg_cas04.gat	mapflag	loadevent
+aldeg_cas05.gat	mapflag	loadevent
+gefg_cas01.gat	mapflag	loadevent
+gefg_cas02.gat	mapflag	loadevent
+gefg_cas03.gat	mapflag	loadevent
+gefg_cas04.gat	mapflag	loadevent
+gefg_cas05.gat	mapflag	loadevent
+gld_dun01.gat	mapflag	loadevent
+gld_dun02.gat	mapflag	loadevent
+gld_dun03.gat	mapflag	loadevent
+gld_dun04.gat	mapflag	loadevent
+guild_room.gat	mapflag	loadevent
+guild_vs1.gat	mapflag	loadevent
+guild_vs2.gat	mapflag	loadevent
+guild_vs3.gat	mapflag	loadevent
+guild_vs4.gat	mapflag	loadevent
+guild_vs5.gat	mapflag	loadevent
+guild_vs1-1.gat	mapflag	loadevent
+guild_vs1-2.gat	mapflag	loadevent
+guild_vs1-3.gat	mapflag	loadevent
+guild_vs1-4.gat	mapflag	loadevent
+guild_vs2-1.gat	mapflag	loadevent
+guild_vs2-2.gat	mapflag	loadevent
+job_hunte.gat	mapflag	loadevent
+job_knt.gat	mapflag	loadevent
+job_prist.gat	mapflag	loadevent
+job_sword1.gat	mapflag	loadevent
+job_wiz.gat	mapflag	loadevent
+pay_gld.gat	mapflag	loadevent
+payg_cas01.gat	mapflag	loadevent
+payg_cas02.gat	mapflag	loadevent
+payg_cas03.gat	mapflag	loadevent
+payg_cas04.gat	mapflag	loadevent
+payg_cas05.gat	mapflag	loadevent
+prt_gld.gat	mapflag	loadevent
+prtg_cas01.gat	mapflag	loadevent
+prtg_cas02.gat	mapflag	loadevent
+prtg_cas03.gat	mapflag	loadevent
+prtg_cas04.gat	mapflag	loadevent
+prtg_cas05.gat	mapflag	loadevent
+alde_alche.gat	mapflag	loadevent
+in_rogue.gat	mapflag	loadevent
+job_cru.gat	mapflag	loadevent
+job_duncer.gat	mapflag	loadevent
+job_monk.gat	mapflag	loadevent
+job_sage.gat	mapflag	loadevent
+mag_dun01.gat	mapflag	loadevent
+mag_dun02.gat	mapflag	loadevent
+monk_test.gat	mapflag	loadevent
+quiz_test.gat	mapflag	loadevent
+yuno.gat	mapflag	loadevent
+yuno_fild01.gat	mapflag	loadevent
+yuno_fild02.gat	mapflag	loadevent
+yuno_fild03.gat	mapflag	loadevent
+yuno_fild04.gat	mapflag	loadevent
+yuno_in01.gat	mapflag	loadevent
+yuno_in02.gat	mapflag	loadevent
+yuno_in03.gat	mapflag	loadevent
+yuno_in04.gat	mapflag	loadevent
+yuno_in05.gat	mapflag	loadevent
+ama_dun01.gat	mapflag	loadevent
+ama_dun02.gat	mapflag	loadevent
+ama_dun03.gat	mapflag	loadevent
+ama_fild01.gat	mapflag	loadevent
+ama_in01.gat	mapflag	loadevent
+ama_in02.gat	mapflag	loadevent
+ama_test.gat	mapflag	loadevent
+amatsu.gat	mapflag	loadevent
+gon_dun01.gat	mapflag	loadevent
+gon_dun02.gat	mapflag	loadevent
+gon_dun03.gat	mapflag	loadevent
+gon_fild01.gat	mapflag	loadevent
+gon_in.gat	mapflag	loadevent
+gon_test.gat	mapflag	loadevent
+gonryun.gat	mapflag	loadevent
+sec_in01.gat	mapflag	loadevent
+sec_in02.gat	mapflag	loadevent
+sec_pri.gat	mapflag	loadevent
+umbala.gat	mapflag	loadevent
+um_dun01.gat	mapflag	loadevent
+um_dun02.gat	mapflag	loadevent
+um_fild01.gat	mapflag	loadevent
+um_fild02.gat	mapflag	loadevent
+um_fild03.gat	mapflag	loadevent
+um_fild04.gat	mapflag	loadevent
+um_in.gat	mapflag	loadevent
+niflheim.gat	mapflag	loadevent
+nif_fild01.gat	mapflag	loadevent
+nif_fild02.gat	mapflag	loadevent
+nif_in.gat	mapflag	loadevent
+yggdrasil01.gat	mapflag	loadevent
+valkyrie.gat	mapflag	loadevent
+himinn.gat	mapflag	loadevent
+lou_in01.gat	mapflag	loadevent
+lou_in02.gat	mapflag	loadevent
+lou_dun03.gat	mapflag	loadevent
+lou_dun02.gat	mapflag	loadevent
+lou_dun01.gat	mapflag	loadevent
+lou_fild01.gat	mapflag	loadevent
+louyang.gat	mapflag	loadevent
+n_castle.gat	mapflag	loadevent
+nguild_gef.gat	mapflag	loadevent
+nguild_prt.gat	mapflag	loadevent
+nguild_pay.gat	mapflag	loadevent
+nguild_alde.gat	mapflag	loadevent
+jawaii.gat	mapflag	loadevent
+jawaii_in.gat	mapflag	loadevent
+gefenia01.gat	mapflag	loadevent
+gefenia02.gat	mapflag	loadevent
+gefenia03.gat	mapflag	loadevent
+gefenia04.gat	mapflag	loadevent
+payon.gat	mapflag	loadevent
+payon_in01.gat	mapflag	loadevent
+payon_in02.gat	mapflag	loadevent
+payon_in03.gat	mapflag	loadevent
+ayothaya.gat	mapflag	loadevent
+ayo_in01.gat	mapflag	loadevent
+ayo_in02.gat	mapflag	loadevent
+ayo_fild01.gat	mapflag	loadevent
+ayo_fild02.gat	mapflag	loadevent
+ayo_dun01.gat	mapflag	loadevent
+ayo_dun02.gat	mapflag	loadevent
+que_god01.gat	mapflag	loadevent
+que_god02.gat	mapflag	loadevent
+yuno_fild05.gat	mapflag	loadevent
+yuno_fild07.gat	mapflag	loadevent
+yuno_fild08.gat	mapflag	loadevent
+yuno_fild09.gat	mapflag	loadevent
+yuno_fild11.gat	mapflag	loadevent
+yuno_fild12.gat	mapflag	loadevent
+alde_tt02.gat	mapflag	loadevent
+turbo_n_1.gat	mapflag	loadevent
+turbo_n_4.gat	mapflag	loadevent
+turbo_n_8.gat	mapflag	loadevent
+turbo_n_16.gat	mapflag	loadevent
+turbo_e_4.gat	mapflag	loadevent
+turbo_e_8.gat	mapflag	loadevent
+turbo_e_16.gat	mapflag	loadevent
+turbo_room.gat	mapflag	loadevent
+airplane.gat	mapflag	loadevent
+airport.gat	mapflag	loadevent
+einbech.gat	mapflag	loadevent
+einbroch.gat	mapflag	loadevent
+ein_dun01.gat	mapflag	loadevent
+ein_dun02.gat	mapflag	loadevent
+ein_fild06.gat	mapflag	loadevent
+ein_fild07.gat	mapflag	loadevent
+ein_fild08.gat	mapflag	loadevent
+ein_fild09.gat	mapflag	loadevent
+ein_fild10.gat	mapflag	loadevent
+ein_in01.gat	mapflag	loadevent
+que_sign01.gat	mapflag	loadevent
+que_sign02.gat	mapflag	loadevent
+ein_fild03.gat	mapflag	loadevent
+ein_fild04.gat	mapflag	loadevent
+lhz_fild02.gat	mapflag	loadevent
+lhz_fild03.gat	mapflag	loadevent
+yuno_pre.gat	mapflag	loadevent
+lhz_fild01.gat	mapflag	loadevent
+lighthalzen.gat	mapflag	loadevent
+lhz_in01.gat	mapflag	loadevent
+lhz_in02.gat	mapflag	loadevent
+lhz_in03.gat	mapflag	loadevent
+lhz_que01.gat	mapflag	loadevent
+lhz_dun01.gat	mapflag	loadevent
+lhz_dun02.gat	mapflag	loadevent
+lhz_dun03.gat	mapflag	loadevent
+lhz_cube.gat	mapflag	loadevent
+juperos_01.gat	mapflag	loadevent
+juperos_02.gat	mapflag	loadevent
+jupe_area1.gat	mapflag	loadevent
+jupe_area2.gat	mapflag	loadevent
+jupe_core.gat	mapflag	loadevent
+jupe_ele.gat	mapflag	loadevent
+jupe_ele_r.gat	mapflag	loadevent
+jupe_gate.gat	mapflag	loadevent
+y_airport.gat	mapflag	loadevent
+lhz_airport.gat	mapflag	loadevent
+airplane_01.gat	mapflag	loadevent
+jupe_cave.gat	mapflag	loadevent
+quiz_02.gat	mapflag	loadevent
+hu_fild07.gat	mapflag	loadevent
+hu_fild05.gat	mapflag	loadevent
+hu_fild04.gat	mapflag	loadevent
+hu_fild01.gat	mapflag	loadevent
+yuno_fild06.gat	mapflag	loadevent
+job_soul.gat	mapflag	loadevent
+job_star.gat	mapflag	loadevent
+que_job01.gat	mapflag	loadevent
+que_job02.gat	mapflag	loadevent
+que_job03.gat	mapflag	loadevent
+abyss_01.gat	mapflag	loadevent
+abyss_02.gat	mapflag	loadevent
+abyss_03.gat	mapflag	loadevent
+thana_step.gat	mapflag	loadevent
+thana_boss.gat	mapflag	loadevent
+tha_scene01.gat	mapflag	loadevent
+tha_t01.gat	mapflag	loadevent
+tha_t02.gat	mapflag	loadevent
+tha_t03.gat	mapflag	loadevent
+tha_t04.gat	mapflag	loadevent
+tha_t07.gat	mapflag	loadevent
+tha_t05.gat	mapflag	loadevent
+tha_t06.gat	mapflag	loadevent
+tha_t08.gat	mapflag	loadevent
+tha_t09.gat	mapflag	loadevent
+tha_t10.gat	mapflag	loadevent
+tha_t11.gat	mapflag	loadevent
+tha_t12.gat	mapflag	loadevent
+auction_01.gat	mapflag	loadevent
+auction_02.gat	mapflag	loadevent
+hugel.gat	mapflag	loadevent
+hu_in01.gat	mapflag	loadevent
+que_bingo.gat	mapflag	loadevent
+que_hugel.gat	mapflag	loadevent
+p_track01.gat	mapflag	loadevent
+p_track02.gat	mapflag	loadevent
+odin_tem01.gat	mapflag	loadevent
+odin_tem02.gat	mapflag	loadevent
+odin_tem03.gat	mapflag	loadevent
+hu_fild02.gat	mapflag	loadevent
+hu_fild03.gat	mapflag	loadevent
+hu_fild06.gat	mapflag	loadevent
+ein_fild01.gat	mapflag	loadevent
+ein_fild02.gat	mapflag	loadevent
+ein_fild05.gat	mapflag	loadevent
+yuno_fild10.gat	mapflag	loadevent
+kh_kiehl02.gat	mapflag	loadevent
+kh_kiehl01.gat	mapflag	loadevent
+kh_dun02.gat	mapflag	loadevent
+kh_dun01.gat	mapflag	loadevent
+kh_mansion.gat	mapflag	loadevent
+kh_rossi.gat	mapflag	loadevent
+kh_school.gat	mapflag	loadevent
+kh_vila.gat	mapflag	loadevent
+poring_c01.gat	mapflag	loadevent
+poring_c02.gat	mapflag	loadevent
+que_ng.gat	mapflag	loadevent
+rachel.gat	mapflag	loadevent
+ra_in01.gat	mapflag	loadevent
+ra_fild01.gat	mapflag	loadevent
+ra_fild02.gat	mapflag	loadevent
+ra_fild03.gat	mapflag	loadevent
+ra_fild04.gat	mapflag	loadevent
+ra_fild05.gat	mapflag	loadevent
+ra_fild06.gat	mapflag	loadevent
+ra_fild07.gat	mapflag	loadevent
+ra_fild08.gat	mapflag	loadevent
+ra_fild09.gat	mapflag	loadevent
+ra_fild10.gat	mapflag	loadevent
+ra_fild11.gat	mapflag	loadevent
+ra_fild12.gat	mapflag	loadevent
+ra_fild13.gat	mapflag	loadevent
+ra_san01.gat	mapflag	loadevent
+ra_san02.gat	mapflag	loadevent
+ra_san03.gat	mapflag	loadevent
+ra_san04.gat	mapflag	loadevent
+ra_san05.gat	mapflag	loadevent
+ra_temin.gat	mapflag	loadevent
+ra_temple.gat	mapflag	loadevent
+ra_temsky.gat	mapflag	loadevent
+que_rachel.gat	mapflag	loadevent
+ice_dun01.gat	mapflag	loadevent
+ice_dun02.gat	mapflag	loadevent
+ice_dun03.gat	mapflag	loadevent
+ice_dun04.gat	mapflag	loadevent
+que_thor.gat	mapflag	loadevent
+thor_camp.gat	mapflag	loadevent
+thor_v01.gat	mapflag	loadevent
+thor_v02.gat	mapflag	loadevent
+thor_v03.gat	mapflag	loadevent
+veins.gat	mapflag	loadevent
+ve_in.gat	mapflag	loadevent
+ve_in02.gat	mapflag	loadevent
+ve_fild01.gat	mapflag	loadevent
+ve_fild02.gat	mapflag	loadevent
+ve_fild03.gat	mapflag	loadevent
+ve_fild04.gat	mapflag	loadevent
+ve_fild05.gat	mapflag	loadevent
+ve_fild06.gat	mapflag	loadevent
+ve_fild07.gat	mapflag	loadevent
+nameless_i.gat	mapflag	loadevent
+nameless_n.gat	mapflag	loadevent
+nameless_in.gat	mapflag	loadevent
+abbey01.gat	mapflag	loadevent
+abbey02.gat	mapflag	loadevent
+abbey03.gat	mapflag	loadevent
+poring_w01.gat	mapflag	loadevent
+poring_w02.gat	mapflag	loadevent
+moscovia.gat	mapflag	loadevent
+mosk_in.gat	mapflag	loadevent
+mosk_ship.gat	mapflag	loadevent
+mosk_fild01.gat	mapflag	loadevent
+mosk_fild02.gat	mapflag	loadevent
+mosk_dun01.gat	mapflag	loadevent
+mosk_dun02.gat	mapflag	loadevent
+mosk_dun03.gat	mapflag	loadevent
+
+
+/* 
+ToDo:
+-> PK Arena Konzept:
+	- Maps für die Arenen frei wählbar
+	- Arena für Organisierte Wettkämpfe (extra Ladder)
+	- Arena Spiele: 
+		Bombe (man hat eine Bombe und muss jemanden töten um sie abzugeben, wer "explodiert" ist raus, bis einer übrig bleibt)
+		Capture the Emperium
+	- Mehrere Arenen (Open Arena, Team Arena, Duell Arena, Guild Arena)	
+	- Arena Team System
+	- Mapflags
+	- Partys über SQL erstellen: party_id in char table
+	
+	
+	- evtl. Umstrukturierung des tables (neuer table für die arenen) / scriptz
+-> Acc Kills sehn / extra Topliste
+-> Anti Cheat System
+-> Online zeit Zähler
+-> AutoUpdater (für SQL Tables) SHOW TABLES FROM `db_name` LIKE 'table_name' If something is returned, then table exists. 
+-> Char Stats: Online Zeit (jeder CHar/insgesammt), Killed Mobs
+-> Spieler Einstellen ob man nach kills/deaths/ratio/mobkills sortieren will (Unterteilung in offizielle und inoffizielle Toplisten) -> möglichst userfreundlich
+
+-> wenn char job wechselt auch die id in der pk liste ändern
+
+Testen:
+
+-> Achievement 2 Spieler auf einmal killn
+-> Wenn man von Monster gekillt wird
+-> Level Up System
+-> BonusSystem überarbeiten
+
+/
+
+*/

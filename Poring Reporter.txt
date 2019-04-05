@@ -1,0 +1,126 @@
+//Para que o poring ande pelo mapa, é necessário ativá-lo enviando uma mensagem para o npc.
+//Para fazer isso, no lugar onde você coloca o nome dos jogadores com quem deseja ter uma conversa privada, coloque o seguinte:
+//"npc:Poring Reporter". Se você mandar a mensagem "walk", ele vai começar a andar ao redor da parte central de Prontera.
+//Você pode alterar as coordenadas mínimas e máxim﻿as.﻿
+//
+///////////////////////////////////////////////////////
+//  ___________               _____.__                
+//  \__    ___/__.__.________/ ____\__| ____    ____  
+//    |    | <   |  |\_  __ \   __\|  |/    \  / ___\ 
+//    |    |  \___  | |  | \/|  |  |  |   |  \/ /_/  >
+//    |____|  / ____| |__|   |__|  |__|___|  /\___  / 
+//            \/       Scripts             \//_____/  
+//
+//=====================================================
+// Name: Poring Reporter
+//
+// Description:
+// A poring reporter will spread the news about your
+// server walking randomly throughout Prontera.
+//
+// Instructions:
+// Toggle walking by whispering to NPC!
+// (To whisper the NPC, simply send a private message
+// in Ragnarok to "npc:Poring Reporter")
+// Say "walk" and it'll start walking.
+// Anything else and it'll stop as soon as possible.
+//=====================================================
+///////////////////////////////////////////////////////
+prontera,147,190,5	script	Poring Reporter﻿	909,{
+	set .@gm_level, 99; // Necessary GM Level
+	set .@npc_name$, "Poring Reporter";
+	
+	function NewsList;
+	
+	Begin:
+	if (getgmlevel() < .@gm_level)
+		end;
+
+	npcstop;
+	if (.walking != 0)
+		npctalk "Stopped walking. Tell me to \"walk\".", "", bc_self;
+	set .walking, 0;
+	clear;
+	mes "[ ^f442a7"+ .@npc_name$ +"^000000 ]";
+	mes "Hello, master! What are the news today?";
+	menu "Show news",ShowNews, "Remove news",RemoveNews, "Register news",RegisterNews;
+	
+	ShowNews:
+		clear;
+		mes "[ ^f442a7"+ .@npc_name$ +"^000000 ]";
+		if (getarraysize(.news$) > 0) {
+			mes "These are the news:";
+			NewsList;
+		} else {
+			mes "There are no news.";
+		}
+		next;
+		goto Begin;
+
+	RemoveNews:
+		clear;
+		
+		NewsList;
+		mes "Enter the number of the new you want to remove:";
+		input .@remove;
+		clear;
+		mes "[ ^f442a7"+ .@npc_name$ +"^000000 ]";
+		mes "Do you want to remove \"" + .news$[.@remove-1] + "\"?";
+		if (select("Yes:No") == 1) {
+			.@arrsize = getarraysize(.news$);
+			for (.@i = .@remove-1; .@i < .@arrsize; .@i++) {
+				set .news$[.@i], .news$[.@i+1];
+			}
+			set .news$[.@arrsize], "";
+		}
+		goto Begin;
+		
+	RegisterNews:
+		clear;
+		
+		mes "[ ^f442a7"+ .@npc_name$ +"^000000 ]";
+		mes "What should I spread throughout Prontera?";
+		input .@new$;
+		
+		clear;
+		mes "[ ^f442a7"+ .@npc_name$ +"^000000 ]";
+		mes "\"" + .@new$ + "\"";
+		mes "Is that right?";
+		if (select("Yes:No") == 2)
+			goto RegisterNews;
+
+		set .news$[getarraysize(.news$)], .@new$;
+		clear;
+		mes "[ ^f442a7"+ .@npc_name$ +"^000000 ]";
+		mes "Okay!~";
+		next;
+		goto Begin;
+	
+	function NewsList {
+		for (.@i = 0; .@i < getarraysize(.news$); .@i++) {
+			if (.news$[.@i] != "")
+				mes (.@i+1) + ". \""+ .news$[.@i] +"\"";
+		}
+	}
+	
+	OnWhisperGlobal:
+		if (getgmlevel() < .@gm_level)
+			end;
+		
+		if (@whispervar0$ == "walk") {
+			set .walking, 1;
+		} else {
+			set .walking, 0;
+		}
+		
+		while (.walking == 1) {
+			set .@posxmin, 142;
+			set .@posxmax, 192;
+			set .@posymin, 189;
+			set .@posymax, 217;
+			npcwalkto rand(.@posxmin, .@posxmax), rand(.@posymin, .@posymax);
+			npctalk .news$[rand(getarraysize(.news$))];
+			sleep 5000;
+		}
+		end;
+}﻿

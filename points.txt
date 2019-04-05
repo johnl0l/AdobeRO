@@ -1,0 +1,94 @@
+//===== Hercules Script =======================================
+//= PvP Point System
+//===== By: ==================================================
+//= Kit the Baby Fox (A.K.A. IeYasuru) - Conversion by: Aeromesi
+//===== Current Version: =====================================
+//= 1.5 (Converted into Hercules - Aeromesi
+//= 1.5 Update (fixed counter)
+//===== Compatible With: =====================================
+//= Hercules SVN
+//===== Description: =========================================
+//= Awards or takes PvP Points
+//===== Additional Comments: =================================
+//= Gives 1 PvP Point on killing other player
+//= Takes 1 PvP Points for dying
+//= Takes 5 PvP Points for killing same player 3 times
+//=	within 90 seconds of each kill
+//===== Change Log: ==========================================
+//= 1.0: First release
+//= 1.1: Numerous changes to system layout
+//=  (borrowed from Terces PvP Ladder)
+//= 1.2: Added GM check so getting killed by GMs doesn't 
+//=  subtract points.
+//============================================================
+
+-	script	PvP Points	-1,{
+OnPCKillEvent:
+	if(PvPFlag && (killedrid == PrevKilled)) {
+		PvPWarning += 1;
+		if(PvPWarning >= 3) {
+			PvPPoints -= 5;
+			callsub L_PointCheck,PvPPoints;
+			dispbottom "You've lost 5 PvP Points.";
+			dispbottom "You now have "+PvPPoints+" Points.";
+			PvPWarning = 0;
+			callsub Timer;
+		}
+		PvPPoints += 1;
+		dispbottom "You've been awarded 1 PvP Point.";
+		dispbottom "You now have "+PvPPoints+" Points.";
+	Timer:
+		awake "PvPPointTimer";
+		PvPFlag = 1;
+		doevent "PvPPointTimer::OnTimerStart";
+		end;
+	}
+	if ( killedrid == getcharid(3) ) {
+		PvPPoints -= 1;
+		callsub L_PointCheck,PvPPoints;
+		dispbottom "You've lost 1 PvP Point.";
+		dispbottom "You now have "+PvPPoints+" Points.";
+		end;
+	}
+	
+	$@PVPcounter += 1;
+	setd getd("$@PVPKill"+$@PVPcounter),getcharid(3);
+	if(getgmlevel() >= 60) callsub AddPoint;
+	attachrid(killedrid);
+	PvPPoints -= 1;
+	callsub L_PointCheck,PvPPoints;
+	dispbottom "You've lost 1 PvP Point.";
+	dispbottom "You now have "+PvPPoints+" Points.";
+	detachrid;
+	AddPoint:
+	attachrid(getd("$@PVPKill"+$@PVPcounter));
+	PvPPoints += 1;
+	dispbottom "You've been awarded 1 PvP Point.";
+	dispbottom "You now have "+PvPPoints+" Points.";
+	PrevKilled = killedrid;
+	PvPFlag = 1;
+	doevent "PvPPointTimer::OnTimerStart";
+	end;
+
+L_PointCheck:
+	if(getarg(0) < 0) PvPPoints = 0;
+	return;
+
+OnPcLoginEvent:
+	if(!PvPPoints) { PvPPoints = 0; PvPWarning = 0; }
+	end;
+
+OnWhisperGlobal:
+	if(@whispervar0$ == "show") {
+		mes "Your PvP Points: ^00CC00"+PvPPoints;
+		close;
+	}
+	end;
+}
+
+-	script	PvPPointTimer	-1,{
+OnTimerStart:
+	sleep2 90000;
+	PvPFlag = 0;
+	end;
+}
