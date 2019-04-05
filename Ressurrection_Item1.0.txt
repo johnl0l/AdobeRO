@@ -1,0 +1,33 @@
+/*
+    Possibility to ressurrect yourself by having item in your backpack.
+    (C) 2015, Oxxy, v1.0
+	v1.0 Initial release
+*/
+function    script    Ressurrection_Item    {
+    .resItemEnabled = getarg(0); // Res item enabled.
+    .itemID = getarg(1); // Item ID used for ressurection
+    .itemIDa = getarg(2); // Item amount used for ressurection
+    .delitem = getarg(3); // Delete item after ressurection? 1 = yes, 0 = no
+	
+	return;
+}
+
+-	script	Automatic_Ressurrection	-1,{
+
+	OnInit:
+	callfunc "Ressurrection_Item",1,7227,1,0;
+	end;
+
+    OnPCDieEvent:
+    if(getvariableofnpc(.resItemEnabled,"Ressurrection_Item") && (getitemname(getvariableofnpc(.itemID,"Ressurrection_Item")) != "null" && countitem(getvariableofnpc(.itemID,"Ressurrection_Item")) >= getvariableofnpc(.itemIDa,"Ressurrection_Item")) {
+		mes "Do you want to respawn using "+getvariableofnpc(.itemID,"Ressurrection_Item")+" x"+getvariableofnpc(.itemIDa,"Ressurrection_Item")+" ?";
+		if(select("Yes:No") == 2) close;            
+			atcommand "@alive";
+			
+			if(getvariableofnpc(.delitem,"Ressurrection_Item"))
+				delitem getvariableofnpc(.itemID,"Ressurrection_Item"), getvariableofnpc(.itemIDa,"Ressurrection_Item");
+				
+			end;
+    } else end;
+	
+}

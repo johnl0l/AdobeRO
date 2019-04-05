@@ -1,0 +1,155 @@
+// ========= ITEM_DB2 ======
+20802,Anel_da_Gratificacao,Anel da Gratificação,5,45000,,100,,0,,2,0xFFFFFFFF,7,2,136,,0,0,1556,{bonus bAtkRate,resetp; bonus bBaseAtk,resetp; bonus bMaxHPrate,resetp; bonus bMaxSPrate,resetp; bonus bMatkRate,resetp; bonus bDefRate,resetp; bonus bMdefRate,resetp; bonus bHitRate,resetp; bonus bCriticalRate,resetp; bonus bFleeRate,resetp; bonus bSpeedAddRate,resetp; bonus bAspdRate,resetp; bonus bDoubleRate,resetp;},{},{},{},{}
+//=========================
+prontera,181,215,5	script	Mestre	120,{
+//===== Variaveis =======
+	set .reset$,"[Mestre]"; // Nome do NPC
+	set @iditem,20800; //ID do anel 
+	set @cobra,1;		// Serviço Cobrado (0 - Não ; 1 - Sim)
+	set @precoreset,500000; // Preço do Serviço
+//========================
+
+if (firsturn == 1){
+mes .reset$;
+mes "olá "+strcharinfo(0)+",que prazer reve-lo!";
+mes "em que posso ser util?";
+menu "Gostaria de Resetar novamente",-,"Ver quantas vezes resetei",vreset,"nada",nop;
+next;
+mes .reset$;
+if (BaseLevel < 699 || JobLevel < 99 ){mes "mas para isso você deve estar nivel 700/100"; mes "por isso volte quando estiver preparado."; close;}
+if (@cobra == 0)goto continua2;
+	if (@cobra == 1){
+if (Zeny < @precoreset){mes "mas você deve ter os "+@precoreset+"z para o serviço"; close;}
+set zeny,zeny-@precoreset;
+callsub continua2;
+}
+
+continua2:
+mes "Voa-lá,resetado Novamente!";
+jobchange 0;
+atcommand "@reset";
+set BaseLevel, 1;
+set JobLevel, 1;
+set SkillPoint, 0;
+set statuspoint, 48;
+set resets,resets+1;
+set resetp,resetp+1;
+if ( resets == 10 ) {
+show "Parabéns! Você Atingiu 10 Resets.";
+show "Como recompensa você recebera 3 Pontos de Bravura.";
+set #bravura,#bravura+3;
+close;
+}
+if ( resets == 20 ) {
+show "Parabéns! Você Atingiu 20 Resets.";
+show "Como recompensa você recebera 6 Pontos de Bravura.";
+set #bravura,#bravura+6;
+close;
+}
+if ( resets == 30 ) {
+show "Parabéns! Você Atingiu 30 Resets.";
+show "Como recompensa você recebera 9 Pontos de Bravura.";
+set #bravura,#bravura+9;
+close;
+}
+if ( resets == 40 ) {
+show "Parabéns! Você Atingiu 40 Resets.";
+show "Como recompensa você recebera 12 Pontos de Bravura.";
+set #bravura,#bravura+12;
+close;
+}
+if ( resets == 50 ) {
+show "Parabéns! Você Atingiu 50 Resets.";
+show "Como recompensa você recebera 15 Pontos de Bravura.";
+set #bravura,#bravura+15;
+close;
+}
+if ( resets == 60 ) {
+show "Parabéns! Você Atingiu 60 Resets.";
+show "Como recompensa você recebera 18 Pontos de Bravura.";
+set #bravura,#bravura+18;
+close;
+}
+
+if ( resets == 70 ) {
+show "Parabéns! Você Atingiu 70 Resets.";
+show "Como recompensa você recebera 21 Pontos de Bravura.";
+set #bravura,#bravura+21;
+close;
+}
+
+if ( resets == 80 ) {
+show "Parabéns! Você Atingiu 80 Resets.";
+show "Como recompensa você recebera 24 Pontos de Bravura.";
+set #bravura,#bravura+24;
+close;
+}
+if ( resets == 90 ) {
+show "Parabéns! Você Atingiu 90 Resets.";
+show "Como recompensa você recebera 27 Emblemas da Bravura.";
+set #bravura,#bravura+27;
+close;
+}
+if ( resets == 100 ) {
+show "Parabéns! Você Atingiu 100 Resets.";
+show "Como recompensa você recebera 100 Pontos de Bravura.";
+show "Apartir de agora você não recebera mais Pontos de Bravura.";
+show "Para ganhar premios semanais você deve se manter no top 3 do rank reset";
+set #bravura,#bravura+100;
+close;
+}
+dispbottom "Parabéns!você resetou com sucesso agora você tem "+resets+" Resets!";
+close;
+
+vreset:
+next;
+mes .reset$;
+if (resets == 1){mes "Você resetou uma vez."; close;}
+mes "Você Resetou "+resets+" Vezes.";
+close;
+
+nop:
+close;
+}
+
+mes .reset$;
+mes "Olá eu sou o mestre gansti sou conhecido por uma tecnica";
+mes "muito especial que aplico nas pessoas,eu volto elas para";
+mes "aprendiz para dar a oportunidade de aprender mais e as gratifico";
+mes "com um anel que a cada reset da 1% em todos atributos,atk,def,flee etc...";
+next;
+mes .reset$;
+mes "mas para que este serviço seja feito eu cobro um preço pois";
+mes "esta tecninca necessita de muito esforço.";
+mes "são apenas "+@precoreset+"z para o serviço.";
+mes "você tem interesse?";
+menu "claro!isso é otimo!",-,"não,obrigado.",nops;
+next;
+mes .reset$;
+mes "Que Otimo!";
+if (BaseLevel < 699 || JobLevel < 99 ){mes "mas para isso você deve estar nivel 700/100"; mes "por isso volte quando estiver preparado."; close;}
+	if (@cobra == 0)goto continua;
+	if (@cobra == 1){
+if (Zeny < @precoreset){mes "mas você deve ter os "+@precoreset+"z para o serviço"; close;}
+set zeny,zeny-@precoreset;
+callsub continua;
+}
+
+continua:
+mes "Voa-lá,resetado com sucesso!";
+mes "e aqui esta seu anel!";
+jobchange 0;
+atcommand "@reset";
+set BaseLevel, 1;
+set JobLevel, 1;
+set SkillPoint, 0;
+set statuspoint, 48;
+getitem @iditem,1;
+set firsturn,1;
+set resets,resets+1;
+set resetp,resetp+1;
+close;
+
+nops:
+close;
+}

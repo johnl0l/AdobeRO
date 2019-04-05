@@ -1,0 +1,53 @@
+// --------------------------------------------------------------------------------------------* 
+//                                                                                             //
+// ______                                           _                                          // 
+// | ___ \                                         | |                                         //
+// | |_/ /___  ___  ___ _ __ ___   ___  _   _ _ __ | |_                                        //
+// |    // _ \/ __|/ _ \ '_ ` _ \ / _ \| | | | '_ \| __|                                       // 
+// | |\ \ (_) \__ \  __/ | | | | | (_) | |_| | | | | |_                                        //
+// \_| \_\___/|___/\___|_| |_| |_|\___/ \__,_|_| |_|\__|                                       //
+//                                                                                             //
+//                                         _____           _       _                           //
+//                                        /  ___|         (_)     | |                          //
+//                                        \ `--.  ___ _ __ _ _ __ | |_                         //
+//                                         `--. \/ __| '__| | '_ \| __|                        //
+//                                        /\__/ / (__| |  | | |_) | |_                         //
+//                                        \____/ \___|_|  |_| .__/ \__|                        //
+//                                                          | |                                //
+//                                                          |_|                                //
+// --------------------------------------------------------------------------------------------*
+//					Create By ~ Rosemount				       //
+//					Current Version ~ v1.0	                               //
+//					Tested ~ Latest Rathena                                //
+// --------------------------------------------------------------------------------------------*
+
+-	script	Resurrection_Ticket	-1,{
+
+OnPcDieEvent:
+if( .Buff) {
+if(countitem(.Ticket)<.Total) end;
+if(select("~ Use Ticket:~ Cancel") == 2) end;
+progressbar ".Pbc$",.PbcDelay;
+delitem .Ticket,.Total;
+atcommand "@raise "+strcharinfo(0);
+sc_start 30,600000,10;	// Add Here Buff
+sc_start 32,600000,10;
+message strcharinfo(0),"I'm Back";
+end;
+}
+if(countitem(.Ticket)<.Total) end;
+if(select("~ Use Ticket:~ Cancel") == 2) end;
+progressbar ".Pbc$",.PbcDelay;
+delitem .Ticket,.Total;
+atcommand "@raise "+strcharinfo(0);
+message strcharinfo(0),"I'm Back";
+end;
+
+OnInit:
+set .Buff,1;	// [ 1 - Enable Buff | 0 - Disable Buff ]
+set .Ticket,7199;	// [ Ticket ID ]
+set .Total,1;	// [ Use Ticket Amount ]
+set .Pbc$, "Green";	// [ ProgressBar Color ]
+set .PbcDelay,5;	// [ 5 Second Delay ]
+end;
+}

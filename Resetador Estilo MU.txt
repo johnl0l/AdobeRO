@@ -1,0 +1,44 @@
+prontera.gat,147,141,5	script	Resetador MU	899,{
+
+setarray @resets[360], 0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 440, 460, 480, 500, 520, 540, 560, 580, 600;
+dispbottom "Este NPC foi criado por Katsumoto!!";
+mes $n$;
+mes "Olá [^FF0000"+StrCharInfo(0)+"^000000]!!";
+mes "Você possui [^FF0000"+rn+"^000000] Resets!!";
+mes "Deseja resetar seu char ?";
+next;
+if(select("- Claro:- Não valeu..")==2){
+next;
+mes $n$;
+mes "Ok.. Até mais então!!";
+close;
+}
+next;
+mes $n$;
+if(BaseLevel < $level){
+mes "Desculpe mais você não tem [^FF0000"+$level+"^000000] de level!!";
+close;
+}
+if(JobLevel < $job){
+mes "Desculpe mais você não tem [^FF0000"+$job+"^000000] de job!!";
+close;
+}
+set BaseLevel,BaseLevel-BaseLevel+1;
+resetskill;
+resetstatus;
+set StatusPoint,360;
+next;
+set SkillPoint,70;
+set Class,0;
+set StatusPoint,@resets[rn];
+set rn,rn+1;
+mes "Parabens [^FF0000"+StrCharInfo(0)+"^000000]!!";
+mes "Você recebeu seu [^FF0000"+rn+"^000000º] reset!!";
+close;
+
+OnInit:
+set $n$,"[Resetador]";
+set $level,99;
+set $job,70;
+end;
+}

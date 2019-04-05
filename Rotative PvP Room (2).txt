@@ -1,0 +1,207 @@
+/*
+	Changelog:
+
+	v1.1 	Added option to debuff players when entering the room.
+		Added command to rotate manually.
+		Remove hiding when quitting room.
+		Added lvl checking on command.
+
+	v1.1a	Removed right curly which made dispell function don't work. Sorry.
+		Added color to the npc name in dialog.
+		Added F_InsertPlural use.
+
+	v1.2    Added waitingroom with player count.
+*/
+
+// You can use this function with other scripts as well.
+function	script	dispell	{
+
+	while(.@i++ < SC_SPL_MATK) {
+		if(
+			.@i != SC_WEIGHT50 &&
+			.@i != SC_WEIGHT90 &&
+			.@i != SC_NOCHAT &&
+			.@i != SC_BABY &&
+			/*
+			.@i != SC_WEDDING &&
+			.@i != SC_XMAS &&
+			.@i != SC_SUMMER &&
+			.@i != SC_HANBOK &&
+			.@i != SC_OKTOBERFEST &&
+			*/
+			.@i != SC_JAILED &&
+			.@i != SC_EXPBOOST &&
+			.@i != SC_ITEMBOOST
+		)
+			sc_end .@i;
+	}
+	.@i = SC_FEAR;
+	while(.@i++ < SC_AKAITSUKI)
+		sc_end .@i;
+
+}
+
+prontera,147,172,6	script	PvP#0	4_M_SAKRAYROYAL,{
+
+	.@n$ = "^3227cd[PvP Room]^000000";
+	mes .@n$;
+	if(BaseLevel >= .min_lv) {
+		mes "There are ^d40f00"+F_InsertPlural(getmapusers(.map$),"player")+"^000000 inside right now.";
+		mes "Do you want to enter to the room?";
+		if(.debuff)
+			mes "^8b0d1fBe careful, because every buff you have will be lost upon entering the room.^000000";
+		next;
+		if(select("Yes.","No, thanks.") == 1) {
+			specialeffect2 F_Rand(EF_STORMKICK1,EF_STORMKICK2,EF_STORMKICK3,EF_STORMKICK6,EF_STORMKICK7);
+			sleep2 600;
+			specialeffect2 F_Rand(EF_SPINMOVE,EF_CASTSPIN2);
+			sleep2 550;
+			if(.debuff)
+				dispell();
+			warp .map$,0,0;
+			mapannounce .map$,strcharinfo(0)+" has entered the room.",bc_map,0xb50505;
+		}
+	} else {
+		mes "You must be at least level "+.min_lv+" to be able to enter the room.";
+		close;
+	}
+	end;
+
+OnInit:
+
+	// This command can be used to enter the PvP Room.
+	bindatcmd "pvp","PvP#0::OnCommand";
+
+	// Command to rotate the room maually.
+	bindatcmd "rotatepvp","PvP#0::OnMinute00",60;
+
+	// Min LvL to enter the room.
+	.min_lv = 50;
+
+	// Will players be dispelled upon entering the room?
+	.debuff = false;
+
+OnMinute00:
+OnMinute30:
+
+	// PvP maps go here. Change them as you wish.
+	setarray .@maps$[0], "guild_vs2","guild_vs3","guild_vs5","pvp_y_1-1","guild_vs4","guild_vs1","arena_room";
+
+	// Max amount of times a map can be repeated. 0 = unlimited.
+	.@row = 3;
+
+	.@size = getarraysize(.@maps$);
+
+	if(.map$ == "") {
+
+		// You can edit the room mapflags here.
+		setarray .@mapfl[0], 	mf_nosave,
+					mf_nodrop,
+					mf_novending,
+					mf_noteleport,
+					mf_noreturn,
+					mf_nowarp,
+					mf_nowarpto,
+					mf_nomemo,
+					mf_nopenalty,
+					mf_nobranch,
+					mf_hidemobhpbar,
+					mf_pvp,
+					mf_pvp_noguild,
+					mf_pvp_noparty,
+					mf_pvp_nocalcrank,
+					mf_loadevent;
+
+		.@i = getarraysize(.@mapfl);
+		while(.@i--) {
+			.@j = .@size;
+			while(.@j--)
+				setmapflag .@maps$[.@j],.@mapfl[.@i];
+		}
+
+	}
+
+	.@map$ = .map$;
+	.@r    = rand(.@size);
+	.map$  = .@maps$[.@r];
+	if(.@row && .map$ == .@map$) {
+		if(++.row >= .@row) {
+			deletearray .@maps$[.@r],1;
+			.map$ = .@maps$[rand(.@size - 1)];
+			.row  = 0;
+		}
+	} else if(.row) {
+		.row = 0;
+	}
+	if(.map$ != .@map$ && .@map$ != "") {
+		mapwarp .@map$,.map$,0,0;
+		sleep 2500;
+		mapannounce .map$,"The PvP Room has changed!",bc_npc,0xe53a12;
+	}
+	end;
+
+OnCommand:
+
+	.@ins_id = instance_id();
+	.@m$ = strcharinfo(3);
+	if((!.@ins_id || instance_mapname(.@m$,.@ins_id) == "") && BaseLevel >= .min_lv) {
+		if(.@m$ != .map$) {
+			message strcharinfo(0),"Preparing to enter!";
+		} else {
+			message strcharinfo(0),"Quitting the room...";
+			unitstopwalk getcharid(3);
+			pcblockmove getcharid(3),true;
+			pcblockskill getcharid(3),true;
+			setoption OPTION_HIDE|OPTION_CLOAK|OPTION_CHASEWALK,false;
+		}
+		.@hp = HP;
+		sleep2 1400;
+		while(.@i++ < 5) {
+			message strcharinfo(0),(6 - .@i)+"...";
+			sleep2 990;
+			if(HP < .@hp) {
+				message strcharinfo(0),"You can't do this in the middle of a battle.";
+				pcblockmove getcharid(3),false;
+				pcblockskill getcharid(3),false;
+				end;
+			}
+		}
+		specialeffect2 F_Rand(EF_STORMKICK1,EF_STORMKICK2,EF_STORMKICK3,EF_STORMKICK6,EF_STORMKICK7);
+		sleep2 600;
+		specialeffect2 F_Rand(EF_SPINMOVE,EF_CASTSPIN2);
+		sleep2 550;
+		if(.@m$ != .map$) {
+			if(.debuff)
+				dispell();
+			warp .map$,0,0;
+			mapannounce .map$,strcharinfo(0)+" has entered the room.",bc_map,0xb50505;
+		} else {
+			warp "SavePoint",0,0;
+			pcblockmove getcharid(3),false;
+			pcblockskill getcharid(3),false;
+		}
+	} else if(BaseLevel < .min_lv) {
+		message strcharinfo(0),"You must be at least level "+.min_lv+" to be able to enter the room.";
+	} else {
+		message strcharinfo(0),"You can't enter the room in the middle of an instance.";
+	}
+	end;
+
+OnPCLoadMapEvent:
+OnPCLogoutEvent:
+
+	if(strcharinfo(3) == .map$ || @in_pvp) {
+		@in_pvp = !@in_pvp;
+		donpcevent "PvP#0::OnUpdateCount";
+	}
+	end;
+
+OnUpdateCount:
+
+	delwaitingroom;
+	.@n = getmapusers(.map$);
+	if(.@n)
+		waitingroom F_InsertPlural(.@n,"player")+".",0;
+	end;
+
+}

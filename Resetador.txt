@@ -1,0 +1,122 @@
+/* Drek'Arthas --------------------------------------------------------------------------------
+|                                 __                                                          |
+|                                /\ \              ____________                               |
+|  ________               __   __\ \ \  ________  /\_____  ____\ __                           |
+| /\  ____ \             /\ \ /\ \\ \_\/\  ____ \ \/____ \ \___//\ \                          |
+| \ \ \__/\ \  ____    __\ \ \\_\ \\/_/\ \ \___\ \  ____\ \ \   \ \ \_____     __     ____    |
+|  \ \ \ \ \ \/\  _\ /'__`\ \  ___:     \ \  ____ \/\  _\\ \ \   \ \  ___ \  /'__`\  /\  _|   |
+|   \ \ \_\_\ \ \ \//\  __/\ \ \_/\\_    \ \ \__/\ \ \ \/ \ \ \   \ \ \_/\ \/\ \L\.\_\ \__ \  |
+|    \ \______/\ \_\\ \____\\ \_\\ \_\    \ \_\ \ \ \ \_\  \ \_\   \ \_\\ \ \ \__/.\_\\/\___\ |
+|     \/_____/  \/_/ \/____/ \/_/ \/_/     \/_/  \/_/\/_/   \/_/    \/_/ \/_/\/__/\/_/ \/___/ |
+|                                                                       DrekArthas@hotmail.com|
+|----------------------------------------------------------------------------------------------
+|--- eAthena Script ---------------------------------------------------------------------------
+|----------------------------------------------------------------------------------------------
+|--- Criado por -------------------------------------------------------------------------------
+|- DrekArthas
+|--- Verção -----------------------------------------------------------------------------------
+|- 1.20
+|---- Descrição -------------------------------------------------------------------------------
+|- Reseta os pontos de Atributo do personagem e em troca lhe da da um bonificação de 20(ou+) 
+|- pontos de atributo por cada resete.
+|---- Chargelog -------------------------------------------------------------------------------
+|- 0.01 Script iniciado                                                [01/10/2009[Drek'Arthas]
+|- 1.00 Scrit concluido                                                [02/10/2009[Drek'Arthas]
+|- 1.10 Suporte SQL adicionado                                         [14/10/2009[Drek'Arthas]
+|- 1.20 Alguns erros corigidos                                         [22/05/2010[Drek'Arthas]
+---------------------------------------------------------------------------------------------*/
+auction_01,188,87,5	script	Resetador	899,{
+//Configuração
+set @n$,"[Resetador]";      //Nome do NPC
+set @mlvl,99;               //Nivel minimo de base.
+set @rp,20;                 //Pontos ganhos por resete.
+set @cust,1000000;          //Custo para resetar (0 para ficar de graça)
+set @nrct,1000000;           //Custo adicional por resete
+set @mjob,70;                //Nivel minimo de clase.(0 para desativar)
+set @rjob,0;                //Restar clase.(1 para ativar)
+set @rabilt,0;              //Resetar abilidades.(1 para ativar)
+set @rcl,1;                 //Resetar transclases para job 4001 inves de 0. (1 para ativar)
+
+
+
+//Pedidos SQL
+	query_sql "SELECT `ID_do_Pers` FROM `resetes` WHERE `ID_do_Pers` = '"+ getcharid(0) +"'", @Pid$;
+	if (!getarraysize(@Pid$)){
+	query_sql "INSERT INTO `resetes` (`ID_do_Pers`, `resete`) VALUES ('"+ getcharid(0) +"', '0')";
+	atcommand "@reloadpcdb";}
+	query_sql "SELECT `resete` FROM `resetes` WHERE `ID_do_Pers` = '"+ getcharid(0) +"'", @qr;
+
+//NPC
+	mes @n$;
+	mes "Olá ^FF0000"+StrCharInfo(0)+"^000000!!";
+	mes "Você possui ^FF0000"+@qr+"^000000 Resets!!";
+	mes "Deseja resetar seu char ?";
+	next;
+	menu"- Claro",-,"- Como funciona?",ajd,"- Não, talvez outro dia..",sair;
+
+	if(BaseLevel < @mlvl){mes @n$;mes "Desculpe mais você não tem ^FF0000"+@mlvl+"^000000 de Base level!!";close;}
+	if(BaseLevel < @mjob){mes @n$;mes "Desculpe mais você não tem ^FF0000"+@mjob+"^000000 de Clase level !!";close;}
+	set @custo,(@nrct*@qr)+@cust;
+	if(Zeny < @custo){mes @n$;mes "Desculpe mais você não tem ^FF0000"+@cust+"^000000 de zeny!!";close;}
+	if(@rjob == 1){
+	if(@rcl == 1){
+	if(checkfalcon() || checkcart() || checkriding()){mes @n$;mes "Remova o seu carrinho, falcão ou pecopeco.";close;}
+	if(Class >= 4023 && Class <= 4045){callfunc "Job_Change",4023;}//Baby
+	if((Class >= 4001 && Class <= 4022) ||
+	  ( Class >= 4060 && Class >= 4065) ||
+	  ( Class >= 4073 && Class >= 4079) ||
+	    Class == 4081                   ||
+	    Class == 4083                   ||
+	    Class == 4085){callfunc "Job_Change",4001;}
+	callfunc "Job_Change",0;}
+	set JobLevel,1;
+	set SkillPoint,0;}
+	if(@rabilt == 1){ResetSkill;}
+	set zeny,zeny - @cust;
+	set BaseLevel,1;
+	resetstatus;
+	set @qut,@qr + 1;
+	set @gpoint,@rp*@qut;
+	set StatusPoint,StatusPoint+@gpoint;
+	query_sql "UPDATE `resetes` SET `resete` = '"+ @qut +"' WHERE `ID_do_Pers` = '"+ getcharid(0) +"'";
+	mes "Parabens ^FF0000"+StrCharInfo(0)+"^000000!!";
+	mes "Você recebeu seu ^FF0000"+@qut+"^000000º resete!!";
+	close;
+
+ajd:
+	next;
+	mes @n$;
+	mes "Você volta para o nivel 1 com um bonus de "+@rp+" pontos de statos por resete.";
+	mes "Só e possivel resetar se você tiver pelo menos "+@mlvl+"de Base nivel";
+	if (@mjob > 1){mes "e polo menos "+@mjob+" de Clase nivel.";}
+	if (@rjob == 1){mes "Seu nivel de clase sera diminuido a 1 e você voltara a ser um aprendiz";}
+	if (@rcl == 1){mes " Ex:Arquimago => Aprendiz T.| Cavaleiro bebe => bebe | Caçador => aprendiz";}
+	if (@rabilt == 1){mes "Você se esquesera de suas abilidades";}
+	mes "Você devera pagar uma quantia equvalente á"+@cust+"z + "+@nrct+"z(por resete) para resetar";
+	close;
+
+sair:
+	next;
+	mes @n$;
+	mes "Ok.. Até mais então!!";
+	close;
+
+
+OnInterifInitOnce:
+query_sql "CREATE TABLE IF NOT EXISTS `resetes` (`ID_do_Pers` int(11) unsigned NOT NULL auto_increment,`resete` int(11) NOT NULL default '0',PRIMARY KEY  (`ID_do_Pers`),KEY `name` (`resete`)) ";
+query_sql "INSERT INTO `resetes` (`ID_do_Pers`, `resete`) VALUES(150000, 0);";
+end;
+}
+
+//Tabela Resetes
+//-Copie o que esta entre '/*' e '*/'para um bloco de notas 
+/*
+DROP TABLE IF EXISTS `resetes`;
+CREATE TABLE IF NOT EXISTS `resetes` (
+	`ID_do_Pers` int(11) unsigned NOT NULL auto_increment,
+	`resete` int(11) NOT NULL default '0',
+	PRIMARY KEY  (`ID_do_Pers`),
+	KEY `name` (`resete`)
+) TYPE=MyISAM; 
+INSERT INTO `resetes` (`ID_do_Pers`, `resete`) VALUES('150000', '0');
+*/

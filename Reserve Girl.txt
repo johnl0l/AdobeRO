@@ -1,0 +1,173 @@
+//Reserve NPC by teamcars of teamcars1broglobal@blogspot.com
+
+prontera,147,162,5      script  Reserve Girl    891,{
+
+ 
+
+        mes "[Reserve Girl]";
+
+        mes "I am a Reserve Girl.";
+
+        mes "Buy stat points: ^0000FF2,500^000000z";
+
+        mes "Reserve stat points";
+
+        mes "Use Reserve stat points";
+
+        mes "Please select the service you want:";
+
+        next;
+
+        menu "^FF3355Buy stat points",Lr0,"Reserve stat points",Lr1,"Use Reserve stat points^000000",Lr2,"Quit",LrEnd;
+
+        
+
+        Lr0:
+
+                set @bsavail,(Zeny/2500);
+
+                mes "[Reserve Girl]";
+
+                mes "^0000FF" + strcharinfo(0) + "^000000";
+
+                mes "Available Stat Points to buy: ^0000FF" + @bsavail + "^000000";
+
+                mes "How Many Stat Points you want to buy?";
+
+                input @BuyST;
+
+                set @ttal,(@BuyST*2500);
+
+                if (Zeny < @ttal) goto rNeedZenys;
+
+                mes "That will be ^0000FF" + @ttal + "^000000z!";
+
+                next;
+
+                mes "Do you still wanna buy stat?";
+
+                menu "^FF3355Buy",Lrsyes,"Ive change my mind^000000",Lrsno;
+
+                Lrsyes:
+
+                set StatusPoint,StatusPoint+@BuyST;
+
+                set Zeny,Zeny-@ttal;
+
+                set @Cres,StatusPoint;
+
+                set #totalbuy,#totalbuy+@BuyST;
+
+                goto STdis2;
+
+                close;
+
+                Lrsno:
+
+                mes "Thanks you ^0000FF" + strcharinfo(0) + "^000000!";
+
+                mes "Come Again!";
+
+                close;
+
+        Lr1:
+
+                mes "[Reserve Girl]";
+
+                if (StatusPoint <= 0) goto rNstat;
+
+                set @Cres,StatusPoint;
+
+                mes "Alright, How Many Stat Point you want to Reserve!";
+
+                mes "Your Available Stat ^0000FF" + @Cres + "^000000! ";
+
+                input @ResST;
+
+                if (@ResST > StatusPoint) goto rNstat;
+
+                set StatusPoint,StatusPoint-@ResST;
+
+                set #STres,#STres+@ResST;
+
+                set @Cres,StatusPoint;
+
+                goto STdis1;
+
+                close;
+
+        Lr2:
+
+                mes "[Reserve Girl]";
+
+                if (#STres == 0) goto rNores;
+
+                mes "Alright, How Many Reserve Stat Point you want to use!";
+
+                mes "Your Available Reserve Stat ^0000FF" + #STres + "^000000! ";
+
+                input @uResST;
+
+                if (@uResST > #STres) goto rNores;
+
+                set #STres,#STres-@uResST;
+
+                set StatusPoint,StatusPoint+@uResST;
+
+                set @Cres,StatusPoint;
+
+                goto STdis1;
+
+                close;
+
+                
+
+        STdis1:
+
+                mes "Your Available Stat ^0000FF" + @Cres + "^000000! ";
+
+                mes "Your Available Reserve Stat ^0000FF" + #STres + "^000000! ";
+
+                close;
+
+        STdis2:
+
+                mes "Your Available Stat ^0000FF" + @Cres + "^000000! ";
+
+                close;
+
+                rNeedZenys:
+
+                        mes "Sorry, you don't have enough Zeny.";
+
+                        close;
+
+                rNstat:
+
+                        mes "Sorry, you don't have stat point that can be reserve.";
+
+                        close;
+
+                rNores:
+
+                        mes "Sorry, you don't have reserve stat point.";
+
+                        close;
+
+        LrEnd:
+
+                close;  
+
+ 
+
+ 
+
+        OnInit:
+
+        waitingroom "Reserve NPC",0;
+
+        end;
+
+ 
+
+}

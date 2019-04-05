@@ -1,0 +1,261 @@
+//===== Cronus Script ========================================
+
+//= Resetador estilo MU SQL
+
+//===== Por: =================================================
+
+//= dukaa	http://forum.cronus-emulator.com/
+
+//===== Versão Atual: ========================================
+
+//= Versão 2.0
+
+//===== Compatibilidade: =====================================
+
+//= Cronus/eAthena >> 11/09/2011
+
+//===== Descrição: ===========================================
+
+//= Npc Reset estilo MU com titulo antes do nome do char.
+
+//= Adicionado prêmios.
+
+//============================================================
+
+prontera,155,164,4	script	Princesa do Reset	856,{
+
+set .@np$,"^008080[Princesa do Reset]^000000";
+
+mes .@np$;
+
+mes "Olá "+strcharinfo(0)+" gostaria de Resetar?";
+
+mes "Nesse sistema de resets quanto mais resets você tiver mais bônus extras você ganha";
+
+mes "E é adicionado um prefixo ao seu nome identificando que classe de herói você é.";
+
+mes "Oque deseja fazer?";
+
+switch(select("Nada:Quero Resetar:Desativar Título:Ativar Título")){
+
+case 1: close;
+
+case 2:
+
+if(BaseLevel < 99 ){ mes .@np$; mes "Volte quando estiver apto a evoluir."; close; }
+
+atcommand "@reset";
+
+atcommand "@blvl -99";
+
+atcommand "@jlvl -70";
+
+set StatusPoint,0;
+
+set SkillPoint,0;
+
+query_sql "SELECT `rn_number` FROM `reset_mu` WHERE `char_id`='"+getcharid(0)+"'",.@rn;
+
+callfunc "res_mu",.@rn;
+
+close;
+
+case 3:
+
+next;
+
+mes .@np$;
+
+query_sql "SELECT `nm_old` FROM `reset_mu` WHERE `char_id`='"+getcharid(0)+"'",.@ton$;
+
+if(strcharinfo(0) == .@ton$){ mes .@np$; mes "Você já está com seu título desativado"; close;}
+
+query_sql "UPDATE `char` SET `name`='"+.@ton$+"' WHERE `char_id`='"+getcharid(0)+"'";
+
+mes "Pronto !";
+
+mes "Caso queira ativa-lo denovo relogue e fale comigo novamente."; close; end;
+
+case 4:
+
+next;
+
+query_sql "SELECT `rn_number` FROM `reset_mu` WHERE `char_id`='"+getcharid(0)+"'",.@rn;
+
+if(.@rn == 0){ mes .@np$; mes "Você não possui nenhum título."; close;}
+
+query_sql "SELECT `title` FROM `reset_mu` WHERE `char_id`='"+getcharid(0)+"'",.@tit$;
+
+query_sql "SELECT `nm_old` FROM `reset_mu` WHERE `char_id`='"+getcharid(0)+"'",.@ton$;
+
+set .@nt$,.@tit$+.@ton$;
+
+query_sql "UPDATE `char` SET `name`='"+.@nt$+"' WHERE `char_id`='"+getcharid(0)+"'";
+
+mes .@np$;
+
+mes "Título ativado , relogue pra completar o processo.";
+
+mes "Tenha um bom jogo "+strcharinfo(0)+"."; close; end;
+
+}
+
+}
+
+function	script	res_mu	{
+
+setarray @resstat[0],10,20,30,50,80,100,120,130,150,200;
+
+setarray @resitem[0],607,5,10,20,30,40,50,60,70,80,100; //ygg berry
+
+setarray @resitemU[0],14533,1,2,3,4,5,6,7,8,9,10; //grimório de combate
+
+setarray @resitemD[0],12210,1,2,3,4,5,6,7,8,9,10; //goma de mascar
+
+if(getarg(0) == 0){
+
+set .@st,@resstat[0];
+
+set .@nm$,"[Reseter] ";
+
+query_sql "INSERT INTO `reset_mu` (`char_id`,`rn_number`,`title`,`nm_old`) VALUES ('"+getcharid(0)+"','1','Reseter','"+strcharinfo(0)+"')";
+
+getitem @resitem[0],@resitem[1]; getitem @resitemU[0],@resitemU[1]; getitem @resitemD[0],@resitemD[1];
+
+}
+
+else if(getarg(0) == 1){
+
+set .@st,@resstat[1];
+
+set .@nm$,"[superior] ";
+
+getitem @resitem[0],@resitem[2]; getitem @resitemU[0],@resitemU[2]; getitem @resitemD[0],@resitemD[2];
+
+}else if(getarg(0) == 2){
+
+set .@st,@resstat[2];
+
+set .@nm$,"[Poderoso] ";
+
+getitem @resitem[0],@resitem[3]; getitem @resitemU[0],@resitemU[3]; getitem @resitemD[0],@resitemD[3];
+
+}else if(getarg(0) == 3){
+
+set .@st,@resstat[3];
+
+set .@nm$,"[Honrado] ";
+
+getitem @resitem[0],@resitem[4]; getitem @resitemU[0],@resitemU[4]; getitem @resitemD[0],@resitemD[4];
+
+}else if(getarg(0) == 4){
+
+set .@st,@resstat[4];
+
+set .@nm$,"[bárbaro] ";
+
+getitem @resitem[0],@resitem[5]; getitem @resitemU[0],@resitemU[5]; getitem @resitemD[0],@resitemD[5];
+
+}else if(getarg(0) == 5){
+
+set .@st,@resstat[5];
+
+set .@nm$,"[selvagem] ";
+
+getitem @resitem[0],@resitem[6]; getitem @resitemU[0],@resitemU[6]; getitem @resitemD[0],@resitemD[6];
+
+}
+
+else if(getarg(0) == 6){
+
+set .@st,@resstat[5];
+
+set .@nm$,"[Famoso] ";
+
+getitem @resitem[0],@resitem[7]; getitem @resitemU[0],@resitemU[7]; getitem @resitemD[0],@resitemD[7];
+
+}
+
+else if(getarg(0) == 7){
+
+set .@st,@resstat[5];
+
+set .@nm$,"[Temido] ";
+
+getitem @resitem[0],@resitem[8]; getitem @resitemU[0],@resitemU[8]; getitem @resitemD[0],@resitemD[8];
+
+}
+
+else if(getarg(0) == 8){
+
+set .@st,@resstat[5];
+
+set .@nm$,"[Herói] ";
+
+getitem @resitem[0],@resitem[9]; getitem @resitemU[0],@resitemU[9]; getitem @resitemD[0],@resitemD[9];
+
+}
+
+else if(getarg(0) == 9){
+
+set .@st,@resstat[5];
+
+set .@nm$,"[Herói Supremo] ";
+
+getitem @resitem[0],@resitem[10]; getitem @resitemU[0],@resitemU[10]; getitem @resitemD[0],@resitemD[10];
+
+}
+
+else if(getarg(0) == 10){
+
+mes "Você chegou ao nivel máximo dos resets,alcançando a posição de Herói Supremo"; close;
+
+}
+
+query_sql "SELECT `nm_old` FROM `reset_mu` WHERE `char_id`='"+getcharid(0)+"'",.@old$;
+
+set .@nmc$,.@nm$+.@old$;
+
+query_sql "UPDATE `char` SET `name`='"+.@nmc$+"' WHERE `char_id`='"+getcharid(0)+"'";
+
+query_sql "UPDATE `reset_mu` SET `rn_number`=`rn_number`+1 WHERE `char_id`='"+getcharid(0)+"'";
+
+query_sql "UPDATE `reset_mu` SET `title`='"+.@nm$+"' WHERE `char_id`='"+getcharid(0)+"'";
+
+mes "Você ganhou "+.@st+" atributos a mais em cada status parabéns !";
+
+mes "Agora você é um "+.@nm$+".";
+
+dispbottom "Você resetou e ganhou agora o título de "+.@nm$+" ";
+
+dispbottom "Relogue para ativar seu novo título.";
+
+specialeffect2 371;
+
+specialeffect2 367;
+
+atcommand "@str +"+.@st+"";
+
+atcommand "@agi +"+.@st+"";
+
+atcommand "@vit +"+.@st+"";
+
+atcommand "@dex +"+.@st+"";
+
+atcommand "@luk +"+.@st+"";
+
+close;
+
+}
+
+//CREATE TABLE IF NOT EXISTS `reset_mu` (
+
+//`char_id` int(11) NOT NULL default '0',
+
+//`rn_number` int(11) NOT NULL default '0',
+
+//`title` varchar(32) NOT NULL default '',
+
+//`nm_old` varchar(30) NOT NULL default ''
+
+//) ENGINE=MyISAM;
