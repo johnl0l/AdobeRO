@@ -1,0 +1,21 @@
+prontera,155,181,5	script	Sample	757,{
+setarray .@CoinID[0],670,671;
+
+for( set .@i,0; .@i < getarraysize( .@CoinID ); set .@i,.@i + 1 )
+	set .@Menu$,.@Menu$ + getitemname( .@CoinID[.@i] )+":";
+mes "Each 2 Cash Points.";
+set .@i,( select( .@Menu$ ) - 1 );
+if( #CASHPOINTS < 2 ){
+	mes "Sorry but you didnt have 2 Cash Points.";
+}else{
+	mes "How many you want ?";
+	mes "Amount : 1 ~ "+( #CASHPOINTS / 2 );
+	input .@Amount,0,( #CASHPOINTS / 2 );
+	if( .@Amount ){
+		set #CASHPOINTS,#CASHPOINTS - ( .@Amount * 2 );
+		getitem .@CoinID[.@i],.@Amount;
+		mes "Done";
+	}
+}
+close;
+}

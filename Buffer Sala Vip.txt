@@ -1,0 +1,172 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+sec_in02.gat,139,170,2	script	Buff	750,{
+
+	set .@deny, 5; // 10 seconds cooldown
+	if ( @healer_deny + .@deny >= gettimetick(2) ) end;
+	set @healer_deny, gettimetick(2);
+
+	sc_end sc_stone;
+	sc_end sc_freeze;
+	sc_end sc_sleep;
+	sc_end sc_curse;
+	sc_end sc_silence;
+	sc_end sc_confusion;
+	sc_end sc_blind;
+	sc_end sc_bleeding;
+	sc_end sc_decreaseagi;
+	sc_end sc_poison;
+	sc_end sc_hallucination;
+	sc_end sc_stripweapon;
+	sc_end sc_striparmor;
+	sc_end sc_striphelm;
+	sc_end sc_stripshield;
+	sc_end sc_changeundead;
+	sc_end sc_orcish;
+	sc_end sc_berserk;
+	sc_end sc_ske;
+	sc_end sc_swoo;
+	sc_end sc_ska;
+	sc_end sc_lexaeterna;
+	sc_end sc_venombleed;
+	sc_end sc_dpoison;
+	sc_end sc_burning;
+
+	  percentheal 100,100;
+//skilleffect 384,0; sc_start SC_MELTDOWN,60000,5;
+//skilleffect 383,0; sc_start SC_WINDWALK,370000,5;
+//skilleffect 378,0; sc_start SC_EDP,50000,5;
+//skilleffect 465,0; sc_start SC_KAITE,600000,7;
+//skilleffect 464,0; sc_start SC_KAUPE,600000,3;
+//skilleffect 463,0; sc_start SC_KAAHI,1800000,7;
+//skilleffect 462,0; sc_start SC_KAIZEL,1800000,7;
+//skilleffect 8,0; sc_start SC_ENDURE,37000,10;
+skilleffect 33,0; sc_start SC_ANGELUS,300000,10;
+//skilleffect 45,0; sc_start SC_CONCENTRATE,240000,10;
+//skilleffect 74,0; sc_start SC_MAGNIFICAT,90000,5;
+skilleffect 75,0; sc_start SC_GLORIA,30000,5;
+//skilleffect 459,0; sc_start SC_ADRENALINE2,150000,1;
+skilleffect 66,0; sc_start SC_IMPOSITIO,60000,5;
+//skilleffect 67,0; sc_start SC_SUFFRAGIUM,10000,3;
+skilleffect 34,0; sc_start SC_BLESSING,240000,10;
+skilleffect 29,0; sc_start SC_INCREASEAGI,240000,10;
+//skilleffect 112,0; sc_start SC_WEAPONPERFECTION,50000,10;
+//skilleffect 113,0; sc_start SC_OVERTHRUST,100000,5;
+//skilleffect 114,0; sc_start SC_MAXIMIZEPOWER,5000,5;
+//skilleffect 357,0; sc_start SC_CONCENTRATION,45000,5;
+//skilleffect 355,0; sc_start SC_AURABLADE,120000,5;
+//skilleffect 155,0; sc_start SC_LOUD,300000,1;
+//skilleffect 157,0; sc_start SC_ENERGYCOAT,300000,1;
+//skilleffect 380,0; sc_start SC_TRUESIGHT,30000,5;
+skilleffect 361,0; sc_start SC_ASSUMPTIO,100000,5;
+//skilleffect 111,0; sc_start SC_ADRENALINE,150000,5;
+//skilleffect 479,0; sc_start SC_FULLPROTECTION,600000,5;
+//skilleffect 69,0; sc_start SC_BENEDICTIO,200000,5;
+//skilleffect 71,0; sc_start SC_SLOWPOISON,40000,4;
+//skilleffect 73,0; sc_start SC_KYRIE,120000,10;
+//skilleffect 139,0; sc_start SC_POISONREACT,65000,10;
+//skilleffect 256,0; sc_start SC_PROVIDENCE,180000,5;
+//skilleffect 482,0; sc_start SC_DOUBLECASTING,90000,5;
+//skilleffect 486,0; sc_start SC_OVERTHRUSTMAX,180000,5;
+//skilleffect 138,0; sc_start SC_ENCHANTPOISON,90000,10;
+//skilleffect 390,0; sc_start SC_REJECTSWORD,300000,5;
+//skilleffect 431,0; sc_start SC_SUN_COMFORT,320000,4;
+//skilleffect 432,0; sc_start SC_MOON_COMFORT,320000,4;
+//skilleffect 433,0; sc_start SC_STAR_COMFORT,320000,4;
+//skilleffect 425,0; sc_start SC_SEVENWIND,300000,7;
+//skilleffect 139,0; sc_start SC_POISONREACT,65000,10;
+//skilleffect 356,0; sc_start SC_PARRYING,60000,10;
+//skilleffect 495,0; sc_start SC_ONEHAND,300000,1;
+//skilleffect 60,0; sc_start SC_TWOHANDQUICKEN,300000,10;
+//skilleffect 258,0; sc_start SC_SPEARQUICKEN,300000,10;
+//skilleffect 359,0; sc_start SC_BERSERK,15000,1;
+//skilleffect 360,0; sc_start SC_FURY,300000,1;
+//skilleffect 473,0; sc_start SC_SELFPROVOKE,300000,1;
+//skilleffect 492,0; sc_start SC_ENCHANTARMS,180000,1;
+//skilleffect 531,0; sc_start SC_UTSUSEMI,60000,5;
+//skilleffect 543,0; sc_start SC_NEN,90000,5;
+//skilleffect 2310,0; sc_start SC_SHIELDPRESS,7500,5;
+//skilleffect 2311,0; sc_start SC_REFLECTDAMAGE,300000,5;
+//skilleffect 2318,0; sc_start SC_PRESTIGE,90000,5;
+//skilleffect 2325,0; sc_start SC_INSPIRATION,90000,5;
+//skilleffect 5013,0; sc_start SC_KINGS_GRACE,60000,5;
+//skilleffect 2234,0; sc_start SC_FEARBREEZE,180000,5;
+//skilleffect 2247,0; sc_start SC_CAMOUFLAGE,10000,1;
+//skilleffect 5002,0; sc_start SC_UNLIMIT,300000,5;
+//skilleffect 2028,0; sc_start SC_WEAPONBLOCKING,180000,5;
+//skilleffect 2035,0; sc_start SC_HALLUCINATIONWALK,300000,5;
+//skilleffect 2050,0; sc_start SC_RENOVATIO,90000,1;
+//skilleffect 2053,0; sc_start SC_EXPIATIO,270000,5;
+//skilleffect 2515,0; sc_start SC_SECRAMENT,180000,5;
+
+//sc_start SC_ASPDPOTION2,360000,0;
+
+//sc_start SC_STRFood,360000,10;
+//sc_start SC_AGIFood,360000,10;
+//sc_start SC_VITFood,360000,10;
+//sc_start SC_INTFood,360000,10;
+//sc_start SC_DEXFood,360000,10;
+//sc_start SC_LUKFood,360000,10;
+//sc_start SC_HitFood,1200000,30;
+//sc_start SC_FleeFood,1200000,30;
+//sc_start SC_BATKFood,1200000,10;
+//sc_start SC_MATKFood,120000,10;
+
+//skilleffect 401,0; sc_start SC_SOULCOLLECT,600000,1;
+//skilleffect 445,0; sc_start SC_ALCHEMIST,350000,5;
+//skilleffect 447,0; sc_start SC_MONK,350000,5;
+//skilleffect 448,0; sc_start SC_STAR,350000,5;
+//skilleffect 449,0; sc_start SC_SAGE,350000,5;
+//skilleffect 450,0; sc_start SC_CRUSADER,350000,5;
+//skilleffect 451,0; sc_start SC_SUPERNOVICE,350000,5;
+//skilleffect 452,0; sc_start SC_KNIGHT,350000,5;
+//skilleffect 453,0; sc_start SC_WIZARD,350000,5;
+//skilleffect 454,0; sc_start SC_PRIEST,350000,5;
+//skilleffect 455,0; sc_start SC_BARDDANCER,350000,5;
+//skilleffect 456,0; sc_start SC_ROGUE,350000,5;
+//skilleffect 457,0; sc_start SC_ASSASIN,350000,5;
+//skilleffect 458,0; sc_start SC_BLACKSMITH,350000,5;
+//skilleffect 460,0; sc_start SC_HUNTER,350000,5;
+//skilleffect 461,0; sc_start SC_SOULLINKER,350000,5;
+//skilleffect 494,0; sc_start SC_HIGH,350000,5;
+
+
+	switch ( basejob ) {
+		case Job_Alchemist:				set .@spirit, 445; break;
+		case Job_Monk:					set .@spirit, 447; break;
+		case Job_Star_Gladiator:		set .@spirit, 448; break;
+		case Job_Sage:					set .@spirit, 449; break;
+		case Job_Crusader:				set .@spirit, 450; break;
+		case Job_SuperNovice:			set .@spirit, 451; break;
+		case Job_Knight:				set .@spirit, 452; break;
+		case Job_Wizard:				set .@spirit, 453; break;
+		case Job_Priest:				set .@spirit, 454; break;
+		case Job_Bard: case Job_Dancer:	set .@spirit, 455; break;
+		case Job_Rogue:					set .@spirit, 456; break;
+		case Job_Assassin:				set .@spirit, 457; break;
+		case Job_Blacksmith:			set .@spirit, 458; break;
+		case Job_Hunter:				set .@spirit, 460; break;
+		case Job_Soul_Linker:			set .@spirit, 461; break;
+		default:
+			if ( upper == 1 && baselevel < 70 )
+				set .@spirit, 494;
+	}
+	if ( .@spirit ) {
+		sc_start4 sc_spirit,350000, 5, .@spirit,0,0;
+		skilleffect .@spirit, 5;
+
+//sc_start SC_SPIRIT,350000,5;
+dispbottom "You has been Soul Linked.";
+//specialeffect 424;
+//specialeffect2 503;
+end;
+}
+close;
+}

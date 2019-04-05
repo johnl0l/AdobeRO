@@ -1,0 +1,110 @@
+prontera,142,175,5	script	Cash Converter	116,{
+    set .@name$,"[^FF0000Converter^000000]";
+    mes .@name$;
+    mes "Hello.";
+    mes "What would you like to do?";
+
+    next;
+    switch( select("Cash to POD","POD to Cash") ) {
+
+        case 1:
+
+            mes .@name$;
+
+            mes "How many POD(s) do you want?";
+
+            input .@num;
+
+            next;
+
+
+
+            if( .@num <= 0 || #CASHPOINTS < .@num ) {
+
+                mes .@name$;
+
+                mes "Sorry, you don't have enough cashpoints!";
+
+                close;
+
+            }
+
+            mes .@name$;
+
+            mes "This will cost ^FF0000" +(.@num )+ " cashpoints^000000.";
+
+            next;
+
+
+
+            if( select("Proceed:Nevermind") -1 ) {
+
+                mes .@name$;
+
+                mes "Goodbye!";
+
+                close;
+
+            }
+
+            set #CASHPOINTS, #CASHPOINTS - .@num;
+
+            dispbottom "Lost: " +(.@num)+ " cashpoints. Total: " +#CASHPOINTS+" cashpoints.";
+
+            getitem 7179, .@num;
+
+            break;
+
+    
+
+        case 2:
+
+            mes .@name$;
+
+            mes "How many POD(s) will you give?";
+
+            input .@num;
+
+            next;
+
+
+
+            if( .@num <= 0 || countitem(7179) < .@num ) {
+
+                mes .@name$;
+
+                mes "Sorry, you don't have enough POD!";
+
+                close;
+
+            }
+
+            mes .@name$;
+
+            mes "I can give you ^FF0000" +(.@num)+ " cashpoints^000000 for this.";
+
+            next;
+
+
+
+            if( select("Proceed:Nevermind") -1 ) {
+
+                mes .@name$;
+
+                mes "Goodbye!";
+
+                close;
+
+            }
+
+            set #CASHPOINTS, #CASHPOINTS + .@num;
+
+            dispbottom "Gained: " +(.@num)+ " cashpoints. Total: " +#CASHPOINTS+" cashpoints.";
+
+            delitem 7179,.@num;
+
+    }
+
+    close;
+
+}

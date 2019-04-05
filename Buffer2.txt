@@ -1,0 +1,95 @@
+//===== Cronus Script ========================================
+//= Buffer
+//===== Por: =================================================
+//= Euphy
+//===== Versão Atual: ========================================
+//= 1.1
+//===== Descrição: ===========================================
+//= Recupera HP e SP, dá buffs e com opção de delay
+//= Adicionado Buffs para groupid maior q 0
+//= Adicionado locomoção e fala do npc
+//===== Changelog: ===========================================
+//= 1.0 First version. [Euphy]
+//= 1.0a Traduzido. [mkbu95]
+//= 1.1 Script Otimizado. [ICantStop/Infernool]
+//= 1.2 Adicionado Balão. [ICantStop/Infernool]
+//= 1.3 Removido algumas falas, corrigidos alguns erros [nao dava agilidade e petrificava], e alguns buffs novos. [Mr. Foster / Saphyron]
+//============================================================
+
+-	script	Buffer	-1,{
+
+npcspeed 110;	//Velocidade de locomoção do npc
+	set @ServerName$, "RagnaTHUNDER"; 	//Nome de Seu Servidor que aparecera quando npc falar
+	set .@Price,	0;	// Zeny necessário para curar. 0 = Gratuito
+	set .@Buffs,	1;	// Dar buffs básicos ao jogador? (1 = Sim/0 = Não)
+	set .@Delay,	0;	// Delay para usar o npc, em segundos. 0 = Desativado
+
+	callfunc "F_ClearGarbage", 0;
+	if (@HD > gettimetick(2)) end;
+	if (.@Price) {
+		message strcharinfo(0),"A cura custa "+.@Price+" Zeny.";
+		if (Zeny < .@Price) end;
+		if(select("^0055FFCurar^000000:^777777Cancelar^000000")==2) close;
+		set Zeny, Zeny-.@Price;
+	}
+	sc_end SC_STONE;
+	sc_end SC_FREEZE;
+	sc_end SC_STUN;
+	sc_end SC_SLEEP;
+	sc_end SC_POISON;
+	sc_end SC_CURSE;
+	sc_end SC_SILENCE;
+	sc_end SC_CONFUSION;
+	sc_end SC_BLIND;
+	sc_end SC_BLEEDING;
+	sc_end SC_HALLUCINATION;
+	specialeffect2 313; percentheal 100,100;
+	if (.@Buffs) {
+	if(getgroupid() < 0)
+		specialeffect2 EF_INCAGILITY; sc_start SC_INC_AGI,240000,10; 
+		specialeffect2 EF_BLESSING; sc_start SC_BLESSING,240000,10;
+		specialeffect2 112; sc_start SC_KYRIE,240000,10;	} if (getgroupid() > 0) {
+		sc_start SC_ASSUMPTIO,240000,5; specialeffect2 375; 
+		specialeffect2 84; sc_start SC_IMPOSITIO,240000,5; 
+		specialeffect2 76; sc_start SC_MAGNIFICAT,240000,5; 
+		specialeffect2 75; sc_start SC_GLORIA,240000,5;		
+	}
+	if (.@Delay) set @HD, gettimetick(2)+.@Delay;
+    dispbottom "Obrigado por jogar no "+ @ServerName$ +"!";
+    emotion 51;
+
+OnTimer10000:
+    npcwalkto 160+rand(8),176+rand(8);
+    setnpctimer 0;
+	
+doitagain:
+        set $lol,rand(5);
+    if($lol == 0) goto Lquote0;
+        goto doitagain;
+
+Lquote0:
+    setnpctimer 0;
+    end;
+
+
+OnInit:
+    initnpctimer;
+	.delay = 500;
+	.title$ = " BUFFS";
+	
+	.string_size = getstrlen( .title$ );
+	while( 1 ){
+		.@title$[ .@i ] = charat( .title$,.@i );
+		delwaitingroom;
+		waitingroom ""+implode( .@title$," " ),0;
+		.@i++;
+		if( .@i > .string_size ){
+			.@i = 0;
+			deletearray .@title$;
+		}
+		sleep .delay;
+    }
+    end;
+}
+
+mooc,160,170,4	duplicate(Buffer)	Buffer#mooc	446

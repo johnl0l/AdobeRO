@@ -1,0 +1,129 @@
+prontera,151,187,5	script	Build Manager	766,{
+// Mode of NPC
+// 1 = Switch & Save Status Build
+// 2 = Reset Status
+// 4 = Reset Skills
+// 7 = All of Above [ 1+2+4 = 7 ]
+set .BMMode,7;
+
+// How Many Slots available to Save Status Builds.
+set .MaxSlots,5;
+
+// Enable Stats Slot Rename
+set .StatRename,1;
+
+setarray .BMCosts[1],
+			10000,		// Switch Builds Cost
+			100000,		// Save Build Cost
+			500000,		// Reset Status Cost
+			100000;		// Reset Skills Cost
+				
+while(1){
+switch( select( ( .BMMode & 1 )?"^0000FFSwitch Status [10k]^000000":"",
+				( .BMMode & 1 )?"^0000FFSave Status [100k]^000000":"",	
+				( .BMMode & 2 )?"^0000FFReset Status [500k]^000000":"",	
+				( .BMMode & 4 )?"^0000FFReset Skills [100k]^000000":"")){
+	Case 1:
+		if( Zeny < .BMCosts[ @menu ] ){
+			mes "You required ^FF0000"+.BMCosts[ @menu ]+" Zeny^000000 to use this services.";
+			next;
+			break;
+			}
+		mes "^0000FFCost^000000 : ^FF0000"+.BMCosts[ @menu ]+"^000000 Zeny";
+		message strcharinfo(0),"Input 0 to Cancel";
+		mes "^FF0000Slot[X]^000000-[^0000FFSTR|AGI|VIT|INT|DEX|LUK^000000]";
+		mes "^0000FF_____________________________^000000";
+		for( set .@i,1; .@i <= .MaxSlots; set .@i,.@i + 1 ){
+			mes "^FF0000"+.@i+".^0000FF"+getd( "Slot_"+.@i+"$" )+"^000000 [^0000FF"+getd("STR_"+.@i)+"|"+getd("AGI_"+.@i)+"|"+getd("VIT_"+.@i)+"|"+getd("INT_"+.@i)+"|"+getd("DEX_"+.@i)+"|"+getd("LUK_"+.@i)+"^000000]";
+			}
+		mes "^0000FF_____________________________^000000";
+		input .@a,0,.MaxSlots;
+		if( .@a != 0 ){
+			callfunc("SwitchBuild",.@a);
+			message strcharinfo(0),"Done";
+			set Zeny,Zeny - .BMCosts[ @menu ];
+			}
+		next;
+		break;
+	Case 2:
+		if( Zeny < .BMCosts[ @menu ] ){
+			mes "You required ^FF0000"+.BMCosts[ @menu ]+" Zeny^000000 to use this services.";
+			next;
+			break;
+			}
+		mes "^0000FFCost^000000 : ^FF0000"+.BMCosts[ @menu ]+"^000000 Zeny";
+		mes "^0000FF_____________________________^000000";
+		mes "^FF0000@^000000 STR - "+readparam(bStr)+" ^FF0000@^000000 AGI - "+readparam(bAgi)+" ^FF0000@^000000 VIT - "+readparam(bVit)+"";
+		mes "^FF0000@^000000 INT - "+readparam(bInt)+" ^FF0000@^000000 DEX - "+readparam(bDex)+" ^FF0000@^000000 LUK - "+readparam(bLuk)+"";
+		mes "^0000FF_____________________________^000000";
+		message strcharinfo(0),"Input 0 to Cancel";
+		mes "^FF0000Slot[X]^000000-[^0000FFSTR|AGI|VIT|INT|DEX|LUK^000000]";
+		mes "^0000FF_____________________________^000000";
+		for( set .@i,1; .@i <= .MaxSlots; set .@i,.@i + 1 ){
+			mes "^FF0000"+.@i+".^0000FF"+getd( "Slot_"+.@i+"$" )+"^000000 [^0000FF"+getd("STR_"+.@i)+"|"+getd("AGI_"+.@i)+"|"+getd("VIT_"+.@i)+"|"+getd("INT_"+.@i)+"|"+getd("DEX_"+.@i)+"|"+getd("LUK_"+.@i)+"^000000]";
+			}
+		mes "^0000FF_____________________________^000000";
+		input .@a,0,.MaxSlots;
+		if( .@a != 0 ){
+			callfunc("SaveBuild",.@a,.StatRename);
+			set Zeny,Zeny - .BMCosts[ @menu ];
+			}
+		next;
+		break;
+	Case 3:
+		if( Zeny < .BMCosts[ @menu ] ){
+			mes "You required ^FF0000"+.BMCosts[ @menu ]+" Zeny^000000 to use this services.";
+			next;
+			break;
+			}
+		mes "^0000FFCost^000000 : ^FF0000"+.BMCosts[ @menu ]+"^000000 Zeny";
+		ResetStatus;
+		set Zeny,Zeny - .BMCosts[ @menu ];
+		mes "Your Status has been Reset. You have gained back your ^FF0000riginal Status Points^000000";
+		next;
+		break;
+	Case 4:
+		if( Zeny < .BMCosts[ @menu ] ){
+			mes "You required ^FF0000"+.BMCosts[ @menu ]+" Zeny^000000 to use this services.";
+			next;
+			break;
+			}
+		mes "^0000FFCost^000000 : ^FF0000"+.BMCosts[ @menu ]+"^000000 Zeny";
+		ResetSkill;
+		set Zeny,Zeny - .BMCosts[ @menu ];
+		mes "Your Skills has been Reset. You have gained back your ^FF0000riginal Skill Points^000000";
+		next;
+		break;
+		}
+	}
+}
+
+function	script	SaveBuild	{
+	setd "STR_"+getarg(0),readparam(bStr);
+	setd "AGI_"+getarg(0),readparam(bAgi);
+	setd "VIT_"+getarg(0),readparam(bVIT);
+	setd "INT_"+getarg(0),readparam(bInt);
+	setd "DEX_"+getarg(0),readparam(bDex);
+	setd "LUK_"+getarg(0),readparam(bLuk);
+	if( getarg(1) ){
+		do{
+			message strcharinfo(0),"Input the Name for this Slot. [ Max. 12 Chars ]";
+			input getd( "Slot_"+getarg(0)+"$" );
+		}while( getstrlen( getd( "Slot_"+getarg(0)+"$" ) ) > 12 );
+	}else{
+	set getd( "Slot_"+getarg(0)+"$" ),"Stats "+getarg(0);
+	}
+return;
+}
+
+function	script	SwitchBuild	{
+	ResetStatus;
+	statusup2 bStr,getd( "STR_"+getarg(0) )-1;
+	statusup2 bAgi,getd( "AGI_"+getarg(0) )-1;
+	statusup2 bVit,getd( "VIT_"+getarg(0) )-1;
+	statusup2 bInt,getd( "INT_"+getarg(0) )-1;
+	statusup2 bDex,getd( "DEX_"+getarg(0) )-1;
+	statusup2 bLuk,getd( "LUK_"+getarg(0) )-1;
+	set StatusPoint,0;
+return;
+}

@@ -1,0 +1,74 @@
+sec_in02.gat,143,165,4	script	Saida	739,{
+
+	mes "[^cc0000Saida^000000]";
+	mes "Deseja sair da sala Vip e voltar á Prontera?";
+	Menu "-Sim.",Ok,"- Não.",nao;
+	next;
+	
+	ok:
+	mes "-Vamos la!!";
+	next;
+	Warp "prontera",150,150;
+	Close;
+
+	nao:
+	Close;
+}
+
+
+prontera.gat,186,176,5	script	Buffer VIP	821,{
+
+//Se só VIPs podem utilizar npc sete essa variável em 1 (Default: 0)
+set .@onlyvip,1;
+
+
+if(.@onlyvip == 1 && getgmlevel() < 1){
+	mes "Buffer disponível somente para vips.";
+	close;
+	}
+	else {
+	sc_start 21,   37000, 10;	// Endure		Duração: 500 sec
+	sc_start 49,  300000,  1;	// Energy Coat		Duração: 5 minutes or until 0 sp
+	sc_start 23,  240000, 10;	// Improve Concentrate	Duração: 999 sec
+	sc_start 32,  240000, 10;	// Increase Agi		Duração: 999 sec
+	sc_start 29,  300000, 10;	// Angelus		Duração: 999 sec
+	sc_start 30,  240000, 10;	// Blessing		Duração: 999 sec
+	sc_start 48,  300000,  1;	// Crazy Uproar		Duração: 300 sec
+	sc_start 22,  300000, 10;	// Twohand Quicken	Duração: 300 sec
+	sc_start 150, 300000,  1;	// Onehand Quicken	Duração: 300 sec
+	sc_start 35,   60000,  5;	// Impositio Manus	Duração: 600 sec
+	sc_start 39,  120000, 10;	// Kyrie Eleison	Duração: 120 sec
+	sc_start 40,   90000,  5;	// Magnificat		Duração: 999 sec
+	sc_start 41,   30000,  5;	// Gloria		Duração: 400 sec
+	sc_start 43,  150000,  5;	// Adrenaline Rush	Duração: 999 sec
+	sc_start 44,   50000,  5;	// Weapon Perfection	Duração: 300 sec
+	sc_start 45,  100000,  5;	// Power-Thrust		Duração: 600 sec
+	sc_start 46,  360000,  5;	// Maximize Power	Duração: Until deactivated or SP runs out.
+	sc_start 145, 150000,  1;	// Full Adrenaline Rush	Duração: 150 sec
+	sc_start 76,  300000, 10;	// Guard		Duração: 300 sec
+	sc_start 77,  300000, 10;	// Shield Reflect	Duração: 300 sec
+	sc_start 86,  300000, 10;	// Spear Quicken	Duração: 300 sec
+	sc_start 184, 600000,  1;	// Summon Spirit Sphere	Duração: 600 sec
+	sc_start 184, 600000,  2;	// ??
+	sc_start 184, 600000,  3;	// ??
+	sc_start 184, 600000,  4;	// ??
+	sc_start 184, 600000,  5;	// ??
+	sc_start 83,  390000, 10;	// Hindsight		Duração: 390 sec
+	sc_start 108, 120000,  5;	// Aura Blade		Duração: 120 sec
+	sc_start 109,  60000, 10;	// Parrying		Duração: 999 sec
+	sc_start 110,  45000,  5;	// Concentration	Duração: 999 sec
+	sc_start 118,  30000, 10;	// Mystical Amplify	Duração: first followup spell during the next 30 sec
+	sc_start 122,  60000, 10;	// Shattering Strike	Duração: 200 Sec
+	sc_start 123,  60000,  1;	// Cart Boost		Duração: 500 Sec
+	sc_start 156, 180000,  1;	// Maximum Power Thrust	Duração: 180 sec
+	sc_start 121, 400000, 10;	// Wind Walker		Duração: 400 sec
+	sc_start 131, 300000,  1;	// Foresight		?? Duração: ??
+	sc_start 154,  90000,  5;	// Double Casting	Duração: 500 sec
+	sc_start 115, 100000,  5;	// Assumptio		Duração: 100 sec
+	sc_start 125, 300000,  5;	// Reject Sword		Duração: 300 sec or 3 rejects
+	sc_start 120,  30000, 10;	// True Sight		Duração: 200 seconds
+	sc_start 159, 300000,  1;	// Shrink		Duração: 300 sec
+	sc_start 151, 600000, 10;	// Preserve		Duração: 600 sec
+	}
+	end;
+}

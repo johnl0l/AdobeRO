@@ -1,0 +1,184 @@
+// Buffs // Script por Zell //
+
+hugel,96,148,3	script	Buffadora	47,{
+
+set .@n$,"[^FFD700Buffadora^000000]";
+
+mes .@n$;
+mes "Olá "+strcharinfo(0)+", sabia que existe uma forma mais rápida de receber buffs?";
+next;
+goto normal;
+buffs:
+percentheal 100,100;
+if(@scape==0){
+atalho:
+set @atalho,1;
+set @mutarei,@mutarei+1;
+if(@mutarei>6){
+charcommand "#mute 5 "+strcharinfo(0)+"";
+mes .@n$;
+mes "Eita, você está floodando, é isso mesmo??";
+next;
+mes .@n$;
+mes "Considere isso um castigo e evite fazer isso se não a titia buffadora fica brava u.u";
+set @mutarei,0;
+close2;
+atcommand "@me Desculpe por floodar gente...";
+sleep2 3500;
+atcommand "@me Não irá se repetir.";
+end;
+}
+switch( rand(16) ) {
+		case 0:
+		npctalk "Boa sorte "+strcharinfo(0)+", tente não morrer !";
+		break;
+		case 1:
+		npctalk "Volte sempre "+strcharinfo(0)+" !";
+		break;
+		case 2:
+		npctalk "Está se divertindo "+strcharinfo(0)+"?";
+		break;
+		case 3:
+		npctalk "Pronto para matar todos "+strcharinfo(0)+"?";
+		break;
+		case 5:
+		npctalk "De novo aqui "+strcharinfo(0)+"? Usar Ygg faz bem sabia?";
+		break;
+		case 6:
+		npctalk "Tome mais cuidado "+strcharinfo(0)+" !";
+		break;
+		case 7:
+		npctalk "Você veio me visitar "+strcharinfo(0)+"?";
+		break;
+		case 8:
+		npctalk "Obrigado por jogar Ragnaghostz "+strcharinfo(0)+" !";
+		break;
+		case 9:
+		npctalk "O que seria de vocês sem mim rs..";
+		break;
+		case 10:
+		npctalk "Não odeie o jogo, odeie o jogador !";
+		break;
+		case 11:
+		npctalk ""+strcharinfo(0)+" vá e nunca desita de vencer !";
+		break;
+		case 12:
+		npctalk "Prepara que é sua vez de brilhar "+strcharinfo(0)+"";
+		break;
+		case 13:
+		npctalk "Eu vou acabar cobrando por meus serviços "+strcharinfo(0)+", toda hora você aqui !";
+		break;
+		case 14:
+		npctalk "Me sinto a enfermeira do centro pokémon as vezes...";
+		break;
+		case 15:
+		npctalk "Vai lá arrasar "+strcharinfo(0)+" !";
+		}
+}
+percentheal 100,100;
+if(getgroupid()==0){
+sc_start SC_WINDWALK,360000,5;
+skilleffect 8,0;
+sc_start SC_ENDURE,360000,10;
+skilleffect 33,0;
+sc_start SC_ANGELUS,360000,10;
+skilleffect 45,0;
+sc_start SC_CONCENTRATE,360000,10;
+skilleffect 74,0;
+sc_start SC_MAGNIFICAT,360000,5;
+skilleffect 75,0;
+sc_start SC_GLORIA,360000,5;
+sc_start SC_ADRENALINE2,360000,1;
+sc_start SC_IMPOSITIO,360000,5;
+sc_start SC_BLESSING,360000,10;
+sc_start SC_INCREASEAGI,360000,10;
+sc_start SC_OVERTHRUST,360000,5;
+skilleffect "AM_CP_ARMOR",0;
+sc_start SC_CP_ARMOR,600000,5;	
+}else{
+sc_start SC_KAAHI,360000,7; 
+skilleffect 8,0;
+sc_start SC_ENDURE,360000,10;
+skilleffect 33,0;
+sc_start SC_ANGELUS,360000,10;
+skilleffect 45,0;
+sc_start SC_CONCENTRATE,360000,10;
+skilleffect 74,0;
+sc_start SC_MAGNIFICAT,360000,5;
+skilleffect 75,0;
+sc_start SC_GLORIA,360000,5;
+skilleffect 459,0;
+sc_start SC_ADRENALINE2,360000,1;
+skilleffect 66,0;
+sc_start SC_IMPOSITIO,360000,5;
+skilleffect 67,0;
+sc_start SC_SUFFRAGIUM,360000,3;
+skilleffect 34,0;
+sc_start SC_BLESSING,360000,10;
+skilleffect 29,0;
+sc_start SC_INCREASEAGI,360000,10;
+sc_start SC_WEAPONPERFECTION,360000,10;
+sc_start SC_OVERTHRUST,360000,5;
+sc_start SC_MAXIMIZEPOWER,360000,5;
+sc_start SC_ASPDPOTION2,360000,0;
+sc_start SC_VITFood,360000,10;
+sc_start SC_INTFood,360000,10;
+sc_start SC_DEXFood,360000,10;
+sc_start SC_LUKFood,360000,10;
+sc_start SC_HitFood,1200000,30;
+sc_start SC_ASSUMPTIO,360000,5;
+sc_start SC_CP_HELM,600000,5;
+sc_start SC_CP_SHIELD,600000,5;
+sc_start SC_CP_ARMOR,600000,5;
+sc_start SC_CP_WEAPON,600000,5;
+sc_start SC_CP_ARMOR,600000,5;
+}
+atcommand "@me Estou pront"+(Sex?"o":"a")+" para lutar !";
+if(@atalho==1){
+sleep2 5000;
+set @mutarei,@mutarei-1;
+set @atalho,0;
+end;
+}
+end;
+normal:
+mes .@n$;
+mes "Irei lhe ajudar desta vez mas saiba que você pode economizar seu tempo !";
+switch(select("Obrigado !","Como posso economizar tempo?")){
+next;
+
+	case 1:
+	if(sex==0){
+	atcommand "@me Obrigada !";
+	}else{
+	atcommand "@me Obrigado !";
+	}
+	mes .@n$;
+	mes "Estou sempre aqui para ajudar nossos jogadores !";
+	close2;
+	goto atalho;
+	
+	case 2:
+	atcommand "@me Como posso economizar tempo?";
+	mes .@n$;
+	mes "Então você é bem curios"+(Sex?"o":"a")+", gosto disso, então irei lhe dizer como ser rápid"+(Sex?"o":"a")+".";
+	next;
+	mes .@n$;
+	mes "Quando estiver perto de mim, escreva ''Buffs'' ou ''ffs''";
+	next;
+	mes .@n$;
+	mes "Desta forma, saberei que você precisa de minha ajuda !";
+	close;
+}
+
+OnInit:
+set $buffs$,"buffs";
+set $buffs2$,"ffs";
+defpattern 2, "([^:]+):.*\\s"+$buffs$+"(.*)", "atalho";
+defpattern 2, "([^:]+):.*\\s"+$buffs2$+"(.*)", "atalho";
+activatepset 2;
+end;
+
+}
+	
+prontera,152,183,5	duplicate(Buffadora)	Buffadora#prt	47
