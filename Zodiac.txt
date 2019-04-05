@@ -1,0 +1,71 @@
+//===== Hercules Script ======================================================
+//= Quest for Zodiac Headgeards
+//===== By: ==================================================================
+//= Ridley, Stolao
+//===== Current Version: =====================================================
+//= 1.0
+//= 1.1 Converted to rA [Stolao]
+//= 1.2 Added Itemlink Support
+//===== Description: =========================================================
+//= Rotates each month. January (Capricorn) to December (Sagittarius)
+//= Counts and displays required items and how much you miss
+//= Player can choose to make diadem or crown
+//============================================================================
+prontera.gat,189,181,2	script	Zodiac#hats	4_F_PINKWOMAN,{
+	function Zodiac;
+	mes "[Zodiac of the Month]";
+	mes "Hello there, I am in charge of the Zodiac items. Please select which Zodiac item you are interested in.";
+	.@Z = select("Zodiac Diadem:Zodiac Crown");
+	if(.@Z == 1)	setarray .Zodiac, 5745, 5512, 5514, 5545, 5549, 5569, 5581, 5589, 5599, 5663, 5677, 5740;
+		else	setarray .Zodiac, 5744, 5513, 5515, 5546, 5550, 5570, 5582, 5588, 5598, 5662, 5676, 5739;
+	next;
+	mes "[Zodiac of the Month]";
+		mes "Would you like to make the Zodiac "+((.@Z==1)?"Diadem":"Crown")+" for the "+gettime(6)+"th Month of this year ?",
+			((.Link)?"<ITEM>"+getitemname(.Zodiac[gettime(6)-1])+"<INFO>"+.Zodiac[gettime(6) -1]+"</INFO></ITEM>":"^FF0000"+getitemname (.Zodiac[gettime(6)-1])+"^000000");
+	next;
+	if(select("Yes:No") == 2) close;
+	switch(gettime(6)){
+		case 1:		Zodiac(7511,300, 2256,1, 4150,1, 7107,100, 7106,100);	break;
+		case 2:		Zodiac(7511,300, 4443,1, 6075,100, 12020,20, 24164,50);	break;
+		case 3:		Zodiac(7511,300, 1054,100, 1249,1, 4089,1, 12020,50);	break;
+		case 4:		Zodiac(7511,300, 2256,1, 1570,1, 7107,100, 7106,100);	break;
+		case 5:		Zodiac(7511,300, 941,100, 1005,10, 4201,1, 4126,1);	break;
+		case 6:		Zodiac(7511,300, 6323,100, 1571,1, 996,15, 1307,1);	break;
+		case 7:		Zodiac(7511,300, 960,100, 991,50, 943,100, 4049,1);	break;
+		case 8:		Zodiac(7511,300, 1030,1, 6032,100, 4453,1, 1825,1);	break;
+		case 9:		Zodiac(7511,300, 1049,1, 5125,1, 2420,1, 2521,1, 2116,1, 2355,1, 2254,1);	break;
+		case 10:	Zodiac(7511,300, 1980,1, 660,1, 7440,50, 4268,1);	break;
+		case 11:	Zodiac(7511,300, 4068,1, 904,100, 7125,100);		break;
+		case 12:	Zodiac(7511,300, 6089,50, 1384,1, 1730,1, 7097,100);	break;
+	}
+	mes "[Zodiac of the Month]";
+	mes "Awesome! Here you go. You gained ^FF0000"+getitemname(.Zodiac[gettime(6)-1])+"^000000 for this month!";
+	getitem .Zodiac[gettime(6) -1], 1;
+	close;
+
+	function Zodiac {
+		mes "[ ^0000FF Required Items ^000000 ]",
+			"^FFFFFF________________________________^000000";
+		for (@i = 0; getarg(.@i, 0); .@i+=2) {
+			mes ((countitem(getarg(.@i)) < getarg(.@i + 1))?"^FF0000":"^0000FF")+"[ "+countitem(getarg(.@i))+" / "+getarg(.@i + 1)+" ] "+
+				((.Link)?"<ITEM>"+getitemname(getarg(.@i))+"<INFO>"+getarg(.@i)+"</INFO></ITEM>":"^0000FF"+getitemname(getarg(.@i))+"^000000");
+			if(countitem(getarg(.@i)) < getarg(.@i + 1)) .@j++;
+		}
+		mes "^FFFFFF________________________________^000000";
+		if (.@j){
+			mes "[ ^FF0000 "+.@j+" More Items For Completion ^000000 ]";
+			close;
+		}
+		next;
+		if (select("^FF0000Continue^000000", "Cancel") == 2) close;
+		for(.@i = 0; getarg(.@i,0); .@i+=2)
+			delitem getarg(.@i), getarg(.@i + 1);
+		return;
+	}
+OnInit:
+	// Use Item Links?
+	// Toggle
+	//   1 = On
+	//   0 = Off
+	.Link = 0;
+}

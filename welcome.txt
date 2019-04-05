@@ -1,0 +1,5 @@
+prontera,147,184,5	script	Adobe-Ro	828,{
+OnInit:
+	waitingroom "Welcome 2 Adobe-Ro",0;
+end;
+}

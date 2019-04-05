@@ -1,0 +1,16 @@
+turbo_room,122,104,3	script	Yggdrasil Berry Exchanger	736,{
+
+mes "Please input the amount of Yggdrasil Berry you wish to change into Yggdrasil Berry Box.";
+mes "Currently , you have "+countitem(671)+" Yggdrasil Berry .";
+input @amount,0,countitem(671);
+if ( @amount < 1){
+mes "You have choose to end the deal.";
+close;
+
+}
+
+delitem 671,@amount;
+getitem 13517,@amount;
+mes "You have changed "+@amount+" Yggdrasil Berry  into Yggdrasil Berry Box.";
+close;
+}

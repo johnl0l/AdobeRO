@@ -1,0 +1,190 @@
+mellina,52,79,3	script	Vending Helper#1	757,{
+for( set .@i,1; .@i <= .count; set .@i,.@i + 1 ){
+	getmapxy( .@map$,.@x,.@y,1,"#vend_slot"+.@i );
+	if( !getareausers( .map$,.@x,.@y,.@x,.@y ) && .@x > 1 && .@y > 1 ){
+		set .@available,.@available + 1;
+		set .@menu$,.@menu$ + "Slot - "+.@i+":";
+	}else{
+		set .@menu$,.@menu$ + ":";
+	}
+}
+
+if( !.@available ){
+	mes "Dont have any available slot.";
+}else if( !getskilllv("MC_VENDING") ){
+	mes "You dont have ^0055FFVending Skill^000000.";
+}else{
+	mes "Available Slot : "+.@available;
+	mes "Please select a slot to vending.";
+	set .@i,select( .@menu$ );
+	getmapxy( .@map$,.@x,.@y,1,"#vend_slot"+.@i );
+	if( .@x == 1 || .@y == 1 ){
+		mes "This NPC at invalid location...";
+	}else{
+		warp .@map$,.@x,.@y;
+		hideonnpc "#vend_slot"+.@i;
+	}
+}
+close;
+
+OnInit:
+sleep 1000;
+// Map for vending
+set .map$,"mellina";
+setcell .map$,0,0,300,300,cell_novending,1;
+
+// x and y horizone ..
+setarray .x_line,52,49,46,43,40;
+setarray .y_line,68,71,74,77,65,62;
+
+set .x_line_size,getarraysize( .x_line );
+set .y_line_size,getarraysize( .y_line );
+set .count,1;
+for( set .@x,0; .@x < .x_line_size; set .@x,.@x + 1 )
+	for( set .@y,0; .@y < .y_line_size; set .@y,.@y + 1 )
+		if( checkcell( .map$,.x_line[.@x],.y_line[.@y],cell_chkpass ) ){
+			movenpc "#vend_slot"+.count,.x_line[.@x],.y_line[.@y];
+			setcell .map$,.x_line[.@x],.y_line[.@y],.x_line[.@x],.y_line[.@y],cell_novending,0;
+			set .count,.count + 1;
+		}
+npctalk "Vending Spot : "+.count;
+donpcevent "::OnSetup";
+end;
+}
+
+-	script	vend_slot	-1,{
+getmapxy( .@map$,.@x,.@y,1 );
+if( !getskilllv("MC_VENDING") ){
+	mes "You dont have ^0055FFVending Skill^000000.";
+}else if( getareausers( .@map$,.@x,.@y,.@x,.@y ) ){
+	mes "Someone already selected this spot.";
+}else{
+	mes "Spot : ^777777Available^000000";
+	mes "^0055FF[ Vending Area Rules ]^000000";
+	mes "^FF0000 ~ Use proper Shop Name.^000000";
+	mes "^FF0000 ~ Never sell Junk/Gifts.^000000";
+	mes " ";
+	mes "^777777Player will failed to follow these will be punished.^000000";
+	if( select( "Select this Spot","Cancel" ) == 1 ){
+		warp .@map$,.@x,.@y;
+		hideonnpc strnpcinfo(0);
+	}
+}
+close;
+
+OnSetup:
+getmapxy( .@map$,.@x,.@y,1 );
+set .@npcname$,strnpcinfo(0);
+while( .@map$ != "" ){
+	if( getareausers( .@map$,.@x,.@y,.@x,.@y ) ){
+		hideonnpc .@npcname$;
+	}else{
+		hideoffnpc .@npcname$;
+		// specialeffect 313;
+	}
+	sleep 5000;
+}
+end;
+}
+
+// Add more if needed.
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot1	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot2	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot3	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot4	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot5	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot6	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot7	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot8	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot9	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot10	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot11	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot12	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot13	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot14	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot15	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot16	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot17	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot18	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot19	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot20	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot21	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot22	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot23	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot24	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot25	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot26	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot27	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot28	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot29	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot30	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot31	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot32	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot33	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot34	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot35	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot36	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot37	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot38	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot39	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot40	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot41	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot42	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot43	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot44	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot45	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot46	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot47	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot48	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot49	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot50	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot51	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot52	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot53	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot54	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot55	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot56	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot57	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot58	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot59	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot60	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot61	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot62	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot63	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot64	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot65	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot66	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot67	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot68	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot69	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot70	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot71	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot72	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot73	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot74	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot75	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot76	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot77	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot78	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot79	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot80	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot81	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot82	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot83	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot84	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot85	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot86	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot87	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot88	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot89	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot90	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot91	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot92	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot93	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot94	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot95	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot96	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot97	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot98	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot99	858
+mellina,1,1,4	duplicate(vend_slot)	#vend_slot100	858

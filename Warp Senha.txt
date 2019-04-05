@@ -1,0 +1,30 @@
+prontera,136,168,5	script	Warp 	45,1,1,{
+
+OnTouch:
+
+mes "Acerte a senha para entrar na sala secreta.";
+
+input @sw$;
+
+if(@sw$ =="akisotemrox") {
+
+mes "Pronto, Boa Viagem.";
+
+close2;
+
+warp "sec_in02",130,161;
+
+end;
+
+}else{
+
+mes "Senha incorreta.";
+
+close;
+
+}
+
+end;
+
+}
+sec_in02.gat,161,162,4	warp	tmallout	2,2,prontera.gat,156,179

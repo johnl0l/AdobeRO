@@ -1,0 +1,31 @@
+prontera,157,196,4	script	GM Online Lists	811,{
+mes "Staffs Online Lists : ^FF0000"+getarraysize( .GM_Name$ )+"^000000 Staffs";
+mes "^0000FF_____________________________^000000";
+for( set .@i,0; .@i < getarraysize( .GM_Name$ ) ; set .@i,.@i + 1 ){
+	getmapxy( .Map$,.x,.y,0,.GM_Name$[.@i] );
+	mes "[ Lv ^63D1F4"+.GM_Level[.@i]+"^000000 ] ^FF0000@ ^0000FF"+.GM_Name$[.@i]+"^000000";
+	mes "Location : ^0000FF"+.Map$+"^000000";
+	mes "^0000FF_____________________________^000000";
+    }
+close;
+
+OnInit:
+set .MinGMLevel,20;        // Min. GM Level to Show in Online Lists
+end;
+
+OnPCLoginEvent:
+if( getgmlevel() < .MinGMLevel ) end;
+set .GM_Name$[ getarraysize( .GM_Name$ ) ],strcharinfo(0);
+set .GM_Level[ getarraysize( .GM_Level ) ],getgmlevel();
+end;
+
+OnPCLogoutEvent:
+if( getgmlevel() < .MinGMLevel ) end;
+for( set .@i,0; .@i < getarraysize( .GM_Name$ ) ; set .@i,.@i + 1 ){
+	if( strcharinfo(0) != .GM_Name$[.@i] ) continue;
+	deletearray .GM_Name$[.@i],1;
+	deletearray .GM_Level[.@i],1;
+	end;
+	}
+end;
+}

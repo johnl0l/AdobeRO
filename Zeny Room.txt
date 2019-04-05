@@ -1,0 +1,90 @@
+/*
+      ___           ___           ___                         ___           ___     
+     /\  \         /\__\         /\  \         _____         /\__\         /\  \    
+    _\:\  \       /:/ _/_        \:\  \       /::\  \       /:/ _/_        \:\  \   
+   /\ \:\  \     /:/ /\__\        \:\  \     /:/\:\  \     /:/ /\__\        \:\  \  
+  _\:\ \:\  \   /:/ /:/ _/_   _____\:\  \   /:/  \:\__\   /:/ /:/ _/_   _____\:\  \ 
+ /\ \:\ \:\__\ /:/_/:/ /\__\ /::::::::\__\ /:/__/ \:|__| /:/_/:/ /\__\ /::::::::\__\
+ \:\ \:\/:/  / \:\/:/ /:/  / \:\~~\~~\/__/ \:\  \ /:/  / \:\/:/ /:/  / \:\~~\~~\/__/
+  \:\ \::/  /   \::/_/:/  /   \:\  \        \:\  /:/  /   \::/_/:/  /   \:\  \      
+   \:\/:/  /     \:\/:/  /     \:\  \        \:\/:/  /     \:\/:/  /     \:\  \     
+    \::/  /       \::/  /       \:\__\        \::/  /       \::/  /       \:\__\    
+     \/__/         \/__/         \/__/         \/__/         \/__/         \/__/    
+	 
+
+
+	Nome do NPC: Sala do Zeny
+	Autor: Wenden Carvalho
+	Versão: 1.0
+	
+	
+	-----------------------------------------------
+					CONFIGURAÇÕES
+	-----------------------------------------------	*/
+-	script	Sala do Zeny::ConfigZenyRoom	-1,{
+
+	OnInit:
+		setarray $@z_config$[0],
+			"[^008000Sala do Zeny^000000]",				// Nome do NPC que será mostrado ao iniciar um diálogo.
+			"pvp_y_1-5",								// Mapa da Sala do Zeny.
+			1,											// Desabilitar drop dos monstros? [0: desabilitado / 1: habilitado].
+			1,											// Habilitar chat em cima do NPC? [0: desabilitado / 1: habilitado].
+			"[ Sala do Zeny ]";							// Mensagem do chat do NPC caso esteja habilitado.
+		
+		if(atoi($@z_config$[3])) donpcevent "ZenyRoom::OnWaitingroom";
+		
+		setarray $@z_mobs[0],
+		1090,1096,1120,1388,1582,1002,1031,1062,1113;					// Id dos monstros da Sala do Zeny.
+		setarray $@z_mobq[0],
+		10,10,10,10,20,25,25,25,25;										// Quantidade dos monstros da Sala do Zeny respectivamente.
+		setarray $@z_mobz[0],
+		1000,1000,2000,3000,5000,10000,50000;							// Quantidade de zenys que será ganho ao matar os monstros. [será sorteado entre esses valores].
+		
+		setarray $@z_flags[0],
+		0,1,2,3,4,5,22,33,34,41,43,47;					// Id dos mapflags do mapa.
+			
+			for(set .@w,0; .@w < getarraysize($@z_flags); set .@w,.@w+1){			// Setando os mapflags.
+				setmapflag $@z_config$[1],$@z_flags[.@w];
+				}
+					if(atoi($@z_config$[2])) setmapflag $@z_config$[1],31;			// Setando mapflag nomoblot caso esteja habilitado nas config.
+					end;
+}
+/*	-----------------------------------------------
+	INÍCIO DO SCRIPT DE ENTRA E SAÍDA DA SALA
+	-----------------------------------------------	*/
+prontera,147,166,5	script	Sala do Zeny::ZenyRoom	86,{
+
+
+			mes $@z_config$[0];
+			mes "Olá ^0000FF"+strcharinfo(0)+"^000000, deseja entrar na Sala do Zeny?";
+			next;
+				if(select("Sim:Não") == 2) close;
+				
+					warp $@z_config$[1],0,0;
+					end;
+
+
+
+OnWaitingroom:
+	waitingroom $@z_config$[4],0;
+	end;
+}
+pvp_y_1-5,159,104,4	script	Saída	86,{
+
+	warp getsavepoint(0),getsavepoint(1),getsavepoint(2);
+	end;
+
+}
+-	script	Sala do Zeny::ZenysMob	-1,{
+
+	OnInit:
+		for(set .@v,0; .@v < getarraysize($@z_mobs); set .@v,.@v+1)
+			monster $@z_config$[1],0,0,"[Zeny Room] "+strmobinfo(1,$@z_mobs[.@v]),$@z_mobs[.@v],$@z_mobq[.@v],"ZenysMob::OnMobDead";
+			end;
+			
+				OnMobDead:
+					set .@f,rand(getarraysize($@z_mobz));
+					set Zeny,Zeny+$@z_mobz[.@f];
+					dispbottom "[Sala do Zeny]: Você ganhou "+$@z_mobz[.@f]+" zenys.";
+					end;
+}

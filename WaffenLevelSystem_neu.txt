@@ -1,0 +1,814 @@
+//=================================================================\\
+//  __                  ____                                       \\
+// /\ \                /\  _`\   __                                \\
+// \ \ \____  __  __   \ \,\L\_\/\_\    ___ ___     ___     ___    \\
+//  \ \ '__`\/\ \/\ \   \/_\__ \\/\ \ /' __` __`\  / __`\ /' _ `\  \\
+//   \ \ \L\ \ \ \_\ \    /\ \L\ \ \ \/\ \/\ \/\ \/\ \L\ \/\ \/\ \ \\
+//    \ \_,__/\/`____ \   \ `\____\ \_\ \_\ \_\ \_\ \____/\ \_\ \_\\\
+//     \/___/  `/___/> \   \/_____/\/_/\/_/\/_/\/_/\/___/  \/_/\/_/\\
+//               /\___/                                            \\          
+//=================================================================\\
+//===== eAthena Script ============================================\\
+//=Waffen Lebel System											  =\\
+//=================================================================\\
+//===== By ========================================================\\
+//= [Simon]                       								  =\\
+//===== Version ===================================================\\
+//= 1.0 Alpha RELAISE											  =\\
+//===== Compatible With ===========================================\\
+//= eAthena SVN SQL												  =\\
+//===== Description ===============================================\\
+//= WaffenLevelSystem für alle Waffen							  =\\
+//===== Version Info ==============================================\\
+//= 1.0 - Erster Alpha Test                      	[Simon]		  =\\
+//===== Todo ======================================================\\
+//= kA															  =\\
+//===== Installation ==============================================\\
+//= In ItemScript: callfunc "WLS_ItemEquip";					  =\\
+//= In UnEquip Script: callfunc "WLS_ItemUnEquip";				  =\\
+//= In eine gewünschte Waffe einfügen							  =\\
+//===== Thanks to =================================================\\
+//= Kaze <3														  =\\
+//= Koibito <3													  =\\
+//= Für ihre Hilfe =)											  =\\
+//=================================================================\\
+
+
+
+
+
+-	script	WaffenLevelSystem_Config	-1,{
+
+OnInit:
+//EXP für einzelne Level
+set $WLS_exp_lvl_1,1000000;
+set $WLS_exp_lvl_2,2000000;
+set $WLS_exp_lvl_3,4000000;
+
+//Waffen/Items die nicht gelevelt werden können (ItemID) max. 128
+setarray $WLS_non_level,0;
+
+//EXP Steigerung bei besonderen Cards in der Waffe? (0=Nein 1=Ja) NICHT EINGEBAUT
+set $WLS_card_more_exp,1;
+
+//Level steigerung auch für andere Items ermöglichen (0=Nein 1=Ja) NICHT EINGEBAUT
+set $WLS_armor,0;
+set $WLS_helmet,0;
+set $WLS_shield,0;
+set $WLS_shoes,0;
+set $WLS_garment,0;
+
+//Skill IDs + Levels
+setarray $WLS_skill_id[0],6,7,8,10,12,15,16,21,24,26,28,29,34,42,51,52,54,66,68,73,79,83,84,85,88,110,111,112,113,114,135,136,138,139,150,214,215,216,217,225,229,230,234,235,236,237,252,257,264;
+setarray $WLS_skill_lvl[0],10,10,10,1,10,10,10,10,1,2,10,10,10,10,10,10,4,5,5,10,10,10,10,10,10,5,5,5,5,10,10,10,10,1,5,5,5,5,10,5,5,5,5,5,5,10,258,1;
+
+end;
+
+}
+
+
+//==============================================================\\
+//=			Admin und Spieler NPC	---->>>>				
+//==============================================================\\
+
+
+kh_vila.gat,12,107,6	script	Language/Sprache::WeaponLevelSystem	874,{ 
+
+	if (!##language) {
+		set ##language,1;
+		dispbottom "Deine Sprache ist nun Deutsch.";
+	} else {
+		set ##language,0;
+		dispbottom "Your languagse is now english";
+	}
+	end;
+}
+
+kh_vila.gat,12,107,6	script	Xaro::WeaponLevelSystem	874,{ 
+
+if (getgmlevel() >= 90) {
+	set @gm$,"[^0000FFAdmin Menü^000000]";
+	
+	mes @gm$;
+	mes "Hi Admin!";
+	mes "Was willst du tun?";
+	if (!$WLS_refine_exp) set @WLS_refine$,"Refine EXP Multi ^00FF00aktivieren^000000"; else "Refine EXP Multi ^FF0000deaktivieren^000000";
+	if (!$waffen_table) set @table$,"Table ^00FF00erstellen^000000"; else set @table$,"Table ^FF0000löschen^000000";
+	if (!$WLS_unterschied) set @WLS_lvl$,"Level Unterschied ^00FF00aktivieren^000000"; else set @WLS_lvl$,"Level Unterschied (^0000FF"+$WLS_lvl_unterschied+"^000000) ^FF0000deaktivieren^000000";
+	if (!$WLS_exp_event) set @WLS_exp_event$,"EXP Event ^00FF00aktivieren^000000"; else set @WLS_exp_event$,"EXP Event (^0000FF"+$WLS_event_exp_multi+"^000000/^0000FF"+.tmp_dauer+"^000000) ^FF0000deaktivieren^000000";
+	next;
+	mes @gm$;
+	switch(select(@table$,"Zum Spieler Menü",@WLS_refine$,@WLS_lvl$,@WLS_exp_event$,"Waffe Skill geben","Nix")) {
+		case 1:
+			if (!$waffen_table) {
+				mes "Willst du den Table ^00FF00erstellen^000000?";
+				next;
+				mes @gm$;
+				if(select("Nein:Ja") != 1) {
+					query_sql "CREATE TABLE IF NOT EXISTS `waffen_level_system` ( `char_id` INT( 11 ) , `char_name` CHAR( 255 ) , `item_id` INT( 11 ) , `item_name` CHAR( 255 ) , `waffen_level` INT( 11 ) , `bonus_level_1` CHAR( 255 ) , `bonus_arg_level_1` INT( 11 ) , `bonus_level_2` CHAR( 255 ) , `bonus_arg_level_2` INT( 11 ) , `bonus_level_3` CHAR( 255 ) , `bonus_arg_level_3` INT( 11 ) , `skill_id` INT( 11 ) , `skill_lvl` INT( 11 ) , `exp` INT( 11 ))"; 
+					mes "Der Table wurde erstellt.";
+					set $waffen_table,1;
+					close;
+				} else { close; }
+			} else {
+				mes "Willst du den Table ^FF0000löschen^000000?";
+				next;
+				mes @gm$;
+				if(select("Nein:Ja") != 1) {
+					query_sql "TRUNCATE TABLE `waffen_level_system`";
+					set $waffen_table,0;
+					mes "Der Table wurde gelöscht..";
+					close;
+				} else { close; }
+			}
+			
+		case 2:
+			goto L_Spieler;
+			
+		case 3:
+			if ($WLS_refine_more_exp) {
+				mes "Möchtest du es ^FF0000austellen^000000?";
+				if (select("Nein:Ja") != 1) {
+					set $WLS_refine_more_exp,0;
+					mes "Refine Multi EXP wurde ^FF0000ausgestellt^000000.";
+					close;
+				} else { close; }
+			} else {
+				mes "Möchtest du es ^00FF00einstellen^000000?";
+				if (select("Nein:Ja") != 1) {
+					set $WLS_refine_more_exp,1;
+					mes "Refine Multi EXP wurde ^00FF00eingestellt^000000.";
+					close;
+				} else { close; }
+			}
+		
+		case 4:
+			if ($WLS_unterschied) {
+				mes "Willst du es wirklich ^FF0000deaktivieren^000000?";
+				if (select("Nein:Ja") != 1) {
+					set $WLS_unterschied,0;
+					mes "Das Level Unterschied System wurde ^FF0000deaktiviert^000000.";
+					close;
+				} else { close; }
+			} else {
+				mes "Willst du es wirklich ^00FF00aktivieren^000000?";
+				if (select("Nein:Ja") != 1) {
+					set $WLS_unterschied,1;
+					mes "Wie hoch soll der Unterschied sein?";
+					mes "Angabe in Leveln";
+					input $WLS_lvl_unterschied;
+					next;
+					mes @gm$;
+					mes "Das Level Unterschied System wurde ^00FF00aktiviert^000000.";
+					mes "Und das der Unterschied auf ^0000FF"+$WLS_lvl_unterschied+"^000000 Level gesetzt.";
+					close;
+				} else { close; }
+			}
+		
+		case 5:
+			if ($WLS_exp_event) {
+				mes "Möchtest du das Event ^FF0000deaktiviert^000000?";
+				if (select("Nein:Ja") != 1) {
+					mes @gm$;
+					set $WLS_exp_event,0;
+					set $WLS_event_exp_multi,1;
+					announce "The EXP Event has ended.",bc_all;
+					mes "Das Event wurde ^FF0000deaktiviert^000000";
+					close;
+				} else { close; }
+			} else {
+				mes "Willst du das Event ^00FF00starten^000000?";
+				if (select("Nein:Ja") != 1) {
+					mes "Gib den Multiplikator ein!";
+					next;
+					input $WLS_event_exp_multi;
+					mes @gm$;
+					mes "Willst du einen Timer einstelln?";
+					if (select("Nein:Ja") != 1) {
+						mes "Bitte gib die Dauer in minuten an.";
+						next;
+						input .tmp_dauer;
+						mes "Ok, das event wird in kürze gestartet.";
+						close2;
+						
+						set $WLS_exp_event,1;
+						announce "The EXP Event has started.",bc_all;
+						while(($WLS_exp_event) && (.tmp_dauer != 0)) {
+							sleep 60000;
+							set .tmp_dauer,.tmp_dauer-1;
+						}
+						set $WLS_exp_event,0;
+						announce "The EXP Event has ended.",bc_all;
+						end;
+						
+						
+						
+					} else {
+						announce "The EXP Event has started.",bc_all;
+						set $WLS_exp_event,1;
+						close;
+					}
+					
+					
+				} else { close; }
+			}
+		
+		case 6:
+			close2;
+			callfunc "WLS_GetSkill";
+		
+		default:	close;
+	}
+}
+
+
+L_Spieler:
+	set @n$,"[^0000FFWeapon Level System^000000]";
+	
+	mes @n$;
+	mes ((##language == 1) ? "Willkommen " : "Welcome") + "^FF0000"+strcharinfo(0)+"^000000.";
+	npc_speech(1,1);
+	if (!activated) {
+		if (##language == 1) {
+			set @m2$,"^CCCCCC-^000000 Ich will es aktivieren";
+		} else {
+			set @m2$,"^CCCCCC-^000000 I want to activate it";
+		}
+	} else {
+		if (##language == 1) {
+			set @m2$,"^CCCCCC-^000000 Ich will es auschalten";
+		} else {
+			set @m2$,"^CCCCCC-^000000 I want to disable it";
+		}
+	}
+	if (##language == 1) {
+		set @m1$,"^CCCCCC-^000000 Was ist dieses System?";
+		set @m3$,"^CCCCCC-^000000 Mein Waffen Managment";
+	} else {
+		set @m1$,"^CCCCCC-^000000 What is this system about?";
+		set @m3$,"^CCCCCC-^000000 My Weapon Managment";
+	}
+	switch(select(@m1$,@m2$,@m3$,"^CCCCCC-^000000Close")) {
+		case 1:
+			mes @n$;
+			npc_speech(2,3);
+			next;
+			mes @n$;
+			npc_speech(4,6);
+			next;
+			mes @n$;
+			npc_speech(7,7);
+			next;
+			mes @n$;
+			npc_speech(8,9);
+			next;
+			mes @n$;
+			npc_speech(10,12);
+			close;
+			
+		case 2:
+			case 2:
+			mes @n$;
+			
+			if (!activated) {
+				npc_speech(13,13);
+				if (select( (##language == 1) ? "- Ja.:- Nein." : "- Yes.:- No." ) != 1) {
+					set activated,1;
+					npc_speech(14,14);
+					close;
+				} else { close; }
+			} else {
+				npc_speech(15,15);
+				if (select( (##language == 1) ? "- Ja.:- Nein." : "- Yes.:- No." ) != 1) {
+					set activated,0;
+					npc_speech(16,16);
+					close;
+				}
+			}
+		
+		case 3:
+			mes @n$;
+			npc_speech(1,1);
+			next;
+			switch(select((##language == 1) ? "^CCCCCC-^000000 Zeig mir die Level:^CCCCCC-^000000 Das Level einer Waffe resetten:^CCCCCC-^000000 Beenden" : "^CCCCCC-^000000 Show Levels:^CCCCCC-^000000 Reset the Level of a weapon:^CCCCCC-^000000 Close" )) {
+				case 1:
+					mes @n$;
+					npc_speech(17,17);
+					switch(select((##language == 1) ? "^CCCCCC-^000000 Zeig mir alle Waffen:^CCCCCC-^000000 Zeig mir eine spezielle Waffe mit Stats:^CCCCCC-^000000 Nix" : "^CCCCCC-^000000 Show me all weapons:^CCCCCC-^000000 Show me a special weapon with Stats:^CCCCCC-^000000 Nothing")) {
+						case 1:
+							mes @n$;
+							set @current,0;
+							deletearray @name$[0],getarraysize(@name$);
+							deletearray @level[0],getarraysize(@level);
+							query_sql("SELECT count(`item_name`) FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"'",@anzahl);
+							npc_speech(18,18);
+							while(@current <= @anzahl[0]) {
+								query_sql("SELECT `item_name` , `waffen_level` FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"' LIMIT 20 OFFSET "+@current,@name$,@level);
+								
+								for ( set @i,0; @i < getarraysize(@name$) ; set @i, @i+1 ){ 
+									mes @name$[@i]+" ^0000FF||^000000 LvL: ^FF0000"+@level+"^000000";  
+									next;
+								}
+								deletearray @name$[0],getarraysize(@name$);
+								deletearray @level[0],getarraysize(@level);
+								set @current,@current+20;
+							}
+							close;
+
+							
+						case 2:
+							mes @n$;
+							npc_speech(19,19);
+							next;
+							input @wep_name$;
+							query_sql "SELECT `waffen_level` , `exp` FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"' AND `item_name` = '"+@wep_name$+"'", @level, @exp;
+							mes @n$;
+							if (!@exp[0]) { npc_speech(20,20);	close; }
+							mes "^0000FF"+@wep_name$+"^000000 have the level: ^0000FF"+@level[0]+"^000000.";
+							switch(@level[0]) {
+								case 1:
+									query_sql "SELECT `bonus_level_1` , `bonus_arg_level_1` FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+@wep_id+"'", @stat1$, @arg1;
+									npc_speech(21,21);
+									mes @stat1$+": +^0000FF"+@arg1[0]+"^000000";
+									set @tmp_exp,$WLS_exp_lvl_2-@exp[0];
+									break;
+								case 2:
+									query_sql "SELECT `bonus_level_1` , `bonus_arg_level_1` , `bonus_level_2` , `bonus_arg_level_2` FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+@wep_id+"' ", @stat1$, @arg1, @stat2$, @arg2;
+									npc_speech(21,21);
+									mes @stat1$+": +^0000FF"+@arg1[0]+"^000000 || "+@stat2$+": +^0000FF"+@arg2[0]+"^000000";
+									set @tmp_exp,$WLS_exp_lvl_3-@exp[0];
+									break;
+								case 3:
+									query_sql "SELECT `bonus_level_1` , `bonus_arg_level_1` , `bonus_level_2` , `bonus_arg_level_2` , `bonus_level_3` , `bonus_arg_level_3` , `skill_id` , `skill_lvl` FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+@wep_id+"' ", @stat1$, @arg1, @stat2$, @arg2, @stat3$, @arg3,@skill_id,@skill_lvl;
+									set @tmp_exp,$WLS_exp_lvl_2-@exp[0];
+									npc_speech(21,21);
+									mes @stat1$+": +^0000FF"+@arg1[0]+"^000000 || "+@stat2$+": +^0000FF"+@arg2[0]+"^000000 || "+@stat3$+": +^0000FF"+@arg3[0]+"^000000";
+									break;
+								default:
+									set @tmp_exp,$WLS_exp_lvl_1-@exp[0];
+									break;
+							}
+							if (@tmp_exp <= 0)  close;
+							mes ( ( ##language == 1 ) ? "Ihr braucht " : "You need " ) + "^0000FF" + @tmp_exp + "^000000" + ( ( ##language == 1 ) ? "EXP bis zum Level " : "till level " ) + "^0000FF" + (@level[0] + 1);
+							close;
+							
+							
+						default:	close;
+					}
+									
+				case 2:
+				 	mes @n$;
+					npc_speech(22,22);
+					if (select( (##language == 1) ? "- Ja.:- Nein." : "- Yes.:- No." ) != 1) {
+						npc_speech(23,24);
+						input @wep_name$;
+						query_sql "SELECT `exp` FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"' , `item_name` = '"+@wep_name$+"' ", @exp;
+						if (!@exp[0]) { mes "You havn't train this weapon...";	close; }
+						query_sql "DELETE FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"' , `item_name` = '"+@wep_name$+"'";
+						next;
+						mes  ((##language == 1) ? "Ich hab die Waffe resettet :" : "I resetted your ^0000FF")+@wep_name$+"^000000.";
+						close;
+					} else { close; }
+				
+				default:	close;
+			}
+		default:	close;
+	}
+
+function npc_speech {
+
+		callfunc "npc_speech", "WeaponLevelSystem", getarg(0), getarg(1);
+
+		return;
+	
+}
+	
+}
+	
+	
+	
+}
+
+
+
+
+
+
+//==============================================================\\
+//=			Wenn Spieler gekillt wird	---->>>>				
+//==============================================================\\
+
+-	script	WLS_PlayerKilled	-1,{
+
+OnPCKillEvent:
+	if (!WLS_waffe_equiped) end;
+	if (activated) {
+		set .@wep_id,getequipid(4);
+		if (!.@wep_id) end;
+		for ( set .@i,0; .@i < getarraysize($WLS_non_level) ; set .@i, .@i+1 ){ 
+			if (.@wep_id == $WLS_non_level[.@i]) end;
+		}
+		query_sql "SELECT `item_id` FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+@wep_id+"' ", @id;
+		if ($WLS_refine_exp) {
+			set .@get_exp,rand(50,100)*getequiprefinerycnt(4)*$WLS_event_exp_multi;
+		} else {
+			set .@get_exp,rand(50,100)*$WLS_event_exp_multi;
+		}
+		if (!.@id[0]) {
+			
+			query_sql "INSERT INTO `waffen_level_system` (`char_id` , `char_name` , `item_id` , `item_name` , `exp`) VALUES ('"+getcharid(0)+"' , '"+strcharinfo(0)+"' , '"+.@wep_id+"' , '"+getitemname(.@wep_id)+"' , '"+.@get_exp+"')";
+			dispbottom getitemname(.@wep_id)+" got "+.@get_exp+" EXP";
+		} else {
+			dispbottom getitemname(.@wep_id)+" got "+.@get_exp+" EXP";
+			query_sql "SELECT `exp` , `waffen_level` FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+.@wep_id+"' ", .@exp, .@level;
+			if (@level[0] == 3) end;
+			set .@get_exp,.@exp+.@get_exp;;
+			query_sql "UPDATE `waffen_level_system` SET `exp` =  '"+.@get_exp+"' WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+.@wep_id+"'";
+			switch(.@level[0]) {
+				case 1:
+					if (.@get_exp >= $WLS_exp_lvl_2) {
+						specialeffect2 381;
+						specialeffect2 514;
+						dispbottom (##language == 1) ? "Deine Waffe ist nun Level 2" : "Your Weapon is now Level 2!!";
+						unequip 4; 
+						set .@rnd,rand(1,6);
+						switch(.@rnd) {
+							case 1:
+								set .@stat$,"bStr";
+								set .@tmp_stat$,"Str";
+								break;
+							case 2:
+								set .@stat$,"bAgi";
+								set .@tmp_stat$,"Agi";
+								break;
+							case 3:
+								set .@stat$,"bDex";
+								set .@tmp_stat$,"Dex";
+								break;
+							case 4:
+								set .@stat$,"bInt";
+								set .@tmp_stat$,"Int";
+								break;
+							case 5:
+								set .@stat$,"bLuk";
+								set .@tmp_stat$,"Luk";
+								break;
+							case 6:
+								set .@stat$,"bVit";
+								set .@tmp_stat$,"Vit";
+								break;
+						}
+						set .@arg,rand(10,20);
+						query_sql "UPDATE `waffen_level_system` SET `waffen_level` = '2' , `bonus_level_2` = '"+.@stat$+"' , `bonus_arg_level_2` = '"+.@arg+"' WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+.@wep_id+"'";
+						dispbottom ((##language == 1) ? "Deine Waffe bekommt " : "Your Weapon got")+.@tmp_stat$+"+"+.@arg;
+						equip @wep_id;
+					}
+				case 2:
+					if (.@get_exp >= $WLS_exp_lvl_3) {
+						specialeffect2 381;
+						specialeffect2 514;
+						dispbottom (##language == 1) ? "Deine Waffe ist nun Level 3" : "Your Weapon is now Level 3!!";
+						unequip 4; 
+						set .@rnd,rand(1,6);
+						switch(.@rnd) {
+							case 1:
+								set .@stat$,"bStr";
+								set .@tmp_stat$,"Str";
+								break;
+							case 2:
+								set .@stat$,"bAgi";
+								set .@tmp_stat$,"Agi";
+								break;
+							case 3:
+								set .@stat$,"bDex";
+								set .@tmp_stat$,"Dex";
+								break;
+							case 4:
+								set .@stat$,"bInt";
+								set .@tmp_stat$,"Int";
+								break;
+							case 5:
+								set .@stat$,"bLuk";
+								set .@tmp_stat$,"Luk";
+								break;
+							case 6:
+								set .@stat$,"bVit";
+								set .@tmp_stat$,"Vit";
+								break;
+						}
+						set .@arg,rand(20,30);
+						query_sql "UPDATE `waffen_level_system` SET `waffen_level` = '3' , `bonus_level_3` = '"+.@stat$+"' , `bonus_arg_level_3` = '"+.@arg+"' WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+.@wep_id+"'";
+						dispbottom ((##language == 1) ? "Deine Waffe bekommt " : "Your Weapon got")+.@tmp_stat$+"+"+.@arg;
+						equip @wep_id;
+					}
+				case 3:
+					break;
+				default:
+					if (.@get_exp >= $WLS_exp_lvl_1) {
+						specialeffect2 381;
+						specialeffect2 514;
+						dispbottom (##language == 1) ? "Deine Waffe ist nun Level 1" : "Your Weapon is now Level 1!!";
+						unequip 4; 
+						set .@rnd,rand(1,6);
+						switch(.@rnd) {
+							case 1:
+								set .@stat$,"bStr";
+								set .@tmp_stat$,"Str";
+								break;
+							case 2:
+								set .@stat$,"bAgi";
+								set .@tmp_stat$,"Agi";
+								break;
+							case 3:
+								set .@stat$,"bDex";
+								set .@tmp_stat$,"Dex";
+								break;
+							case 4:
+								set .@stat$,"bInt";
+								set .@tmp_stat$,"Int";
+								break;
+							case 5:
+								set .@stat$,"bLuk";
+								set .@tmp_stat$,"Luk";
+								break;
+							case 6:
+								set .@stat$,"bVit";
+								set .@tmp_stat$,"Vit";
+								break;
+						}
+						set .@arg,rand(1,10);
+						query_sql "UPDATE `waffen_level_system` SET `waffen_level` = '1' , `bonus_level_1` = '"+.@stat$+"' , `bonus_arg_level_1` = '"+.@arg+"' WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+.@wep_id+"'";
+						dispbottom ((##language == 1) ? "Deine Waffe bekommt " : "Your Weapon got")+.@tmp_stat$+"+"+.@arg;
+						set .@rnd,rand(1,10);
+						equip @wep_id;
+
+//==============================================================================================================>>>
+//Skill FEHLT!! >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+//==============================================================================================================>>>						
+						if (.@rnd == 5) callfunc "WLS_GetSkill"; 
+					}
+					
+				
+			
+			}
+		}
+		
+		
+	
+	}
+	end;
+
+
+}
+
+
+//==============================================================\\
+//=			Wenn Monster gekillt wird	---->>>>				
+//==============================================================\\
+
+
+-	script	WLS_MonsterKilled	-1,{
+
+OnNPCKillEvent:
+	if (!WLS_waffe_equiped) end;
+	if (activated) {
+		//UPDATE: Level Check!
+		if ($WLS_unterschied) {
+			if (BaseLevel - strmobinfo(3,killedrid) > $WLS_lvl_unterschied) { dispbottom "This Monster is to low to get Weapon EXP"; end; }
+		}
+		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		
+		set .@wep_id,getequipid(4);
+		for ( set .@i,0; .@i < getarraysize($WLS_non_level) ; set .@i, .@i+1 ){ 
+			if (.@wep_id == $WLS_non_level[.@i]) end;
+		}
+		if (!.@wep_id) end;
+		if ($WLS_refine_exp) {
+				set .@get_exp,rand(1,100)*getequiprefinerycnt(4)*$WLS_event_exp_multi;
+			} else {
+				set .@get_exp,rand(1,100)*$WLS_event_exp_multi;
+			}
+		query_sql "SELECT `item_id` FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+.@wep_id+"'", .@id;
+		if (!.@id[0]) {
+			query_sql "INSERT INTO `waffen_level_system` (`char_id` , `char_name` , `item_id` , `item_name` , `exp`) VALUES ('"+getcharid(0)+"' , '"+strcharinfo(0)+"' , '"+.@wep_id+"' , '"+getitemname(.@wep_id)+"' , '"+.@get_exp+"')";
+			dispbottom getitemname(.@wep_id)+" got "+.@get_exp+" EXP";
+		} else {
+			query_sql "SELECT `exp` , `waffen_level` FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+.@wep_id+"' ", .@exp, .@level;
+			if (.@level[0] >= 3) end;
+			dispbottom getitemname(.@wep_id)+" got "+.@get_exp+" EXP";
+			set .@get_exp,.@exp+.@get_exp;
+			query_sql "UPDATE `waffen_level_system` SET `exp` = '"+.@get_exp+"' WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+.@wep_id+"'";
+			switch(.@level[0]) {
+				case 1:
+					if (.@get_exp >= $WLS_exp_lvl_2) {
+						specialeffect2 381;
+						specialeffect2 514;
+						dispbottom (##language == 1) ? "Deine Waffe ist nun Level 2" : "Your Weapon is now Level 2!!";
+						unequip 4; 
+						set .@rnd,rand(1,6);
+						switch(.@rnd) {
+							case 1:
+								set .@stat$,"bStr";
+								set .@tmp_stat$,"Str";
+								break;
+							case 2:
+								set .@stat$,"bAgi";
+								set .@tmp_stat$,"Agi";
+								break;
+							case 3:
+								set .@stat$,"bDex";
+								set .@tmp_stat$,"Dex";
+								break;
+							case 4:
+								set .@stat$,"bInt";
+								set .@tmp_stat$,"Int";
+								break;
+							case 5:
+								set .@stat$,"bLuk";
+								set .@tmp_stat$,"Luk";
+								break;
+							case 6:
+								set .@stat$,"bVit";
+								set .@tmp_stat$,"Vit";
+								break;
+						}
+						set .@arg,rand(10,20);
+						query_sql "UPDATE `waffen_level_system` SET `waffen_level` = '2' , `bonus_level_2` = '"+.@stat$+"' , `bonus_arg_level_2` = '"+.@arg+"' WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+.@wep_id+"'";
+						dispbottom ((##language == 1) ? "Deine Waffe bekommt " : "Your Weapon got")+.@tmp_stat$+"+"+.@arg;
+						equip @wep_id;
+					}
+				case 2:
+					if (.@get_exp >= $WLS_exp_lvl_3) {
+						dispbottom "muh3";
+						specialeffect2 381;
+						specialeffect2 514;
+						dispbottom (##language == 1) ? "Deine Waffe ist nun Level 3" : "Your Weapon is now Level 3!!";
+						unequip 4; 
+						set .@rnd,rand(1,6);
+						switch(.@rnd) {
+							case 1:
+								set .@stat$,"bStr";
+								set .@tmp_stat$,"Str";
+								break;
+							case 2:
+								set .@stat$,"bAgi";
+								set .@tmp_stat$,"Agi";
+								break;
+							case 3:
+								set .@stat$,"bDex";
+								set .@tmp_stat$,"Dex";
+								break;
+							case 4:
+								set .@stat$,"bInt";
+								set .@tmp_stat$,"Int";
+								break;
+							case 5:
+								set .@stat$,"bLuk";
+								set .@tmp_stat$,"Luk";
+								break;
+							case 6:
+								set .@stat$,"bVit";
+								set .@tmp_stat$,"Vit";
+								break;
+						}
+						set .@arg,rand(20,30);
+						query_sql "UPDATE `waffen_level_system` SET `waffen_level` = '3' , `bonus_level_3` = '"+.@stat$+"' , `bonus_arg_level_3` = '"+.@arg+"' WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+.@wep_id+"'";
+						dispbottom ((##language == 1) ? "Deine Waffe bekommt " : "Your Weapon got")+.@tmp_stat$+"+"+.@arg;
+						equip @wep_id;
+					}
+				case 3:
+					break;
+				default:
+					if (.@get_exp >= $WLS_exp_lvl_1) {
+						dispbottom "muh1";
+						specialeffect2 381;
+						dispbottom (##language == 1) ? "Deine Waffe ist nun Level 1" : "Your Weapon is now Level 1!!";
+						unequip 4; 
+						set .@rnd,rand(1,6);
+						switch(.@rnd) {
+							case 1:
+								set .@stat$,"bStr";
+								set .@tmp_stat$,"Str";
+								break;
+							case 2:
+								set .@stat$,"bAgi";
+								set .@tmp_stat$,"Agi";
+								break;
+							case 3:
+								set .@stat$,"bDex";
+								set .@tmp_stat$,"Dex";
+								break;
+							case 4:
+								set .@stat$,"bInt";
+								set .@tmp_stat$,"Int";
+								break;
+							case 5:
+								set .@stat$,"bLuk";
+								set .@tmp_stat$,"Luk";
+								break;
+							case 6:
+								set .@stat$,"bVit";
+								set .@tmp_stat$,"Vit";
+								break;
+						}
+						set .@arg,rand(1,10);
+						query_sql "UPDATE `waffen_level_system` SET `waffen_level` = '1' , `bonus_level_1` = '"+.@stat$+"' , `bonus_arg_level_1` = '"+.@arg+"' WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+.@wep_id+"'";
+						dispbottom ((##language == 1) ? "Deine Waffe bekommt " : "Your Weapon got")+.@tmp_stat$+"+"+.@arg;
+						equip @wep_id;
+						set .@rnd,rand(1,10);
+						if (.@rnd == 5) callfunc "WLS_GetSkill";													
+						}
+					}
+					
+				
+			
+			}
+		}
+		
+		
+	
+}
+
+
+
+
+function	script	WLS_ItemEquip	{
+set WLS_waffe_equiped,1;
+set @wep_id,getequipid(4);
+query_sql "SELECT `waffen_level` FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+@wep_id+"' ", @level;
+switch(@level[0]) {
+	case 1:
+		query_sql "SELECT `bonus_level_1` , `bonus_arg_level_1` FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+@wep_id+"' ", @stat1$, @arg1;
+		callfunc "GetStatName",@stat1$[0],@arg1[0];
+		dispbottom "Stats: "+@stat1$+"+"+@arg1[0];
+		break;
+	case 2:
+		query_sql "SELECT `bonus_level_1` , `bonus_arg_level_1` , `bonus_level_2` , `bonus_arg_level_2` FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+@wep_id+"' ", @stat1$, @arg1, @stat2$, @arg2;
+		callfunc "GetStatName",@stat1$[0],@arg1[0];
+		callfunc "GetStatName",@stat2$[0],@arg2[0];
+		dispbottom "Stats: "+@stat1$+"+"+@arg1[0]+" || "+@stat2$+"+"+@arg2[0];
+		break;
+	case 3:
+		query_sql "SELECT `bonus_level_1` , `bonus_arg_level_1` , `bonus_level_2` , `bonus_arg_level_2` , `bonus_level_3` , `bonus_arg_level_3` , `skill_id` , `skill_lvl` FROM `waffen_level_system` WHERE `char_id` = '"+getcharid(0)+"' AND `item_id` = '"+@wep_id+"' ", @stat1$, @arg1, @stat2$, @arg2, @stat3$, @arg3,@skill_id,@skill_lvl;
+		callfunc "GetStatName",@stat1$[0],@arg1[0];
+		callfunc "GetStatName",@stat2$[0],@arg2[0];
+		callfunc "GetStatName",@stat3$[0],@arg3[0];
+		if (@skill_lvl[0] != 0) { skill @skill_id[0],@skill_lvl[0],1; set @skill$," || +Skill"; } else set @skill$,"";  
+		dispbottom "Stats: "+@stat1$+"+"+@arg1[0]+" || "+@stat2$+"+"+@arg2[0]+" || "+@stat3$+"+"+@arg3[0]+@skill$;
+		break;
+	default:	break;
+} 
+end;
+
+}
+
+function	script	WLS_ItemUnEquip	{
+	set WLS_waffe_equiped,0;
+	end;
+}
+
+
+function	script	GetStatName	{
+
+	if (getarg(0) == "bAgi") {
+		bonus bAgi,getarg(1);
+	} else if (getarg(0) == "bStr") {
+		bonus bStr,getarg(1);
+	} else if (getarg(0) == "bInt") {
+		bonus bInt,getarg(1);
+	} else if (getarg(0) == "bVit") {
+		bonus bVit,getarg(1);
+	} else if (getarg(0) == "bDex") {
+		bonus bDex,getarg(1);
+	} else if (getarg(0) == "bLuk") {
+		bonus bLuk,getarg(1);
+	} else {
+		dispbottom (##language == 1) ? "ERROR GetStatName Function!!! Berichte es einen Admin." : "ERROR GetStatName Function!!! Report it to an Admin.";
+	}
+
+	return;
+
+}
+
+function	script	WLS_GetSkill	{
+
+	getskilllist;
+	set @ok,0;
+	
+	while(!@ok) {
+		set @index,rand(0,getarraysize($WLS_skill_id));
+		set @skill_id,$WLS_skill_id[@index];
+		set @skill_lvl,rand(1,$WLS_skill_lvl[@index]);
+		for ( set @i, 0; @i< getarraysize(@skilllist_id); set @i, @i + 1 ) {
+			if (@skilllist_id[@i] == @skill_id) {
+				break;
+			} else { set @ok,1; }
+		}
+	}
+	
+	query_sql "UPDATE `waffen_level_system` SET `skill_id` = '"+@skill_id+"' , `skill_lvl` = '"+@skill_lvl+"' WHERE `char_id` =  '"+getcharid(0)+"'";
+	dispbottom (##language == 1) ? "Glückwunsch, deine waffe hat einen Skill bekommen!" : "Gratz, your weapon got a Skill!!";
+	end;
+	
+
+}

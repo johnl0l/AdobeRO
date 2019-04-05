@@ -1,0 +1,106 @@
+prontera,140,226,6  script  VIP System  109,{
+ 
+set .@day,1000;
+set .@week,5000;
+set .@month,20000;
+if (getgroupid()>4) {
+mes "[ VIP NPC ]";
+mes "Sorry,GM staff can't use this.";
+close;
+}
+ 
+mes "[ VIP NPC ]";
+mes "This is the price for VIP Service.";
+mes "24 hours "+.@day+" cash point";
+mes "1 week "+.@week+" cash point";
+mes "1 month "+.@month+" cash point";
+mes "Your cash point "+#CASHPOINTS+".";
+next;
+switch(select("register 24 hours:register 1 week:register 1 month:No, Thanks.")) {
+case 1:
+if (#CASHPOINTS < .@day) {
+mes "[ VIP NPC ]";
+mes "Your Cash points not enough,";
+mes ""+.@day+" cash point to get VIP Service.";
+close;
+}
+set #CASHPOINTS, #CASHPOINTS - .@day;
+atcommand "@vip +24h "+strcharinfo(0)+"";
+mes "[ VIP NPC ]";
+mes "Enjoy your VIP Service.";
+dispbottom "Your current cash point now"+#CASHPOINTS+".";
+close;
+ 
+case 2:
+if (#CASHPOINTS < .@week) {
+mes "[ VIP NPC ]";
+mes "Your Cash points not enough,";
+mes ""+.@week+" cash point to get VIP Service.";
+close;
+}
+set #CASHPOINTS, #CASHPOINTS - .@week;
+atcommand "@vip +7d "+strcharinfo(0)+"";
+mes "[ VIP NPC ]";
+mes "Enjoy your VIP Service.";
+dispbottom "Your current cash point now"+#CASHPOINTS+".";
+close;
+ 
+case 3:
+if (#CASHPOINTS < .@month) {
+mes "[ VIP NPC ]";
+mes "Your Cash points not enough,";
+mes ""+.@month+" cash point to get VIP Service.";
+close;
+}
+set #CASHPOINTS, #CASHPOINTS - .@month;
+atcommand "@vip +1m "+strcharinfo(0)+"";
+mes "[ VIP NPC ]";
+mes "Enjoy your VIP Service.";
+dispbottom "Your current cash point now"+#CASHPOINTS+".";
+close;
+ 
+case 4:
+mes "[ VIP NPC ]";
+mes "Ok, Thank You.";
+close;
+}
+}
+ 
+// --------------------------------------------------
+//  Duplicates:
+// --------------------------------------------------
+alberta,33,240,4    duplicate(VIP System)   VIP System#alb  109
+aldebaran,146,116,4 duplicate(VIP System)   VIP System#alde 109
+amatsu,205,87,4 duplicate(VIP System)   VIP System#ama  109
+ayothaya,212,172,6  duplicate(VIP System)   VIP System#ayo  109
+comodo,191,161,4    duplicate(VIP System)   VIP System#com  109
+einbech,55,36,6 duplicate(VIP System)   VIP System#einbe    109
+einbroch,72,206,4   duplicate(VIP System)   VIP System#einbr    109
+geffen,127,66,4 duplicate(VIP System)   VIP System#gef  109
+gonryun,162,126,4   duplicate(VIP System)   VIP System#gon  109
+hugel,102,148,4 duplicate(VIP System)   VIP System#hug  109
+izlude,128,152,4    duplicate(VIP System)   VIP System#izl  109 //Pre-RE: (132,120)
+jawaii,248,134,4    duplicate(VIP System)   VIP System#jaw  109
+lighthalzen,154,104,4   duplicate(VIP System)   VIP System#lhz  109
+louyang,205,105,6   duplicate(VIP System)   VIP System#lou  109
+manuk,272,150,6 duplicate(VIP System)   VIP System#man  109
+mid_camp,216,286,4  duplicate(VIP System)   VIP System#mid  109
+morocc,146,89,4 duplicate(VIP System)   VIP System#mor  109
+moscovia,226,195,4  duplicate(VIP System)   VIP System#mos  109
+niflheim,199,180,4  duplicate(VIP System)   VIP System#nif  109
+payon,178,109,4 duplicate(VIP System)   VIP System#pay  109
+rachel,138,122,4    duplicate(VIP System)   VIP System#rac  109
+splendide,198,153,4 duplicate(VIP System)   VIP System#spl  109
+umbala,97,148,3 duplicate(VIP System)   VIP System#umb  109
+veins,211,120,4 duplicate(VIP System)   VIP System#ve   109
+xmas,142,139,6  duplicate(VIP System)   VIP System#xmas 109
+yuno,164,50,4   duplicate(VIP System)   VIP System#yuno 109
+ 
+// --------------------------------------------------
+//  Duplicates (Renewal):
+// --------------------------------------------------
+brasilis,199,225,4  duplicate(VIP System)   VIP System#bra  109
+dewata,202,190,6    duplicate(VIP System)   VIP System#dew  109
+dicastes01,196,197,6    duplicate(VIP System)   VIP System#dic  109
+malangdo,137,116,6  duplicate(VIP System)   VIP System#mal  109
+malaya,228,195,4    duplicate(VIP System)   VIP System#ma   109
