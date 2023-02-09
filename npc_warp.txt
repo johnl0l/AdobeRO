@@ -1,0 +1,3631 @@
+-	script	MSwarp	-1,{
+callfunc "warpexpress";
+end;
+}
+
+function	script	warpexpress	{
+mes "^FF0000[Warp Service]^000000";
+		mes " «— ¥’¢È“§◊ÕºŸÈ„ÀÈ∫√‘°“√ Warp";
+		mes "Õ¬“°„™È∫√‘°“√‰ª‰Àπ‚ª√¥·®Èß";
+menu	
+"^FF0000ï^000000 ^6666FF«“ª≈Ë“ ÿ¥^000000",lastmap,
+"^FF0000ï^000000 ‡¡◊ÕßÀ≈«ß",town,
+"^FF0000ï^000000 ø’≈¥Ï",field,
+"^FF0000ï^000000 ¥—π‡®’È¬π",dungeon,
+"^FF0000ï^000000 ∫Õ TRO",oldboss,
+"^FF0000ï^000000 ∫Õ „À¡Ë",newboss,
+"^FF0000ï^000000 °‘≈¥—π‡®’È¬π",gdungeon,
+"^FF0000ï^000000 «“ª‚´πµË“ßÊ",gozone;
+
+lastmap:
+if(lastmap$=="") { close; }
+warp lastmap$,lastx,lasty;
+end;
+
+gozone:
+menu	
+"^FF0000ï^000000 ‚´πÀ≈—°",appgo01,
+"^FF0000ï^000000 ‚´π°‘®°√√¡µË“ßÊ",appgo02,
+"^FF0000ï^000000 ‚´π‚ª√‘Ëß ≈ÁÕµ",appgo03,
+"^FF0000ï^000000 ‚´π‡§« ¡‘™™—Ëπ",appgo04,
+"^FF0000ï^000000 ‚´π‡§« À¡«°",appgo05,
+"^FF0000ï^000000 ‚´πµ’∫«°",appgo06,
+"^FF0000ï^000000 ‚´π¢Õß·§™",appgo07;
+
+town:
+menu	
+"^0000FF-^000000 ‡¡◊ÕßÀ≈«ß",morocc,
+"^0000FF-^000000 Alberta",alberta,
+"^0000FF-^000000 Aldebaran",aldebaran,
+"^0000FF-^000000 Amatsu",amatsu,
+"^0000FF-^000000 Ayothaya",ayothaya,
+"^0000FF-^000000 Brasilis",brasilis,
+"^0000FF-^000000 Comodo",comodo,
+"^0000FF-^000000 Einbech (Mining Village)",einbech,
+"^0000FF-^000000 Einbroch",einbroch,
+"^0000FF-^000000 Geffen",geffen,
+"^0000FF-^000000 Gonryun",gonryun,
+"^0000FF-^000000 Hugel",hugel,
+"^0000FF-^000000 Izlude",izlude,
+"^0000FF-^000000 Jawaii",jawaii,
+"^0000FF-^000000 Lighthalzen",lighthalzen,
+"^0000FF-^000000 Louyang",louyang,
+"^0000FF-^000000 Lutie",xmas,
+"^0000FF-^000000 Morocc",morocc,
+"^0000FF-^000000 Manuk",manuk,
+"^0000FF-^000000 Moscovia",moscovia,
+"^0000FF-^000000 Nameless Island [Day Time]",nameless_i,
+"^0000FF-^000000 Nameless Island [Night Time]",nameless_n,
+"^0000FF-^000000 Niflheim",niflheim,
+"^0000FF-^000000 Prontera",prontera,
+"^0000FF-^000000 Payon",payon,
+"^0000FF-^000000 Rachel",rachel,
+"^0000FF-^000000 Splendide",splendide,
+"^0000FF-^000000 Thor Camp",thor_camp,
+"^0000FF-^000000 Veins",veins,
+"^0000FF-^000000 Yuno",yuno,
+"^0000FF-^000000 Umbala",umbala;
+
+field:
+menu 	
+"^0000FF-^000000 Amatsu Fields",famatsu,
+"^0000FF-^000000 Ayothaya Fields",fayothaya,
+"^0000FF-^000000 Brasilis Fields",fbrasilis,
+"^0000FF-^000000 Comodo Fields",fcomodo,
+"^0000FF-^000000 Discates Fields",fdiscates,
+"^0000FF-^000000 Einbroch Fields",feinbroch,
+"^0000FF-^000000 Geffen Fields",fgeffen,
+"^0000FF-^000000 Gonryun Fields",fgonryun ,
+"^0000FF-^000000 Hugel Fields",fhugel,
+"^0000FF-^000000 Lighthalzen Fields",flighthalzen,
+"^0000FF-^000000 Louyang Field",flouyang,
+"^0000FF-^000000 Lutie Field",flutie,
+"^0000FF-^000000 Mjolnir Fields",fmjolnir,
+"^0000FF-^000000 Morocc Field",fmorocc,
+"^0000FF-^000000 Moscovia Fields",fmoscovia,
+"^0000FF-^000000 Manuk Fields",fmanuk,
+"^0000FF-^000000 Niflheim Fields",fniflheim,
+"^0000FF-^000000 Payon Forests",fpayon,
+"^0000FF-^000000 Prontera Fields",fprontera,
+"^0000FF-^000000 Rachel Fields",frachel,
+"^0000FF-^000000 Splendide Field",fsplendide,
+"^0000FF-^000000 Umbala Fields",fumbala,
+"^0000FF-^000000 Veins Fields",fveins,
+"^0000FF-^000000 Yuno Fields",fyuno;
+
+dungeon:
+menu 	
+"^0000FF-^000000 Abbey Dungeons",dabbey,
+"^0000FF-^000000 Abyss Lakes Dungeons",dabyss,
+"^0000FF-^000000 Amatsu Dungeons",damatsu,
+"^0000FF-^000000 Anthell Dungeons",danthell,
+"^0000FF-^000000 Ayothaya Dungeons",dayothaya,
+"^0000FF-^000000 Beach Dungeons",dbeach,
+"^0000FF-^000000 Brasilis Dungeons",dbrasilis,
+"^0000FF-^000000 Byalan Dungeons",dbyalan,
+"^0000FF-^000000 Clock Tower Dungeons",dclock,
+"^0000FF-^000000 Coal Mines Dungeons",dcoal,
+"^0000FF-^000000 Culverts Dungeons",dculverts,
+"^0000FF-^000000 Einbroch Dungeons",deinbroch,
+"^0000FF-^000000 Gefenia Dungeons",dgefenia,
+"^0000FF-^000000 Geffen Dungeons",dgeffen,
+"^0000FF-^000000 Glast Heim Dungeons",dglast,
+"^0000FF-^000000 Gonryun Dungeons",dgonryun,
+"^0000FF-^000000 Hidden Dungeons",dhidden,
+"^0000FF-^000000 Ice Dungeons",dice,
+"^0000FF-^000000 Juperos Dungeons",djuperos,
+"^0000FF-^000000 Kiel Dungeons",dkiel,
+"^0000FF-^000000 Lighthalzen Dungeons",dlighthalzen,
+"^0000FF-^000000 Louyang Dungeons",dlouyang,
+"^0000FF-^000000 Magma Dungeons",dmagma,
+"^0000FF-^000000 Moscovia Dungeons",dmoscovia,
+"^0000FF-^000000 Nidhogg's Dungeons",dnidhogg,
+"^0000FF-^000000 Odin Temple Dungeons",dodin,
+"^0000FF-^000000 Orc Dungeons",dorc,
+"^0000FF-^000000 Payon Dungeons",dpayon,
+"^0000FF-^000000 Pyramids Dungeons",dpyramids,
+"^0000FF-^000000 Rachel Sanctuary Dungeons",drachel,
+"^0000FF-^000000 Scaraba Hole Dungeons",dscaraba,
+"^0000FF-^000000 Sphinx Dungeons",dsphinx,
+"^0000FF-^000000 Sunken Ship Dungeons",dsunken,
+"^0000FF-^000000 Thanatos Tower Dungeons",dthanatos,
+"^0000FF-^000000 Thor Volcano Dungeons",dthor,
+"^0000FF-^000000 Toy Factory Dungeons",dtoy,
+"^0000FF-^000000 Turtle Dungeons",dturtle,
+"^0000FF-^000000 Umbala Dungeons",dumbala;
+
+gdungeon:
+menu 
+"^0000FF-^000000 Baldur Guild Dungeon",gld_dun01,
+"^0000FF-^000000 Luina Guild Dungeon",gld_dun02,
+"^0000FF-^000000 Valkyrie Guild Dungeon",gld_dun03,
+"^0000FF-^000000 Britoniah Guild Dungeon",gld_dun04,
+"^0000FF-^000000 Schwartzvald Guild Dungeon",schg_dun01,
+"^0000FF-^000000 Arunafeltz Guild Dungeon",arug_dun01;
+
+newboss:
+menu 	
+"^FF0000ï^000000 ^0E03F6®Õ¡¡“√·ÀËß§«“¡¡◊¥^000000 ^F30914(xmas_dun01)^000000",xmas_dun01,
+"^FF0000ï^000000 ^0E03F6®Õ¡¡“√·ÀËß· ß^000000 ^F30914(pay_dun03)^000000",pay_dun03,
+"^FF0000ï^000000 ^0E03F6‡∑æ∏‘¥“‡ß◊Õ°^000000 ^F30914(mjolnir_10)^000000",mjolnir_10,
+"^FF0000ï^000000 ^0E03F6‡∑æ∏‘¥“ßŸ^000000 ^F30914(gon_dun01)^000000",gon_dun01,
+"^FF0000ï^000000 ^0E03F6®Õ¡¡“√·ÀËß§«“¡¡◊¥®Ÿ‡π’¬√Ï^000000 ^F30914(hu_fild06)^000000",hu_fild06,
+"^FF0000ï^000000 ^0E03F6®Õ¡¡“√·ÀËß§«“¡¡◊¥^000000 ^F30914(iz_dun03)^000000",iz_dun03,
+"^FF0000ï^000000 ^0E03F6ÀπŸπÈÕ¬®Õ¡ªË«π^000000 ^F30914(mjo_dun02)^000000",mjo_dun02,
+"^FF0000ï^000000 ^0E03F6§‘ß‚ª√‘Ëß^000000 ^F30914(mjolnir_05)^000000",mjolnir_05,
+"^FF0000ï^000000 ^0E03F6ª’»“®°“≈‡«≈“^000000 ^F30914(cmd_fild04)^000000",cmd_fild04,
+"^FF0000ï^000000 ^0E03F6¡πÿ…¬Ï°≈“¬æ—π∏ÿÏ^000000 ^F30914(treasure01)^000000",treasure01,
+"^FF0000ï^000000 ^0E03F6ª’»“®¢ÿ¡π√°^000000 ^F30914(ice_dun03)^000000",ice_dun03,
+"^FF0000ï^000000 ^0E03F6Õ—»«‘π∑’Ë∂Ÿ°≈◊¡^000000 ^F30914(jupe_core)^000000",jupe_core,
+"^FF0000ï^000000 ^0E03F6¬¡∑Ÿµ^000000 ^F30914(tur_dun04)^000000",tur_dun04,
+"^FF0000ï^000000 ^0E03F6«’√∫ÿ√ÿ…‚∫√“≥^000000 ^F30914(abbey03)^000000",abbey03,
+"^FF0000ï^000000 ^0E03F6√“™“ª≈“À¡÷°^000000 ^F30914(beach_dun03)^000000",beach_dun;
+
+oldboss:
+menu 
+"^FF0000ï^000000 ^0E03F6Amon Ra^000000 ^F30914(moc_pryd06)^000000",moc_pryd06,
+"^FF0000ï^000000 ^0E03F6Atroce^000000 ^F30914(ra_fild03)^000000",ra_fild03,
+"^FF0000ï^000000 ^0E03F6Atroce^000000 ^F30914(ra_fild02)^000000",ra_fild02,
+"^FF0000ï^000000 ^0E03F6Atroce^000000 ^F30914(ra_fild04)^000000",ra_fild04,
+"^FF0000ï^000000 ^0E03F6Atroce^000000 ^F30914(ve_fild01)^000000",ve_fild01,
+"^FF0000ï^000000 ^0E03F6Baphomet^000000 ^F30914(prt_maze03)^000000",prt_maze03,
+"^FF0000ï^000000 ^0E03F6Beelzebub^000000 ^F30914(abbey03)^000000",abbey03,
+"^FF0000ï^000000 ^0E03F6Dark Lord^000000 ^F30914(gld_dun04)^000000",gld_dun04,
+"^FF0000ï^000000 ^0E03F6Dark Lord^000000 ^F30914(gl_chyard)^000000",gl_chyard,
+"^FF0000ï^000000 ^0E03F6Detardeurus^000000 ^F30914(abyss_03)^000000",abyss_03,
+"^FF0000ï^000000 ^0E03F6Doppelganger^000000 ^F30914(gld_dun02)^000000",gld_dun02,
+"^FF0000ï^000000 ^0E03F6Doppelganger^000000 ^F30914(gef_dun02)^000000",gef_dun02,
+"^FF0000ï^000000 ^0E03F6Dracula^000000 ^F30914(gef_dun01)^000000",gef_dun01,
+"^FF0000ï^000000 ^0E03F6Drake^000000 ^F30914(treasure02)^000000",treasure02,
+"^FF0000ï^000000 ^0E03F6Eddga^000000 ^F30914(gld_dun01)^000000",gld_dun01,
+"^FF0000ï^000000 ^0E03F6Eddga^000000 ^F30914(pay_fild11)^000000",pay_fild11,
+"^FF0000ï^000000 ^0E03F6Egnigem Cenia^000000 ^F30914(lhz_dun02)^000000",lhz_dun02,
+"^FF0000ï^000000 ^0E03F6Evil Snake Lord^000000 ^F30914(gon_dun03)^000000",gon_dun03,
+"^FF0000ï^000000 ^0E03F6Fallen Bishop Hibram^000000 ^F30914(abbey02)^000000",abbey02,
+"^FF0000ï^000000 ^0E03F6Gloom Under Night^000000 ^F30914(ra_san05)^000000",ra_san05,
+"^FF0000ï^000000 ^0E03F6Golden Thief Bug^000000 ^F30914(prt_sewb4)^000000",prt_sewb4,
+"^FF0000ï^000000 ^0E03F6Gopinich^000000 ^F30914(mosk_dun03)^000000",mosk_dun03,
+"^FF0000ï^000000 ^0E03F6Ifrit^000000 ^F30914(thor_v03)^000000",thor_v03,
+"^FF0000ï^000000 ^0E03F6Kiel D-01^000000 ^F30914(kh_dun02)^000000",kh_dun02,
+"^FF0000ï^000000 ^0E03F6Lady Tanee^000000 ^F30914(ayo_dun02)^000000",ayo_dun02,
+"^FF0000ï^000000 ^0E03F6Maya^000000 ^F30914(anthell02)^000000",anthell02,
+"^FF0000ï^000000 ^0E03F6Maya^000000 ^F30914(gld_dun03)^000000",gld_dun03,
+"^FF0000ï^000000 ^0E03F6Mistress^000000 ^F30914(mjolnir_04)^000000",mjolnir_04,
+"^FF0000ï^000000 ^0E03F6Moonlight Flower^000000 ^F30914(pay_dun04)^000000",pay_dun04,
+"^FF0000ï^000000 ^0E03F6Nidhoggr's Shadow^000000 ^F30914(2@nyd)^000000",nyd2,
+"^FF0000ï^000000 ^0E03F6√“¬°“√‡æ‘Ë¡‡µ‘¡^000000",oldboss02;
+
+oldboss02:
+menu 
+"^FF0000ï^000000 ^0E03F6Orc Hero^000000 ^F30914(gef_fild02)^000000",gef_fild02,
+"^FF0000ï^000000 ^0E03F6Orc Hero^000000 ^F30914(gef_fild14)^000000",gef_fild14,
+"^FF0000ï^000000 ^0E03F6Orc Lord^000000 ^F30914(gef_fild10)^000000",gef_fild10,
+"^FF0000ï^000000 ^0E03F6Osiris^000000 ^F30914(moc_pryd04)^000000",moc_pryd04,
+"^FF0000ï^000000 ^0E03F6Pharaoh^000000 ^F30914(in_sphinx5)^000000",in_sphinx5,
+"^FF0000ï^000000 ^0E03F6Phreeoni^000000 ^F30914(moc_fild17)^000000",moc_fild17,
+"^FF0000ï^000000 ^0E03F6RSX-0806^000000 ^F30914(ein_dun02)^000000",ein_dun02,
+"^FF0000ï^000000 ^0E03F6Incantation Samurai^000000 ^F30914(ama_dun03)^000000",ama_dun03,
+"^FF0000ï^000000 ^0E03F6Satan Morroc^000000 ^F30914(moc_fild22)^000000",moc_fild22,
+"^FF0000ï^000000 ^0E03F6Stormy Knight^000000 ^F30914(xmas_dun02)^000000",xmas_dun02,
+"^FF0000ï^000000 ^0E03F6Tao Gunka^000000 ^F30914(beach_dun)^000000",beach_dun,
+"^FF0000ï^000000 ^0E03F6Thanatos^000000 ^F30914(thana_boss)^000000",thana_boss,
+"^FF0000ï^000000 ^0E03F6Turtle General^000000 ^F30914(tur_dun04)^000000",tur_dun04,
+"^FF0000ï^000000 ^0E03F6Valkyrie Randgris^000000 ^F30914(odin_tem03)^000000",odin_tem03,
+"^FF0000ï^000000 ^0E03F6Vesper^000000 ^F30914(jupe_core)^000000",jupe_core,
+"^FF0000ï^000000 ^0E03F6White Lady^000000 ^F30914(lou_dun03)^000000",lou_dun03,
+"^FF0000ï^000000 ^0E03F6¬°‡≈‘°^000000",Lcancel;
+
+Lcancel:
+mes "¬‘π¥’„ÀÈ∫√‘°“√§–";
+close;
+//-------------------------------
+//          Fields
+//-------------------------------
+
+fbrasilis:
+menu 	"Brasilis Field 1",bra_fild01;
+
+frachel:
+menu 	"Rachel Field 1",ra_fild01,
+	"Rachel Field 2",ra_fild02,
+	"Rachel Field 3",ra_fild03,
+	"Rachel Field 4",ra_fild04,
+	"Rachel Field 5",ra_fild05,
+	"Rachel Field 6",ra_fild06,
+	"Rachel Field 7",ra_fild07,
+	"Rachel Field 8",ra_fild08,
+	"Rachel Field 9",ra_fild09,
+	"Rachel Field 10",ra_fild10,
+	"Rachel Field 11",ra_fild11,
+	"Rachel Field 12",ra_fild12,
+	"Rachel Field 13",ra_fild13;
+
+fmjolnir:
+menu	"Mjolnir Field 1",mjolnir_01,
+	"Mjolnir Field 2",mjolnir_02,
+	"Mjolnir Field 3",mjolnir_03,
+	"Mjolnir Field 4",mjolnir_04,
+	"Mjolnir Field 5",mjolnir_05,
+	"Mjolnir Field 6",mjolnir_06,
+	"Mjolnir Field 7",mjolnir_07,
+	"Mjolnir Field 8",mjolnir_08,
+	"Mjolnir Field 9",mjolnir_09,
+	"Mjolnir Field 10",mjolnir_10,
+	"Mjolnir Field 11",mjolnir_11,
+	"Mjolnir Field 12",mjolnir_12;
+
+fgeffen:
+menu 	"Geffen Field 0",gef_fild00,
+	"Geffen Field 1",gef_fild01,
+	"Geffen Field 2",gef_fild02,
+	"Geffen Field 3",gef_fild03,
+	"Geffen Field 4",gef_fild04,
+	"Geffen Field 5",gef_fild05,
+	"Geffen Field 6",gef_fild06,
+	"Geffen Field 7",gef_fild07,
+	"Geffen Field 8",gef_fild08,
+	"Geffen Field 9",gef_fild09,
+	"Geffen Field 10",gef_fild10,
+	"Geffen Field 11",gef_fild11,
+	"Geffen Field 12",gef_fild12,
+	"Geffen Field 13",gef_fild13,
+	"Geffen Field 14",gef_fild14;
+
+fmoscovia:
+menu 	"Moscovia Field 1",mosk_fild01,
+	"Moscovia Field 2",mosk_fild02;
+
+fmorocc:
+menu 	"Moc Field 1",moc_fild01,
+	"Moc Field 2",moc_fild02,
+	"Moc Field 3",moc_fild03,
+	"Moc Field 4",moc_fild04,
+	"Moc Field 5",moc_fild05,
+	"Moc Field 6",moc_fild06,
+	"Moc Field 7",moc_fild07,
+	"Moc Field 8",moc_fild08,
+	"Moc Field 9",moc_fild09,
+	"Moc Field 10",moc_fild10,
+	"Moc Field 11",moc_fild11,
+	"Moc Field 12",moc_fild12,
+	"Moc Field 13",moc_fild13,
+	"Moc Field 16",moc_fild16,
+	"Moc Field 17",moc_fild17,
+	"Moc Field 18",moc_fild18,
+	"Moc Field 19",moc_fild19,
+	"Moc Field 20",moc_fild20,
+	"Moc Field 21",moc_fild21,
+	"Moc Field 22",moc_fild22;
+
+fpayon:
+menu 	"Payon Field 1",pay_fild01,
+	"Payon Field 2",pay_fild02,
+	"Payon Field 3",pay_fild03,
+	"Payon Field 4",pay_fild04,
+	"Payon Field 5",pay_fild05,
+	"Payon Field 6",pay_fild06,
+	"Payon Field 7",pay_fild07,
+	"Payon Field 8",pay_fild08,
+	"Payon Field 9",pay_fild09,
+	"Payon Field 10",pay_fild10,
+	"Payon Field 11",pay_fild11;
+
+fprontera:
+menu 	"Prontera Field 1",prt_fild01,
+	"Prontera Field 3",prt_fild03,
+	"Prontera Field 4",prt_fild04,
+	"Prontera Field 5",prt_fild05,
+	"Prontera Field 6",prt_fild06,
+	"Prontera Field 7",prt_fild07,
+	"Prontera Field 8",prt_fild08,
+	"Prontera Field 9",prt_fild09,
+	"Prontera Field 10",prt_fild10,
+	"Prontera Field 11",prt_fild11;
+
+flutie:
+menu 	"Lutie Field 1",xmas_fild01;
+
+fcomodo:
+menu 	"Comodo Field 1",cmd_fild01,
+	"Comodo Field 2",cmd_fild02,
+	"Comodo Field 3",cmd_fild03,
+	"Comodo Field 4",cmd_fild04,
+	"Comodo Field 5",cmd_fild05,
+	"Comodo Field 6",cmd_fild06,
+	"Comodo Field 7",cmd_fild07,
+	"Comodo Field 8",cmd_fild08,
+	"Comodo Field 9",cmd_fild09;
+
+fdiscates:
+menu 	"Discates Field 1",dic_fild01,
+	"Discates Field 2",dic_fild02;
+
+fyuno:
+menu 	"Yuno Field 1",yuno_fild01,
+	"Yuno Field 2",yuno_fild02,
+	"Yuno Field 3",yuno_fild03,
+	"Yuno Field 4",yuno_fild04,
+	"Yuno Field 5",yuno_fild05,
+	"Yuno Field 6",yuno_fild06,
+	"Yuno Field 7",yuno_fild07,
+	"Yuno Field 8",yuno_fild08,
+	"Yuno Field 9",yuno_fild09,
+	"Yuno Field 10",yuno_fild10,
+	"Yuno Field 11",yuno_fild11,
+	"Yuno Field 12",yuno_fild12;
+
+famatsu:
+menu 	"Amatsu Field 1",ama_fild01;
+
+fgonryun :
+menu 	"Gonryun Field 1",gon_fild01;
+
+fumbala:
+menu 	"Umbala Field 1",um_fild01,
+	"Umbala Field 2",um_fild02,
+	"Umbala Field 3",um_fild03,
+	"Umbala Field 4",um_fild04;
+
+fniflheim:
+menu 	"Niflheim Field 1",nif_fild01,
+	"Niflheim Field 2",nif_fild02;
+
+flouyang:
+menu 	"Louyang Field 1",lou_fild01;
+
+fayothaya:
+menu 	"Ayothaya Field 1",ayo_fild01,
+	"Ayothaya Field 2",ayo_fild02;
+
+feinbroch:
+menu 	"Einbroch Field 1",ein_fild01,
+	"Einbroch Field 2",ein_fild02,
+	"Einbroch Field 3",ein_fild03,
+	"Einbroch Field 4",ein_fild04,
+	"Einbroch Field 5",ein_fild05,
+	"Einbroch Field 6",ein_fild06,
+	"Einbroch Field 7",ein_fild07,
+	"Einbroch Field 8",ein_fild08,
+	"Einbroch Field 9",ein_fild09,
+	"Einbroch Field 10",ein_fild10;
+
+flighthalzen:
+menu 	"Lighthalzen Field 1",lhz_fild01,
+	"Lighthalzen Field 2",lhz_fild02,
+	"Lighthalzen Field 3",lhz_fild03;
+
+fhugel:
+menu 	"Hugel Field 1",hu_fild01,
+	"Hugel Field 2",hu_fild02,
+	"Hugel Field 3",hu_fild03,
+	"Hugel Field 4",hu_fild04,
+	"Hugel Field 5",hu_fild05,
+	"Hugel Field 6",hu_fild06,
+	"Hugel Field 7",hu_fild07;
+
+fveins:
+menu	"Veins Field 1",ve_fild01,
+	"Veins Field 2",ve_fild02,
+	"Veins Field 3",ve_fild03,
+	"Veins Field 4",ve_fild04,
+	"Veins Field 5",ve_fild05,
+	"Veins Field 6",ve_fild06,
+	"Veins Field 7",ve_fild07;
+
+fsplendide:
+menu	"Splendide Field 1",spl_fild01,
+	"Splendide Field 2",spl_fild02,
+	"Splendide Field 3",spl_fild03;
+
+fmanuk:
+menu	"Manuk Field 1",man_fild01,
+	"Manuk Field 2",man_fild02,
+	"Manuk Field 3",man_fild03;
+
+//-------------------------------
+//          Dungeons
+//-------------------------------
+
+dscaraba:
+menu 	"Scaraba Hole Dungeon 1",dic_dun01,
+	"Scaraba Hole Dungeon 2",dic_dun02;
+
+dbrasilis:
+menu 	"Brasilis Dungeon 1",bra_dun01,
+	"Brasilis Dungeon 2",bra_dun02;
+
+djuperos:
+menu 	"Juperos Dungeon 1",juperos_01,
+	"Juperos Dungeon 2",juperos_02,
+	"Juperos Dungeon 3",jupe_core;
+
+dumbala:
+menu 	"Umbala Dungeon 1",um_dun01,
+	"Umbala Dungeon 2",um_dun02,
+	"Umbala Dungeon 3",yggdrasil01;
+
+dlouyang:
+menu 	"Louyang Dungeon 1",lou_dun01,
+	"Louyang Dungeon 2",lou_dun02,
+	"Louyang Dungeon 3",lou_dun03;
+
+dayothaya:
+menu 	"Ayothaya Dungeon 1",ayo_dun01,
+	"Ayothaya Dungeon 2",ayo_dun02;
+
+deinbroch:
+menu 	"Einbroch Dungeon 1",ein_dun01,
+	"Einbroch Dungeon 2",ein_dun02;
+
+dlighthalzen:
+menu 	"Lighthalzen Dungeon 1",lhz_dun01,
+	"Lighthalzen Dungeon 2",lhz_dun02,
+	"Lighthalzen Dungeon 3",lhz_dun03;
+
+dabyss:
+menu 	"Abyss Lakes Dungeon 1",abyss_01,
+	"Abyss Lakes Dungeon 2",abyss_02,
+	"Abyss Lakes Dungeon 3",abyss_03;
+
+dthanatos:
+menu 	"Thanatos Tower Dungeon 1",tha_t01,
+	"Thanatos Tower Dungeon 2",tha_t02,
+	"Thanatos Tower Dungeon 3",tha_t03,
+	"Thanatos Tower Dungeon 4",tha_t04,
+	"Thanatos Tower Dungeon 5",tha_t05,
+	"Thanatos Tower Dungeon 6",tha_t06,
+	"Thanatos Tower Dungeon 7",tha_t07,
+	"Thanatos Tower Dungeon 8",tha_t08,
+	"Thanatos Tower Dungeon 9",tha_t09,
+	"Thanatos Tower Dungeon 10",tha_t10,
+	"Thanatos Tower Dungeon 11",tha_t11,
+	"Thanatos Tower Dungeon 12",tha_t12,
+	"Thanatos Tower Dungeon 13",thana_boss;
+
+dkiel:
+menu 	"Kiel Dungeon 1",kh_dun01,
+	"Kiel Dungeon 2",kh_dun02;
+
+danthell:
+menu 	"Anthell Dungeon 1",anthell01,
+	"Anthell Dungeon 2",anthell02;
+
+dbeach:
+menu 	"Beach Dungeon 1",beach_dun,
+	"Beach Dungeon 2",beach_dun2,
+	"Beach Dungeon 3",beach_dun3;
+
+dbyalan:
+menu 	"Byalan Dungeon 0",iz_dun00,
+	"Byalan Dungeon 1",iz_dun01,
+	"Byalan Dungeon 2",iz_dun02,
+	"Byalan Dungeon 3",iz_dun03,
+	"Byalan Dungeon 4",iz_dun04;
+
+dclock:
+menu 	"Clock Tower Dungeon 1",c_tower1,
+	"Clock Tower Dungeon 2",c_tower2,
+	"Clock Tower Dungeon 3",c_tower3,
+	"Clock Tower Dungeon 4",c_tower4,
+	"Alde Dungeon 1",alde_dun01,
+	"Alde Dungeon 2",alde_dun02,
+	"Alde Dungeon 3",alde_dun03,
+	"Alde Dungeon 4",alde_dun04;
+
+dcoal:
+menu 	"Coal Mines Dungeon 1",mjo_dun01,
+	"Coal Mines Dungeon 2",mjo_dun02,
+	"Coal Mines Dungeon 3",mjo_dun03;
+
+dculverts:
+menu 	"Culverts Dungeon 1",prt_sewb1,
+	"Culverts Dungeon 2",prt_sewb2,
+	"Culverts Dungeon 3",prt_sewb3,
+	"Culverts Dungeon 4",prt_sewb4;
+
+dgeffen:
+menu 	"Geffen Dungeon 1",gef_dun00,
+	"Geffen Dungeon 2",gef_dun01,
+	"Geffen Dungeon 3",gef_dun02,
+	"Geffen Dungeon 4",gef_dun03;
+
+dglast:
+menu 	"Churchyard",gl_chyard,
+	"Entrance",glast_01,
+	"St.Abbey",gl_church,
+	"Staircase",gl_step,
+	"Castle 1",gl_cas01,
+	"Castle 2",gl_cas02,
+	"Chivalry 1",gl_knt01,
+	"Chivalry 2",gl_knt02,
+	"Culvert 1",gl_sew01,
+	"Culvert 2",gl_sew02,
+	"Culvert 3",gl_sew03,
+	"Culvert 4",gl_sew04,
+	"Underground Cave 1",gl_dun01,
+	"Underground Cave 2",gl_dun02,
+	"Underground Prison 1",gl_prison,
+	"Underground Prison 2",gl_prison1;
+
+dhidden:
+menu 	"Hidden Dungeon 1",prt_maze01,
+	"Hidden Dungeon 2",prt_maze02,
+	"Hidden Dungeon 3",prt_maze03;
+
+dice:
+menu 	"Ice Dungeon 1",ice_dun01,
+	"Ice Dungeon 2",ice_dun02,
+	"Ice Dungeon 3",ice_dun03,
+	"Ice Dungeon 4",ice_dun04;
+
+dmagma:
+menu 	"Magma Dungeon 1",mag_dun01,
+	"Magma Dungeon 2",mag_dun02;
+
+dmoscovia:
+menu 	"Moscovia Dungeon 1",mosk_dun01,
+	"Moscovia Dungeon 2",mosk_dun02,
+	"Moscovia Dungeon 3",mosk_dun03;
+
+dnidhogg:
+menu 	"Nidhogg's Dungeon 1",nyd_dun01,
+	"Nidhogg's Dungeon 2",nyd_dun02,
+	"Nest Dungeon 1",nyd1,
+	"Nest Dungeon 2",nyd2;
+
+dodin:
+menu	"Odin Temple Dungeon 1",odin_tem01,
+	"Odin Temple Dungeon 2",odin_tem02,
+	"Odin Temple Dungeon 3",odin_tem03;
+
+dorc:
+menu 	"Orc Dungeon 1",orcsdun01,
+	"Orc Dungeon 2",orcsdun02;
+
+dpayon:
+menu 	"Payon Dungeon 0",pay_dun00,
+	"Payon Dungeon 1",pay_dun01,
+	"Payon Dungeon 2",pay_dun02,
+	"Payon Dungeon 3",pay_dun03,
+	"Payon Dungeon 4",pay_dun04;
+
+dpyramids:
+menu 	"Pyramids Dungeon 1",moc_pryd01,
+	"Pyramids Dungeon 2",moc_pryd02,
+	"Pyramids Dungeon 3",moc_pryd03,
+	"Pyramids Dungeon 4",moc_pryd04,
+	"Pyramids Dungeon 5",moc_pryd05,
+	"Pyramids Dungeon 6",moc_pryd06;
+
+dsphinx:
+menu 	"Sphinx Dungeon 1",in_sphinx1,
+	"Sphinx Dungeon 2",in_sphinx2,
+	"Sphinx Dungeon 3",in_sphinx3,
+	"Sphinx Dungeon 4",in_sphinx4,
+	"Sphinx Dungeon 5",in_sphinx5;
+
+dsunken:
+menu 	"Sunken Ship Dungeon 1",treasure01,
+	"Sunken Ship Dungeon 2",treasure02;
+
+dtoy:
+menu 	"Toy Factory Dungeon 1",xmas_dun01,
+	"Toy Factory Dungeon 2",xmas_dun02;
+
+dturtle:
+menu 	"Turtle Dungeon 1",tur_dun01,
+	"Turtle Dungeon 2",tur_dun02,
+	"Turtle Dungeon 3",tur_dun03,
+	"Turtle Dungeon 4",tur_dun04;
+
+damatsu:
+menu 	"Amatsu Dungeon 1",ama_dun01,
+	"Amatsu Dungeon 2",ama_dun02,
+	"Amatsu Dungeon 3",ama_dun03;
+
+dgonryun:
+menu 	"Gonryun Dungeon 1",gon_dun01,
+	"Gonryun Dungeon 2",gon_dun02,
+	"Gonryun Dungeon 3",gon_dun03;
+
+dgefenia:
+menu 	"Gefenia Dungeon 1",gefenia01,
+	"Gefenia Dungeon 2",gefenia02,
+	"Gefenia Dungeon 3",gefenia03,
+	"Gefenia Dungeon 4",gefenia04;
+
+dthor:
+menu 	"Thor Volcano Dungeon 1",thor_v01,
+	"Thor Volcano Dungeon 2",thor_v02,
+	"Thor Volcano Dungeon 3",thor_v03;
+
+drachel:
+menu 	"Rachel Sanctuary Dungeon 1",ra_san01,
+	"Rachel Sanctuary Dungeon 2",ra_san02,
+	"Rachel Sanctuary Dungeon 3",ra_san03,
+	"Rachel Sanctuary Dungeon 4",ra_san04,		
+	"Rachel Sanctuary Dungeon 5",ra_san05;
+
+dabbey:
+menu 	"Abbey Dungeon 1",abbey01,
+	"Abbey Dungeon 2",abbey02,
+	"Abbey Dungeon 3",abbey03;
+
+//-------------------------------
+//          Town Warps
+//-------------------------------
+
+rachel: 
+set lastmap$,"rachel"; 
+set lastx,130; 
+set lasty,111; 
+warp "rachel",130,111; 
+end;
+
+morocc1:
+set lastmap$,"morocc"; 
+set lastx,159; 
+set lasty,87; 
+warp "morocc",159,87; 
+end;
+
+alberta:
+set lastmap$,"alberta"; 
+set lastx,29; 
+set lasty,235; 
+warp "alberta",29,235; 
+end;
+
+aldebaran:
+set lastmap$,"aldebaran"; 
+set lastx,139; 
+set lasty,128; 
+warp "aldebaran",139,128; 
+end;
+
+amatsu:
+set lastmap$,"amatsu"; 
+set lastx,196; 
+set lasty,97; 
+warp "amatsu",196,97; 
+end;
+
+ayothaya:
+set lastmap$,"ayothaya"; 
+set lastx,150; 
+set lasty,163; 
+warp "ayothaya",150,163; 
+end;
+
+comodo:
+set lastmap$,"comodo"; 
+set lastx,239; 
+set lasty,186; 
+warp "comodo",239,186; 
+end;
+
+dewata:
+set lastmap$,"dewata"; 
+set lastx,199; 
+set lasty,178; 
+warp "dewata",199,178; 
+end;
+
+einbech:
+set lastmap$,"einbech"; 
+set lastx,29; 
+set lasty,235; 
+warp "einbech",29,235; 
+end;
+
+einbroch:
+set lastmap$,"einbroch"; 
+set lastx,172; 
+set lasty,249; 
+warp "einbroch",172,249; 
+end;
+
+hugel:
+set lastmap$,"hugel"; 
+set lastx,80; 
+set lasty,88; 
+warp "hugel",80,88; 
+end;
+
+lighthalzen:
+set lastmap$,"lighthalzen"; 
+set lastx,158; 
+set lasty,95; 
+warp "lighthalzen",158,95; 
+end;
+
+gonryun:
+set lastmap$,"gonryun"; 
+set lastx,160; 
+set lasty,116; 
+warp "gonryun",160,116; 
+end;
+
+geffen:
+set lastmap$,"geffen"; 
+set lastx,189; 
+set lasty,119; 
+warp "geffen",189,119; 
+end;
+
+izlude:
+set lastmap$,"izlude"; 
+set lastx,127; 
+set lasty,123; 
+warp "izlude",127,123; 
+end;
+
+xmas:
+set lastmap$,"xmas"; 
+set lastx,171; 
+set lasty,205; 
+warp "xmas",171,205; 
+end;
+
+jawaii:
+set lastmap$,"jawaii"; 
+set lastx,233; 
+set lasty,105; 
+warp "jawaii",233,105; 
+end;
+
+morocc:
+set lastmap$,"morocc"; 
+set lastx,160; 
+set lasty,95; 
+warp "morocc",160,95; 
+end;
+
+nameless_i:
+set lastmap$,"nameless_i"; 
+set lastx,175; 
+set lasty,193; 
+warp "nameless_i",175,193; 
+end;
+
+nameless_n:
+set lastmap$,"nameless_n"; 
+set lastx,160; 
+set lasty,184; 
+warp "nameless_n",160,184; 
+end;
+
+niflheim:
+set lastmap$,"niflheim"; 
+set lastx,86; 
+set lasty,155; 
+warp "niflheim",86,155; 
+end;
+
+payon:
+set lastmap$,"payon"; 
+set lastx,156; 
+set lasty,226; 
+warp "payon",156,226; 
+end;
+
+prontera:
+set lastmap$,"prontera"; 
+set lastx,156; 
+set lasty,180; 
+warp "prontera",156,180; 
+end;
+
+yuno:
+set lastmap$,"yuno"; 
+set lastx,330; 
+set lasty,102; 
+warp "yuno",330,102; 
+end;
+
+umbala:
+set lastmap$,"umbala"; 
+set lastx,125; 
+set lasty,143; 
+warp "umbala",125,143; 
+end;
+
+louyang:
+set lastmap$,"louyang"; 
+set lastx,217; 
+set lasty,157; 
+warp "louyang",217,157; 
+end;
+
+thor_camp:
+set lastmap$,"thor_camp"; 
+set lastx,194; 
+set lasty,314; 
+warp "thor_camp",194,314; 
+end;
+
+veins:
+set lastmap$,"veins"; 
+set lastx,218; 
+set lasty,127; 
+warp "veins",218,127; 
+end;
+
+moscovia:
+set lastmap$,"moscovia"; 
+set lastx,217; 
+set lasty,85; 
+warp "moscovia",217,85; 
+end;
+
+splendide:
+set lastmap$,"splendide"; 
+set lastx,197; 
+set lasty,176; 
+warp "splendide",197,176; 
+end;
+
+brasilis:
+set lastmap$,"brasilis"; 
+set lastx,196; 
+set lasty,168; 
+warp "brasilis",196,168; 
+end;
+
+manuk:
+set lastmap$,"manuk"; 
+set lastx,296; 
+set lasty,182; 
+warp "manuk",296,182; 
+end;
+
+//-------------------------------
+//        Dungeon Warps
+//-------------------------------
+
+quest1:
+set lastmap$,"quest1"; 
+set lastx,0; 
+set lasty,0; 
+warp "quest1",0,0; 
+end;
+quest2:
+set lastmap$,"quest2"; 
+set lastx,0; 
+set lasty,0; 
+warp "quest2",0,0; 
+end;
+quest3:
+set lastmap$,"quest3"; 
+set lastx,0; 
+set lasty,0; 
+warp "quest3",0,0; 
+end;
+quest4:
+set lastmap$,"quest4"; 
+set lastx,0; 
+set lasty,0; 
+warp "quest4",0,0; 
+end;
+quest5:
+set lastmap$,"quest5"; 
+set lastx,0; 
+set lasty,0; 
+warp "quest5",0,0; 
+end;
+
+quest6:
+set lastmap$,"quest6"; 
+set lastx,0; 
+set lasty,0; 
+warp "quest6",0,0; 
+end;
+quest7:
+set lastmap$,"quest7"; 
+set lastx,0; 
+set lasty,0; 
+warp "quest7",0,0; 
+end;
+quest8:
+set lastmap$,"quest8"; 
+set lastx,0; 
+set lasty,0; 
+warp "quest8",0,0; 
+end;
+quest9:
+set lastmap$,"quest9"; 
+set lastx,0; 
+set lasty,0; 
+warp "quest9",0,0; 
+end;
+quest10:
+set lastmap$,"quest10"; 
+set lastx,0; 
+set lasty,0; 
+warp "quest10",0,0; 
+end;
+
+kh_dun01:
+set lastmap$,"kh_dun01"; 
+set lastx,28; 
+set lasty,226; 
+warp "kh_dun01",28,226; 
+end;
+kh_dun02:
+set lastmap$,"kh_dun02"; 
+set lastx,41; 
+set lasty,198; 
+warp "kh_dun02",41,198; 
+end;
+
+juperos_01:
+set lastmap$,"juperos_01"; 
+set lastx,53; 
+set lasty,247; 
+warp "juperos_01",53,247; 
+end;
+juperos_02:
+set lastmap$,"juperos_02"; 
+set lastx,37; 
+set lasty,63; 
+warp "juperos_02",37,63; 
+end;
+jupe_core:
+set lastmap$,"jupe_core"; 
+set lastx,150; 
+set lasty,285; 
+warp "jupe_core",150,285; 
+end;
+
+um_dun01:
+set lastmap$,"um_dun01"; 
+set lastx,42; 
+set lasty,31; 
+warp "um_dun01",42,31; 
+end;
+um_dun02:
+set lastmap$,"um_dun02"; 
+set lastx,51; 
+set lasty,25; 
+warp "um_dun02",51,25; 
+end;
+
+lou_dun01:
+set lastmap$,"lou_dun01"; 
+set lastx,218; 
+set lasty,196; 
+warp "lou_dun01",218,196; 
+end;
+lou_dun02:
+set lastmap$,"lou_dun02"; 
+set lastx,282; 
+set lasty,20; 
+warp "lou_dun02",282,20; 
+end;
+lou_dun03:
+set lastmap$,"lou_dun03"; 
+set lastx,165; 
+set lasty,38; 
+warp "lou_dun03",165,38; 
+end;
+
+ayo_dun01:
+set lastmap$,"ayo_dun01"; 
+set lastx,275; 
+set lasty,19; 
+warp "ayo_dun01",275,19; 
+end;
+ayo_dun02:
+set lastmap$,"ayo_dun02"; 
+set lastx,24; 
+set lasty,26; 
+warp "ayo_dun02",24,26; 
+end;
+
+ein_dun01:
+set lastmap$,"ein_dun01"; 
+set lastx,22; 
+set lasty,14; 
+warp "ein_dun01",22,14; 
+end;
+ein_dun02:
+set lastmap$,"ein_dun02"; 
+set lastx,292; 
+set lasty,290; 
+warp "ein_dun02",292,290; 
+end;
+
+lhz_dun01:
+set lastmap$,"lhz_dun01"; 
+set lastx,150; 
+set lasty,228; 
+warp "lhz_dun01",150,228; 
+end;
+lhz_dun02:
+set lastmap$,"lhz_dun02"; 
+set lastx,150; 
+set lasty,18; 
+warp "lhz_dun02",150,18; 
+end;
+lhz_dun03:
+set lastmap$,"lhz_dun03"; 
+set lastx,140; 
+set lasty,133; 
+warp "lhz_dun03",140,133; 
+end;
+lhz_dun04:
+set lastmap$,"lhz_dun04"; 
+set lastx,140; 
+set lasty,133; 
+warp "lhz_dun04",140,133; 
+end;
+
+abyss_01:
+set lastmap$,"abyss_01"; 
+set lastx,259; 
+set lasty,270; 
+warp "abyss_01",259,270; 
+end;
+abyss_02:
+set lastmap$,"abyss_02"; 
+set lastx,275; 
+set lasty,270; 
+warp "abyss_02",275,270; 
+end;
+abyss_03:
+set lastmap$,"abyss_03"; 
+set lastx,116; 
+set lasty,27; 
+warp "abyss_03",116,27; 
+end;
+
+tha_t01:
+set lastmap$,"tha_t01"; 
+set lastx,150; 
+set lasty,39; 
+warp "tha_t01",150,39; 
+end;
+tha_t02:
+set lastmap$,"tha_t02"; 
+set lastx,150; 
+set lasty,136; 
+warp "tha_t02",150,136; 
+end;
+tha_t03:
+set lastmap$,"tha_t03"; 
+set lastx,220; 
+set lasty,158; 
+warp "tha_t03",220,158; 
+end;
+tha_t04:
+set lastmap$,"tha_t04"; 
+set lastx,59; 
+set lasty,143; 
+warp "tha_t04",59,143; 
+end;
+tha_t05:
+set lastmap$,"tha_t05"; 
+set lastx,62; 
+set lasty,11; 
+warp "tha_t05",62,11; 
+end;
+tha_t06:
+set lastmap$,"tha_t06"; 
+set lastx,89; 
+set lasty,221; 
+warp "tha_t06",89,221; 
+end;
+tha_t07:
+set lastmap$,"tha_t07"; 
+set lastx,35; 
+set lasty,166; 
+warp "tha_t07",35,166; 
+end;
+tha_t08:
+set lastmap$,"tha_t08"; 
+set lastx,93; 
+set lasty,148; 
+warp "tha_t08",93,148; 
+end;
+tha_t09:
+set lastmap$,"tha_t09"; 
+set lastx,29; 
+set lasty,107; 
+warp "tha_t09",29,107; 
+end;
+tha_t10:
+set lastmap$,"tha_t10"; 
+set lastx,159; 
+set lasty,138; 
+warp "tha_t10",159,138; 
+end;
+tha_t11:
+set lastmap$,"tha_t11"; 
+set lastx,19; 
+set lasty,20; 
+warp "tha_t11",19,20; 
+end;
+tha_t12:
+set lastmap$,"tha_t12"; 
+set lastx,130; 
+set lasty,52; 
+warp "tha_t12",130,52; 
+end;
+thana_boss:
+set lastmap$,"thana_boss"; 
+set lastx,136; 
+set lasty,126; 
+warp "thana_boss",136,126; 
+end;
+
+anthell01:
+set lastmap$,"anthell01"; 
+set lastx,35; 
+set lasty,262; 
+warp "anthell01",35,262; 
+end;
+anthell02:
+set lastmap$,"anthell02"; 
+set lastx,168; 
+set lasty,170; 
+warp "anthell02",168,170; 
+end;
+
+beach_dun:
+set lastmap$,"beach_dun"; 
+set lastx,266; 
+set lasty,67; 
+warp "beach_dun",266,67; 
+end;
+beach_dun2:
+set lastmap$,"beach_dun2"; 
+set lastx,255; 
+set lasty,244; 
+warp "beach_dun2",255,244; 
+end;
+beach_dun3:
+set lastmap$,"beach_dun3"; 
+set lastx,23; 
+set lasty,260; 
+warp "beach_dun3",23,260; 
+end;
+
+iz_dun00:
+set lastmap$,"iz_dun00"; 
+set lastx,168; 
+set lasty,168; 
+warp "iz_dun00",168,168; 
+end;
+iz_dun01:
+set lastmap$,"iz_dun01"; 
+set lastx,253; 
+set lasty,252; 
+warp "iz_dun01",253,252; 
+end;
+iz_dun02:
+set lastmap$,"iz_dun02"; 
+set lastx,236; 
+set lasty,204; 
+warp "iz_dun02",236,204; 
+end;
+iz_dun03:
+set lastmap$,"iz_dun03"; 
+set lastx,32; 
+set lasty,63; 
+warp "iz_dun03",32,63; 
+end;
+iz_dun04:
+set lastmap$,"iz_dun04"; 
+set lastx,26; 
+set lasty,27; 
+warp "iz_dun04",26,27; 
+end;
+
+alde_dun01:
+set lastmap$,"alde_dun01"; 
+set lastx,297; 
+set lasty,25; 
+warp "alde_dun01",297,25; 
+end;
+alde_dun02:
+set lastmap$,"alde_dun02"; 
+set lastx,127; 
+set lasty,169; 
+warp "alde_dun02",127,169; 
+end;
+alde_dun03:
+set lastmap$,"alde_dun03"; 
+set lastx,277; 
+set lasty,178; 
+warp "alde_dun03",277,178; 
+end;
+alde_dun04:
+set lastmap$,"alde_dun04"; 
+set lastx,268; 
+set lasty,74; 
+warp "alde_dun04",268,74; 
+end;
+
+c_tower1:
+set lastmap$,"c_tower1"; 
+set lastx,199; 
+set lasty,159; 
+warp "c_tower1",199,159; 
+end;
+c_tower2:
+set lastmap$,"c_tower2"; 
+set lastx,148; 
+set lasty,283; 
+warp "c_tower2",148,283; 
+end;
+c_tower3:
+set lastmap$,"c_tower3"; 
+set lastx,65; 
+set lasty,147; 
+warp "c_tower3",65,147; 
+end;
+c_tower4:
+set lastmap$,"c_tower4"; 
+set lastx,56; 
+set lasty,155; 
+warp "c_tower4",56,155; 
+end;
+
+mjo_dun01:
+set lastmap$,"mjo_dun01"; 
+set lastx,52; 
+set lasty,17; 
+warp "mjo_dun01",52,17; 
+end;
+mjo_dun02:
+set lastmap$,"mjo_dun02"; 
+set lastx,381; 
+set lasty,343; 
+warp "mjo_dun02",381,343; 
+end;
+mjo_dun03:
+set lastmap$,"mjo_dun03"; 
+set lastx,302; 
+set lasty,262; 
+warp "mjo_dun03",302,262; 
+end;
+
+prt_sewb1:
+set lastmap$,"prt_sewb1"; 
+set lastx,131; 
+set lasty,247; 
+warp "prt_sewb1",131,247; 
+end;
+prt_sewb2:
+set lastmap$,"prt_sewb2"; 
+set lastx,19; 
+set lasty,19; 
+warp "prt_sewb2",19,19; 
+end;
+prt_sewb3:
+set lastmap$,"prt_sewb3"; 
+set lastx,180; 
+set lasty,169; 
+warp "prt_sewb3",180,169; 
+end;
+prt_sewb4:
+set lastmap$,"prt_sewb4"; 
+set lastx,100; 
+set lasty,92; 
+warp "prt_sewb4",100,92; 
+end;
+
+dew_dun01:
+set lastmap$,"dew_dun01"; 
+set lastx,173; 
+set lasty,194; 
+warp "dew_dun01",173,194; 
+end;
+dew_dun02:
+set lastmap$,"dew_dun02"; 
+set lastx,301; 
+set lasty,31; 
+warp "dew_dun02",301,31; 
+end;
+
+gef_dun00:
+set lastmap$,"gef_dun00"; 
+set lastx,104; 
+set lasty,99; 
+warp "gef_dun00",104,99; 
+end;
+gef_dun01:
+set lastmap$,"gef_dun01"; 
+set lastx,115; 
+set lasty,236; 
+warp "gef_dun01",115,236; 
+end;
+gef_dun02:
+set lastmap$,"gef_dun02"; 
+set lastx,106; 
+set lasty,132; 
+warp "gef_dun02",106,132; 
+end;
+gef_dun03:
+set lastmap$,"gef_dun03"; 
+set lastx,203; 
+set lasty,200; 
+warp "gef_dun03",203,200; 
+end;
+
+glast_01:
+set lastmap$,"glast_01"; 
+set lastx,375; 
+set lasty,304; 
+warp "glast_01",375,304; 
+end;
+gl_cas01:
+set lastmap$,"gl_cas01"; 
+set lastx,199; 
+set lasty,29; 
+warp "gl_cas01",199,29; 
+end;
+gl_cas02:
+set lastmap$,"gl_cas02"; 
+set lastx,104; 
+set lasty,25; 
+warp "gl_cas02",104,25; 
+end;
+gl_knt01:
+set lastmap$,"gl_knt01"; 
+set lastx,150; 
+set lasty,15; 
+warp "gl_knt01",150,15; 
+end;
+gl_knt02:
+set lastmap$,"gl_knt02"; 
+set lastx,157; 
+set lasty,287; 
+warp "gl_knt02",157,287; 
+end;
+gl_chyard:
+set lastmap$,"gl_chyard"; 
+set lastx,147; 
+set lasty,15; 
+warp "gl_chyard",147,15; 
+end;
+gl_sew01:
+set lastmap$,"gl_sew01"; 
+set lastx,258; 
+set lasty,255; 
+warp "gl_sew01",258,255; 
+end;
+gl_sew02:
+set lastmap$,"gl_sew02"; 
+set lastx,108; 
+set lasty,291; 
+warp "gl_sew02",108,291; 
+end;
+gl_sew03:
+set lastmap$,"gl_sew03"; 
+set lastx,171; 
+set lasty,283; 
+warp "gl_sew03",171,283; 
+end;
+gl_sew04:
+set lastmap$,"gl_sew04"; 
+set lastx,68; 
+set lasty,277; 
+warp "gl_sew04",68,277; 
+end;
+gl_church:
+set lastmap$,"gl_church"; 
+set lastx,156; 
+set lasty,7; 
+warp "gl_church",156,7; 
+end;
+gl_step:
+set lastmap$,"gl_step"; 
+set lastx,12; 
+set lasty,7; 
+warp "gl_step",12,7; 
+end;
+gl_dun01:
+set lastmap$,"gl_dun01"; 
+set lastx,133; 
+set lasty,271; 
+warp "gl_dun01",133,271; 
+end;
+gl_dun02:
+set lastmap$,"gl_dun02"; 
+set lastx,224; 
+set lasty,274; 
+warp "gl_dun02",224,274; 
+end;
+gl_prison:
+set lastmap$,"gl_prison"; 
+set lastx,14; 
+set lasty,70; 
+warp "gl_prison",14,70; 
+end;
+gl_prison1:
+set lastmap$,"gl_prison1"; 
+set lastx,150; 
+set lasty,14; 
+warp "gl_prison1",150,14; 
+end;
+
+prt_maze01:
+set lastmap$,"prt_maze01"; 
+set lastx,176; 
+set lasty,7; 
+warp "prt_maze01",176,7; 
+end;
+prt_maze02:
+set lastmap$,"prt_maze02"; 
+set lastx,94; 
+set lasty,9; 
+warp "prt_maze02",93,20; 
+end;
+prt_maze03:
+set lastmap$,"prt_maze03"; 
+set lastx,23; 
+set lasty,8; 
+warp "prt_maze03",23,8; 
+end;
+
+ice_dun01:
+set lastmap$,"ice_dun01"; 
+set lastx,157; 
+set lasty,14; 
+warp "ice_dun01",157,14; 
+end;
+ice_dun02:
+set lastmap$,"ice_dun02"; 
+set lastx,151; 
+set lasty,155; 
+warp "ice_dun02",151,155; 
+end;
+ice_dun03:
+set lastmap$,"ice_dun03"; 
+set lastx,149; 
+set lasty,22; 
+warp "ice_dun03",149,22; 
+end;
+ice_dun04:
+set lastmap$,"ice_dun04"; 
+set lastx,33; 
+set lasty,158; 
+warp "ice_dun04",33,158; 
+end;
+
+mag_dun01:
+set lastmap$,"mag_dun01"; 
+set lastx,126; 
+set lasty,68; 
+warp "mag_dun01",126,68; 
+end;
+mag_dun02:
+set lastmap$,"mag_dun02"; 
+set lastx,47; 
+set lasty,30; 
+warp "mag_dun02",47,30; 
+end;
+
+mosk_dun01:
+set lastmap$,"mosk_dun01"; 
+set lastx,189; 
+set lasty,46; 
+warp "mosk_dun01",189,46; 
+end;
+mosk_dun02:
+set lastmap$,"mosk_dun02"; 
+set lastx,163; 
+set lasty,33; 
+warp "mosk_dun02",163,33; 
+end;
+mosk_dun03:
+set lastmap$,"mosk_dun03"; 
+set lastx,33; 
+set lasty,136; 
+warp "mosk_dun03",33,136; 
+end;
+
+orcsdun01:
+set lastmap$,"orcsdun01"; 
+set lastx,32; 
+set lasty,170; 
+warp "orcsdun01",32,170; 
+end;
+orcsdun02:
+set lastmap$,"orcsdun02"; 
+set lastx,21; 
+set lasty,185; 
+warp "orcsdun02",21,185; 
+end;
+
+pay_dun00:
+set lastmap$,"pay_dun00"; 
+set lastx,21; 
+set lasty,183; 
+warp "pay_dun00",21,183; 
+end;
+pay_dun01:
+set lastmap$,"pay_dun01"; 
+set lastx,19; 
+set lasty,33; 
+warp "pay_dun01",19,33; 
+end;
+pay_dun02:
+set lastmap$,"pay_dun02"; 
+set lastx,19; 
+set lasty,63; 
+warp "pay_dun02",19,63; 
+end;
+pay_dun03:
+set lastmap$,"pay_dun03"; 
+set lastx,155; 
+set lasty,159; 
+warp "pay_dun03",155,159; 
+end;
+pay_dun04:
+set lastmap$,"pay_dun04"; 
+set lastx,201; 
+set lasty,204; 
+warp "pay_dun04",201,204; 
+end;
+
+moc_pryd01:
+set lastmap$,"moc_pryd01"; 
+set lastx,192; 
+set lasty,9; 
+warp "moc_pryd01",192,9; 
+end;
+moc_pryd02:
+set lastmap$,"moc_pryd02"; 
+set lastx,10; 
+set lasty,192; 
+warp "moc_pryd02",10,192; 
+end;
+moc_pryd03:
+set lastmap$,"moc_pryd03"; 
+set lastx,100; 
+set lasty,92; 
+warp "moc_pryd03",100,92; 
+end;
+moc_pryd04:
+set lastmap$,"moc_pryd04"; 
+set lastx,181; 
+set lasty,11; 
+warp "moc_pryd04",181,11; 
+end;
+moc_pryd05:
+set lastmap$,"moc_pryd05"; 
+set lastx,94; 
+set lasty,96; 
+warp "moc_pryd05",94,96; 
+end;
+moc_pryd06:
+set lastmap$,"moc_pryd06"; 
+set lastx,192; 
+set lasty,8; 
+warp "moc_pryd06",192,8; 
+end;
+
+in_sphinx1:
+set lastmap$,"in_sphinx1"; 
+set lastx,288; 
+set lasty,9; 
+warp "in_sphinx1",288,9; 
+end;
+in_sphinx2:
+set lastmap$,"in_sphinx2"; 
+set lastx,149; 
+set lasty,81; 
+warp "in_sphinx2",149,81; 
+end;
+in_sphinx3:
+set lastmap$,"in_sphinx3"; 
+set lastx,210; 
+set lasty,54; 
+warp "in_sphinx3",210,54; 
+end;
+in_sphinx4:
+set lastmap$,"in_sphinx4"; 
+set lastx,10; 
+set lasty,222; 
+warp "in_sphinx4",10,222; 
+end;
+in_sphinx5:
+set lastmap$,"in_sphinx5"; 
+set lastx,100; 
+set lasty,99; 
+warp "in_sphinx5",100,99; 
+end;
+
+treasure01:
+set lastmap$,"treasure01"; 
+set lastx,69; 
+set lasty,24; 
+warp "treasure01",69,24; 
+end;
+treasure02:
+set lastmap$,"treasure02"; 
+set lastx,102; 
+set lasty,27; 
+warp "treasure02",102,27; 
+end;
+
+xmas_dun01:
+set lastmap$,"xmas_dun01"; 
+set lastx,205; 
+set lasty,15; 
+warp "xmas_dun01",205,15; 
+end;
+xmas_dun02:
+set lastmap$,"xmas_dun02"; 
+set lastx,129; 
+set lasty,133; 
+warp "xmas_dun02",129,133; 
+end;
+xmas_dun03:
+set lastmap$,"xmas_dun03"; 
+set lastx,24; 
+set lasty,73; 
+warp "xmas_dun03",24,73; 
+end;
+
+tur_dun01:
+set lastmap$,"tur_dun01"; 
+set lastx,154; 
+set lasty,49; 
+warp "tur_dun01",154,49; 
+end;
+tur_dun02:
+set lastmap$,"tur_dun02"; 
+set lastx,148; 
+set lasty,261; 
+warp "tur_dun02",148,261; 
+end;
+tur_dun03:
+set lastmap$,"tur_dun03"; 
+set lastx,132; 
+set lasty,189; 
+warp "tur_dun03",132,189; 
+end;
+tur_dun04:
+set lastmap$,"tur_dun04"; 
+set lastx,100; 
+set lasty,192; 
+warp "tur_dun04",100,192; 
+end;
+
+ama_dun01:
+set lastmap$,"ama_dun01"; 
+set lastx,228; 
+set lasty,11; 
+warp "ama_dun01",228,11; 
+end;
+ama_dun02:
+set lastmap$,"ama_dun02"; 
+set lastx,34; 
+set lasty,41; 
+warp "ama_dun02",34,41; 
+end;
+ama_dun03:
+set lastmap$,"ama_dun03"; 
+set lastx,119; 
+set lasty,14; 
+warp "ama_dun03",119,14; 
+end;
+
+gon_dun01:
+set lastmap$,"gon_dun01"; 
+set lastx,153; 
+set lasty,53; 
+warp "gon_dun01",153,53; 
+end;
+gon_dun02:
+set lastmap$,"gon_dun02"; 
+set lastx,28; 
+set lasty,113; 
+warp "gon_dun02",28,113; 
+end;
+gon_dun03:
+set lastmap$,"gon_dun03"; 
+set lastx,68; 
+set lasty,16; 
+warp "gon_dun03",68,16; 
+end;
+
+gefenia01:
+set lastmap$,"gefenia01"; 
+set lastx,40; 
+set lasty,103; 
+warp "gefenia01",40,103; 
+end;
+gefenia02:
+set lastmap$,"gefenia02"; 
+set lastx,203; 
+set lasty,34; 
+warp "gefenia02",203,34; 
+end;
+gefenia03:
+set lastmap$,"gefenia03"; 
+set lastx,266; 
+set lasty,168; 
+warp "gefenia03",266,168; 
+end;
+gefenia04:
+set lastmap$,"gefenia04"; 
+set lastx,130; 
+set lasty,272; 
+warp "gefenia04",130,272; 
+end;
+
+gld_dun01:
+set lastmap$,"gld_dun01"; 
+set lastx,119; 
+set lasty,93; 
+warp "gld_dun01",119,93; 
+end;
+gld_dun02:
+set lastmap$,"gld_dun02"; 
+set lastx,39; 
+set lasty,161; 
+warp "gld_dun02",39,161; 
+end;
+gld_dun03:
+set lastmap$,"gld_dun03"; 
+set lastx,50; 
+set lasty,44; 
+warp "gld_dun03",50,44; 
+end;
+gld_dun04:
+set lastmap$,"gld_dun04"; 
+set lastx,116; 
+set lasty,45; 
+warp "gld_dun04",116,45; 
+end;
+
+schg_dun01:
+set lastmap$,"schg_dun01"; 
+set lastx,200; 
+set lasty,128; 
+warp "schg_dun01",200,128; 
+end;
+arug_dun01:
+set lastmap$,"arug_dun01"; 
+set lastx,200; 
+set lasty,37; 
+warp "arug_dun01",200,37; 
+end;
+
+thor_v01:
+set lastmap$,"thor_v01"; 
+set lastx,21; 
+set lasty,228; 
+warp "thor_v01",21,228; 
+end;
+thor_v02:
+set lastmap$,"thor_v02"; 
+set lastx,75; 
+set lasty,205; 
+warp "thor_v02",75,205; 
+end;
+thor_v03:
+set lastmap$,"thor_v03"; 
+set lastx,34; 
+set lasty,272; 
+warp "thor_v03",34,272; 
+end;
+
+ra_san01:
+set lastmap$,"ra_san01"; 
+set lastx,140; 
+set lasty,11; 
+warp "ra_san01",140,11; 
+end;
+ra_san02:
+set lastmap$,"ra_san02"; 
+set lastx,32; 
+set lasty,21; 
+warp "ra_san02",32,21; 
+end;
+ra_san03:
+set lastmap$,"ra_san03"; 
+set lastx,10; 
+set lasty,149; 
+warp "ra_san03",10,149; 
+end;
+ra_san04:
+set lastmap$,"ra_san04"; 
+set lastx,204; 
+set lasty,218; 
+warp "ra_san04",204,218; 
+end;
+ra_san05:
+set lastmap$,"ra_san05"; 
+set lastx,150; 
+set lasty,9; 
+warp "ra_san05",150,9; 
+end;
+
+abbey01:
+set lastmap$,"abbey01"; 
+set lastx,51; 
+set lasty,14; 
+warp "abbey01",51,14; 
+end;
+abbey02:
+set lastmap$,"abbey02"; 
+set lastx,150; 
+set lasty,11; 
+warp "abbey02",150,11; 
+end;
+abbey03:
+set lastmap$,"abbey03"; 
+set lastx,120; 
+set lasty,10; 
+warp "abbey03",120,10; 
+end;
+
+nyd_dun01:
+set lastmap$,"nyd_dun01"; 
+set lastx,60; 
+set lasty,220; 
+warp "nyd_dun01",60,220; 
+end;
+nyd_dun02:
+set lastmap$,"nyd_dun02"; 
+set lastx,108; 
+set lasty,113; 
+warp "nyd_dun02",108,113; 
+end;
+
+nyd1:
+set lastmap$,"1@nyd"; 
+set lastx,65; 
+set lasty,291; 
+warp "1@nyd",65,291; 
+end;
+nyd2:
+set lastmap$,"2@nyd"; 
+set lastx,111; 
+set lasty,384; 
+warp "2@nyd",111,384; 
+end;
+
+dic_dun01:
+set lastmap$,"dic_dun01"; 
+set lastx,365; 
+set lasty,45; 
+warp "dic_dun01",365,45; 
+end;
+
+dic_dun02:
+set lastmap$,"dic_dun02"; 
+set lastx,102; 
+set lasty,143; 
+warp "dic_dun02",102,143; 
+end;
+
+bra_dun01:
+set lastmap$,"bra_dun01"; 
+set lastx,152; 
+set lasty,91; 
+warp "bra_dun01",152,91; 
+end;
+bra_dun02:
+set lastmap$,"bra_dun02"; 
+set lastx,262; 
+set lasty,262; 
+warp "bra_dun02",262,262; 
+end;
+
+yggdrasil01:
+set lastmap$,"yggdrasil01"; 
+set lastx,204; 
+set lasty,78; 
+warp "yggdrasil01",204,78; 
+end;
+
+//-------------------------------
+//         Field Warps
+//-------------------------------
+
+bra_fild01:
+set lastmap$,"bra_fild01"; 
+set lastx,76; 
+set lasty,32; 
+warp "bra_fild01",76,32; 
+end;
+
+ra_fild01:
+set lastmap$,"ra_fild01"; 
+set lastx,192; 
+set lasty,162; 
+warp "ra_fild01",192,162; 
+end;
+ra_fild02:
+set lastmap$,"ra_fild02"; 
+set lastx,235; 
+set lasty,166; 
+warp "ra_fild02",235,166; 
+end;
+ra_fild03:
+set lastmap$,"ra_fild03"; 
+set lastx,202; 
+set lasty,206; 
+warp "ra_fild03",202,206; 
+end;
+ra_fild04:
+set lastmap$,"ra_fild04"; 
+set lastx,202; 
+set lasty,208; 
+warp "ra_fild04",202,208; 
+end;
+ra_fild05:
+set lastmap$,"ra_fild05"; 
+set lastx,225; 
+set lasty,202; 
+warp "ra_fild05",225,202; 
+end;
+ra_fild06:
+set lastmap$,"ra_fild06"; 
+set lastx,202; 
+set lasty,214; 
+warp "ra_fild06",202,214; 
+end;
+ra_fild07:
+set lastmap$,"ra_fild07"; 
+set lastx,263; 
+set lasty,196; 
+warp "ra_fild07",263,196; 
+end;
+ra_fild08:
+set lastmap$,"ra_fild08"; 
+set lastx,217; 
+set lasty,201; 
+warp "ra_fild08",217,201; 
+end;
+ra_fild09:
+set lastmap$,"ra_fild09"; 
+set lastx,87; 
+set lasty,121; 
+warp "ra_fild09",87,121; 
+end;
+ra_fild10:
+set lastmap$,"ra_fild10"; 
+set lastx,277; 
+set lasty,181; 
+warp "ra_fild10",277,181; 
+end;
+ra_fild11:
+set lastmap$,"ra_fild11"; 
+set lastx,221; 
+set lasty,185; 
+warp "ra_fild11",221,185; 
+end;
+ra_fild12:
+set lastmap$,"ra_fild12"; 
+set lastx,175; 
+set lasty,200; 
+warp "ra_fild12",175,200; 
+end;
+ra_fild13:
+set lastmap$,"ra_fild13"; 
+set lastx,174; 
+set lasty,197; 
+warp "ra_fild13",174,197; 
+end;
+
+gef_fild00:
+set lastmap$,"gef_fild00"; 
+set lastx,46; 
+set lasty,199; 
+warp "gef_fild00",46,199; 
+end;
+gef_fild01:
+set lastmap$,"gef_fild01"; 
+set lastx,213; 
+set lasty,204; 
+warp "gef_fild01",213,204; 
+end;
+gef_fild02:
+set lastmap$,"gef_fild02"; 
+set lastx,195; 
+set lasty,212; 
+warp "gef_fild02",195,212; 
+end;
+gef_fild03:
+set lastmap$,"gef_fild03"; 
+set lastx,257; 
+set lasty,192; 
+warp "gef_fild03",257,192; 
+end;
+gef_fild04:
+set lastmap$,"gef_fild04"; 
+set lastx,188; 
+set lasty,171; 
+warp "gef_fild04",188,171; 
+end;
+gef_fild05:
+set lastmap$,"gef_fild05"; 
+set lastx,166; 
+set lasty,263; 
+warp "gef_fild05",166,263; 
+end;
+gef_fild06:
+set lastmap$,"gef_fild06"; 
+set lastx,248; 
+set lasty,158; 
+warp "gef_fild06",248,158; 
+end;
+gef_fild07:
+set lastmap$,"gef_fild07"; 
+set lastx,195; 
+set lasty,191; 
+warp "gef_fild07",195,191; 
+end;
+gef_fild08:
+set lastmap$,"gef_fild08"; 
+set lastx,186; 
+set lasty,183; 
+warp "gef_fild08",186,183; 
+end;
+gef_fild09:
+set lastmap$,"gef_fild09"; 
+set lastx,221; 
+set lasty,117; 
+warp "gef_fild09",221,117; 
+end;
+gef_fild10:
+set lastmap$,"gef_fild10"; 
+set lastx,178; 
+set lasty,218; 
+warp "gef_fild10",178,218; 
+end;
+gef_fild11:
+set lastmap$,"gef_fild11"; 
+set lastx,136; 
+set lasty,328; 
+warp "gef_fild11",136,328; 
+end;
+gef_fild12:
+set lastmap$,"gef_fild12"; 
+set lastx,240; 
+set lasty,181; 
+warp "gef_fild12",240,181; 
+end;
+gef_fild13:
+set lastmap$,"gef_fild13"; 
+set lastx,235; 
+set lasty,235; 
+warp "gef_fild13",235,235; 
+end;
+gef_fild14:
+set lastmap$,"gef_fild14"; 
+set lastx,211; 
+set lasty,185; 
+warp "gef_fild14",211,185; 
+end;
+
+mjolnir_01:
+set lastmap$,"mjolnir_01"; 
+set lastx,204; 
+set lasty,120; 
+warp "mjolnir_01",204,120; 
+end;
+mjolnir_02:
+set lastmap$,"mjolnir_02"; 
+set lastx,175; 
+set lasty,193; 
+warp "mjolnir_02",175,193; 
+end;
+mjolnir_03:
+set lastmap$,"mjolnir_03"; 
+set lastx,208; 
+set lasty,213; 
+warp "mjolnir_03",208,213; 
+end;
+mjolnir_04:
+set lastmap$,"mjolnir_04"; 
+set lastx,179; 
+set lasty,180; 
+warp "mjolnir_04",179,180; 
+end;
+mjolnir_05:
+set lastmap$,"mjolnir_05"; 
+set lastx,181; 
+set lasty,240; 
+warp "mjolnir_05",181,240; 
+end;
+mjolnir_06:
+set lastmap$,"mjolnir_06"; 
+set lastx,195; 
+set lasty,270; 
+warp "mjolnir_06",195,270; 
+end;
+mjolnir_07:
+set lastmap$,"mjolnir_07"; 
+set lastx,235; 
+set lasty,202; 
+warp "mjolnir_07",235,202; 
+end;
+mjolnir_08:
+set lastmap$,"mjolnir_08"; 
+set lastx,188; 
+set lasty,215; 
+warp "mjolnir_08",188,215; 
+end;
+mjolnir_09:
+set lastmap$,"mjolnir_09"; 
+set lastx,205; 
+set lasty,144; 
+warp "mjolnir_09",205,144; 
+end;
+mjolnir_10:
+set lastmap$,"mjolnir_10"; 
+set lastx,245; 
+set lasty,223; 
+warp "mjolnir_10",245,223; 
+end;
+mjolnir_11:
+set lastmap$,"mjolnir_11"; 
+set lastx,180; 
+set lasty,206; 
+warp "mjolnir_11",180,206; 
+end;
+mjolnir_12:
+set lastmap$,"mjolnir_12"; 
+set lastx,196; 
+set lasty,208; 
+warp "mjolnir_12",196,208; 
+end;
+
+mosk_fild01:
+set lastmap$,"mosk_fild01"; 
+set lastx,99; 
+set lasty,105; 
+warp "mosk_fild01",99,105; 
+end;
+mosk_fild02:
+set lastmap$,"mosk_fild02"; 
+set lastx,204; 
+set lasty,59; 
+warp "mosk_fild02",204,59; 
+end;
+
+moc_fild01:
+set lastmap$,"moc_fild01"; 
+set lastx,219; 
+set lasty,205; 
+warp "moc_fild01",219,205; 
+end;
+moc_fild02:
+set lastmap$,"moc_fild02"; 
+set lastx,177; 
+set lasty,206; 
+warp "moc_fild02",177,206; 
+end;
+moc_fild03:
+set lastmap$,"moc_fild03"; 
+set lastx,194; 
+set lasty,182; 
+warp "moc_fild03",194,182; 
+end;
+moc_fild04:
+set lastmap$,"moc_fild04"; 
+set lastx,184; 
+set lasty,217; 
+warp "moc_fild04",194,217; 
+end;
+moc_fild05:
+set lastmap$,"moc_fild05"; 
+set lastx,203; 
+set lasty,213; 
+warp "moc_fild05",203,213; 
+end;
+moc_fild06:
+set lastmap$,"moc_fild06"; 
+set lastx,213; 
+set lasty,208; 
+warp "moc_fild06",213,208; 
+end;
+moc_fild07:
+set lastmap$,"moc_fild07"; 
+set lastx,224; 
+set lasty,170; 
+warp "moc_fild07",224,170; 
+end;
+moc_fild08:
+set lastmap$,"moc_fild08"; 
+set lastx,229; 
+set lasty,177; 
+warp "moc_fild08",229,177; 
+end;
+moc_fild09:
+set lastmap$,"moc_fild09"; 
+set lastx,195; 
+set lasty,198; 
+warp "moc_fild09",195,198; 
+end;
+moc_fild10:
+set lastmap$,"moc_fild10"; 
+set lastx,209; 
+set lasty,168; 
+warp "moc_fild10",209,168; 
+end;
+moc_fild11:
+set lastmap$,"moc_fild11"; 
+set lastx,198; 
+set lasty,216; 
+warp "moc_fild11",198,216; 
+end;
+moc_fild12:
+set lastmap$,"moc_fild12"; 
+set lastx,156; 
+set lasty,187; 
+warp "moc_fild12",156,187; 
+end;
+moc_fild13:
+set lastmap$,"moc_fild13"; 
+set lastx,185; 
+set lasty,263; 
+warp "moc_fild13",185,263; 
+end;
+moc_fild16:
+set lastmap$,"moc_fild16"; 
+set lastx,206; 
+set lasty,228; 
+warp "moc_fild16",206,228; 
+end;
+moc_fild17:
+set lastmap$,"moc_fild17"; 
+set lastx,208; 
+set lasty,238; 
+warp "moc_fild17",208,238; 
+end;
+moc_fild18:
+set lastmap$,"moc_fild18"; 
+set lastx,209; 
+set lasty,223; 
+warp "moc_fild18",209,223; 
+end;
+moc_fild19:
+set lastmap$,"moc_fild19"; 
+set lastx,85; 
+set lasty,97; 
+warp "moc_fild19",85,97; 
+end;
+moc_fild20:
+set lastmap$,"moc_fild20"; 
+set lastx,335; 
+set lasty,230; 
+warp "moc_fild20",335,230; 
+end;
+moc_fild21:
+set lastmap$,"moc_fild21"; 
+set lastx,332; 
+set lasty,280; 
+warp "moc_fild21",332,280; 
+end;
+moc_fild22:
+set lastmap$,"moc_fild22"; 
+set lastx,85; 
+set lasty,97; 
+warp "moc_fild22",85,97; 
+end;
+
+pay_fild01:
+set lastmap$,"pay_fild01"; 
+set lastx,158; 
+set lasty,206; 
+warp "pay_fild01",158,206; 
+end;
+pay_fild02:
+set lastmap$,"pay_fild02"; 
+set lastx,151; 
+set lasty,219; 
+warp "pay_fild02",151,219; 
+end;
+pay_fild03:
+set lastmap$,"pay_fild03"; 
+set lastx,205; 
+set lasty,148; 
+warp "pay_fild03",205,148; 
+end;
+pay_fild04:
+set lastmap$,"pay_fild04"; 
+set lastx,186; 
+set lasty,247; 
+warp "pay_fild04",186,247; 
+end;
+pay_fild05:
+set lastmap$,"pay_fild05"; 
+set lastx,134; 
+set lasty,204; 
+warp "pay_fild05",134,204; 
+end;
+pay_fild06:
+set lastmap$,"pay_fild06"; 
+set lastx,193; 
+set lasty,235; 
+warp "pay_fild06",193,235; 
+end;
+pay_fild07:
+set lastmap$,"pay_fild07"; 
+set lastx,200; 
+set lasty,177; 
+warp "pay_fild07",200,177; 
+end;
+pay_fild08:
+set lastmap$,"pay_fild08"; 
+set lastx,137; 
+set lasty,189; 
+warp "pay_fild08",137,189; 
+end;
+pay_fild09:
+set lastmap$,"pay_fild09"; 
+set lastx,201; 
+set lasty,224; 
+warp "pay_fild09",201,224; 
+end;
+pay_fild10:
+set lastmap$,"pay_fild10"; 
+set lastx,160; 
+set lasty,205; 
+warp "pay_fild10",160,205; 
+end;
+pay_fild11:
+set lastmap$,"pay_fild11"; 
+set lastx,194; 
+set lasty,150; 
+warp "pay_fild11",194,150; 
+end;
+
+prt_fild00:
+set lastmap$,"prt_fild00"; 
+set lastx,184; 
+set lasty,235; 
+warp "prt_fild00",184,235; 
+end;
+prt_fild01:
+set lastmap$,"prt_fild01"; 
+set lastx,190; 
+set lasty,206; 
+warp "prt_fild01",190,206; 
+end;
+prt_fild02:
+set lastmap$,"prt_fild02"; 
+set lastx,240; 
+set lasty,206; 
+warp "prt_fild02",240,206; 
+end;
+prt_fild03:
+set lastmap$,"prt_fild03"; 
+set lastx,190; 
+set lasty,143; 
+warp "prt_fild03",190,143; 
+end;
+prt_fild04:
+set lastmap$,"prt_fild04"; 
+set lastx,307; 
+set lasty,252; 
+warp "prt_fild04",307,252; 
+end;
+prt_fild05:
+set lastmap$,"prt_fild05"; 
+set lastx,239; 
+set lasty,213; 
+warp "prt_fild05",239,213; 
+end;
+prt_fild06:
+set lastmap$,"prt_fild06"; 
+set lastx,185; 
+set lasty,188; 
+warp "prt_fild06",185,188; 
+end;
+prt_fild07:
+set lastmap$,"prt_fild07"; 
+set lastx,193; 
+set lasty,194; 
+warp "prt_fild07",193,194; 
+end;
+prt_fild08:
+set lastmap$,"prt_fild08"; 
+set lastx,187; 
+set lasty,218; 
+warp "prt_fild08",187,218; 
+end;
+prt_fild09:
+set lastmap$,"prt_fild09"; 
+set lastx,210; 
+set lasty,183; 
+warp "prt_fild09",210,183; 
+end;
+prt_fild10:
+set lastmap$,"prt_fild10"; 
+set lastx,195; 
+set lasty,149; 
+warp "prt_fild10",195,149; 
+end;
+prt_fild11:
+set lastmap$,"prt_fild11"; 
+set lastx,198; 
+set lasty,164; 
+warp "prt_fild11",198,164; 
+end;
+
+xmas_fild01:
+set lastmap$,"xmas_fild01"; 
+set lastx,115; 
+set lasty,145; 
+warp "xmas_fild01",115,145; 
+end;
+
+cmd_fild01:
+set lastmap$,"cmd_fild01"; 
+set lastx,180; 
+set lasty,178; 
+warp "cmd_fild01",180,178; 
+end;
+cmd_fild02:
+set lastmap$,"cmd_fild02"; 
+set lastx,231; 
+set lasty,160; 
+warp "cmd_fild02",231,160; 
+end;
+cmd_fild03:
+set lastmap$,"cmd_fild03"; 
+set lastx,191; 
+set lasty,172; 
+warp "cmd_fild03",191,172; 
+end;
+cmd_fild04:
+set lastmap$,"cmd_fild04"; 
+set lastx,228; 
+set lasty,194; 
+warp "cmd_fild04",228,194; 
+end;
+cmd_fild05:
+set lastmap$,"cmd_fild05"; 
+set lastx,224; 
+set lasty,203; 
+warp "cmd_fild05",224,203; 
+end;
+cmd_fild06:
+set lastmap$,"cmd_fild06"; 
+set lastx,190; 
+set lasty,223; 
+warp "cmd_fild06",190,223; 
+end;
+cmd_fild07:
+set lastmap$,"cmd_fild07"; 
+set lastx,234; 
+set lasty,177; 
+warp "cmd_fild07",234,177; 
+end;
+cmd_fild08:
+set lastmap$,"cmd_fild08"; 
+set lastx,194; 
+set lasty,175; 
+warp "cmd_fild08",194,175; 
+end;
+cmd_fild09:
+set lastmap$,"cmd_fild09"; 
+set lastx,172; 
+set lasty,172; 
+warp "cmd_fild09",172,172; 
+end;
+
+dic_fild01:
+set lastmap$,"dic_fild01"; 
+set lastx,220; 
+set lasty,180; 
+warp "dic_fild01",220,180; 
+end;
+dic_fild02:
+set lastmap$,"dic_fild02"; 
+set lastx,138; 
+set lasty,123; 
+warp "dic_fild02",138,123; 
+end;
+
+yuno_fild01:
+set lastmap$,"yuno_fild01"; 
+set lastx,189; 
+set lasty,224; 
+warp "yuno_fild01",189,224; 
+end;
+yuno_fild02:
+set lastmap$,"yuno_fild02"; 
+set lastx,192; 
+set lasty,207; 
+warp "yuno_fild02",192,207; 
+end;
+yuno_fild03:
+set lastmap$,"yuno_fild03"; 
+set lastx,221; 
+set lasty,157; 
+warp "yuno_fild03",221,157; 
+end;
+yuno_fild04:
+set lastmap$,"yuno_fild04"; 
+set lastx,226; 
+set lasty,199; 
+warp "yuno_fild04",226,199; 
+end;
+yuno_fild05:
+set lastmap$,"yuno_fild05"; 
+set lastx,223; 
+set lasty,177; 
+warp "yuno_fild05",223,177; 
+end;
+yuno_fild06:
+set lastmap$,"yuno_fild06"; 
+set lastx,187; 
+set lasty,232; 
+warp "yuno_fild06",187,232; 
+end;
+yuno_fild07:
+set lastmap$,"yuno_fild07"; 
+set lastx,231; 
+set lasty,174; 
+warp "yuno_fild07",231,174; 
+end;
+yuno_fild08:
+set lastmap$,"yuno_fild08"; 
+set lastx,196; 
+set lasty,203; 
+warp "yuno_fild08",196,203; 
+end;
+yuno_fild09:
+set lastmap$,"yuno_fild09"; 
+set lastx,183; 
+set lasty,214; 
+warp "yuno_fild09",183,214; 
+end;
+yuno_fild10:
+set lastmap$,"yuno_fild10"; 
+set lastx,200; 
+set lasty,124; 
+warp "yuno_fild10",200,124; 
+end;
+yuno_fild11:
+set lastmap$,"yuno_fild11"; 
+set lastx,195; 
+set lasty,226; 
+warp "yuno_fild11",195,226; 
+end;
+yuno_fild12:
+set lastmap$,"yuno_fild12"; 
+set lastx,210; 
+set lasty,304; 
+warp "yuno_fild12",210,304; 
+end;
+
+ama_fild01:
+set lastmap$,"ama_fild01"; 
+set lastx,190; 
+set lasty,197; 
+warp "ama_fild01",190,197; 
+end;
+
+gon_fild01:
+set lastmap$,"gon_fild01"; 
+set lastx,220; 
+set lasty,227; 
+warp "gon_fild01",220,227; 
+end;
+
+um_fild01:
+set lastmap$,"um_fild01"; 
+set lastx,217; 
+set lasty,206; 
+warp "um_fild01",217,206; 
+end;
+um_fild02:
+set lastmap$,"um_fild02"; 
+set lastx,223; 
+set lasty,221; 
+warp "um_fild02",223,221; 
+end;
+um_fild03:
+set lastmap$,"um_fild03"; 
+set lastx,237; 
+set lasty,215; 
+warp "um_fild03",237,215; 
+end;
+um_fild04:
+set lastmap$,"um_fild04"; 
+set lastx,202; 
+set lasty,197; 
+warp "um_fild04",202,197; 
+end;
+
+nif_fild01:
+set lastmap$,"nif_fild01"; 
+set lastx,215; 
+set lasty,229; 
+warp "nif_fild01",215,229; 
+end;
+nif_fild02:
+set lastmap$,"nif_fild02"; 
+set lastx,167; 
+set lasty,234; 
+warp "nif_fild02",167,234; 
+end;
+
+lou_fild01:
+set lastmap$,"lou_fild01"; 
+set lastx,229; 
+set lasty,187; 
+warp "lou_fild01",229,187; 
+end;
+
+ayo_fild01:
+set lastmap$,"ayo_fild01"; 
+set lastx,173; 
+set lasty,134; 
+warp "ayo_fild01",173,134; 
+end;
+ayo_fild02:
+set lastmap$,"ayo_fild02"; 
+set lastx,212; 
+set lasty,150; 
+warp "ayo_fild02",212,150; 
+end;
+
+ein_fild01:
+set lastmap$,"ein_fild01"; 
+set lastx,142; 
+set lasty,225; 
+warp "ein_fild01",142,225; 
+end;
+ein_fild02:
+set lastmap$,"ein_fild02"; 
+set lastx,182; 
+set lasty,141; 
+warp "ein_fild02",182,141; 
+end;
+ein_fild03:
+set lastmap$,"ein_fild03"; 
+set lastx,187; 
+set lasty,228; 
+warp "ein_fild03",187,228; 
+end;
+ein_fild04:
+set lastmap$,"ein_fild04"; 
+set lastx,185; 
+set lasty,173; 
+warp "ein_fild04",185,173; 
+end;
+ein_fild05:
+set lastmap$,"ein_fild05"; 
+set lastx,216; 
+set lasty,173; 
+warp "ein_fild05",216,173; 
+end;
+ein_fild06:
+set lastmap$,"ein_fild06"; 
+set lastx,195; 
+set lasty,148; 
+warp "ein_fild06",195,148; 
+end;
+ein_fild07:
+set lastmap$,"ein_fild07"; 
+set lastx,272; 
+set lasty,220; 
+warp "ein_fild07",272,220; 
+end;
+ein_fild08:
+set lastmap$,"ein_fild08"; 
+set lastx,173; 
+set lasty,214; 
+warp "ein_fild08",173,214; 
+end;
+ein_fild09:
+set lastmap$,"ein_fild09"; 
+set lastx,207; 
+set lasty,174; 
+warp "ein_fild09",207,174; 
+end;
+ein_fild10:
+set lastmap$,"ein_fild10"; 
+set lastx,196; 
+set lasty,200; 
+warp "ein_fild10",196,200; 
+end;
+
+lhz_fild01:
+set lastmap$,"lhz_fild01"; 
+set lastx,240; 
+set lasty,179; 
+warp "lhz_fild01",240,179; 
+end;
+lhz_fild02:
+set lastmap$,"lhz_fild02"; 
+set lastx,185; 
+set lasty,235; 
+warp "lhz_fild02",185,235; 
+end;
+lhz_fild03:
+set lastmap$,"lhz_fild03"; 
+set lastx,240; 
+set lasty,226; 
+warp "lhz_fild03",240,226; 
+end;
+
+hu_fild01:
+set lastmap$,"hu_fild01"; 
+set lastx,268; 
+set lasty,101; 
+warp "hu_fild01",268,101; 
+end;
+hu_fild02:
+set lastmap$,"hu_fild02"; 
+set lastx,222; 
+set lasty,193; 
+warp "hu_fild02",222,193; 
+end;
+hu_fild03:
+set lastmap$,"hu_fild03"; 
+set lastx,232; 
+set lasty,185; 
+warp "hu_fild03",232,185; 
+end;
+hu_fild04:
+set lastmap$,"hu_fild04"; 
+set lastx,252; 
+set lasty,189; 
+warp "hu_fild04",252,189; 
+end;
+hu_fild05:
+set lastmap$,"hu_fild05"; 
+set lastx,196; 
+set lasty,106; 
+warp "hu_fild05",196,106; 
+end;
+hu_fild06:
+set lastmap$,"hu_fild06"; 
+set lastx,216; 
+set lasty,220; 
+warp "hu_fild06",216,220; 
+end;
+hu_fild07:
+set lastmap$,"hu_fild07"; 
+set lastx,227; 
+set lasty,197; 
+warp "hu_fild07",227,197; 
+end;
+
+odin_tem01:
+set lastmap$,"odin_tem01"; 
+set lastx,298; 
+set lasty,167; 
+warp "odin_tem01",298,167; 
+end;
+odin_tem02:
+set lastmap$,"odin_tem02"; 
+set lastx,224; 
+set lasty,149; 
+warp "odin_tem02",224,149; 
+end;
+odin_tem03:
+set lastmap$,"odin_tem03"; 
+set lastx,266; 
+set lasty,280; 
+warp "odin_tem03",266,280;
+end;
+
+ve_fild01:
+set lastmap$,"ve_fild01"; 
+set lastx,186; 
+set lasty,175; 
+warp "ve_fild01",186,175; 
+end;
+ve_fild02:
+set lastmap$,"ve_fild02"; 
+set lastx,196; 
+set lasty,370; 
+warp "ve_fild02",196,370; 
+end;
+ve_fild03:
+set lastmap$,"ve_fild03"; 
+set lastx,222; 
+set lasty,45; 
+warp "ve_fild03",222,45; 
+end;
+ve_fild04:
+set lastmap$,"ve_fild04"; 
+set lastx,51; 
+set lasty,250; 
+warp "ve_fild04",51,250; 
+end;
+ve_fild05:
+set lastmap$,"ve_fild05"; 
+set lastx,202; 
+set lasty,324; 
+warp "ve_fild05",202,324; 
+end;
+ve_fild06:
+set lastmap$,"ve_fild06"; 
+set lastx,150; 
+set lasty,223; 
+warp "ve_fild06",150,223; 
+end;
+ve_fild07:
+set lastmap$,"ve_fild07"; 
+set lastx,149; 
+set lasty,307; 
+warp "ve_fild07",149,307; 
+end;
+
+spl_fild01:
+set lastmap$,"spl_fild01"; 
+set lastx,327; 
+set lasty,240; 
+warp "spl_fild01",327,240; 
+end;
+spl_fild02:
+set lastmap$,"spl_fild02"; 
+set lastx,327; 
+set lasty,240; 
+warp "spl_fild02",327,240; 
+end;
+spl_fild03:
+set lastmap$,"spl_fild03"; 
+set lastx,287; 
+set lasty,8; 
+warp "spl_fild03",287,8; 
+end;
+
+man_fild01:
+set lastmap$,"man_fild01"; 
+set lastx,37; 
+set lasty,235; 
+warp "man_fild01",37,235; 
+end;
+man_fild02:
+set lastmap$,"man_fild02"; 
+set lastx,133; 
+set lasty,60; 
+warp "man_fild02",133,60; 
+end;
+man_fild03:
+set lastmap$,"man_fild03"; 
+set lastx,82; 
+set lasty,264; 
+warp "man_fild03",82,264; 
+end;
+
+appgo01:
+set lastmap$,"morocc"; 
+set lastx,158; 
+set lasty,106; 
+warp "morocc",158,106; 
+end;
+appgo02:
+set lastmap$,"morocc"; 
+set lastx,159; 
+set lasty,136; 
+warp "morocc",159,136; 
+end;
+appgo03:
+set lastmap$,"morocc"; 
+set lastx,198; 
+set lasty,101; 
+warp "morocc",198,101; 
+end;
+appgo04:
+set lastmap$,"morocc"; 
+set lastx,181; 
+set lasty,90; 
+warp "morocc",181,90; 
+end;
+appgo05:
+set lastmap$,"morocc"; 
+set lastx,124; 
+set lasty,96; 
+warp "morocc",124,96; 
+end;
+appgo06:
+set lastmap$,"morocc"; 
+set lastx,137; 
+set lasty,74; 
+warp "morocc",137,74; 
+end;
+appgo07:
+set lastmap$,"morocc"; 
+set lastx,132; 
+set lasty,107; 
+warp "morocc",132,107; 
+end;
+}
+
+alberta,113,59,4	duplicate(Heal)	Heal Officer#alb_1	834
+
+alberta,115,59,4	duplicate(MSkafra)	Kafra Officer#alb_1	113
+
+alberta,117,59,4	duplicate(MSwarp)	Warp Officer#alb_1	640
+
+alberta,120,59,4	duplicate(Wwar)	War Officer#alb_ap2	653
+
+alberta,110,59,4	duplicate(PvP)	PvP Officer#alb_1	734
+
+alberta,122,59,4	duplicate(D_shop_officer)	Shop Officer#alb_1	900
+
+
+
+alberta,28,239,4	duplicate(Heal)	Heal Officer#alb_2	834
+
+alberta,30,239,4	duplicate(MSkafra)	Kafra Officer#alb_2	113
+
+alberta,32,239,4	duplicate(MSwarp)	Warp Officer#alb_2	640
+
+alberta,35,239,4	duplicate(Wwar)	War Officer#alb_2	653
+
+alberta,25,239,4	duplicate(PvP)	PvP Officer#alb_2	734
+
+alberta,37,239,4	duplicate(D_shop_officer)	Shop Officer#alb_2	900
+
+
+
+//--------------------------------------------------Aldebaran--------------------------------------------------
+
+
+
+aldebaran,136,120,4	duplicate(Heal)	Heal Officer#ald_1	834
+
+aldebaran,138,120,4	duplicate(MSkafra)	Kafra Officer#ald_1	113
+
+aldebaran,140,120,4	duplicate(MSwarp)	Warp Officer#ald_1	640
+
+aldebaran,143,120,4	duplicate(Wwar)	War Officer#ald_1	653
+
+aldebaran,133,120,4	duplicate(PvP)	PvP Officer#ald_1	734
+
+aldebaran,145,120,4	duplicate(D_shop_officer)	Shop Officer#ald_1	900
+
+
+
+//--------------------------------------------------Amatsu--------------------------------------------------
+
+
+
+amatsu,199,95,4	duplicate(Heal)	Heal Officer#ama_1	834
+
+amatsu,201,95,4	duplicate(MSkafra)	Kafra Officer#ama_1	113
+
+amatsu,203,95,4	duplicate(MSwarp)	Warp Officer#ama_1	640
+
+amatsu,206,95,4	duplicate(Wwar)	War Officer#ama_1	653
+
+amatsu,196,95,4	duplicate(PvP)	PvP Officer#ama_1	734
+
+amatsu,208,95,4	duplicate(D_shop_officer)	Shop Officer#ama_1	900
+
+
+
+amatsu,117,111,4	duplicate(Heal)	Heal Officer#ama_2	834
+
+amatsu,115,111,4	duplicate(MSkafra)	Kafra Officer#ama_2	113
+
+amatsu,113,111,4	duplicate(MSwarp)	Warp Officer#ama_2	640
+
+amatsu,111,111,4	duplicate(Wwar)	War Officer#ama_2	653
+
+amatsu,120,111,4	duplicate(PvP)	PvP Officer#ama_2	734
+
+amatsu,109,111,4	duplicate(D_shop_officer)	Shop Officer#ama_2	900
+
+
+
+//--------------------------------------------------Ayothaya--------------------------------------------------
+
+
+
+ayothaya,146,171,4	duplicate(Heal)	Heal Officer#ayo_1	834
+
+ayothaya,148,171,4	duplicate(MSkafra)	Kafra Officer#ayo_1	113
+
+ayothaya,150,171,4	duplicate(MSwarp)	Warp Officer#ayo_1	640
+
+ayothaya,153,171,4	duplicate(Wwar)	War Officer#ayo_1	653
+
+ayothaya,143,171,4	duplicate(PvP)	PvP Officer#ayo_1	734
+
+ayothaya,155,171,4	duplicate(D_shop_officer)	Shop Officer#ayo_1	900
+
+
+
+//--------------------------------------------------Comodo--------------------------------------------------
+
+
+
+comodo,202,150,4	duplicate(Heal)	Heal Officer#comodo_1	834
+
+comodo,204,150,4	duplicate(MSkafra)	Kafra Officer#comodo_1	113
+
+comodo,206,150,4	duplicate(MSwarp)	Warp Officer#comodo_1	640
+
+comodo,209,150,4	duplicate(Wwar)	War Officer#comodo_1	653
+
+comodo,213,150,4	duplicate(PvP)	PvP Officer#comodo_1	734
+
+comodo,211,150,4	duplicate(D_shop_officer)	Shop Officer#comodo_1	900
+
+
+
+//--------------------------------------------------Gonryun--------------------------------------------------
+
+
+
+gonryun,154,121,4	duplicate(Heal)	Heal Officer#gonryun_1	834
+
+gonryun,156,121,4	duplicate(MSkafra)	Kafra Officer#gonryun_1	113
+
+gonryun,158,121,4	duplicate(MSwarp)	Warp Officer#gonryun_1	640
+
+gonryun,161,121,4	duplicate(Wwar)	War Officer#gonryun_1	653
+
+gonryun,166,121,4	duplicate(PvP)	PvP Officer#gonryun_1	734
+
+gonryun,163,121,4	duplicate(D_shop_officer)	Shop Officer#gonryun_1	900
+
+
+
+//--------------------------------------------------Geffen--------------------------------------------------
+
+
+
+geffen,115,65,4	duplicate(Heal)	Heal Officer#geffen_1	834
+
+geffen,117,65,4	duplicate(MSkafra)	Kafra Officer#geffen_1	113
+
+geffen,119,65,4	duplicate(MSwarp)	Warp Officer#geffen_1	640
+
+geffen,122,65,4	duplicate(Wwar)	War Officer#geffen_1	653
+
+geffen,112,65,4	duplicate(PvP)	PvP Officer#geffen_1	734
+
+geffen,124,65,4	duplicate(D_shop_officer)	Shop Officer#geffen_1	900
+
+
+
+//--------------------------------------------------Izlude--------------------------------------------------
+
+
+
+izlude,123,113,4	duplicate(Heal)	Heal Officer#izlude_1	834
+
+izlude,125,113,4	duplicate(MSkafra)	Kafra Officer#izlude_1	113
+
+izlude,127,113,4	duplicate(MSwarp)	Warp Officer#izlude_1	640
+
+izlude,130,113,4	duplicate(Wwar)	War Officer#izlude_1	653
+
+izlude,135,109,4	duplicate(PvP)	PvP Officer#izlude_1	734
+
+izlude,132,113,4	duplicate(D_shop_officer)	Shop Officer#izlude_1	900
+
+
+
+//-----------------------------------------------Moscovia-------------------------------------------------
+
+
+
+moscovia,219,198,4	duplicate(Heal)	Heal Officer#mosco_1	834
+
+moscovia,221,198,4	duplicate(MSkafra)	Kafra Officer#mosco_1	113
+
+moscovia,223,198,4	duplicate(MSwarp)	Warp Officer#mosco_1	640
+
+moscovia,226,198,4	duplicate(Wwar)	War Officer#mosco_1	653
+
+moscovia,216,198,4	duplicate(PvP)	PvP Officer#mosco_1	734
+
+moscovia,228,198,4	duplicate(D_shop_officer)	Shop Officer#mosco_1	900
+
+
+//-----------------------------------------------Nameless I-----------------------------------------------
+
+
+
+nameless_i,224,217,4	duplicate(Heal)	Heal Officer#nless_1	834
+
+nameless_i,226,217,4	duplicate(MSkafra)	Kafra Officer#nless_1	113
+
+nameless_i,228,217,4	duplicate(MSwarp)	Warp Officer#nless_1	640
+
+nameless_i,231,217,4	duplicate(Wwar)	War Officer#nless_1	653
+
+nameless_i,221,217,4	duplicate(PvP)	PvP Officer#nless_1	734
+
+nameless_i,233,217,4	duplicate(D_shop_officer)	Shop Officer#nless_1	900
+
+
+
+//--------------------------------------------------Niflheim-----------------------------------------------
+
+
+
+niflheim,197,203,4	duplicate(Heal)	Heal Officer#nif_1	834
+
+niflheim,199,203,4	duplicate(MSkafra)	Kafra Officer#nif_1	113
+
+niflheim,201,203,4	duplicate(MSwarp)	Warp Officer#nif_1	640
+
+niflheim,204,203,4	duplicate(Wwar)	War Officer#nif_1	653
+
+niflheim,194,203,4	duplicate(PvP)	PvP Officer#nif_1	734
+
+niflheim,206,203,4	duplicate(D_shop_officer)	Shop Officer#nif_1	900
+
+
+
+//--------------------------------------------------Payon--------------------------------------------------
+
+
+
+payon,180,104,4	duplicate(Heal)	Heal Officer#payon_1	834
+
+payon,182,104,4	duplicate(MSkafra)	Kafra Officer#payon_1	113
+
+payon,184,104,4	duplicate(MSwarp)	Warp Officer#payon_1	640
+
+payon,187,104,4	duplicate(Wwar)	War Officer#payon_1	653
+
+payon,177,104,4	duplicate(PvP)	PvP Officer#payon_1	734
+
+payon,189,104,4	duplicate(D_shop_officer)	Shop Officer#payon_1	900
+
+
+
+payon,153,229,4	duplicate(Heal)	Heal Officer#payon_2	834
+
+payon,155,229,4	duplicate(MSkafra)	Kafra Officer#payon_2	113
+
+payon,157,229,4	duplicate(MSwarp)	Warp Officer#payon_2	640
+
+payon,159,229,4	duplicate(Wwar)	War Officer#payon_2	653
+
+payon,148,229,4	duplicate(PvP)	PvP Officer#payon_2	734
+
+payon,161,229,4	duplicate(D_shop_officer)	Shop Officer#payon_2	900
+
+
+
+//------------------------------------------------Prontera------------------------------------------------
+
+
+
+prontera,151,187,4	duplicate(Heal)	Heal Officer#pron_1	834
+
+prontera,153,187,4	duplicate(MSkafra)	Kafra Officer#pron_1	113
+
+prontera,155,187,4	duplicate(MSwarp)	Warp Officer#pron_1	640
+
+prontera,158,187,4	duplicate(Wwar)	War Officer#pron_1	653
+
+prontera,148,187,4	duplicate(PvP)	PvP Officer#pron_1	734
+
+prontera,160,187,4	duplicate(D_shop_officer)	Shop Officer#pron_1	900
+
+	
+
+prontera,44,211,4	duplicate(Heal)	Heal Officer#pron_2	834
+
+prontera,46,211,4	duplicate(MSkafra)	Kafra Officer#pron_2	113
+
+prontera,48,211,4	duplicate(MSwarp)	Warp Officer#pron_2	640
+
+prontera,51,211,4	duplicate(Wwar)	War Officer#pron_2	653
+
+prontera,41,211,4	duplicate(PvP)	PvP Officer#pron_2	734
+
+prontera,53,211,4	duplicate(D_shop_officer)	Shop Officer#pron_2	900
+
+	
+
+prontera,151,66,4	duplicate(Heal)	Heal Officer#pron_3	834
+
+prontera,153,66,4	duplicate(MSkafra)	Kafra Officer#pron_3	113
+
+prontera,155,66,4	duplicate(MSwarp)	Warp Officer#pron_3	640
+
+prontera,158,66,4	duplicate(Wwar)	War Officer#pron_3	653
+
+prontera,148,66,4	duplicate(PvP)	PvP Officer#pron_3	734
+
+prontera,160,66,4	duplicate(D_shop_officer)	Shop Officer#pron_3	900
+
+
+
+//------------------------------------------------Yuno------------------------------------------------
+
+
+
+yuno,153,89,4	duplicate(Heal)	Heal Officer#yuno_1	834
+
+yuno,155,89,4	duplicate(MSkafra)	Kafra Officer#yuno_1	113
+
+yuno,157,89,4	duplicate(MSwarp)	Warp Officer#yuno_1	640
+
+yuno,160,89,4	duplicate(Wwar)	War Officer#yuno_1	653
+
+yuno,150,89,4	duplicate(PvP)	PvP Officer#yuno_1	734
+
+yuno,162,89,4	duplicate(D_shop_officer)	Shop Officer#yuno_1	900
+
+
+
+//------------------------------------------------Umbala------------------------------------------------
+
+
+
+umbala,135,166,4	duplicate(Heal)	Heal Officer#umbala_1	834
+
+umbala,137,166,4	duplicate(MSkafra)	Kafra Officer#umbala_1	113
+
+umbala,139,166,4	duplicate(MSwarp)	Warp Officer#umbala_1	640
+
+umbala,142,166,4	duplicate(Wwar)	War Officer#umbala_1	653
+
+umbala,147,166,4	duplicate(PvP)	PvP Officer#umbala_1	734
+
+umbala,144,166,4	duplicate(D_shop_officer)	Shop Officer#umbala_1	900
+
+
+
+//------------------------------------------------Louyang------------------------------------------------
+
+
+
+louyang,213,119,4	duplicate(Heal)	Heal Officer#louyang_1	834
+
+louyang,215,119,4	duplicate(MSkafra)	Kafra Officer#louyang_1	113
+
+louyang,217,119,4	duplicate(MSwarp)	Warp Officer#louyang_1	640
+
+louyang,220,119,4	duplicate(Wwar)	War Officer#louyang_1	653
+
+louyang,210,119,4	duplicate(PvP)	PvP Officer#louyang_1	734
+
+louyang,222,119,4	duplicate(D_shop_officer)	Shop Officer#louyang_1	900
+
+
+
+//------------------------------------------------Lighthalzen---------------------------------------------
+
+
+
+lighthalzen,154,102,4	duplicate(Heal)	Heal Officer#ligzen_1	834
+
+lighthalzen,156,102,4	duplicate(MSkafra)	Kafra Officer#ligzen_1	113
+
+lighthalzen,158,102,4	duplicate(MSwarp)	Warp Officer#ligzen_1	640
+
+lighthalzen,161,102,4	duplicate(Wwar)	War Officer#ligzen_1	653
+
+lighthalzen,152,100,4	duplicate(PvP)	PvP Officer#ligzen_1	734
+
+lighthalzen,163,102,4	duplicate(D_shop_officer)	Shop Officer#ligzen_1	900
+
+
+
+//---------------------------------------------------Lutie-------------------------------------------------
+
+
+
+xmas,143,134,4	duplicate(Heal)	Heal Officer#xmas_1	834
+
+xmas,145,134,4	duplicate(MSkafra)	Kafra Officer#xmas_1	113
+
+xmas,147,134,4	duplicate(MSwarp)	Warp Officer#xmas_1	640
+
+xmas,150,134,4	duplicate(Wwar)	War Officer#xmas_1	653
+
+xmas,140,134,4	duplicate(PvP)	PvP Officer#xmas_1	734
+
+xmas,152,134,4	duplicate(D_shop_officer)	Shop Officer#xmas_1	900
+
+
+
+//------------------------------------------------Hugel------------------------------------------------
+
+
+
+hugel,93,156,4	duplicate(Heal)	Heal Officer#hugel_1	834
+
+hugel,95,156,4	duplicate(MSkafra)	Kafra Officer#hugel_1	113
+
+hugel,97,156,4	duplicate(MSwarp)	Warp Officer#hugel_1	640
+
+hugel,100,156,4	duplicate(Wwar)	War Officer#hugel_1	653
+
+hugel,105,156,4	duplicate(PvP)	PvP Officer#hugel_1	734
+
+hugel,102,156,4	duplicate(D_shop_officer)	Shop Officer#hugel_1	900
+
+
+
+//------------------------------------------------Rachel------------------------------------------------
+
+
+
+rachel,129,144,4	duplicate(Heal)	Heal Officer#rachel_1	834
+
+rachel,131,144,4	duplicate(MSkafra)	Kafra Officer#rachel_1	113
+
+rachel,133,144,4	duplicate(MSwarp)	Warp Officer#rachel1_1	640
+
+rachel,136,144,4	duplicate(Wwar)	War Officer#rachel_1	653
+
+rachel,126,144,4	duplicate(PvP)	PvP Officer#rachel_1	734
+
+rachel,138,144,4	duplicate(D_shop_officer)	Shop Officer#rachel_1	900
+
+
+
+//------------------------------------------------Veins------------------------------------------------
+
+
+
+veins,192,233,4	duplicate(Heal)	Heal Officer#veins_1	834
+
+veins,194,233,4	duplicate(MSkafra)	Kafra Officer#veins_1	113
+
+veins,196,233,4	duplicate(MSwarp)	Warp Officer#veins_1	640
+
+veins,199,233,4	duplicate(Wwar)	War Officer#veins_1	653
+
+veins,189,233,4	duplicate(PvP)	PvP Officer#veins_1	734
+
+veins,201,233,4	duplicate(D_shop_officer)	Shop Officer#veins_1	900
+
+
+
+//------------------------------------------------Brasilis------------------------------------------------
+
+
+
+brasilis,189,141,4	duplicate(PvP)	PvP Officer#brasilis_1	734
+
+brasilis,191,141,4	duplicate(Heal)	Heal Officer#brasilis_1	834
+
+brasilis,193,141,4	duplicate(MSkafra)	Kafra Officer#brasilis_1	113
+
+brasilis,195,141,4	duplicate(MSwarp)	Warp Officer#brasilis_1	640
+
+brasilis,197,141,4	duplicate(Wwar)	War Officer#brasilis_1	653
+
+brasilis,199,141,4	duplicate(D_shop_officer)	Shop Officer#brasilis_1	900
+
+
+
+//------------------------------------------------Dicastes------------------------------------------------
+
+
+
+dicastes01,189,190,4	duplicate(PvP)	PvP Officer#dicas_1	734
+
+dicastes01,191,190,4	duplicate(Heal)	Heal Officer#dicas_1	834
+
+dicastes01,193,190,4	duplicate(MSkafra)	Kafra Officer#dicas_1	113
+
+dicastes01,195,190,4	duplicate(MSwarp)	Warp Officer#dicas_1	640
+
+dicastes01,197,190,4	duplicate(Wwar)	War Officer#dicas_1	653
+
+dicastes01,199,190,4	duplicate(D_shop_officer)	Shop Officer#dicas_1	900
+
+
+
+//------------------------------------------------Manuk------------------------------------------------
+
+
+
+manuk,268,224,4	duplicate(PvP)	PvP Officer#manuk_1	734
+
+manuk,270,224,4	duplicate(Heal)	Heal Officer#manuk_1	834
+
+manuk,272,224,4	duplicate(MSkafra)	Kafra Officer#manuk_1	113
+
+manuk,274,224,4	duplicate(MSwarp)	Warp Officer#manuk_1	640
+
+manuk,276,224,4	duplicate(Wwar)	War Officer#manuk_1	653
+
+manuk,278,224,4	duplicate(D_shop_officer)	Shop Officer#manuk_1	900
+
+
+
+//------------------------------------------------Mid_camp------------------------------------------------
+
+
+
+mid_camp,173,252,4	duplicate(PvP)	PvP Officer#mid_1	734
+
+mid_camp,175,252,4	duplicate(Heal)	Heal Officer#mid_1	834
+
+mid_camp,177,252,4	duplicate(MSkafra)	Kafra Officer#mid_1	113
+
+mid_camp,179,252,4	duplicate(MSwarp)	Warp Officer#mid_1	640
+
+mid_camp,181,252,4	duplicate(Wwar)	War Officer#mid_1	653
+
+mid_camp,183,252,4	duplicate(D_shop_officer)	Shop Officer#mid_1	900
+
+
+
+//------------------------------------------------Splendide------------------------------------------------
+
+
+
+splendide,203,177,4	duplicate(PvP)	PvP Officer#splen_1	734
+
+splendide,190,177,4	duplicate(Heal)	Heal Officer#splen_1	834
+
+splendide,192,177,4	duplicate(MSkafra)	Kafra Officer#splen_1	113
+
+splendide,194,177,4	duplicate(MSwarp)	Warp Officer#splen_1	640
+
+splendide,196,177,4	duplicate(Wwar)	War Officer#splen_1	653
+
+splendide,198,177,4	duplicate(D_shop_officer)	Shop Officer#splen_1	900
+
+
+
+//------------------------------------------------Mora------------------------------------------------
+
+
+
+mora,106,106,4	duplicate(PvP)	PvP Officer#mora_1	734
+
+mora,108,106,4	duplicate(Heal)	Heal Officer#mora_1	834
+
+mora,110,106,4	duplicate(MSkafra)	Kafra Officer#mora_1	113
+
+mora,112,106,4	duplicate(MSwarp)	Warp Officer#mora_1	640
+
+mora,114,106,4	duplicate(Wwar)	War Officer#mora_1	653
+
+
+mora,116,106,4	duplicate(D_shop_officer)	Shop Officer#mora_1	900
+
+
+
+//------------------------------------------------Morocc------------------------------------------------
+
+
+
+morocc,156,97,4	duplicate(Heal)	Heal Officer#moc_1	834
+morocc,160,97,4	duplicate(MSkafra)	Kafra Officer#moc_1	113
+morocc,158,97,4	duplicate(MSwarp)	Warp Officer#moc_1	640
+morocc,154,97,4	duplicate(Wwar)	War Officer#moc_1	653
+morocc,162,97,4	duplicate(PvP)	PvP Officer#moc_1	734
+morocc,148,103,4	duplicate(D_shop_officer)	Shop Officer#moc_1	900
+
+morocc,280,213,4	duplicate(Heal)	Heal Officer#moc_2	834
+morocc,282,213,4	duplicate(MSkafra)	Kafra Officer#moc_2	113
+morocc,284,213,4	duplicate(MSwarp)	Warp Officer#moc_2	640
+morocc,286,213,4	duplicate(Wwar)	War Officer#moc_2	653
+morocc,288,213,4	duplicate(PvP)	PvP Officer#moc_2	734
+morocc,292,213,4	duplicate(D_shop_officer)	Shop Officer#moc_2	900
+
+morocc,205,68,4	duplicate(Heal)	Heal Officer#moc_3	834
+morocc,207,68,4	duplicate(MSkafra)	Kafra Officer#moc_3	113
+morocc,209,68,4	duplicate(MSwarp)	Warp Officer#moc_3	640
+morocc,211,68,4	duplicate(Wwar)	War Officer#moc_3	653
+morocc,213,68,4	duplicate(PvP)	PvP Officer#moc_3	734
+morocc,217,68,4	duplicate(D_shop_officer)	Shop Officer#moc_3	900
+
+morocc,200,272,4	duplicate(Heal)	Heal Officer#moc_4	834
+morocc,202,272,4	duplicate(MSkafra)	Kafra Officer#moc_4	113
+morocc,204,272,4	duplicate(MSwarp)	Warp Officer#moc_4	640
+morocc,206,272,4	duplicate(Wwar)	War Officer#moc_4	653
+morocc,208,272,4	duplicate(PvP)	PvP Officer#moc_4	734
+morocc,212,272,4	duplicate(D_shop_officer)	Shop Officer#moc_4	900
+
+morocc,154,276,4	duplicate(Heal)	Heal Officer#moc_5	834
+morocc,156,276,4	duplicate(MSkafra)	Kafra Officer#moc_5	113
+morocc,158,276,4	duplicate(MSwarp)	Warp Officer#moc_5	640
+morocc,160,276,4	duplicate(Wwar)	War Officer#moc_5	653
+morocc,162,276,4	duplicate(PvP)	PvP Officer#moc_5	734
+morocc,166,276,4	duplicate(D_shop_officer)	Shop Officer#moc_5	900
+
+morocc,38,178,4	duplicate(Heal)	Heal Officer#moc_6	834
+morocc,40,178,4	duplicate(MSkafra)	Kafra Officer#moc_6	113
+morocc,42,178,4	duplicate(MSwarp)	Warp Officer#moc_6	640
+morocc,44,178,4	duplicate(Wwar)	War Officer#moc_6	653
+morocc,46,178,4	duplicate(PvP)	PvP Officer#moc_6	734
+morocc,50,178,4	duplicate(D_shop_officer)	Shop Officer#moc_6	900
+
+morocc,39,77,4	duplicate(Heal)	Heal Officer#moc_7	834
+morocc,41,77,4	duplicate(MSkafra)	Kafra Officer#moc_7	113
+morocc,43,77,4	duplicate(MSwarp)	Warp Officer#moc_7	640
+morocc,45,77,4	duplicate(Wwar)	War Officer#moc_7	653
+morocc,47,77,4	duplicate(PvP)	PvP Officer#moc_7	734
+morocc,51,77,4	duplicate(D_shop_officer)	Shop Officer#moc_8	900
+
+malaya,204,163,4	duplicate(Heal)	Heal Officer#malaya_7	834
+malaya,206,163,4	duplicate(MSkafra)	Kafra Officer#malaya_7	113
+malaya,208,163,4	duplicate(MSwarp)	Warp Officer#malaya_7	640
+malaya,210,163,4	duplicate(Wwar)	War Officer#malaya_7	653
+malaya,212,163,4	duplicate(PvP)	PvP Officer#malaya_7	734
+malaya,216,163,4	duplicate(D_shop_officer)	Shop Officer#malaya_8	900
+
+//------------------------------------------------Dewata------------------------------------------------
+
+
+
+dewata,205,184,4	duplicate(PvP)	PvP Officer#dew_1	734
+
+dewata,193,184,4	duplicate(Heal)	Heal Officer#dew_1	834
+
+dewata,195,184,4	duplicate(MSkafra)	Kafra Officer#dew_1	113
+
+dewata,197,184,4	duplicate(MSwarp)	Warp Officer#dew_1	640
+
+dewata,199,184,4	duplicate(Wwar)	War Officer#dew_1	653
+
+dewata,203,184,4	duplicate(D_shop_officer)	Shop Officer#dew_1	900
+
+
+
+//------------------------------------------------Malangdo------------------------------------------------
+
+
+
+malangdo,157,140,4	duplicate(PvP)	PvP Officer#mala_1	734
+
+malangdo,159,140,4	duplicate(Heal)	Heal Officer#mala_1	834
+
+malangdo,161,140,4	duplicate(MSkafra)	Kafra Officer#mala_1	113
+
+malangdo,163,140,4	duplicate(MSwarp)	Warp Officer#mala_1	640
+
+malangdo,165,140,4	duplicate(Wwar)	War Officer#mala_1	653
+
+malangdo,169,140,4	duplicate(D_shop_officer)	Shop Officer#mala_1	900
+
+
+
+
+
+//------------------------------------------------BattleGround----------------------------------------------
+
+
+
+bat_room,148,147,4	duplicate(MSkafra)	Kafra Officer#batle_1	612
+
+
+
+//------------------------------------------------Morocc------------------------------------------------
+morocc,166,51,4	duplicate(Heal)	Heal Officer#akira_1	834
+
+morocc,168,51,4	duplicate(MSkafra)	Kafra Officer#akira_1	113
+
+morocc,170,51,4	duplicate(MSwarp)	Warp Officer#akira_1	640
+
+morocc,174,51,4	duplicate(Wwar)	War Officer#akira_1	653
+
+morocc,17,51,4	duplicate(PvP)	PvP Officer#akira_1	734
+
+morocc,172,51,4	duplicate(D_shop_officer)	Shop Officer#akira_1	900
+
+morocc,150,50,4	duplicate(PvP)	PvP Officer#akira_10	734
+//
+bat_a01,138,57,4	duplicate(D_shop_officer)	Shop Officer#akira_112	900
+bat_a01,148,350,4	duplicate(D_shop_officer)	Shop Officer#akira_11	900
+new_1-1,66,109,4	duplicate(Heal)	Heal Officer#new_1	834
+
+//-------------------------------------------
+jawaii,204,293,4	duplicate(Heal)	Heal Officer#akira_1	834
+
+jawaii,208,293,4	duplicate(MSkafra)	Kafra Officer#akira_1	113
+
+jawaii,206,293,4	duplicate(MSwarp)	Warp Officer#akira_1	640
+
+jawaii,200,293,4	duplicate(Wwar)	War Officer#akira_1	653
+
+jawaii,210,293,4	duplicate(PvP)	PvP Officer#akira_1	734
+
+jawaii,202,293,4	duplicate(D_shop_officer)	Shop Officer#akira_1	900

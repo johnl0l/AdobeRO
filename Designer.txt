@@ -1,0 +1,103 @@
+wonderworld,162,130,4	script	เสริมสวย	759,{
+//-------------------------------------------------------------------------ConFig Zone--------------------------------------------------------------------------------------
+set .@npcname$,"[  ^FF0000สุดยอดช่างเสริมสวย^000000  ]";		// ตั้งชื่อ npc
+set .@mhair,100;			//กำหนดจำนวนทรงผม
+set .@mhcolor,251;			//กำหนดจำนวนสีผม
+set .@mccolor,553;			//กำหนดจำนวนสีชุด
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+mes .@npcname$;
+mes "สวัสดีค่ะยินดีให้บริการค่ะ";
+mes "เราสามารถเปลี่ยน";
+mes "ทรงผม สีผม สีเสื้อ ให้คุณได้";
+mes "คุณต้องการใช้บริการไหมค่ะ";
+next;
+switch(select("^FF0000•^000000 ทรงผม:^FF0000•^000000 สีผม:^FF0000•^000000 สีเสื้อ:^FF0000•^000000 ยกเลิก")){
+
+case 1:
+mes .@npcname$;
+mes "เชิญเลือกเมนูที่คุณต้องการได้เลยค่ะ^_^";
+set .@look,1;
+next;
+while(1){
+setlook 1,.@look;			
+switch(select( "• ทรงต่อไป [^0000FF"+ (.@look%.@mhair+1) +"^000000]","• ทรงก่อนหน้า [^0000FF"+ ((.@look+.@mhair-2)%.@mhair+1) +"^000000]","• ใส่ทรงผมที่ต้องการเอง","• ทรงนี้แหล่ะเจ๋งสุดแล้ว"))
+{
+case 1:
+set .@look,.@look%.@mhair+1;
+break;
+case 2:
+set .@look,(.@look+.@mhair-2)%.@mhair+1;
+break;
+case 3:
+input .@look;
+if (.@look > .@mhair || .@look<=0) set .@look, 1;
+break;
+case 4:
+mes "ยินดีให้บริการค่ะ";
+close;
+}
+}
+break;
+
+case 2:
+mes .@npcname$;
+mes "เชิญเลือกเมนูที่คุณต้องการได้เลยค่ะ^_^";
+set .@look, 0;
+next;
+while (1)
+{
+setlook 6,.@look;
+switch(select( "• ต่อไป [^0000FF"+ ((.@look+1)%(.@mhcolor+1)) +"^000000]","• ย้อนกลับ [^0000FF"+ ((.@mhcolor+.@look)%(.@mhcolor+1)) +"^000000]","• ใส่สีที่ต้องการเอง","• ฉันชอบสีเนี่ยเหลือเกิน"))
+{
+case 1:
+set .@look,(.@look+1)%(.@mhcolor+1);
+break;
+case 2:
+set .@look,(.@mhcolor+.@look)%(.@mhcolor+1);
+break;
+case 3:
+input .@look;
+if (.@look >.@mhcolor || .@look<0) set .@look,0;
+break;
+case 4:
+mes "ยินดีให้บริการค่ะ";
+close;
+}
+}
+break;
+
+case 3:
+mes .@npcname$;
+mes "เชิญเลือกเมนูที่คุณต้องการได้เลยค่ะ^_^";
+set .@look, 0;
+next;
+while (1)
+{
+setlook 7,.@look;
+switch(select( "• ต่อไป [^0000FF"+ ((.@look+1)%(.@mccolor+1)) +"^000000]","• ย้อนกลับ [^0000FF"+ ((.@mccolor+.@look)%(.@mccolor+1)) +"^000000]","• ใส่สีที่ต้องการเอง","• ฉันชอบสีเนี่ยเหลือเกิน"))
+{
+case 1:
+set .@look,(.@look+1)%(.@mccolor+1);
+break;
+case 2:
+set .@look,(.@mccolor+.@look)%(.@mccolor+1);
+break;
+case 3:
+input .@look;
+if (.@look> .@mccolor || .@look<0) set .@look, 0;
+break;
+case 4:
+mes "ยินดีให้บริการค่ะ";
+close;
+}
+}
+break;
+
+case 4:
+mes .@npcname$;
+mes "ยินดีให้บริการค่ะ";
+break;
+}
+close;
+}

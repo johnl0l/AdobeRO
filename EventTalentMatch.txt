@@ -1,0 +1,467 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+-	script	Talent::TMS	-1,{
+
+set @npcname$,"[ Talent Match ]"; // ตั้งชื่อ npc
+
+while (getgmlevel() >= 99)
+{
+//mes @npcname$;
+mes "สวัสดีค่ะท่าน GM";
+mes "การกำหนดค่าปัจจุบัน";
+mes "ระยะเวลาห่างแต่ละรอบ";
+mes $tm_cooldown?"^00AA00"+$tm_cooldown+" ชั่วโมง^000000":"^FF0000ยังไม่เปิดใช้งาน^000000";
+mes "ท่านต้องการทำอะไร";
+next;
+switch(select( "• เมนูผู้เล่น","• เข้าห้องกิจกรรม","• กำหนดระยะเวลาใหม่","• เปิดกิจกรรมเดียวนี้","• ออก"))
+{
+case 1:	
+//mes @npcname$;
+mes "จะพาไปเดียวนี้ค่ะ";
+next;
+break;
+case 2:
+//mes @npcname$;
+mes "จะพาไปเดียวนี้ค่ะ";
+next;
+warp "force_1-3",100,185; 
+close;
+case 3:
+//mes @npcname$;
+mes "ระบุเวลาที่ต้องการเป็นชั่วโมง";
+mes "1 - 23, ค่าอื่นๆ = ปิด NPC";
+mes "^FF0000 -- ตัวอย่าง --^000000";
+mes " 1 = ทุกๆ 1 ชั่วโมง";
+mes " 2 = ทุกๆ ชั่วโมงที่หาร 2 ลงตัว (2,4,6,8,ฯลฯ)";
+next;
+input $tm_cooldown;
+if ($tm_cooldown > 23) set $tm_cooldown,0;
+continue;
+case 4:
+//mes @npcname$;
+if ($@atdstatus)
+mes "^FF0000ไม่สามารถเริ่มได้ กิจกรรมกำลังทำงาน^000000";
+else{
+mes "^0000FFกิจกรรมจะเริ่มทันทีที่คุณยืนยัน^000000";
+next;
+if (select("• ยกเลิก:• ยืนยัน")-1) {
+set $@tm_forcestart,1;
+donpcevent "HiddenTalMa::OnStart";
+//mes @npcname$;
+mes "^00AA00กิจกรรมเริ่มแล้วค่ะ^000000";
+}
+}
+next;
+continue;
+case 5:
+//mes @npcname$;
+mes "บ๊าย บาย ค่ะ";
+close;
+}
+break;
+}
+
+//mes @npcname$;
+if (!$tm_cooldown && !$@tm_forcestart) {
+mes "ไม่สามารถใช้งาน Talent Match ได้";
+mes "กรุณาติดต่อ GM";
+close;
+}
+mes "ยินดีต้อนรับผู้กล้าทั้งหลายเข้าสู่ ^FF0000Talent Match ^000000"; 
+mes "ที่สุดแสนอันตราย !!"; 
+mes "เจ้าต้องการที่จะเข้าไปเลยมั้ย"; 
+next; 
+switch(select("• แน่นอนข้าจะเข้าไป","• ข้าต้องการฟังรายละเอียดอีกครั้ง","• ไม่ล่ะ ข้าไม่เอาด้วยหรอก"))
+{
+//mes @npcname$;
+case 1:
+if (BaseLevel < 90) 	{
+mes "เจ้าต้องมีเลเวลอย่างน้อย 90 ถึงจะเข้าไปได้"; 
+break;
+} 
+if ($@tmisstart == 1 || $@tm_forcestart) {
+announce "[ Talent Match ] : "+strcharinfo(0)+" ได้เข้าสู่ Talent Match แล้ว",8,0x00CCFF; 
+percentheal 100,100; 
+warp "force_1-3",100,185; 
+break; 
+}
+mes "ขณะนี้ Talent Match ได้ปิดลงแล้ว";
+mes "Talent Match จะเปิดทุกๆ";
+mes $tm_cooldown+" ชั่วโมงครับ";
+break;
+case 2:
+mes "Talent Match มีรูปแบบการเล่นแบบเควส";
+mes "ผู้เล่นต้องกำจัดมอนเตอร์ในแต่ละด่านเพื่อเปิดประตู";
+mes "สู่ด่านถัดไป !!!!!";
+break;
+case 3:
+mes "ไม่เป็นไรท่านผู้กล้าถ้าท่านพร้อมค่อยมาหาข้าใหม่";
+break;
+}
+close;
+
+OnInit:
+set $pstart,0;
+waitingroom "[•] Talent Match",0;
+end;
+}
+
+-	script	TalMa	-1,{
+
+OnTimer30000:
+if (getmapusers("force_1-3") == 0) {
+announce "[ Talent Match ] : และแล้ว...ก็จบลงจาก Talent Match ",8,0x00CCFF; 
+set $@tm_status,1;
+killmonsterall "force_1-3";
+stopnpctimer;
+end;
+}
+announce "[ Talent Match ] : ยังคงเหลือผู้แกร่งกล้าอีก "+getmapusers("force_1-3")+" ท่าน",8,0x00CCFF;
+setnpctimer 0;
+initnpctimer;
+end;
+
+OnInit:
+set $@tm_forcestart,0;
+stopnpctimer;
+end;
+} 
+
+force_1-3,100,185,5	script	HiddenTalMa	-1,{
+
+OnMinute00: //ปกติตั้งไว้ที่ 00
+if (!$tm_cooldown) end;
+if (gettime(3)%$tm_cooldown) end;
+
+OnStart:
+announce "[ Talent Match ] : กิจกรรมกำลังจะเปิดใน 5 นาที กรุณาเตรียมตัวกันให้พร้อม !!",8,0x00CCFF; 
+disablenpc "AtoB";
+disablenpc "BtoC";
+disablenpc "CtoD";
+disablenpc "DtoE";
+disablenpc "EtoF";
+disablenpc "FtoG";
+disablenpc "GtoH";
+disablenpc "keyD";
+disablenpc "GOD";
+initnpctimer;
+set $@tm_status,0;
+set $@tmisstart,1;
+killmonsterall "force_1-3";
+end;
+
+//OnTimer60000:
+//announce "[ Talent Match ] : กิจกรรมกำลังจะเปิดในอีกเพียง 4 นาที เตรียมตัวกันด้วย!!",8,0x00CCFF;
+//end;
+
+//OnTimer120000:
+//announce "[ Talent Match ] : กิจกรรมกำลังจะเปิดในอีกเพียง 3 นาที เท่านั้น!!",8,0x00CCFF;
+//end;
+
+//OnTimer180000:
+//announce "[ Talent Match ] : กิจกรรมกำลังจะเปิดในอีกเพียง 2 นาที",8,0x00CCFF;
+//end;
+
+//OnTimer240000: 
+//announce "[ Talent Match ] : 1 นาที สุดท้ายแล้วก่อนเริ่มกิจกรรม!!",8,0x00CCFF;
+//end;
+
+OnTimer300000:
+announce "[ Talent Match ] : กิจกรรมได้เริ่มต้นขึ้นแล้ว ณ บัดนี้ !!",8,0x00CCFF;
+set $@tm_forcestart,0;
+initnpctimer "TalMa";
+stopnpctimer;
+set $@tmkey,0;
+set $@tmisstart,0;
+set $@tm_mob,10;
+areamonster "force_1-3",106,189,107,190,"[TL] เห็ดพิษ",1084,1,"HiddenTalMa::OnA";
+areamonster "force_1-3",100,184,101,185,"[TL] เห็ดพิษ",1084,1,"HiddenTalMa::OnA";
+areamonster "force_1-3",96,186,97,187,"[TL] เห็ดพิษ",1084,1,"HiddenTalMa::OnA";
+areamonster "force_1-3",93,182,94,183,"[TL] เห็ดพิษ",1084,1,"HiddenTalMa::OnA";
+areamonster "force_1-3",96,177,97,178,"[TL] เห็ดพิษ",1084,1,"HiddenTalMa::OnA";
+areamonster "force_1-3",109,177,110,178,"[TL] เห็ดพิษ",1084,1,"HiddenTalMa::OnA";
+areamonster "force_1-3",114,182,115,183,"[TL] เห็ดพิษ",1084,1,"HiddenTalMa::OnA";
+areamonster "force_1-3",97,189,98,190,"[TL] เห็ดพิษ",1084,1,"HiddenTalMa::OnA";
+areamonster "force_1-3",87,178,88,179,"[TL] เห็ดพิษ",1084,1,"HiddenTalMa::OnA";
+areamonster "force_1-3",102,187,103,188,"[TL] เห็ดพิษ",1084,1,"HiddenTalMa::OnA";
+end;
+
+OnA:
+set $@tm_mob,$@tm_mob-1;
+if ($@tm_mob == 9) announce "[ Talent Match ] : เอ่ะ เห็ดพิษมายังไงเยอะแยะ ช่วยกันจัดการที ระวังตัวด้วย !!",0,0x00CCFF; 
+if ($@tm_mob == 0) {
+announce "[ Talent Match ] : สำเร็จแล้ว กำจัดเห็ดพิษได้หมด เดินทางต่อไปกันเถอะ",8,0x00CCFF;
+enablenpc "AtoB";
+monster "force_1-3",100,186,"Treasure Box",1333,1,"HiddenTalMa::OnboxA";
+set $@tm_mob,15;
+monster "force_1-3",99,137,"ทรายโหด",1127,10,"HiddenTalMa::OnB";
+monster "force_1-3",99,137,"ทรายโหด",1165,5,"HiddenTalMa::OnB";
+}
+end;
+
+OnB: 
+set $@tm_mob,$@tm_mob-1;
+if ($@tm_mob == 14) announce "[ Talent Match ] : พวกนี่มันกำลังตื่นจากใต้พสุธาแล้ว พวกเราระวังตัวด้วย !!",0,0x00CCFF;
+if ($@tm_mob == 1) announce "[ Talent Match ] : เอ่ะ นั่นอะไรหน่ะ !!",0,0x00CCFF;
+if ($@tm_mob == 0) {
+announce "[ Talent Match ] : มันตื่นขึ้นแล้ว พวกเราคงไม่รอดแน่",8,0x00CCFF;
+monster "force_1-3",99,137,"[BOSS]",1159,1,"HiddenTalMa::OnB1";
+monster "force_1-3",100,185,"Hero",1708,2,"HiddenTalMa::OnDeadSure";
+enablenpc "BtoC";
+set $@tm_mob,42;
+monster "force_1-3",86,103,"ผู้คุมห้อง",1285,1,"HiddenTalMa::OnC";
+monster "force_1-3",86,97,"ผู้คุมห้อง",1285,1,"HiddenTalMa::OnC";
+monster "force_1-3",73,100,"มนุษย์โครงเหล็ก",1276,20,"HiddenTalMa::OnC";
+monster "force_1-3",54,100,"มนุษย์โครงเหล็ก",1163,20,"HiddenTalMa::OnC";
+}
+end;
+
+OnB1:
+monster "force_1-3",105,137,"Treasure Box",1333,1,"HiddenTalMa::OnboxB";
+end;
+
+OnC:
+set $@tm_mob,$@tm_mob-1;
+if ($@tm_mob == 41) announce "[ Talent Match ] : นี่พวกมันเป็นเพียงแค่ส่วนนึงของ ปราสาทหลังนี้หรอเนี่ย",0,0x00CCFF;
+if ($@tm_mob == 40) {
+announce "[ Talent Match ] : พวกมนุษย์โครงเหล็กมันยังคงเฝ้าที่นี้หรอเนี่ย !! นี่มันยังไงกันแน่",0,0x00CCFF;
+monster "force_1-3",99,137,"Hero",1708,2,"HiddenTalMa::OnDeadSure";
+}
+if ($@tm_mob == 20) announce "[ Talent Match ] : ดูเหมือนว่ามัน โดนบังคับจากอะไรสักอย่างนะ",0,0x00CCFF;
+if ($@tm_mob == 10) announce "[ Talent Match ] : มันไม่มีชีวิตนี่นา มันคงโดนเวทมนต์อะไรสักอย่างเข้าสิง",0,0x00CCFF;
+if ($@tm_mob == 0) {
+announce "[ Talent Match ] : ไปกันต่อเถอะ !!",0,0x00CCFF;
+enablenpc "CtoD";
+enablenpc "keyD";
+monster "force_1-3",60,100,"Treasure Box",1333,1,"HiddenTalMa::OnboxC";
+monster "force_1-3",52,105,"Treasure Box",1333,1,"HiddenTalMa::OnboxC";
+monster "force_1-3",52,92,"Treasure Box",1333,1,"HiddenTalMa::OnboxC";
+monster "force_1-3",66,92,"Treasure Box",1333,1,"HiddenTalMa::OnboxC";
+monster "force_1-3",66,106,"Treasure Box",1333,1,"HiddenTalMa::OnboxC";
+set $@tm_mob,50;
+monster "force_1-3",16,136,"มัมมี่",1297,5,"HiddenTalMa::OnD";
+monster "force_1-3",23,136,"มัมมี่",1297,5,"HiddenTalMa::OnD";
+monster "force_1-3",20,132,"มัมมี่ผู้กำกุญแจ",1297,1,"HiddenTalMa::OnD1";
+}
+end;
+
+OnD1:
+set $@tmkey,1;
+announce "[ Talent Match ] : หากุญแจพบแล้วรีบไปต่อกัน !!",0,0x00CCFF;
+end;
+
+OnD: 
+if ($@tm_status == 1) end;
+set $@tm_mob,$@tm_mob-1;
+if ($@tm_mob == 49) announce "[ Talent Match ] : ทำไมพวกมันถึงดูแตกตื่นนัก นั่นผู้กำกุญแจ",0,0x00CCFF;
+if ($@tm_mob == 40) {
+announce "[ Talent Match ] : คำภีร์ในบทแรกเขียนไว้ว่า ต้องสละผู้ถือกุญแจ",0,0x00CCFF;
+monster "force_1-3",54,100,"Hero",1708,2,"HiddenTalMa::OnDeadSure";
+monster "force_1-3",15,104,"???",1195,5,"HiddenTalMa::OnD";
+monster "force_1-3",24,104,"???",1208,15,"HiddenTalMa::OnD";
+monster "force_1-3",24,96,"???",1219,5,"HiddenTalMa::OnD";
+monster "force_1-3",15,96,"???",1197,15,"HiddenTalMa::OnD";
+}
+if ($@tm_mob == 5) announce "[ Talent Match ] : พวกเราปลดปล่อยมันได้ส่วนนึงแล้ว เราต้องต่อให้สำเร็จ",0,0x00CCFF;
+if ($@tm_mob == 0) {
+set $@tmkey,2;
+announce "[ Talent Match ] : เฮ้ออ สำเร็จสักที แต่การเดินทางยังไม่จบนี่ ลุยกันต่อเถอะพวก !!",0,0x00CCFF;
+monster "force_1-3",16,103,"Treasure Box",1333,1,"HiddenTalMa::OnboxA";
+monster "force_1-3",23,103,"Treasure Box",1333,1,"HiddenTalMa::OnboxA";
+monster "force_1-3",21,103,"Treasure Box",1333,1,"HiddenTalMa::OnboxA";
+monster "force_1-3",18,103,"Treasure Box",1333,1,"HiddenTalMa::OnboxA";
+set $@tm_mob,45;
+monster "force_1-3",41,60,"เทพ",1412,15,"HiddenTalMa::OnE";
+monster "force_1-3",32,60,"มาร",1504,15,"HiddenTalMa::OnE";
+monster "force_1-3",48,60,"สัตว์",1037,15,"HiddenTalMa::OnE";
+monster "force_1-3",65,58,"มนุษย์",1638,1,"HiddenTalMa::OnboxB";
+monster "force_1-3",65,58,"มนุษย์",1634,1,"HiddenTalMa::OnboxB";
+monster "force_1-3",65,58,"มนุษย์",1635,1,"HiddenTalMa::OnboxB";
+}
+end;
+
+OnE: 
+set $@tm_mob,$@tm_mob-1;
+if ($@tm_mob == 44) announce "[ Talent Match ] : พวก เทพ มาร สัตว์ ต่างพากันปกป้องอะไรกันแน่",0,0x00CCFF;
+if ($@tm_mob == 15) announce "[ Talent Match ] : เอะ ข้างในนั้นมันมีคนไม่ใช่หรอ",0,0x00CCFF;
+if ($@tm_mob == 0) {
+announce "[ Talent Match ] : คนพวกนี้ นี่มันอะไรกันแน่ !!",0,0x00CCFF;
+enablenpc "EtoF";
+monster "force_1-3",18,60,"Treasure Box",1333,1,"HiddenTalMa::OnboxA";
+monster "force_1-3",15,60,"Treasure Box",1333,1,"HiddenTalMa::OnboxA";
+monster "force_1-3",21,60,"Treasure Box",1333,1,"HiddenTalMa::OnboxA";
+monster "force_1-3",24,60,"Treasure Box",1333,1,"HiddenTalMa::OnboxA";
+set $@tm_mob,46;
+monster "force_1-3",99,61,"Hero",1639,1,"HiddenTalMa::OnF";
+monster "force_1-3",100,16,"อ่อนแอ",1725,1,"HiddenTalMa::OnDeadSure";
+monster "force_1-3",100,16,"Hero",1725,9,"HiddenTalMa::OnF1";
+}
+end;
+
+OnDeadSure:
+monster "force_1-3",100,20,"Hero",1708,1;
+end;
+
+OnF1:
+monster "force_1-3",100,61,"Hero",1693,2,"HiddenTalMa::OnF";
+monster "force_1-3",100,61,"Hero",1694,2,"HiddenTalMa::OnF";
+monster "force_1-3",100,61,"Hero",1698,1,"HiddenTalMa::OnF";
+monster "force_1-3",100,61,"Hero",1701,1,"HiddenTalMa::OnboxA";
+monster "force_1-3",100,61,"Hero",1702,1,"HiddenTalMa::OnboxA";
+end;
+
+OnF:
+set $@tm_mob,$@tm_mob-1;
+if ($@tm_mob == 45) announce "[ Talent Match ] : คัมภีร์บทที่ 2 กล่าวไว้ว่า จงช่วยเหลือผู้อ่อนแอ",0,0x00CCFF;
+if ($@tm_mob == 0) {
+announce "[ Talent Match ] : เราทำสำเร็จ แต่มันยังเหลือบทสุดท้ายในคัมภีร์",0,0x00CCFF;
+enablenpc "FtoG";
+set $@tm_mob,9;
+monster "force_1-3",138,20,"Hero",1634,1,"HiddenTalMa::OnG";
+monster "force_1-3",161,20,"Hero",1634,1,"HiddenTalMa::OnG";
+monster "force_1-3",185,20,"Hero",1634,1,"HiddenTalMa::OnG";
+monster "force_1-3",185,20,"Hero",1635,1,"HiddenTalMa::OnG";
+monster "force_1-3",185,20,"Hero",1636,2,"HiddenTalMa::OnG";
+monster "force_1-3",185,20,"Hero",1637,2,"HiddenTalMa::OnG";
+monster "force_1-3",185,20,"Hero",1638,1,"HiddenTalMa::OnG";
+}
+end;
+
+OnG:
+if ($@tm_status == 1) end;
+set $@tm_mob,$@tm_mob-1;
+if ($@tm_mob == 7) announce "[ Talent Match ] : นี่คือสถานที่สุดท้าย",0,0x00CCFF;
+if ($@tm_mob == 6) announce "[ Talent Match ] : ด้านในมีอีกไม่น้อยเราต้องทยอยไป",0,0x00CCFF;
+if ($@tm_mob == 0) {
+announce "[ Talent Match ] : ทำสำเร็จแล้ว บทสุดท้ายของคัมภีร์กล่าวไว้ว่า ห้ามกระทำการใดๆต่อห้องอันศักดิ์สิทธิ์",0,0x00CCFF;
+enablenpc "GOD";
+enablenpc "GtoH";
+monster "force_1-3",186,24,"Treasure Box",1333,1,"HiddenTalMa::OnboxA";
+monster "force_1-3",186,15,"Treasure Box",1333,1,"HiddenTalMa::OnboxA";
+monster "force_1-3",174,15,"Treasure Box",1333,1,"HiddenTalMa::OnboxA";
+monster "force_1-3",174,24,"Treasure Box",1333,1,"HiddenTalMa::OnboxA";
+monster "force_1-3",179,19,"Treasure Box",1333,1,"HiddenTalMa::OnboxB";
+monster "force_1-3",18,180,"จุติ",1726,5,"HiddenTalMa::OnDeadSureSure";
+monster "force_1-3",24,174,"Treasure Box",1333,1,"HiddenTalMa::OnboxAB";
+monster "force_1-3",21,174,"Treasure Box",1333,1,"HiddenTalMa::OnboxAB";
+monster "force_1-3",17,174,"Treasure Box",1333,1,"HiddenTalMa::OnboxAB";
+monster "force_1-3",14,174,"Treasure Box",1333,1,"HiddenTalMa::OnboxAB";
+}
+end;
+
+OnDeadSureSure:
+monster "force_1-3",18,180,"Hero",1708,1,"HiddenTalMa::OnDeadSureSure1";
+end;
+
+OnDeadSureSure1:
+getitem 30000,2;
+end;
+
+OnboxA:
+getitem 30000,2;
+end;
+
+OnboxB:
+getitem 30000,2;
+end;
+
+OnboxC:
+getitem 30000,2;
+end;
+
+OnboxAB:
+announce "[ Talent Match ] : "+strcharinfo(0)+" ได้เปิดขุมทรัพย์ในห้องสุดท้ายแล้ว",8,0x00CCFF;
+getitem 30000,2;
+end;
+
+OnInit:
+set $@tmisstart,0;
+setnpctimer 0;
+stopnpctimer;
+end;
+} 
+
+force_1-3,19,100,5	script	keyD	735,{
+
+//mes @npcname$;
+mes "กุญแจ 1 ดอกสำหรับปลดผนึก";
+next;
+if (select("• ตกลง","• ช้าก่อน ข้ายังไม่มี")-1) {
+//mes @npcname$;
+mes "กุญแจเพียง 1 ดอกสำหรับการปลดผนึก";
+close;
+}
+if (!$@tmkey) {
+//mes @npcname$;
+mes "ข้าต้องใช้กุญแจ 1 ดอกสำหรับปลดผนึก";
+close;
+}
+if($@tmkey != 2) {
+//mes @npcname$;
+mes "เจ้าต้องฆ่ามอนสเตอร์ให้หมด";
+close;
+}
+//mes @npcname$;
+mes "ผนึกได้ถูกปลดแล้ว";
+specialeffect 635;
+set $@tmkey,0;
+//disablenpc "KeyD";
+enablenpc "DtoE";
+close;
+}
+
+force_1-3,99,164,5	script	AtoB	45,2,3,{
+warp "force_1-3",100,147;
+//close;
+}
+
+force_1-3,99,128,5	script	BtoC	45,2,3,{
+warp "force_1-3",109,99;
+//close;
+}
+
+force_1-3,59,109,5	script	CtoD	45,2,3,{
+warp "force_1-3",20,147;
+//close;
+}
+
+force_1-3,19,90,5	script	DtoE	45,2,3,{
+warp "force_1-3",19,69;
+//close;
+}
+
+force_1-3,69,60,5	script	EtoF	45,2,3,{
+warp "force_1-3",99,69;
+//close;
+}
+
+force_1-3,109,19,5	script	FtoG	45,2,3,{  
+warp "force_1-3",130,20;
+//close;
+}
+
+force_1-3,180,29,5	script	GtoH	45,2,3,{
+warp "force_1-3",20,189;
+//close;
+}
+
+force_1-3,29,179,5	script	GOD	45,2,3,{
+warp "SavePoint",0,0;
+//close;
+}
+
+// -- Mapflags 
+force_1-3	mapflag	nowarp
+force_1-3	mapflag	nowarpto
+force_1-3	mapflag	noteleport
+force_1-3	mapflag	monster_noteleport
+force_1-3	mapflag	nosave	SavePoint
+force_1-3	mapflag	nomemo
+force_1-3	mapflag	nobranch
+force_1-3	mapflag	nopenalty
+force_1-3	mapflag	noreturn
+
+morocc,184,45,4	duplicate(TMS)	Talent Match	837

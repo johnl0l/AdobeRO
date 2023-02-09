@@ -1,0 +1,65 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+-	script	Wwar	-1,{
+mes "สงครามชิงปราสาท เปิดทุกวัน จันทร์ พุธ ศุกร์ เสาร์";
+mes "สวัสดีคุณ :^FF0000 "+strcharinfo(0)+" ^000000 ";
+mes "ต้องการเข้าร่วมสงครามชิงปราสาทไหม?.";
+menu 
+"^FF0000•^000000 บ้านพาย่อน",Mm_GVG1, //payg_cas01
+"^FF0000•^000000 บ้านกิฟเฟ่น",Mm_GVG2, //gefg_cas02
+"^FF0000•^000000 บ้านพรอนเทร่า",Mm_GVG3, //prtg_cas01
+"^FF0000•^000000 บ้านนากา",Mm_GVG4, //aldeg_cas05
+"^FF0000•^000000 ออก ",Lcancel23;
+
+
+Mm_GVG1:
+sc_end SC_POEMBRAGI;
+sc_end SC_SERVICE4U;
+warp "pay_gld",121,233;
+announce "[ระบบ] ขณะนี้ คุณ [ "+strcharinfo(0)+" ] ได้เข้าร่วมสงครามชิงปราสาท บ้านพาย่อน ขณะนี้มีผู้เล่นหน้าบ้าน  [ "+getmapusers("pay_gld")+" ] คน และในบ้าน   [ "+getmapusers("payg_cas01")+" ] คน ",0;
+close;
+
+Mm_GVG2:
+sc_end SC_POEMBRAGI;
+sc_end SC_SERVICE4U;
+warp "gef_fild13",308,240;
+announce "[ระบบ] ขณะนี้ คุณ [ "+strcharinfo(0)+" ] ได้เข้าร่วมสงครามชิงปราสาท บ้านกิฟเฟ่น ขณะนี้มีผู้เล่นหน้าบ้าน  [ "+getmapusers("gef_fild13")+" ] คน และในบ้าน   [ "+getmapusers("gefg_cas02")+" ] คน ",0;
+close;
+
+Mm_GVG3:
+sc_end SC_POEMBRAGI;
+sc_end SC_SERVICE4U;
+warp "prt_gld",134,65;
+announce "[ระบบ] ขณะนี้ คุณ [ "+strcharinfo(0)+" ] ได้เข้าร่วมสงครามชิงปราสาท บ้านพรอนเทร่า ขณะนี้มีผู้เล่นหน้าบ้าน  [ "+getmapusers("prt_gld")+" ] คน และในบ้าน   [ "+getmapusers("gefg_cas02")+" ] คน ",0;
+close;
+
+Mm_GVG4:
+sc_end SC_POEMBRAGI;
+sc_end SC_SERVICE4U;
+warp "alde_gld",264,90;
+announce "[ระบบ] ขณะนี้ คุณ [ "+strcharinfo(0)+" ] ได้เข้าร่วมสงครามชิงปราสาท บ้านนากา ขณะนี้มีผู้เล่นหน้าบ้าน  [ "+getmapusers("alde_gld")+" ] คน และในบ้าน   [ "+getmapusers("aldeg_cas05")+" ] คน ",0;
+close;
+
+Lcancel23:
+close;
+OnInit:
+//waitingroom "กิลด์วอร์วันนี้ปิด",0;
+waitingroom "กิลด์วอร์เปิดวันนี้",0;
+end;
+}
+
+//==============================================
+//ที่ตั้งNPC
+//==============================================
+izlude,135,253,4	duplicate(Wwar)	ห้องรับรอง GVG#01	780
+izlude,87,168,4	duplicate(Wwar)	ห้องรับรอง GVG#02	780
+izlude,55,105,4	duplicate(Wwar)	ห้องรับรอง GVG#03	780
+izlude,132,152,4	duplicate(Wwar)	ห้องรับรอง GVG#04	780
+izlude,46,170,4	duplicate(Wwar)	ห้องรับรอง GVG#05	780
+izlude,200,173,4	duplicate(Wwar)	ห้องรับรอง GVG#06	780
+
+
+//==============================================

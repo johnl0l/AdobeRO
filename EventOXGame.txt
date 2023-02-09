@@ -1,0 +1,115 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+quiz_01,61,194,0	warp	warp_random1	1,1,quiz_01,52,182
+quiz_01,66,194,0	warp	warp_random2	1,1,quiz_01,75,182
+quiz_01,63,196,0	script	warp_random_finish	45,1,1,{
+for( set .@i,0; .@i < getarraysize($randomitem); set .@i,.@i+1 ) {
+getitem $randomitem[.@i],$randomitemamount[.@i];
+}
+warp "SavePoint",0,0;
+end;
+}
+
+-	script	oxgame	-1,{
+mes "ยินดีต้อนรับสู่กิจกรรม OX Game กิจกรรมง่ายๆ ขอแค่คุณดวงถึง!!";
+mes " ";
+next;
+switch(select(" • เข้าร่วมกิจกรรม: • ฟังกติกา: • ออก")) {
+case 1:
+if($randomregister != 1) { mes $bossname$; mes "ขณะนี้ยังไม่ถึงเวลากิจกรรม"; close; }
+warp "quiz_01",63,200;
+end;
+case 2:
+mes $bossname$;
+mes "1. กิจกรรมจะถูกจัดขึ้นทุกๆ นาที 25 ของทุกชั่วโมง";
+mes "2. เข้าร่วมได้ไม่จำกัดคน";
+mes "3. ภายในกิจกรรมมีทั้งหมด 7 ด่าน";
+mes "4. เมื่อกิจกรรมเริ่นต้นขึ้น คุณต้องเลือกฝั่งที่คุณต้องการอยู่ หากคุณโชคดีคุณก็จะได้อยู่ต่อไป..";
+mes "5. หากคุณไม่เลือกฝั่งภายในเวลาที่กำหนด คุณจะถูกปรับแพ้และวาร์ปออกมาทันที";
+mes "6. ขอให้ทุกท่านโชคดี";
+close;
+case 3:
+close;
+}
+OnInit:
+waitingroom "OX Game",0;
+end;
+}
+
+-	script	warp_hidden	-1,{
+OnMinute25:
+set $randomregister,"1";
+disablenpc "warp_random_finish";
+announce $randomname$+" : กิจกรรม OX Game กำลังจะเริ่มในอีก 2 นาที",0,0x0DFF0D;
+sleep2 120000;
+set $randomregister,"0";
+announce $randomname$+" : กิจกรรม OX Game เริ่มขึ้นแล้ว!!",0,0x0DFF0D;
+for( set .@i,0; .@i < 5; set .@i,.@i+1 ) {
+if(getmapusers("quiz_01.gat") == 0) break;
+callfunc("warp_function",.@i+1);
+}
+sleep2 3000;
+announce $randomname$+" : กิจกรรม OX Game จบลงแล้ว!!",0,0x0DFF0D;
+end;
+
+OnInit:
+set $randomname$,"OX Game";
+set $randomregister,"0";
+disablenpc "warp_random_finish";
+setcell "quiz_01",62,185,66,181,cell_walkable,0;
+setcell "quiz_01",61,205,66,205,cell_walkable,0;
+set $randomreturnmap$,"new_morocc";
+set $randomreturnx,0;
+set $randomreturny,0;
+setarray $randomitem[0],29013,671;
+setarray $randomitemamount[0],1,10;
+end;
+// หมายเหตุ. บรรทัดไหนไม่มี comment ห้ามปรับแต่งเด็ดขาด
+}
+
+function	script	warp_function	{
+mapannounce "quiz_01",$randomname$+" : [ Stage "+getarg(0)+" ]",0,0x0DFF0D;
+sleep2 1000;
+mapannounce "quiz_01",$randomname$+" : คุณมีเวลาเลือกฝั่งที่ต้องการอีก 10 วินาที",0,0x0DFF0D;
+sleep2 1000;
+mapannounce "quiz_01",$randomname$+" : คุณมีเวลาเลือกฝั่งที่ต้องการอีก 9 วินาที",0,0x0DFF0D;
+sleep2 1000;
+mapannounce "quiz_01",$randomname$+" : คุณมีเวลาเลือกฝั่งที่ต้องการอีก 8 วินาที",0,0x0DFF0D;
+sleep2 1000;
+mapannounce "quiz_01",$randomname$+" : คุณมีเวลาเลือกฝั่งที่ต้องการอีก 7 วินาที",0,0x0DFF0D;
+sleep2 1000;
+mapannounce "quiz_01",$randomname$+" : คุณมีเวลาเลือกฝั่งที่ต้องการอีก 6 วินาที",0,0x0DFF0D;
+sleep2 1000;
+mapannounce "quiz_01",$randomname$+" : คุณมีเวลาเลือกฝั่งที่ต้องการอีก 5 วินาที",0,0x0DFF0D;
+sleep2 1000;
+mapannounce "quiz_01",$randomname$+" : คุณมีเวลาเลือกฝั่งที่ต้องการอีก 4 วินาที",0,0x0DFF0D;
+sleep2 1000;
+mapannounce "quiz_01",$randomname$+" : คุณมีเวลาเลือกฝั่งที่ต้องการอีก 3 วินาที",0,0x0DFF0D;
+sleep2 1000;
+mapannounce "quiz_01",$randomname$+" : คุณมีเวลาเลือกฝั่งที่ต้องการอีก 2 วินาที",0,0x0DFF0D;
+sleep2 1000;
+mapannounce "quiz_01",$randomname$+" : คุณมีเวลาเลือกฝั่งที่ต้องการอีก 1 วินาที",0,0x0DFF0D;
+sleep2 1000;
+areawarp "quiz_01",61,204,66,194,$randomreturnmap$,$randomreturnx,$randomreturny;
+if(getarg(0) == 5) enablenpc "warp_random_finish";
+switch(rand(2)) {
+case 0:
+mapannounce "quiz_01",$randomname$+" : ผู้เล่นฝั่งซ้ายได้เข้ารอบ!! ขอแสดงความยินดีด้วย",0,0x0DFF0D;
+areawarp "quiz_01",45,191,61,175,"quiz_01",63,196;
+sleep2 1000;
+areawarp "quiz_01",45,191,83,175,$randomreturnmap$,$randomreturnx,$randomreturny;
+break;
+case 1:
+mapannounce "quiz_01",$randomname$+" : ผู้เล่นฝั่งขวาได้เข้ารอบ!! ขอแสดงความยินดีด้วย",0,0x0DFF0D;
+areawarp "quiz_01",67,191,83,175,"quiz_01",63,196;
+sleep2 1000;
+areawarp "quiz_01",45,191,83,175,$randomreturnmap$,$randomreturnx,$randomreturny;
+break;
+}
+return;
+}
+
+wonderworld,164,84,4	duplicate(oxgame)	OX Game	837

@@ -1,0 +1,10 @@
+-	script	AuctionBrokerM	-1,{
+
+openauction;
+close;
+OnInit:
+waitingroom "บริการประมูลไอเทม",0;
+end;
+}
+
+wonderworld,142,136,4	duplicate(AuctionBrokerM)	บริการประมูลไอเทม#01	504

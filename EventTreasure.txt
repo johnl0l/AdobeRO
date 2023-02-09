@@ -1,0 +1,140 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+-	script	tresure	-1,{
+if(getgmlevel()>50) {
+mes "ต้องการอะไร";
+next;
+menu 
+"- จัดการกิจกรรม",-,
+"- ร่วมกิจกรรม",M_play;
+mes "ต้องการอะไรดีล่ะ";
+next;
+menu 
+"- เริ่มกิจกรรม",-,
+"- ยกเลิกกิจกรรม",M_End2;
+if(!$@choose) {
+callfunc "F_doranitem";
+set $@choose,1;
+announce "[กิจกรรมตามล่าหาการ์ด] : ขณะนี้ให้ค้นหาของที่ชื่อ " + getitemname($@random) + " จำนวน " + $@randnum + " ชิ้น",0;
+mes "เราได้เริ่มกิจกรรมแล้ว";
+close;
+} else {
+mes "กิจกรรมเริ่มแล้ว";
+close;
+}
+
+M_End2:
+if($@choose) {
+set $@choose,0;
+announce "[กิจกรรมตามล่าหาการ์ด] : ขณะนี้จบกิจกรรมนี้แล้ว",0;
+mes "เราได้ยกเลิกแล้ว";
+close;
+} else {
+mes "กิจกรรมจบแล้ว";
+close;
+}
+
+}
+
+goto M_play;
+M_play:
+if(!$@choose) {
+mes "ขณะนี้ยังไม่มีกิจกรรม";
+close;
+} else {
+mes "ข้าต้องการ ^FF0000" + getitemname($@random) + "^000000                  จำนวน ^FF0000" + $@randnum + "^000000 ea";
+mes "ถ้าหากมีข้าจะให้รางวัลท่าน";
+next;
+menu "- มี",-,"- ไม่มีอ่ะ",M_End;
+if(countitem($@random)<$@randnum) {
+mes "ท่านไม่มีของนี่นา";
+close;
+} else {
+set $@choose,0;
+announce "[กิจกรรมตามล่าหาการ์ด] : " + strcharinfo(0) + " ได้รับรางวัลจากการให้ไอเท็มตามที่ Npc ต้องการแล้วกิจกรรมนี้ก็จบลงครับ",0;
+delitem $@random,$@randnum;
+atcommand "@item 30000 50";
+mes "คุณมีของแล้ว ยินดีด้วย";
+close;
+}
+}
+
+M_End:
+mes "ไม่เป็นไร";
+close;
+
+OnInit: 
+waitingroom "กิจกรรมตามล่าหาการ์ด",0; 
+end;
+
+OnClock0112:
+OnClock0212:
+OnClock0312:
+OnClock0412:
+OnClock0512:
+OnClock0612:
+OnClock0712:
+OnClock0812:
+OnClock0912:
+OnClock1012:
+OnClock1112:
+OnClock1212:
+OnClock1312:
+OnClock1412:
+OnClock1512:
+OnClock1612:
+OnClock1712:
+OnClock1812:
+OnClock1912:
+OnClock2012:
+OnClock2112:
+OnClock2212:
+OnClock2312:
+OnClock0012:
+callfunc "F_doranitem";
+set $@choose,1;
+announce "[กิจกรรมตามล่าหาการ์ด] : ขณะนี้ให้ค้นหาของที่ชื่อ " + getitemname($@random) + " จำนวน " + $@randnum + " ชิ้น",0;
+end;
+
+OnClock0129:
+OnClock0229:
+OnClock0329:
+OnClock0429:
+OnClock0529:
+OnClock0629:
+OnClock0729:
+OnClock0829:
+OnClock0929:
+OnClock1029:
+OnClock1129:
+OnClock1229:
+OnClock1329:
+OnClock1429:
+OnClock1529:
+OnClock1629:
+OnClock1729:
+OnClock1829:
+OnClock1929:
+OnClock2029:
+OnClock2129:
+OnClock2229:
+OnClock2329:
+OnClock0029:
+set $@choose,0;
+announce "[กิจกรรมตามล่าหาการ์ด] : ขณะนี้หมดเวลาค้นหาของแล้ว",0;
+end;
+}
+
+function	script	F_doranitem	{
+setarray $@itemnot[0],0;
+setarray $@itemrand[0],rand(4001,4441);
+set $@random,$@itemrand[rand(getarraysize($@itemrand))];
+set $@randnum,rand(2,3);
+set $@zennum,rand(50,50);
+return;
+}
+
+wonderworld,167,84,4	duplicate(tresure)	กิจกรรมตามล่าหาการ์ด	837

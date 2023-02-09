@@ -1,0 +1,149 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+// - # สูตรการทำ x อื่นๆ
+// - x0.25	: *1/4	(ได้ Exp น้อยลง 75%)
+// - x0.5	: *1/2	(ได้ Exp น้อยลง 50%)
+// - x0.75	: *3/4	(ได้ Exp น้อยลง 25%)
+// - x1		: *1	(ได้ Exp ปกติ)
+// - x1.25	: *5/4	(ได้ Exp มากขึ้น 25%)
+// - x1.5	: *3/2	(ได้ Exp มากขึ้น 50%)
+// - x1.75	: *7/4	(ได้ Exp มากขึ้น 75%)
+// - x2		: *2	(ได้ Exp มากขึ้น 100%)
+//==============================================
+-	script	Bonus Time	-1,{
+
+OnInit:
+	set .base_exp, getbattleflag("base_exp_rate");
+	set .job_exp, getbattleflag("job_exp_rate");
+  set .item_rate_common, getbattleflag("item_rate_common");
+  set .item_rate_heal, getbattleflag("item_rate_heal");
+  set .item_rate_use, getbattleflag("item_rate_use");
+  set .item_rate_equip, getbattleflag("item_rate_equip");
+  set .item_rate_card, getbattleflag("item_rate_card");
+  set .item_rate_mvp, getbattleflag("item_rate_mvp");
+  set .item_rate_adddrop, getbattleflag("item_rate_adddrop");
+  set .item_rate_treasure, getbattleflag("item_rate_treasure");
+	end;
+//==============================================
+// กำหนดเวลาเริ่ม x1.5
+OnClock1200:
+
+  setbattleflag("base_exp_rate", .base_exp*3/2 );
+	setbattleflag("job_exp_rate", .job_exp*3/2 );
+  
+  setbattleflag("item_rate_common", .item_rate_common*3/2 );
+  setbattleflag("item_rate_heal", .item_rate_heal*3/2 );
+  setbattleflag("item_rate_use", .item_rate_use*3/2 );
+  setbattleflag("item_rate_equip", .item_rate_equip*3/2 );
+  setbattleflag("item_rate_card", .item_rate_card*3/2 );
+  setbattleflag("item_rate_mvp", .item_rate_mvp*3/2 );
+  setbattleflag("item_rate_adddrop", .item_rate_adddrop*3/2 );
+  setbattleflag("item_rate_treasure", .item_rate_treasure*3/2 );
+  
+	announce "[ระบบ] เอาละถึงเวลา Exp & Drop x1.5 !! แล้วจร้า",0;
+	atcommand "@reloadmobdb";
+	end;
+//==============================================
+// กำหนดเวลาเริ่ม x2
+OnClock1600:
+
+	setbattleflag("base_exp_rate", .base_exp*2 );
+	setbattleflag("job_exp_rate", .job_exp*2 );
+  
+  setbattleflag("item_rate_common", .item_rate_common*2 );
+  setbattleflag("item_rate_heal", .item_rate_heal*2 );
+  setbattleflag("item_rate_use", .item_rate_use*2 );
+  setbattleflag("item_rate_equip", .item_rate_equip*2 );
+  setbattleflag("item_rate_card", .item_rate_card*2 );
+  setbattleflag("item_rate_mvp", .item_rate_mvp*2 );
+  setbattleflag("item_rate_adddrop", .item_rate_adddrop*2 );
+  setbattleflag("item_rate_treasure", .item_rate_treasure*2 );
+
+	announce "[ระบบ] เอาละถึงเวลา Exp & Drop x2 !! แล้วจร้า",0;
+	atcommand "@reloadmobdb";
+	end;
+//==============================================
+
+// กำหนดเวลาเริ่ม x3
+OnClock1800:
+
+	setbattleflag("base_exp_rate", .base_exp*3 );
+	setbattleflag("job_exp_rate", .job_exp*3 );
+  
+  setbattleflag("item_rate_common", .item_rate_common*3 );
+  setbattleflag("item_rate_heal", .item_rate_heal*3 );
+  setbattleflag("item_rate_use", .item_rate_use*3 );
+  setbattleflag("item_rate_equip", .item_rate_equip*3 );
+  setbattleflag("item_rate_card", .item_rate_card*3 );
+  setbattleflag("item_rate_mvp", .item_rate_mvp*3 );
+  setbattleflag("item_rate_adddrop", .item_rate_adddrop*3 );
+  setbattleflag("item_rate_treasure", .item_rate_treasure*3 );
+
+	announce "[ระบบ] เอาละถึงเวลา Exp & Drop x3 !! แล้วจร้า",0;
+	atcommand "@reloadmobdb";
+	end;
+//==============================================
+
+// กำหนดเวลาเริ่ม x5
+OnClock0000:
+
+	setbattleflag("base_exp_rate", .base_exp*5 );
+	setbattleflag("job_exp_rate", .job_exp*5 );
+  
+  setbattleflag("item_rate_common", .item_rate_common*5 );
+  setbattleflag("item_rate_heal", .item_rate_heal*5 );
+  setbattleflag("item_rate_use", .item_rate_use*5 );
+  setbattleflag("item_rate_equip", .item_rate_equip*5 );
+  setbattleflag("item_rate_card", .item_rate_card*5 );
+  setbattleflag("item_rate_mvp", .item_rate_mvp*5 );
+  setbattleflag("item_rate_adddrop", .item_rate_adddrop*5 );
+  setbattleflag("item_rate_treasure", .item_rate_treasure*5 );
+  
+	announce "[ระบบ] เอาละถึงเวลา Exp & Drop x5 !! แล้วจร้า",0;
+	atcommand "@reloadmobdb";
+	end;
+//==============================================
+// กำหนดเวลาเริ่ม x7
+OnClock0400:
+
+	setbattleflag("base_exp_rate", .base_exp*7 );
+	setbattleflag("job_exp_rate", .job_exp*7 );
+  
+  setbattleflag("item_rate_common", .item_rate_common*7 );
+  setbattleflag("item_rate_heal", .item_rate_heal*7 );
+  setbattleflag("item_rate_use", .item_rate_use*7 );
+  setbattleflag("item_rate_equip", .item_rate_equip*7 );
+  setbattleflag("item_rate_card", .item_rate_card*7 );
+  setbattleflag("item_rate_mvp", .item_rate_mvp*7 );
+  setbattleflag("item_rate_adddrop", .item_rate_adddrop*7 );
+  setbattleflag("item_rate_treasure", .item_rate_treasure*7 );
+  
+	announce "[ระบบ] เอ้า...จัดไปถึงเวลา Exp & Drop x7 !! แล้วจร้า",0;
+	atcommand "@reloadmobdb";
+	end;
+//==============================================
+// กำหนดเวลาหมดคูณ
+OnClock0759:
+OnClock1559:
+OnClock1959:
+OnClock2359:
+
+	setbattleflag("base_exp_rate", .base_exp );
+	setbattleflag("job_exp_rate", .job_exp );
+	
+  setbattleflag("item_rate_common", .item_rate_common );
+  setbattleflag("item_rate_heal", .item_rate_heal );
+  setbattleflag("item_rate_use", .item_rate_use );
+  setbattleflag("item_rate_equip", .item_rate_equip );
+  setbattleflag("item_rate_card", .item_rate_card );
+  setbattleflag("item_rate_mvp", .item_rate_mvp );
+  setbattleflag("item_rate_adddrop", .item_rate_adddrop );
+  setbattleflag("item_rate_treasure", .item_rate_treasure );
+				
+	announce "[ระบบ] หมดเวลา Exp & Drop คูณกันแล้วนะค่ะ !!",0;
+	atcommand "@reloadmobdb";
+	end;
+}

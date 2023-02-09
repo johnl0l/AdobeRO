@@ -1,0 +1,158 @@
+//=============================================================
+//			-             mOnster studiO Scripts               -
+//				www.monsterstudio.in.th
+//#############################################################
+
+-	script	SystemMVPTW	-1,{
+	end;
+
+OnWhisperGlobal:
+	if (getgmlevel() < 99) end;
+OnInit:
+	set $@MVPTWmap$,"guild_vs2-1";			// กำหนด Map ที่ใช้เริ่มกิจกรรม
+	set $@MVPTWdeley_boss,10;				// กำหนดเวลาบอสออกหน่วยเป็นวินาที
+	set $@MVPTWmax_rank,10;				// กำหนดจำนวนการนับผล Ranking
+	set $@MVPTWdeley_check,15;				// กำหนดเวลาการตรวจสอบจำนวนผู้เล่นใน Map หน่วยเป็นวินาที
+	setarray $@MVPTWsavemxy$[0],"morocc","156","89";	// กำหนดจุดวาปกลับเมื่อกิจกรรมเสร็จสิ้น
+	
+	// Set System
+	setarray $@MVPTWmob_id[0],1810,1809,1805,1872,1873,1885,1647,1648,1768,1038,
+		1039,1046,1059,1086,1087,1112,1115,1147,1150,1157,
+		1251,1623,1511,1159,1190,1272,1272,1312,1418,1492,
+		1623,1685,1779,1785;
+	set $@MVPTWmob_count,getarraysize($@MVPTWmob_id);
+	set $@MVPTWlevel,0;
+	set $@MVPTW,0;
+	set $@MVPTWparty_name$,"";
+	setarray .@mapflag[0], mf_nomemo, mf_noteleport, mf_noicewall ,mf_nowarpto, mf_nosave, 
+		mf_pvp, mf_nodrop, mf_partylock, mf_nomobloot, mf_nomvploot;
+	
+	// Run System Default
+	for (set .@i,0; .@i < getarraysize(.@mapflag); set .@i,.@i+1) {
+		setmapflag $@MVPTWmap$,.@mapflag[.@i];
+	}
+	end;
+
+OnStart_Boss:
+	set $@MVPTWlevel,$@MVPTWlevel+1;
+	for (set .@i,$@MVPTWdeley_boss; .@i >= 1; set .@i,.@i-1) {
+		if (!$@MVPTW) end;
+		mapannounce $@MVPTWmap$,"[MvpTower] : Boss ของด่านที่ "+$@MVPTWlevel+" จะออกในอีก "+.@i+" วินาที",0;
+		sleep 1000;
+	}
+	mapannounce $@MVPTWmap$,"[MvpTower] : Boss ออกแล้วมาแล้ว",0;
+	monster $@MVPTWmap$,0,0,"Mvp Tower [ LV "+$@MVPTWlevel+"]",$@MVPTWmob_id[rand(0,$@MVPTWmob_count-1)],1,"SystemMVPTW::OnKillBoss";
+	end;
+
+OnKillBoss:
+	mapannounce $@MVPTWmap$,"[MvpTower] : ปาร์ตี้ "+$@MVPTWparty_name$+" ได้ผ่าน Mvp Tower Level "+$@MVPTWlevel+" แล้ว !!",0;
+	sleep 10000;
+	goto OnStart_Boss;
+	end;
+
+OnTimer:
+	set .@loop,1;
+	while (.@loop) {
+		sleep $@MVPTWdeley_check*1000;
+		if (getmapusers($@MVPTWmap$) <= 0) {
+			set .@loop,0;
+		}
+	}
+	goto EndEvent;	
+	end;
+
+EndEvent:
+	mapwarp $@MVPTWmap$,$@MVPTWsavemxy$[0],$@MVPTWsavemxy$[1],$@MVPTWsavemxy$[2];
+	announce "[MvpTower] : ปาร์ตี้ "+$@MVPTWparty_name$+" ได้พ่ายแพ้ใน Mvp Tower Level "+$@MVPTWlevel+" แล้ว !! ",0;
+	set $@MVPTWlevel,$@MVPTWlevel-1;
+	for (set .@i,0; .@i < $@MVPTWmax_rank; set .@i,.@i+1) {
+		if ($MVPTWrank_level[.@i] < $@MVPTWlevel) {
+			set .@temp_name$,$MVPTWrank_name$[.@i];
+			set .@temp_level,$MVPTWrank_level[.@i];
+			set $MVPTWrank_name$[.@i],$@MVPTWparty_name$;
+			set $MVPTWrank_level[.@i],$@MVPTWlevel;
+			for (set .@p,.@i+1; .@p < $@MVPTWmax_rank; set .@p,.@p+1) {
+				set .@swap_name$,.@temp_name$;
+				set .@swap_level,.@temp_level;
+				set .@temp_name$,$MVPTWrank_name$[.@p];
+				set .@temp_level,$MVPTWrank_level[.@p];
+				set $MVPTWrank_name$[.@p],.@swap_name$;
+				set $MVPTWrank_level[.@p],.@swap_level;
+			}
+			break;
+		}
+	}
+	sleep 3000;
+	if ($@MVPTWlevel == 0) {
+		announce "[MvpTower] : ปาร์ตี้ "+$@MVPTWparty_name$+" ไม่ติดอันดับ",0;
+	} else if (.@i > $@MVPTWmax_rank) {
+		announce "[MvpTower] : ปาร์ตี้ "+$@MVPTWparty_name$+" ไม่ติดอันดับ 1 ใน "+$@MVPTWmax_rank+"",0;
+	} else {
+		announce "[MvpTower] : ปาร์ตี้ "+$@MVPTWparty_name$+" ได้ติดอันดับที่ "+(.@i+1)+"",0;
+	}
+	killmonsterall $@MVPTWmap$;
+	set $@MVPTWlevel,0;
+	set $@MVPTW,0;
+	set $@MVPTWparty_id,0;
+	set $@MVPTWparty_name$,"";
+	end;
+}
+
+-	script	Msevent::MVPtow	-1,{
+	set .@npc$,"[MvpTower]";
+	mes .@npc$;
+	mes "ยินดีต้อนรับสู่หอคอย";
+	mes "แห่งความโหดเหี้ยม";
+	mes "หากท่านจะเข้าสู่หอคอยแห่งนี้";
+	mes "ท่านจำเป็นต้องมีปาร์ตี้";
+	mes "และลูกทีมที่เก่ง";
+	next;
+	switch (select("- ตรวจสอบ Ranking","- เข้าสู่หอคอย")) {
+	case 1:
+		mes .@npc$;
+		mes "แสดงผลอันดับที่ ^FF00001^000000 - ^FF0000"+$@MVPTWmax_rank+"^000000";
+		for (set .@i,0; .@i < $@MVPTWmax_rank; set .@i,.@i+1) {
+			if ($MVPTWrank_name$[.@i] == "") {
+				mes (.@i+1)+". ^0000FFNone^000000 [^0000FFLv.^FF00000^000000]";
+			} else {
+				mes (.@i+1)+". ^0000FF"+$MVPTWrank_name$[.@i]+"^000000 [^0000FFLv.^FF0000"+$MVPTWrank_level[.@i]+"^000000]";
+			}
+		}
+		close;
+	break;
+	case 2:
+		set .@party_id,getcharid(1);
+		if (.@party_id == 0) {
+			mes .@npc$;
+			mes "ท่านจำเป็นต้องมีปาร์ตี้";
+			mes "จึงจะสามารถเข้าหอคอยได้";
+			close;
+		} else if (getpartyleader(.@party_id,2) != getcharid(0)) {
+			mes .@npc$;
+			mes "ท่านไม่ใช่หัวหน้าปาร์ตี้";
+			close;
+		} else if ($@MVPTW) {
+			mes .@npc$;
+			mes "ขณะนี้มี Party อื่น";
+			mes "กำลังอยู่ในหอคอย";
+			close;
+		} else {
+			set $@MVPTW,1;
+			set $@MVPTWparty_name$,getpartyname(.@party_id);
+			warpparty $@MVPTWmap$,0,0,.@party_id;
+			sleep 5000;
+			donpcevent "SystemMVPTW::OnStart_Boss";
+			donpcevent "SystemMVPTW::OnTimer";
+		}
+	break;
+	}
+	end;
+
+OnWhisperGlobal:
+	if (getgmlevel() < 99) end;
+OnInit:
+	waitingroom "   • Mvp Tower •",0;
+	end;
+}
+
+morocc,134,71,4	duplicate(MVPtow)	MVP Tower#1	452

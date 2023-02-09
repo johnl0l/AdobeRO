@@ -1,83 +1,87 @@
-//===== rAthena Script =======================================
-//= Card Removal NPC
-//===== By: ==================================================
+//===== rAthena สคริป =======================================
+//= NPC ถอด การ์ด
+//===== โดย: ==================================================
 //= TyrNemesis^
-//===== Current Version: =====================================
+//=====  แปลไทย โดย: ==================================================
+//= Rirakkuma Sergeant Bearing
+//===== เวอร์ชั่น ปัจจุบัน: =====================================
 //= 1.2a
-//===== Compatible With: =====================================
-//= rAthena Project
-//===== Description: =========================================
-//= Removes cards from equipped items.
-//===== Additional Comments: =================================
-//= 1.0 First version. [TyrNemesis^]
-//= 1.2 Optimized and fixed getequipname menu. [Kisuka]
-//= 1.2a Added 'disable_items' command. [Euphy]
+//===== ใช้กับ: =====================================
+//= โปรเจค โครงการ rAthena
+//===== คำอธิบาย: =========================================
+//= นำการ์ดออกจากไอเท็มที่ได้ทำการติดตั้ง.
+//===== ความเหนเพิ่มเติม: =================================
+//= 1.0 เวอร์ชั่น แรก. [TyrNemesis^]
+//= 1.2 เพิ่มประสิทธิภาพ และ  getequipname เมนู. [Kisuka]
+//= 1.2a เพิ่มคำสั่ง 'disable_items' [Euphy]
 //============================================================
 
-prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
+morocc,130,71,4	script	พนักงานถอดการ์ด#eAcustom	1_F_ORIENT_04,{
 
-	set .zenycost,200000;    // base cost of the card remover services (in Zeny)
-	set .percardcost,25000;  // cost per card of the card remover services (in Zeny)
-	set .faildestroy,1;      // should the card remover have a chance of failure that destroys items? (1=yes, 0=no)
+	set .zenycost,200000;    // ค่าใช้จ่ายในการให้บริการถอดการ์ด ( Zeny)
+	set .percardcost,25000;  // ค่าใช้จ่ายต่อ การ์ด ของการให้บริการถอดการ์ด (Zeny)
+	set .faildestroy,1;      // ควรตั้งค่า การถอดการ์ด ให้มีโอกาศของความล้มเหลวในการถอดการ์ด หรือไม่ ? (1=ใช่, 0=ไม่)
 
 	disable_items;
 	mes "[Wise Old Woman]";
-	mes "Good day, young one. I have the power to remove cards that you have compounded onto your equipment. Does this idea please you?";
+	mes "หนึ่งวันที่ดี, ฉันมีอำนาจที่จะทำการภอดการ์ดที่คุณได้ประกอบบนอุปกรณ์ไอเท็มของคุณ ?";
 	next;
-	switch(select("Yes, it does.:What do you charge?:No thanks.")) {
+	switch(select("ใช่, ฉันต้องการ.:ค่าใช้บริการ ของคุณคือ?:ไม่ ขอบคุณ.")) {
 	case 1:
 		mes "[Wise Old Woman]";
-		mes "Very well. Which item shall I examine for you?";
+		mes "ดีมาก.รายการไอเท็มซึ่งฉันจะต้องตรวจสอบให้คุณ ";
 		next;
 
-		setarray .@indices[1], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_L, EQI_HAND_R, EQI_GARMENT, EQI_SHOES, EQI_ACC_L, EQI_ACC_R, EQI_HEAD_MID, EQI_HEAD_LOW;
-		for( set .@i,1; .@i <= 10; set .@i,.@i+1 ) {
-			if( getequipisequiped(.@indices[.@i]) )
-				set .@menu$, .@menu$ + F_getpositionname(.@indices[.@i]) + "-[" + getequipname(.@indices[.@i]) + "]";
+		setarray .@position$[1], "Head","Body","Left hand","Right hand","Robe","Shoes","Accessory 1","Accessory 2","Head 2","Head 3";
+		set .@menu$,"";
+		for( set .@i,1; .@i <= 10; set .@i,.@i+1 )
+		{
+			if( getequipisequiped(.@i) )
+			set .@menu$, .@menu$ + .@position$[.@i] + "-" + "[" + getequipname(.@i) + "]";
+
 			set .@menu$, .@menu$ + ":";
 		}
-		set .@part, .@indices[ select(.@menu$) ];
+		set .@part,select(.@menu$);
 		if(!getequipisequiped(.@part)) {
 			mes "[Wise Old Woman]";
-			mes "Young one... Your not wearing anything there that I can remove cards from.";
+			mes "ดูเหมือนคุณไม่ได้สวมใส่อุปกรณ์ที่มีการ์ดอยู่ แล้วฉันควรจะทำอย่างไรดี ?.";
 			close;
 		}
 		if(getequipcardcnt(.@part) == 0) {
 			mes "[Wise Old Woman]";
-			mes "Young one... There are no cards compounded on this item. I can do nothing with it, I'm afraid.";
+			mes "ไม่มีการ์ดที่ถูกประกอบในรายการไอเท็ม ฉันไม่สามารถทำอะไรกับมัน, ฉันไม่ค่อยชอบใจสักเท่าไร.";
 			close;
 		}
 		set .@cardcount,getequipcardcnt(.@part);
 		
 		if (!checkweight(1202,(.@cardcount+1))) { 
-			mes "^3355FFJust a minute!";
-			mes "I can't offer any of my";
-			mes "services to you because";
-			mes "you're carrying too much";
-			mes "stuff. Put your extra items in";
-			mes "Kafra Storage and come again~";
+			mes "^3355FFรอสักครู่!";
+			mes "ฉันไม่สามารถให้บริการ ใดๆ ของฉันให้กับคุณได้เพราะ";
+			mes "คุณกำลังแบกน้ำหนักของคุณมากเกินไป";
+			mes "นำสิ่งที่คุณคิดว่าไม่น่าจะเป็นรายการพิเศษของคุณ";
+			mes "นำไปจัดเก็บ กับ คาฟร่า และ กลับมาอีกครั้ง~";
 			close;
 		}
 		mes "[Wise Old Woman]";
-		mes "This item has " + .@cardcount + " cards compounded on it. To perform my magic, I will need " + (.zenycost+(.@cardcount * .percardcost)) + " zeny, a ^0000FFStar Crumb^000000, and a ^0000FFYellow Gemstone^000000.";
+		mes "ก่อนที่ฉันจะเริ่มต้น ฉันต้องเตือนคุณ " + .@cardcount + " ฉันอาจจะล้มเหลว ถ้า ฉันทำพลาด อาจจะทำลายการ์ด หรือ รายการไอเท็ม หรือ ทั้งสองอย่าง " + (.zenycost+(.@cardcount * .percardcost)) + " zeny,  ^0000FFStar Crumb^000000, และ  ^0000FFYellow Gemstone^000000.";
 		next;
-		if(select("Very well. Do it.:Nevermind.") == 2) {
+		if(select("ดีมาก. ทำมันเลย.:ไม่เป็นไร.") == 2) {
 			mes "[Wise Old Woman]";
-			mes "Very well. Return at once if you seek my services.";
+			mes "ดีมาก. และกลับมาอีกครั้งถ้าเมื่อไรคุณต้องการใช้บริการ.";
 			close;
 		}
 		if((zeny < (.zenycost+(.@cardcount * .percardcost))) || (countitem(1000) < 1) || (countitem(715) < 1)) {
 			mes "[Wise Old Woman]";
-			mes "You do not have all the items I require to work my magic, child. Come again when you do.";
+			mes "คุณมีรายการไอเท็มที่จำเป็นต่อการทำงานของฉัน. กลับมาอีกครั้งถ้าคิดว่าพร้อมแล้ว.";
 			close;
 		}
 		mes "[Wise Old Woman]";
-		mes "Before I begin, I must warn you--I may fail. If I do, I may destroy the cards, the item, or both. I do not give refunds. That being said, which is more important to you: The cards, or the item?";
+		mes "ก่อนที่ผมจะเริ่มต้น ผมต้องเตือนคุณ, ว่าฉันอาจจะล้มเหลว. ถ้าผมทำ, อาจจะทำลายการ์ด, และ ไอเท็มไปด้วย, หรือ ทั้งสองอย่าง. และ ฉันจะไม่คืนเงินให้ตามที่กล่าวไว้. ซึ่งมันเป็นสิ่งสำคัญสำหรับคุณ : ต้องการที่จะรักษา การ์ด, หรือ ไอเท็ม ?";
 		next;
-		switch(select("I changed my mind about this.:The item.:The cards.")) {
+		switch(select("ฉันเปลี่ยนใจเกี่ยวกับเรื่องนี้.:เก็บไอเท็ม.:เก็บการ์ด.")) {
 		case 1:
 			mes "[Wise Old Woman]";
-			mes "Very well. Return at once if you seek my services.";
+			mes "ดีมาก. และกลับมาอีกครั้งถ้าเมื่อไรคุณต้องการใช้บริการ.";
 			close;
 		case 2:
 			set .@failtype,1;
@@ -86,15 +90,15 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 			set .@failtype,2;
 		}
 		mes "[Wise Old Woman]";
-		mes "Very well. I shall begin.";
+		mes "ดีมาก. ฉันจะเริ่มต้นเดียวนี้.";
 		set Zeny, Zeny - (.zenycost+(.@cardcount * .percardcost));
 		delitem 1000,1; //Star_Crumb
 		delitem 715,1; //Yellow_Gemstone
 		
-		// Replace the constants in the next 3 lines with failure chance values defined in refine_db.txt
-		// First value = Total failure chance (item and cards destroyed)
-		// Second value = Partial failure chance (one or the other is destroyed, player decides which one is safe)
-		// Third value = Harmless failure chance (all that's lost is your investment)
+		// เปลี่ยนค่าคงที่ในอีก 3 ค่า ที่มีค่ามีโอกาศล้มเหลวที่กำหนดไว้ใน refine_db.txt
+		// ค่าแรก = โอกาศล้มเหลวทั้งหมด (การ์ด และ ไอเท็ม จะถูกทำลาย)
+		// ค่าสอง = มีโอกาศล้มเหลวบางส่วน (สิ่งหนึ่งหรืออื่นๆ จะถูกทำลาย,ตามที่ผู้เล่นกำหนดที่จะรักษาไอเท็มหรือการ์ดไว้)
+		// ค่าสาม = มีโอกาศล้มเหลวแต่ไอเท็มและการ์ดไม่เสียหาย (แต่ทั้งหมดที่หายไปคือ ค่าบริการ และ การลงทุน ทั้งหมด)
 
 		set .@failchance,rand(100);
 		if (.faildestroy==1) {
@@ -102,7 +106,7 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 				next;
 				failedremovecards .@part,0;
 				mes "[Wise Old Woman]";
-				mes "The process was a total failure. I am afraid the item and the cards were destroyed.";
+				mes "ในขณะที่ฉันกำลังจัดการเพื่อเอาการ์ดออกจากรายการนั้น. กระบวนการเป็นความล้มเหลวทั้งหมด การ์ด และ ไอเท็ม ได้ถูกทำลาย.";
 				close;
 			}
 
@@ -111,7 +115,7 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 					next;
 					failedremovecards .@part,1;
 					mes "[Wise Old Woman]";
-					mes "While I have managed to remove the cards from the item, they were destroyed in the process. The item, however, is okay.";
+					mes "ในขณะที่ฉันกำลังจัดการเพื่อเอาการ์ดออกจากรายการนั้น, การ์ดได้เกิดความล้มเหลวในกระบวนการ การนำออก. แต่ไอเท็ม, ยังคงไม่เป็นอะไร....";
 					close;
 				}
 
@@ -119,7 +123,7 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 					next;
 					failedremovecards .@part,2;
 					mes "[Wise Old Woman]";
-					mes "Most unfortunate. I succeeded at removing the cards, but the item itself was destroyed in the process.";
+					mes "ส่วนใหญ่ที่จะโชคร้ายที่ผมประสบความสำเร็จในการนำ การ์ดออกจากไอเท็ม. แต่ ไอเท็มนั้นได้ถูกทำลายระหว่างการดำเนินการ, ";
 					close;
 				}
 			}
@@ -129,21 +133,24 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 			next;
 			failedremovecards .@part,3;
 			mes "[Wise Old Woman]";
-			mes "I have failed to remove the cards. Luckily, however, both the item and the cards are still okay.";
+			mes "จากกระบวนการที่ทำการถอดการ์ดนั้นไม่ประสบผลสำเร็จ. แต่ยังโชคดี, ที่ทั้งสองรายการ ไอเท็ม และ การ์ด ยังคงอยู่สภาพเดิม.";
 			close;
 		}
 		next;
 		successremovecards .@part;
 		mes "[Wise Old Woman]";
-		mes "The process was a success. Here are your cards and your item. Farewell.";
+		mes "กระบวนการ การถอดการ์ดประสบผลสำเร็จ. และ ไอเท็ม และ การ์ด ไม่ถูกทำลายทั้งสองอย่าง โชคดี.";
 		close;
 	case 2:
 		mes "[Wise Old Woman]";
-		mes "I charge a flat fee of "+callfunc("F_InsertComma",.zenycost)+" zeny, plus "+callfunc("F_InsertComma",.percardcost)+" zeny for each card I remove from the item. In addition, I need a star crumb and a yellow gemstone to work my magic.";
+		mes "ผมคิดค่าบริการ "+callfunc("F_InsertComma",.zenycost)+" zeny, บวก "+callfunc("F_InsertComma",.percardcost)+" zeny สำหรับแต่ละ การ์ด จากรายการไอเท็ม. นอกจากนี้, ฉันยังต้องการ star crumb และ  yellow gemstone เพื่อเริ่มกระบวนการ.";
 		close;
 	case 3:
 		mes "[Wise Old Woman]";
-		mes "Very well. Return at once if you seek my services.";
+		mes "ดีมาก. และกลับมาอีกครั้งถ้าเมื่อไรคุณต้องการใช้บริการ.";
 		close;
 	}
+OnInit: 
+waitingroom "บริการถอดการ์ด",0; 
+end;
 }

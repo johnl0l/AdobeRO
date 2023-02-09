@@ -1,0 +1,165 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+-	script	PBE	-1,{
+
+if ($toplay_plant == 2) goto startnow;
+if ($toplay_plant == 1) goto main;
+
+mes "^0000FFกิจกรรมตามหาบอล จะเริ่มทุกๆ 1 ชั่วโมง..^000000";
+next;
+menu 
+"• รายละเอียด",Index,
+"• ออก",exit;
+
+startnow:
+mes "ขณะนี้ ไม่สามารถเข้าไปได้แล้วเนื่องจากครบเวลาตามที่กำหนด ในการเปิดวาปให้เข้าไปแล้ว..";
+close;
+
+main:
+mes "ยินดีต้อนรับ ท่านผู้กล้าต้องการ เข้าร่วมกิจกรรมมั้ย";
+next;
+menu 
+"• เข้าไปยังกิจกรรม[ ^FF0000"+getmapusers ("poring_c01")+"^000000 ] ",wplant,
+"• รายละเอียด",Index,"• ไม่เอาดีกว่า",exit;
+
+Index:
+mes "^0000FFNPC จะเปิดรับคน เป็นเวลา 3 นาที";
+next;
+mes "^0000FFเมื่อครบเวลา จะรอนับอีก 30 วินาที";
+mes "เพื่อ กำหนดให้ Plant ออกมา";
+next;
+mes "^0000FFและเมื่อ Plant ออกมา";
+mes "คุณจะต้อง ตี Plant";
+mes "เพื่อหา ลุกบอล";
+mes "ตามหมายเลขที่ NPC ระบุให้หา";
+mes "หากหาได้จะได้รับรางวัลไป^000000";
+close;
+
+wplant:
+if ($toplay_plant == 2) goto startnow;
+warp "poring_c01",104,98;
+close;
+
+exit:
+close;
+
+OnInit:
+waitingroom "กิจกรรมตามหาบอล",0;
+end;
+}
+
+-	script	PlantBallEvents#1-1	-1,{
+OnClock0110:
+OnClock0210:
+OnClock0310:
+OnClock0410:
+OnClock0510:
+OnClock0610:
+OnClock0710:
+OnClock0810:
+OnClock0910:
+OnClock1010:
+OnClock1110:
+OnClock1210:
+OnClock1310:
+OnClock1410:
+OnClock1510:
+OnClock1610:
+OnClock1710:
+OnClock1810:
+OnClock1910:
+OnClock2010:
+OnClock2110:
+OnClock2210:
+OnClock2310:
+OnClock0010:
+set $toplay_plant,1;
+announce "[กิจกรรมตามหาบอล] : ได้เปิดวาปกิจกรรมแล้ว มีเวลาเข้าไปร่วมสนุก 3 นาทีก่อนวาปปิด..!!!",0;
+initnpctimer;
+end;
+
+OnTimer120000:
+announce "[กิจกรรมตามหาบอล] : มีเวลาอีก 1 นาที ก่อนกิจกรรม ตามหาบอล จะปิด...!!!",0;
+end;
+
+OnTimer150000:
+announce "[กิจกรรมตามหาบอล] : มีเวลาอีก 30 วินาที ก่อนกิจกรรม ตามหาบอล จะปิด...!!!",0;
+end;
+
+OnTimer180000:
+set $rpball,rand(7361,7390);
+set $toplay_plant,2;
+announce "[กิจกรรมตามหาบอล] : ได้ปิดวาปแล้ว..!!! คนที่เข้าไม่ทันรออีก 1 ชม. ข้างหน้าจ้า ...!!!",0;
+end;
+
+OnTimer200000:
+mapannounce "poring_c01","[กิจกรรมตามหาบอล] : มีเวลา 30 วินาทีเตรียมตัวก่อน มอนเตอร์จะโผล่..!!!",0;
+end;
+
+OnTimer230000:
+monster "poring_c01",0,0,"Plant",1078,5,"EV_QUEST1::OnWinner";
+monster "poring_c01",0,0,"Plant",1079,5,"EV_QUEST1::OnWinner";
+monster "poring_c01",0,0,"Plant",1080,5,"EV_QUEST1::OnWinner";
+monster "poring_c01",0,0,"Plant",1081,5,"EV_QUEST1::OnWinner";
+monster "poring_c01",0,0,"Plant",1082,5,"EV_QUEST1::OnWinner";
+monster "poring_c01",0,0,"Plant",1083,5,"EV_QUEST1::OnWinner";
+mapannounce "poring_c01","[กิจกรรมตามหาบอล] : กิจกรรม ตามหาบอล เริ่มต้นขึ้นแล้ว..........!!!!!",0;
+mapannounce "poring_c01","[กิจกรรมตามหาบอล] : รอบนี้ออก บอลหมายเลข ... ["+getitemname($rpball)+"] ใครได้เลขบอลนี้ คือผู้ได้รางวัล...",0;
+mapannounce "poring_c01","[กิจกรรมตามหาบอล] : มีเวลา 5 นาที ในการหา บอลหมายเลข ["+getitemname($rpball)+"] ",0;
+end;
+
+OnTimer530000:  //==== เวลาจบกิจกรรม
+killmonsterall "poring_c01";
+announce "[กิจกรรมตามหาบอล] : กิจกรรม ตามหาบอล จบลงแล้ว... มีผู้ ได้ของรางวัล [ "+$mem_plant+" ]",0;
+set $toplay_plant,0;
+set $rpball,0;
+set $mem_plant,0;
+mapwarp "poring_c01.gat","wonderworld",155,124;
+stopnpctimer;
+end;
+}
+
+-	script	EV_QUEST1	-1,{
+OnWinner:
+if ($toplay_plant == 0) close;
+set @rball,rand(7361,7390);
+getitem @rball,1;
+if (@rball == $rpball) goto fill;
+set @plantmball,rand(1078,1083);
+delitem @rball,1;
+monster "poring_c01",0,0,"Plant",@plantmball,1,"EV_QUEST1::OnWinner";
+dispbottom "[กิจกรรมตามหาบอล] : รีบๆหา บอลหมายเลข [ "+getitemname($rpball)+" ] ";
+end;
+
+
+fill:
+getitem @rball,1;
+dispbottom "คุณเก็บ บอล [ "+getitemname(@rball)+" ] ได้แล้ว...";
+getitem 30000,10;
+delitem @rball,1;
+set $mem_plant,$mem_plant+1;
+mapannounce "poring_c01","[กิจกรรมตามหาบอล] : " + strcharinfo(0) + " เก็บบอลหมายเลข [ "+getitemname($rpball)+" ] ได้แล้ว...",0;
+end;
+}
+
+// -- Mapflags
+poring_c01	mapflag	nomemo
+poring_c01	mapflag	noteleport
+poring_c01	mapflag	nosave
+poring_c01	mapflag	nobranch
+poring_c01	mapflag	nopenalty
+poring_c01	mapflag	notrade
+poring_c01	mapflag	noskill
+poring_c01	mapflag	nowarp
+poring_c01	mapflag	nobaseexp
+poring_c01	mapflag	nojobexp
+poring_c01	mapflag	nowarpto
+poring_c01	mapflag	nodrop
+poring_c01	mapflag	novending
+poring_c01	mapflag	noexppenalty
+poring_c01	mapflag	noloot
+
+wonderworld.gat,161,84,4	duplicate(PBE)	กิจกรรมตามหาบอล	837

@@ -1,235 +1,371 @@
-//===== rAthena Script =======================================
-//= Devil Square
-//===== By: ==================================================
-//= Kirlein, Stillhard (translation), AnnieRuru (rewrite)
-//===== Current Version: =====================================
-//= 1.0
-//===== Compatible With: =====================================
-//= rAthena Project
-//===== Description: =========================================
-//= Devil Square, based on the event in MU Online.
-//= Defeat three waves of monsters for treasure.
-//===== Additional Comments: =================================
-//= 1.0 First version, edited. [Euphy]
-//============================================================
+// --------------------------------------------------------------
+// -                      RO - STORE                    -
+// --------------------------------------------------------------
 
-prontera,156,185,5	script	Devil Square Guardian#1	406,{
-	set .@gm_level, 99; // GM level required to start/stop the event
+morocc,143,77,4	script	Devil Square	856,{
 
-	mes "[Devil Square Guardian]";
-	mes "This is the entrance to ^FF0000Devil Square^000000.";
-	mes "If you fail or die, the door will close and you must wait until the event starts again to re-enter.";
+	set @npcname$,"[ Devil Square ]"; // ตั้งชื่อ npc
+
+	mes @npcname$;
+	mes "ยินดีต้อนรับผู้กล้าทั้งหลายเข้าประตูทางผ่านสู่ลาน ^FF0000Devil Square^000000";
+	mes "ถ้าเจ้าออกหรือตายใน Devil Square เจ้าจะไม่สามารถเข้ามาได้อีกจนกว่าจะถึงเวลาอีกครั้ง";
+	mes "เจ้าต้องการที่จะเข้าไปเลยหรือไม่";
 	next;
-	switch(select("Enter.:Information.:" + ((getgmlevel() >= .@gm_level) ? "GM Menu." : "") + ":Cancel.")) {
+	switch(select("• แน่นอน ข้าจะเข้าไป","• ข้าต้องการฟังรายละเอียด","• ไม่ละ ข้าไม่เอาด้วยหรอก"))
+	{
 	case 1:
-		if (.start != 1) { // registration period
-			mes "[Devil Square Guardian]";
-			mes "Devil Square is now closed.";
-			mes "It will open at these times:";
-			mes "00:00 , 02:00 , 04:00 , 06:00"; // display your times here
-			mes "08:00 , 10:00 , 12:00 , 14:00";
-			mes "16:00 , 18:00 , 20:00 , 22:00";
-			close;
-		}
-		if (BaseLevel < 70 || Zeny < 20000) { // requirements
-			mes "[Devil Square Guardian]";
-			mes "You do not meet the requirements to enter Devil Square.";
-			mes " ";
-			mes "Requirements:";
-			mes " - Base Level 70";
-			mes " - Registration fee 20,000z";
-			close;
-		}
-		Zeny -= 20000;
-		announce strcharinfo(0)+" has entered Devil Square.", bc_npc;
-		percentheal 100,100;
-		warp "ordeal_1-1",183,182;
-		close;
-	case 2:
-		mes "[Devil Square Guardian]";
-		mes "Inside, you will encounter 3 waves of monsters. The monsters will grow stronger with each wave.";
-		next;
-		mes "[Devil Square Guardian]";
-		mes "If you defeat all the enemies, you will be given the opportunity to open 10 Treasure Chests with items, equipment, and rare cards inside!";
-		close;
-	case 3:
-		mes "[Devil Square Guardian]";
-		switch (.start) { // event states
-			case 0: mes "Devil Square has not yet started."; break;
-			case 1: mes "Devil Square is currently accepting participants."; break;
-			case 2: mes "Devil Square Event is currently running on Round "+ .round +" with "+ .mob +" monsters remaining."; break;
-		}
-		next;
-		switch(select("Start event.:Stop event.:Cancel.")) {
-		case 1:
-			mes "[Devil Square Guardian]";
-			if (.start)
-				mes "Devil Square has already started.";
-			else {
-				mes "Starting Devil Square...";
-				donpcevent strnpcinfo(0)+"::OnStartEvent";
-			}
-			close;
-		case 2:
-			mes "[Devil Square Guardian]";
-			if (!.start)
-				mes "Devil Square has not yet started.";
-			else {
-				mes "Stopping Devil Square...";
-				donpcevent strnpcinfo(0)+"::OnStopEvent";
-			}
-			close;
-		case 3:
+		if (BaseLevel < 80 || Zeny < 100000 ) {
+			mes @npcname$;
+			mes "เจ้าต้องมีเลเวลอย่างน้อย 80 ถึงจะเข้าไปได้";
+			mes "และเจ้าต้องจ่ายค่าลงทะเบียนจำนวน 100,000 z";
 			break;
 		}
+		if ($evilinf == 1) {
+			if (getmapusers("guild_vs2")>=40) {
+				mes @npcname$;
+				mes "ข้าเสียใจขณะนี้มีผู้กล้าเข้าไปครบจำนวนแล้ว";
+				mes "ผู้กล้าจะเข้าไปได้จำนวนสูงสุด 40 คนเท่านั้น";
+				set $evilinf,0;
+				break;
+			}
+			Zeny -=100000;
+			announce "[ Devil Square ] : "+strcharinfo(0)+" ได้เข้าไปสู่กิจกรรมแล้ว",0,0x00CCFF;
+			percentheal 100,100;
+			warp "guild_vs2",0,0;
+			break;
+		}
+	 	mes @npcname$;
+		mes "ขณะนี้ประตูสู่ Devil Square ได้ปิดลงแล้ว";
+		mes "ประตูจะเปิดขึ้นอีกครั้ง ใน 6 ชั่วโมงข้างหน้า";
 		break;
-	case 4:
+	case 2:
+		mes @npcname$;
+		mes "เมื่อเจ้าเข้าสู่ Devil Square แล้ว จะมีมอนสเตอร์ทั้งหมด 4 ระดับด้วยกัน";
+		mes "ระดับยิ่งสูงมอนสเตอร์ก็จะเก่งขึ้นตามลำดับ";
+		next;
+		mes @npcname$;
+		mes "ถ้าเจ้าสามารถพิชิตมันได้ทั้ง 4 ระดับ เจ้าก็สามารถเข้าต่อสู่กับ MVP";
+		mes "และเปิดหีบขุมทรัพย์ข้างในได้ซึ่งในหีบจะมีไอเทมหายากต่างๆมากมาย";
+		break;
+	case 3:
+		mes @npcname$;
+		mes "ไม่เป็นไรท่านผู้กล้าถ้าท่านพร้อมก็ค่อยมาหาข้าใหม่ ";
 		break;
 	}
-	mes "[Devil Square Guardian]";
-	mes "Farewell.";
 	close;
+}
 
-OnStartEvent:
-OnClock0000:
-OnClock0200:
-OnClock0400:
-OnClock0600:
-OnClock0800:
-OnClock1000:
-OnClock1200:
-OnClock1400:
-OnClock1600:
-OnClock1800:
-OnClock2000:
-OnClock2200:
-	.start = 1;
-	disablenpc "ord11-12"; //from npc/warps/pvp.txt
-	disablenpc "Devil Square Guardian#2";
-	mapannounce "ordeal_1-1","Devil Square is now closed.", bc_map;
-	getmapxy .@map$, .@x, .@y, UNITTYPE_NPC;
-	mapwarp "ordeal_1-1", .@map$, .@x, .@y;
-	killmonsterall "ordeal_1-1";
-	announce "Devil Square is OPEN. The event will begin in 5 minutes.", bc_all;
-	sleep 60000;
-	announce "Devil Square will begin in 4 minutes.", bc_all;
-	sleep 60000;
-	announce "Devil Square will begin in 3 minutes.", bc_all;
-	sleep 60000;
-	announce "Devil Square will begin in 2 minutes.", bc_all;
-	sleep 60000;
-	announce "Devil Square will begin in 1 minute.", bc_all;
-	sleep 60000;
-	announce "Devil Square has STARTED!", bc_all;
-	if ( !getmapusers("ordeal_1-1") )
-		goto OnStopEvent;
-	.start = 2;
-	.round = 1;
-	.mob = 75;
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] SOLDIER SKELETON",1028,10,strnpcinfo(0)+"::OnDevilDead";
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] ORC ARCHER",1189,15,strnpcinfo(0)+"::OnDevilDead";
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] SANDMAN",1165,10,strnpcinfo(0)+"::OnDevilDead";
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] ARCHER SKELETON",1016,15,strnpcinfo(0)+"::OnDevilDead";
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] MINOROUS",1149,15,strnpcinfo(0)+"::OnDevilDead";
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] REQUIEM",1164,10,strnpcinfo(0)+"::OnDevilDead";
-	end;
+////End Of Devil Square Entrance
 
-OnDevilDead:
-	.mob--;
-	if ( .mob == 25 || .mob == 5 )
-		announce "Devil Square : "+ .mob +" monsters remaining in round 1.", bc_map;
-	else if ( .mob <= 0 ) {
-		announce "Devil Square is entering round 2...", bc_map;
-		goto OnDevil2;
+guild_vs2,50,50,5	script	Cek	-1,{
+
+OnTimer60000:
+	if (getmapusers("guild_vs2") == 0) {
+		announce "[ Devil Square ] : ผู้กล้าทั้งหมดได้พ่ายแพ้แล้ว",0,0x00CCFF;
+		set $devilstatus,1;
+		set $devilmission,0;
+		stopnpctimer;
+		setnpctimer 0;
+		stopnpctimer "HiddenNpc";
+		setnpctimer 0,"HiddenNpc";
+		killmonsterall "guild_vs2";
+		end;
 	}
-	end;
-
-OnDevil2:
-	.round = 2;
-	.mob = 70;
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] GARGOYLE",1253,15,strnpcinfo(0)+"::OnDevilDead2";
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] ALARM",1193,10,strnpcinfo(0)+"::OnDevilDead2";
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] HIGH ORC",1213,10,strnpcinfo(0)+"::OnDevilDead2";
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] INJUSTICE",1257,10,strnpcinfo(0)+"::OnDevilDead2";
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] MIMIC",1191,15,strnpcinfo(0)+"::OnDevilDead2";
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] WRAITH",1192,10,strnpcinfo(0)+"::OnDevilDead2";
-	end;
-
-OnDevilDead2:
-	.mob--;
-	if ( .mob == 25 || .mob == 5 )
-		announce "Devil Square : "+ .mob +" monsters remaining in round 2.", bc_map;
-	else if ( .mob <= 0 ) {
-		announce "Devil Square is entering round 3...", bc_map;
-		goto OnDevil3;
-	}
-	end;
-
-OnDevil3:
-	.round = 3;
-	.mob = 58;
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] ANOLIAN",1206,15,strnpcinfo(0)+"::OnDevilDead3";
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] WANDERER",1208,15,strnpcinfo(0)+"::OnDevilDead3";
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] DEVIRUCHI",1109,10,strnpcinfo(0)+"::OnDevilDead3";
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] JOKER",1131,15,strnpcinfo(0)+"::OnDevilDead3";
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] MOONLIGHT",1150,2,strnpcinfo(0)+"::OnDevilDead3";
-	areamonster "ordeal_1-1",183,182,246,244,"[DS] DARK ILLUSION",1302,1,strnpcinfo(0)+"::OnDevilDead3";
-	end;
-
-OnDevilDead3:
-	.mob--;
-	if ( .mob == 25 || .mob == 5 )
-		announce "Devil Square : "+ .mob +" monsters remaining in the final round.", bc_map;
-	else if ( .mob <= 0 ) {
-		announce "Devil Square : CONGRATULATIONS. These 10 Treasure Chests are yours.", bc_map;
-		goto OnDevil4;
-	}
-	end;
-
-OnDevil4:
-	.round = 4;
-	.mob = 10;
-	monster "ordeal_1-1",231,250,"Treasure Chest",1324,1,strnpcinfo(0)+"::OnTreasureDead";
-	monster "ordeal_1-1",234,247,"Treasure Chest",1328,1,strnpcinfo(0)+"::OnTreasureDead";
-	monster "ordeal_1-1",237,244,"Treasure Chest",1332,1,strnpcinfo(0)+"::OnTreasureDead";
-	monster "ordeal_1-1",240,241,"Treasure Chest",1336,1,strnpcinfo(0)+"::OnTreasureDead";
-	monster "ordeal_1-1",243,238,"Treasure Chest",1340,1,strnpcinfo(0)+"::OnTreasureDead";
-	monster "ordeal_1-1",246,235,"Treasure Chest",1344,1,strnpcinfo(0)+"::OnTreasureDead";
-	monster "ordeal_1-1",249,232,"Treasure Chest",1348,1,strnpcinfo(0)+"::OnTreasureDead";
-	monster "ordeal_1-1",252,229,"Treasure Chest",1352,1,strnpcinfo(0)+"::OnTreasureDead";
-	monster "ordeal_1-1",249,241,"Treasure Chest",1356,1,strnpcinfo(0)+"::OnTreasureDead";
-	monster "ordeal_1-1",240,249,"Treasure Chest",1360,1,strnpcinfo(0)+"::OnTreasureDead";
-	end;
-
-OnTreasureDead:
-	.mob--;
-	announce "Devil Square : "+ strcharinfo(0) +" has opened the Treasure Chest at Devil Square.", bc_all;
-	if ( .mob <= 0 )
-		goto OnStopEvent;
-	end;
-
-OnStopEvent:
-	killmonsterall "ordeal_1-1";
-	enablenpc "ord11-12"; //from npc/warps/pvp.txt
-	enablenpc "Devil Square Guardian#2";
-	.start = .round = .mob = 0;
+	announce "[ Devil Square ] : ยังมีผู้รอดชีวิตทั้งหมด "+getmapusers("guild_vs2")+" คน",0,0x00CCFF;
+	initnpctimer;
 	end;
 }
 
-ordeal_1-1,246,245,7	script	Devil Square Guardian#2	406,{
-	mes "[Exit]";
-	mes "Farewell.";
-	close2;
-	warp "SavePoint",0,0;
+guild_vs2,47,50,5	script	HiddenNpc	-1,{
+
+// กำหนดเวลาเริ่มกิจกรรม
+OnClock2010:
+OnClock0555:
+	announce "[ Devil Square ] : กิจกรรมกำลังจะเปิดใน 5 นาที ...!!",0,0x00CCFF;
+	disablenpc "Exit1";
+	initnpctimer;
+	set $evilinf,1;
+	set $devilstatus,0;
+	set $devilmission,0;
+	set $@devilkey,0;
+	set $@devilmob,0;
+	killmonsterall "guild_vs2";
+	end;
+
+OnTimer120000:
+	announce "[ Devil Square ] : กิจกรรมจะเริ่มต้นภายใน 3 นาที...!!",0,0x00CCFF;
+	end;
+
+OnTimer240000:
+	announce "[ Devil Square ] : กิจกรรมจะเริ่มต้นภายใน 1 นาที...!!",0,0x00CCFF;
+	end;
+
+OnTimer300000:
+	announce "[ Devil Square ] : กิจกรรมได้เริ่มต้นขึ้นแล้ว ณ บัดนี้ ...!!",0,0x00CCFF;
+	set $evilinf,0;
+	initnpctimer "Cek";
+	set $@devilmob,170;
+	areamonster "guild_vs2",26,73,73,26,"[DS] SOLDIER SKELETON",1028,15,"HiddenNpc::Ondevildead";
+	areamonster "guild_vs2",26,73,73,26,"[DS] ORC ARCHER",1189,15,"HiddenNpc::Ondevildead";
+	areamonster "guild_vs2",26,73,73,26,"[DS] SANDMAN",1165,15,"HiddenNpc::Ondevildead";
+	areamonster "guild_vs2",26,73,73,26,"[DS] ARCHER SKELETON",1016,15,"HiddenNpc::Ondevildead";
+	areamonster "guild_vs2",26,73,73,26,"[DS] MINOROUS",1149,15,"HiddenNpc::Ondevildead";
+	areamonster "guild_vs2",26,73,73,26,"[DS] REQUIEM",1164,15,"HiddenNpc::Ondevildead";
+	areamonster "guild_vs2",26,73,73,26,"[DS] SOLDIER SKELETON",1028,15,"HiddenNpc::Ondevildead";
+	areamonster "guild_vs2",26,73,73,26,"[DS] ORC ARCHER",1189,10,"HiddenNpc::Ondevildead";
+	areamonster "guild_vs2",26,73,73,26,"[DS] SANDMAN",1165,15,"HiddenNpc::Ondevildead";
+	areamonster "guild_vs2",26,73,73,26,"[DS] ARCHER SKELETON",1016,10,"HiddenNpc::Ondevildead";
+	areamonster "guild_vs2",26,73,73,26,"[DS] MINOROUS",1149,15,"HiddenNpc::Ondevildead";
+	areamonster "guild_vs2",26,73,73,26,"[DS] REQUIEM",1164,15,"HiddenNpc::Ondevildead";
+	announce "[ Devil Square ] : พวกเจ้ามีเวลา 5 นาทีในการกำจัดมอนเตอร์ในห้องนี้",0,0x00CCFF;
+	announce "[ Devil Square ] : หากทำสำเร็จจะได้รับโบนัส 500k",0,0x00CCFF;
+	end;
+
+Ondevildead:
+	if ($devilstatus == 1) end;
+	set $@devilmob,$@devilmob-1;
+	if ($@devilmob == 25) announce "[ Devil Square ] : เหลือมอนสเตอร์อีก 25 ตัว",0,0x00CCFF;
+	else if ($@devilmob == 5) announce "[ Devil Square ] : เหลือมอนสเตอร์อีก  5 ตัว",0,0x00CCFF;
+	else if ($@devilmob == 1) announce "[ Devil Square ] : เหลือมอนสเตอร์อีก 1 ตัว",0,0x00CCFF;
+	else if ($@devilmob == 0) setnpctimer 599000;
+	end;
+
+OnTimer540000:
+	announce "[ Devil Square ] : เหลือเวลาอีก 1 นาที...!!",0,0x00CCFF;
+	end;
+
+OnTimer600000:
+	if ($devilstatus == 1) end;
+	if ($@devilmob) announce "[ Devil Square ] : พวกเจ้าล้มเหลวในภาระกิจแรก  มอนเตอร์ในรอบต่อไปจะออกมาในอีก 1 นาที",0,0x00CCFF;
+	else if (!$@devilmob) {
+		announce "[ Devil Square ] : ยินดีด้วยท่านผ่านได้รับโบนัสในรอบที่ 1 500k Zeny มอนเตอร์ในรอบต่อไปจะออกมาในอีก 1 นาที",0,0x00CCFF;
+		set $devilmission,$devilmission+1;
+	}
+	enablenpc "Exit1";
+	end;
+
+OnTimer630000:
+	announce "[ Devil Square ] : ในรอบนี้ท่านจะต้องมีชีวิตรอด 2 นาที โดยห้ามกำจัดมอนเตอร์ในห้อง",0,0x00CCFF;
+	announce "[ Devil Square ] : หากท่านโจมตีมอนเตอร์ในห้องตาย ท่านจะเสีย HP 10%",0,0x00CCFF;
+	announce "[ Devil Square ] : โบนัสในรอบนี้คือ เงินจำนวน 1M Zeny",0,0x00CCFF;
+	end;
+
+OnTimer660000:
+	disablenpc "Exit1";
+	set $@devilmob,$@devilmob+100;
+	areamonster "guild_vs2",26,73,73,26,"[DS] GARGOYLE",1253,5,"HiddenNpc::Ondevildead2";
+	areamonster "guild_vs2",26,73,73,26,"[DS] ALARM",1193,10,"HiddenNpc::Ondevildead2";
+	areamonster "guild_vs2",26,73,73,26,"[DS] HIGH ORC",1213,10,"HiddenNpc::Ondevildead2";
+	areamonster "guild_vs2",26,73,73,26,"[DS] INJUSTICE",1257,10,"HiddenNpc::Ondevildead2";
+	areamonster "guild_vs2",26,73,73,26,"[DS] MIMIC",1191,5,"HiddenNpc::Ondevildead2";
+	areamonster "guild_vs2",26,73,73,26,"[DS] WRAITH",1192,10,"HiddenNpc::Ondevildead2";
+	areamonster "guild_vs2",26,73,73,26,"[DS] GARGOYLE",1253,5,"HiddenNpc::Ondevildead2";
+	areamonster "guild_vs2",26,73,73,26,"[DS] ALARM",1193,10,"HiddenNpc::Ondevildead2";
+	areamonster "guild_vs2",26,73,73,26,"[DS] HIGH ORC",1213,10,"HiddenNpc::Ondevildead2";
+	areamonster "guild_vs2",26,73,73,26,"[DS] INJUSTICE",1257,10,"HiddenNpc::Ondevildead2";
+	areamonster "guild_vs2",26,73,73,26,"[DS] MIMIC",1191,5,"HiddenNpc::Ondevildead2";
+	areamonster "guild_vs2",26,73,73,26,"[DS] WRAITH",1192,10,"HiddenNpc::Ondevildead2";
+	end;
+
+Ondevildead2:
+	if ($devilstatus == 1) end;
+	set $@devilmob,$@devilmob-1;
+	percentheal -10,0;
+	end;
+
+OnTimer780000:
+	killmonsterall "guild_vs2";
+	set $@devilmob,0;
+	set $devilmission,$devilmission+1;
+	announce "[ Devil Square ] : ยินดีด้วยกับผู้ที่ยังรอดชีวิตอยู่ ท่านได้รับโบนัส 1M Zeny มอนเตอร์ในรอบต่อไปจะออกมาในอีก 1 นาที",0,0x00CCFF;
+	enablenpc "Exit1";
+	end;
+	
+OnTimer810000:
+	announce "[ Devil Square ] : ในรอบนี้ท่านจะต้องกำจัดมอนเตอร์ที่มีคำว่า \"[DS]\" อยู่หน้าชื่อให้หมดในเวลา 3 นาที",0,0x00CCFF;
+	announce "[ Devil Square ] : หากท่านโจมตีมอนเตอร์ตัวอื่น ท่านจะเสีย HP 10%",0,0x00CCFF;
+	announce "[ Devil Square ] : โบนัสในรอบนี้คือ เงินจำนวน 1M Zeny",0,0x00CCFF;
+	end;
+
+OnTimer840000:
+	disablenpc "Exit1";
+	set $@devilmob,$@devilmob+60;
+	areamonster "guild_vs2",26,73,73,26,"[DS] NINE TAIL",1180,10,"HiddenNpc::Ondevildead31";
+	areamonster "guild_vs2",26,73,73,26,"[DS] STING",1270,10,"HiddenNpc::Ondevildead31";
+	areamonster "guild_vs2",26,73,73,26,"[DS] DARK FRAME",1260,10,"HiddenNpc::Ondevildead31";
+	areamonster "guild_vs2",26,73,73,26,"[DS] MERMAN",1264,10,"HiddenNpc::Ondevildead31";
+	areamonster "guild_vs2",26,73,73,26,"[DS] MINI DEMON",1292,10,"HiddenNpc::Ondevildead31";
+	areamonster "guild_vs2",26,73,73,26,"[DS] LAVA GOLEM",1366,10,"HiddenNpc::Ondevildead31";
+	areamonster "guild_vs2",26,73,73,26,"NINE TAIL",1180,5,"HiddenNpc::Ondevildead3";
+	areamonster "guild_vs2",26,73,73,26,"STING",1270,5,"HiddenNpc::Ondevildead3";
+	areamonster "guild_vs2",26,73,73,26,"DARK FRAME",1260,5,"HiddenNpc::Ondevildead3";
+	areamonster "guild_vs2",26,73,73,26,"MERMAN",1264,5,"HiddenNpc::Ondevildead3";
+ 	areamonster "guild_vs2",26,73,73,26,"MINI DEMON",1292,5,"HiddenNpc::Ondevildead3";
+	areamonster "guild_vs2",26,73,73,26,"LAVA GOLEM",1366,5,"HiddenNpc::Ondevildead3";
+	end;
+
+Ondevildead3:
+	if ($devilstatus == 1) end;
+	percentheal -10,0;
+	end;
+
+Ondevildead31:
+	if ($devilstatus == 1) end;
+	set $@devilmob,$@devilmob-1;
+	if ($@devilmob == 25) announce "[ Devil Square ] : เหลือมอนสเตอร์อีก 25 ตัว",0,0x00CCFF;
+	else if ($@devilmob == 5) announce "[ Devil Square ] : เหลือมอนสเตอร์อีก  5 ตัว",0,0x00CCFF;
+	else if ($@devilmob == 1) announce "[ Devil Square ] : เหลือมอนสเตอร์อีก 1 ตัว",0,0x00CCFF;
+	else if ($@devilmob == 0) setnpctimer 1019000;
+	end;
+
+OnTimer1020000:
+	killmonsterall "guild_vs2";
+	if ($@devilmob == 0) {
+		announce "[ Devil Square ] : ยินดีด้วยกับผู้ที่ยังรอดชีวิตอยู่ ท่านได้รับโบนัส 1M Zeny มอนเตอร์ในรอบต่อไปจะออกมาในอีก 1 นาที",0,0x00CCFF;
+		set $devilmission,$devilmission+1;
+	} else {
+		announce "[ Devil Square ] : ท่านไม่ได้รับโบนัสในรอบนี้ มอนเตอร์ในรอบต่อไปจะออกมาในอีก 1 นาที",0,0x00CCFF;
+	}
+	set $@devilmob,0;
+	enablenpc "Exit1";
+	end;
+
+OnTimer1050000:
+	announce "[ Devil Square ] : ในรอบนี้ท่านจะต้องช่วยกันค้นหากุญแจสำหรับปลดผนึก MVP ในเวลา 3 นาที",0,0x00CCFF;
+	announce "[ Devil Square ] : โบนัสในรอบนี้คือ หากท่านสามารถหากุญแจได้ครบจะสามารถต่อสู้กับ MVP ได้",0,0x00CCFF;
+	end;
+
+OnTimer1080000:
+	disablenpc "Exit1";
+	set $@devilmob,$@devilmob+60;
+	areamonster "guild_vs2",26,73,73,26,"[DS] SKELETON GENERAL",1290,5,"HiddenNpc::Ondevildead4";
+	areamonster "guild_vs2",26,73,73,26,"[DS] WRAITH DEAD",1291,5,"HiddenNpc::Ondevildead4";
+	areamonster "guild_vs2",26,73,73,26,"[DS] ANCIENT MUMMY",1297,5,"HiddenNpc::Ondevildead4";
+	areamonster "guild_vs2",26,73,73,26,"[DS] AM MUT",1301,5,"HiddenNpc::Ondevildead4";
+	areamonster "guild_vs2",26,73,73,26,"[DS] ANCIENT WORM",1305,5,"HiddenNpc::Ondevildead4";
+	areamonster "guild_vs2",26,73,73,26,"[DS] CAT O NINE TAIL",1307,5,"HiddenNpc::Ondevildead4";
+	areamonster "guild_vs2",26,73,73,26,"[DS] AGAV",1769,5,"HiddenNpc::Ondevildead4";
+	areamonster "guild_vs2",26,73,73,26,"[DS] ECHIO",1770,5,"HiddenNpc::Ondevildead4";
+	areamonster "guild_vs2",26,73,73,26,"[DS] SEEKER",1774,5,"HiddenNpc::Ondevildead4";
+	areamonster "guild_vs2",26,73,73,26,"[DS] SNOWIER",1775,5,"HiddenNpc::Ondevildead4";
+	areamonster "guild_vs2",26,73,73,26,"[DS] ICE TITAN",1777,5,"HiddenNpc::Ondevildead4";
+	areamonster "guild_vs2",26,73,73,26,"[DS] ALICEL",1735,5,"HiddenNpc::Ondevildead4";
+	end;
+
+Ondevildead4:
+	if ($devilstatus == 1) end;
+	set $@devilmob,$@devilmob-1;
+	if ($@devilmob == 25) announce "[ Devil Square ] : เหลือมอนสเตอร์อีก 25 ตัว",0,0x00CCFF;
+	else if ($@devilmob == 5) announce "[ Devil Square ] : เหลือมอนสเตอร์อีก  5 ตัว",0,0x00CCFF;
+	else if ($@devilmob == 1) announce "[ Devil Square ] : เหลือมอนสเตอร์อีก 1 ตัว",0,0x00CCFF;
+	if (100 > rand(1000) && $@devilkey != 5 || $@devilmob < 5) {
+		set $@devilkey,$@devilkey+1;
+		announce "[ Devil Square ] : พบกุญแจดอกที่ " + $@devilkey + " แล้ว...!!",0,0x00CCFF;
+	}
+	if ($@devilkey == 5) {
+		setnpctimer 1259000;
+		end;
+	}
+	end;
+
+OnTimer1260000:
+	if($@devilkey == 5) {
+		killmonsterall "guild_vs2";
+		set $@devilmob,0;
+		announce "[ Devil Square ] : ประตูสู่ความมึดกำลังจะเปิดแล้ว...!!",0,0x00CCFF;
+	} else {
+		announce "[ Devil Square ] : ภาระกิจสิ้นสุดลงแล้ว ผู้กล้าไม่สามารถเปิดประตูแห่งความมึดได้...!!",0,0x00CCFF;
+		stopnpctimer;
+		setnpctimer 0;
+	}
+	end;
+
+OnTimer1270000:
+	stopnpctimer;
+	setnpctimer 0;
+	set $@devilmob,$@devilmob+10;
+	areamonster "guild_vs2",26,73,73,26,"[DS] MISTRESS",1059,1,"HiddenNpc::Ondevildead5";
+	areamonster "guild_vs2",26,73,73,26,"[DS] Phreeoni",1159,1,"HiddenNpc::Ondevildead5";
+	areamonster "guild_vs2",26,73,73,26,"[DS] Eddga",1115,1,"HiddenNpc::Ondevildead5";
+	areamonster "guild_vs2",26,73,73,26,"[DS] Stormy Knight",1251,1,"HiddenNpc::Ondevildead5";
+	areamonster "guild_vs2",26,73,73,26,"[DS] Orc hero",1087,1,"HiddenNpc::Ondevildead5";
+	areamonster "guild_vs2",26,73,73,26,"[DS] Dracula",1389,1,"HiddenNpc::Ondevildead5";
+	areamonster "guild_vs2",26,73,73,26,"[DS] PHARAOH",1157,1,"HiddenNpc::Ondevildead5";
+	areamonster "guild_vs2",26,73,73,26,"[DS] Drake",1112,1,"HiddenNpc::Ondevildead5";
+	areamonster "guild_vs2",26,73,73,26,"[DS] Maya",1147,1,"HiddenNpc::Ondevildead5";
+	areamonster "guild_vs2",26,73,73,26,"[DS] GARM",1252,1,"HiddenNpc::Ondevildead5";
+	end;
+
+Ondevildead5:
+	if ($devilstatus == 1) end;
+	set $@devilmob,$@devilmob-1;
+	if ($@devilmob == 0) {
+		announce "[ Devil Square ] : กล่องสมบัติเกิดแล้ว",0,0x00CCFF;
+		set $@devilmob,20;
+		monster "guild_vs2",7,52,"Treasure Box",1324,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",7,47,"Treasure Box",1326,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",28,53,"Treasure Box",1328,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",28,47,"Treasure Box",1330,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",47,73,"Treasure Box",1332,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",52,73,"Treasure Box",1334,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",52,92,"Treasure Box",1336,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",47,92,"Treasure Box",1338,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",73,52,"Treasure Box",1340,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",73,47,"Treasure Box",1342,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",92,47,"Treasure Box",1344,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",92,52,"Treasure Box",1346,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",52,26,"Treasure Box",1348,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",47,26,"Treasure Box",1350,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",47,7,"Treasure Box",1352,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",52,7,"Treasure Box",1354,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",49,46,"Treasure Box",1356,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",46,50,"Treasure Box",1358,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",50,53,"Treasure Box",1360,1,"HiddenNpc::Onboxdead";
+		monster "guild_vs2",53,49,"Treasure Box",1362,1,"HiddenNpc::Onboxdead";
+		end;
+	}
+	end;
+
+Onboxdead:
+	if ($devilstatus == 1) end;
+	set $@devilmob, $@devilmob-1;
+	announce "[ Devil Square ] : "+strcharinfo(0)+" ทำการเปิดกล่องสมบัติ Devil Square แล้ว",0,0x00CCFF;
+	if ($@devilmob == 0) enablenpc "Exit1";
+	// กำหนดของรางวัลกิจกรรม
+	getitem 607,2;
+	Zeny += 50000;
 	end;
 }
 
-ordeal_1-1	mapflag	nowarp
-ordeal_1-1	mapflag	nowarpto
-ordeal_1-1	mapflag	noteleport
-ordeal_1-1	mapflag	monster_noteleport
-ordeal_1-1	mapflag	nosave	SavePoint
-ordeal_1-1	mapflag	nomemo
-ordeal_1-1	mapflag	nobranch
-ordeal_1-1	mapflag	nopenalty
-ordeal_1-1	mapflag	noicewall
+guild_vs2,52,52,4	script	Exit1	51,{
+
+	mes "[ Exit ]";
+	mes "นี่คือทางออกจาก Devil Square ขอให้ท่านจงโชคดี";
+	next;
+	set @tm,$devilmission;
+	if (@tm > 0 ) {
+		dispbottom "คุณได้รับ 500k จาก รอบแรก";
+		Zeny += 500000;
+		set @tm,@tm-4;
+	}
+	if (@tm > 1 ) {
+		dispbottom "คุณได้รับ 1M จาก รอบ2";
+		Zeny += 1000000;
+		set @tm,@tm-2;
+	}
+	if (@tm == 3 ) {
+		dispbottom "คุณได้รับ 1M จาก รอบ3";
+		Zeny += 1000000;
+	}
+	warp getsavepoint(0),getsavepoint(1),getsavepoint(2);
+	close;
+}
+
+// -- Mapflags
+guild_vs2	mapflag	nowarp
+guild_vs2	mapflag	nowarpto
+guild_vs2	mapflag	noteleport
+guild_vs2	mapflag	nomemo
+guild_vs2	mapflag	nobranch
+guild_vs2	mapflag	nopenalty
+guild_vs2	mapflag	noicewall

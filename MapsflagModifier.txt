@@ -1,0 +1,11 @@
+morocc	mapflag	town
+//morocc	mapflag	nodrop
+morocc	mapflag	noicewall
+guild_vs3	mapflag	pvp
+guild_vs3	mapflag	nomemo
+guild_vs3	mapflag	nosave	SavePoint
+guild_vs3	mapflag	noteleport
+guild_vs3	mapflag	nowarp
+guild_vs3	mapflag	noreturn
+guild_vs3	mapflag	nodrop
+guild_vs3	mapflag	nobranch

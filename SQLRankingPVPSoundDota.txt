@@ -1,0 +1,179 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+-	script	pvp_ranking	-1,{
+
+
+
+OnPCKillEvent:
+
+	
+
+	set @PlayersKilledStreak,@PlayersKilledStreak + 1;
+
+
+
+
+
+	if ( !attachrid(killedrid) ) end;
+
+		message strcharinfo(0),"ท่านถูกสังหารโดย "+ rid2name(killerrid);
+
+		if ( @PlayersKilledStreak >= 10 ) set .@streakname$,"BEYOND GODLIKE !!";
+
+		else if ( @PlayersKilledStreak == 9 ) set .@streakname$,"GODLIKE !!";
+
+		else if ( @PlayersKilledStreak == 8 ) set .@streakname$,"Monster Kill !";
+
+		else if ( @PlayersKilledStreak == 7 ) set .@streakname$,"Wicked Sick !";
+
+		else if ( @PlayersKilledStreak == 6 ) set .@streakname$,"Unstoppable !";
+
+		else if ( @PlayersKilledStreak == 5 ) set .@streakname$,"Mega Kill !";
+
+		else if ( @PlayersKilledStreak == 4 ) set .@streakname$,"Dominating !";
+
+		else if ( @PlayersKilledStreak == 3 ) set .@streakname$,"Killing Spree !";
+
+	if ( @PlayersKilledStreak >= 3 )
+
+		announce rid2name(killerrid) +" ได้หยุดการสังหารของ "+ strcharinfo(0) +" ที่อยู่ในระดับ "+ .@streakname$,1;
+
+	set @PlayersKilledStreak,0;
+
+	set @dota_multikills,0;
+
+	if (!attachrid(killerrid)) end;
+
+		if (@PlayersKilledStreak == 3) setarray .@streakname$,"killingspree.wav","ระดับการสังหารอยู่ที่ Killing Spree !","";
+
+		else if (@PlayersKilledStreak == 4)
+
+			setarray .@streakname$,"dominating.wav","ระดับการสังหารอยู่ที่ Dominating !","";
+
+		else if (@PlayersKilledStreak == 5)
+
+			setarray .@streakname$,"megakill.wav","ระดับการสังหารอยู่ที่ Mega Kill !","";
+
+		else if (@PlayersKilledStreak == 6)
+
+			setarray .@streakname$,"unstoppable.wav","ระดับการสังหารอยู่ที่ Unstoppable !","";
+
+		else if (@PlayersKilledStreak == 7)
+
+			setarray .@streakname$,"wickedsick.wav","ระดับการสังหารอยู่ที่ Wicked Sick !","";
+
+		else if (@PlayersKilledStreak == 8)
+
+			setarray .@streakname$,"monsterkill.wav","ระดับการสังหารอยู่ที่ Monster Kill !","";
+
+		else if (@PlayersKilledStreak == 9)
+
+			setarray .@streakname$,"godlike.wav","ระดับการสังหารอยู่ที่ GODLIKE !!","จะมีใครมาหยุดเขาได้ไหม ???";
+
+		else if (@PlayersKilledStreak >= 10 && @PlayersKilledStreak % 1 == 0)
+
+			setarray .@streakname$,"holyshit.wav","ระดับการสังหารอยู่ที่ BEYOND GODLIKE !!","จะมีใครมาหยุดเขาได้ไหม ???";
+
+		else goto OnWhisperGlobal;
+
+	announce strcharinfo(0) +" "+ .@streakname$[1] +" สังหารไปแล้ว "+ @PlayersKilledStreak +" คน  "+ .@streakname$[2],2;
+
+	if ( .sound == 1 ) soundeffectall .@streakname$[0],0,.@map$;
+	if ( .sound == 2 ) soundeffectall .@streakname$[0],0;
+	if ( .sound == 3 ) soundeffect .@streakname$[0],0;
+
+
+OnWhisperGlobal:
+
+query_sql "SELECT `kill`,`die`,`name` FROM `pvp_rank` WHERE `name`='"+escape_sql(strcharinfo(0))+"' LIMIT 1",.@pvpkill,.@pvpdie,.@name$;
+dispbottom "Ranking PvP Play";
+dispbottom "จำนวนการฆ่าต่อเนื่อง : "+ @PlayersKilledStreak;
+dispbottom "จำนวนการฆ่าทั้งหมด : "+ .@pvpkill;
+dispbottom "จำนวนการตายทั้งหมด : "+ .@pvpdie;
+
+	set @dota_multikills, @dota_multikills + 1;
+
+	deltimer "pvp_ranking::OnStreakReset";
+
+
+
+	sleep2 2500;
+
+	if ( @dota_multikills == 1 ){
+
+		announce strcharinfo(0) +" ยอดสังหารสะสม 1 คน FIRST BLOOD !",2;
+		if ( .sound == 1 ) soundeffectall "firstblood.wav",0,.@map$;
+		else if ( .sound == 2 ) soundeffectall "firstblood.wav",0;
+		else if ( .sound == 3 ) soundeffect "firstblood.wav",0;
+
+	}else if ( @dota_multikills == 2 ){
+
+		announce strcharinfo(0) +" ยอดสังหารสะสม 2 คน DOUBLE KILL !!",2;
+		if ( .sound == 1 ) soundeffectall "double_kill.wav",0,.@map$;
+		else if ( .sound == 2 ) soundeffectall "double_kill.wav",0;
+		else if ( .sound == 3 ) soundeffect "double_kill.wav",0;		
+
+
+	}else if ( @dota_multikills == 3 ) {
+
+		announce strcharinfo(0) +" ยอดสังหารสะสม 3 คน TRIPLE KILL !!!",2;
+
+		if ( .sound == 1 ) soundeffectall "triple_kill.wav",0,.@map$;
+		else if ( .sound == 2 ) soundeffectall "triple_kill.wav",0;
+		else if ( .sound == 3 ) soundeffect "triple_kill.wav",0;
+
+
+	}else if ( @dota_multikills == 4 ) {
+
+		announce strcharinfo(0) +" ยอดสังหารสะสม 4 คน ULTRA KILL !!!!",2;
+
+		if ( .sound == 1 ) soundeffectall "ultrakill.wav",0,.@map$;
+		else if ( .sound == 2 ) soundeffectall "ultrakill.wav",0;
+		else if ( .sound == 3 ) soundeffect "ultrakill.wav",0;
+
+
+	}else if ( @dota_multikills >= 5 ) {
+
+		announce strcharinfo(0) +" ยอดสังหารสะสม 5 คน RAMPAGE !!!!!",2;
+
+
+		if ( .sound == 1 ) soundeffectall "rampage.wav",0,.@map$;
+		else if ( .sound == 2 ) soundeffectall "rampage.wav",0;
+		else if ( .sound == 3 ) soundeffect "rampage.wav",0;
+
+
+	}
+
+	end;
+
+	OnInit:
+// Config
+	set.sound, 2; // soundeffect : 0-ระงับ, 1-เล่น soundeffect ถึงผู้เล่นทั้งหมดบนแผนที่, 2-เล่น soundeffect ถึงพื้นที่รอบๆผู้ฆ่า, 3-เล่น soundeffect ถึงผู้ฆ่า
+
+	end;
+
+OnStreakReset:
+
+	set @dota_multikills,0;
+
+	end;
+
+	
+}
+
+//sql-files/main/เอาไว้ล่างสุด
+//+
+//+--
+//+-- Table structure for table `pvp_rank`
+//+--
+//+
+//+CREATE TABLE IF NOT EXISTS `pvp_rank` (
+//+ `name` varchar(11) NOT NULL,
+//+ `kill` int(11) NOT NULL,
+//+ `die` int(11) NOT NULL,
+//+ PRIMARY KEY (`name`) 
+//+) ENGINE=MyISAM;
+//+

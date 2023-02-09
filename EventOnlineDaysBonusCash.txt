@@ -1,0 +1,56 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+//Online 1 ครั้งต่อวัน ได้รับ Cash ตามจำนวนกำหนดไว้
+-	script	AttendanceScript	-1,{
+OnPCLoginEvent:
+    // last login was BEFORE today
+    if (#lastDayOnline < gettimetick(2)/86400) {
+	
+        
+        // last login was exactly YESTERDAY, set consecutive_days +1
+        if (#lastDayOnline == (gettimetick(2)/86400 - 1))
+            set #consecutive_days, #consecutive_days+1;
+        else    // reset their streak to 1
+            set #consecutive_days, 1;
+         set #lastDayOnline, gettimetick(2)/86400;
+            set #CASHPOINTS, #CASHPOINTS + 1;
+        dispbottom "[ระบบ] : ได้รับ 1 Cash ในการล๊อคอินเข้าเกมสำหรับวันนี้ Cash ทั้งหมดของคุณคือ = " + #CASHPOINTS;
+        
+        // check for 7-day streak
+        if (#consecutive_days % 7 == 0){
+            set #CASHPOINTS, #CASHPOINTS + 15;        // จำนวน Cash ที่ได้รับเมื่อเข้าเกมติดต่อกันเป็นเวลา 7 วัน
+	dispbottom "[ระบบ] : ได้รับ 15 Cash ในการเข้าเกมติดต่อกันเป็นเวลา 7 วัน Cash ทั้งหมดของคุณคือ = " + #CASHPOINTS;
+
+        // check for 15-day streak
+        if (#consecutive_days % 15 == 0){
+            set #CASHPOINTS, #CASHPOINTS + 45;        // จำนวน Cash ที่ได้รับเมื่อเข้าเกมติดต่อกันเป็นเวลา 7 วัน
+	dispbottom "[ระบบ] : ได้รับ 45 Cash ในการเข้าเกมติดต่อกันเป็นเวลา 7 วัน Cash ทั้งหมดของคุณคือ = " + #CASHPOINTS;
+	
+        // check for 30-day streak
+        if (#consecutive_days % 30 == 0){
+            set #CASHPOINTS, #CASHPOINTS + 65;        // จำนวน Cash ที่ได้รับเมื่อเข้าเกมติดต่อกันเป็นเวลา 30 วัน
+        dispbottom "[ระบบ] : ได้รับ 65 Cash ในการเข้าเกมติดต่อกันเป็นเวลา 30 วัน Cash ทั้งหมดของคุณคือ = " + #CASHPOINTS;
+        
+        // check for 45-day streak
+        if (#consecutive_days % 45 == 0){
+            set #CASHPOINTS, #CASHPOINTS + 90;        // จำนวน Cash ที่ได้รับเมื่อเข้าเกมติดต่อกันเป็นเวลา 30 วัน
+        dispbottom "[ระบบ] : ได้รับ 90 Cash ในการเข้าเกมติดต่อกันเป็นเวลา 45 วัน Cash ทั้งหมดของคุณคือ = " + #CASHPOINTS;
+        
+        // check for 60-day streak
+        if (#consecutive_days % 45 == 0){
+            set #CASHPOINTS, #CASHPOINTS + 115;        // จำนวน Cash ที่ได้รับเมื่อเข้าเกมติดต่อกันเป็นเวลา 30 วัน
+        dispbottom "[ระบบ] : ได้รับ 115 Cash ในการเข้าเกมติดต่อกันเป็นเวลา 60 วัน Cash ทั้งหมดของคุณคือ = " + #CASHPOINTS;
+
+        // save today as the Last Day they were Online
+     
+    }   
+    }
+    }
+    }   
+    }
+    end;
+}
+}

@@ -1,0 +1,207 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+///////////////////////////////////////////////////////////////////////
+-	script	ItemGuild_H1::ITGW1	-1,{
+set @GID,getcastledata("payg_cas01",1);
+if (strcharinfo(0) == getguildmaster(@GID)) {
+mes "[ ^0000FFItemGuildWar^000000 ]";
+mes "...ท่านเป็นหัวหน้ากิล...";
+mes "ข้าให้ ItemGuildWar สำหรับเจ้า เพราะเจ้าชนะ Guildwar ครั้งนี้ ";
+mes "... อย่าลืมเอาไปแจกลูกกิลล่ะ ...";
+next;
+getitem $@GW1_I1,$@GW1_I1a;
+getitem $@GW1_I2,$@GW1_I2a;
+getitem $@GW1_I3,$@GW1_I3a;
+getitem $@GW1_I4,$@GW1_I4a;
+getitem $@GW1_I5,$@GW1_I5a;
+disablenpc "ItemGuildWar1#01";
+close;
+}
+if (getcharid(2) == @GID) {
+mes "[ ^0000FFItemGuildWar^000000 ]";
+mes "ข้ารอ หัวหน้ากิลของเจ้า ที่ชื่อ ^5533FF[ "+getguildmaster(@GID)+" ]^000000";
+mes "เจ้าไม่ใช้หัวหน้ากิล ไปสะ";
+close;
+}
+mes "[ ^0000FFItemGuildWar^000000 ]";
+mes "สำหรับ หัวหน้ากิล ที่ชื่อ ^ff0000[ "+getguildmaster(@GID)+" ]^000000";
+mes "เท่านั้น";
+close;
+}
+///////////////////////////////////////////////////////////////////////
+-	script	ItemGuild_H2::ITGW2	-1,{
+set @GID,getcastledata("gefg_cas02",1);
+if (strcharinfo(0) == getguildmaster(@GID)) {
+mes "[ ^0000FFItemGuildWar^000000 ]";
+mes "...ท่านเป็นหัวหน้ากิล...";
+mes "ข้าให้ ItemGuildWar สำหรับเจ้า เพราะเจ้าชนะ Guildwar ครั้งนี้ ";
+mes "... อย่าลืมเอาไปแจกลูกกิลล่ะ ...";
+next;
+getitem $@GW2_I1,$@GW2_I1a;
+getitem $@GW2_I2,$@GW2_I2a;
+getitem $@GW2_I3,$@GW2_I3a;
+getitem $@GW2_I4,$@GW2_I4a;
+getitem $@GW2_I5,$@GW2_I5a;
+disablenpc "ItemGuildWar2#02";
+close;
+}
+if (getcharid(2) == @GID) {
+mes "[ ^0000FFItemGuildWar^000000 ]";
+mes "ข้ารอ หัวหน้ากิลของเจ้า ที่ชื่อ ^5533FF[ "+getguildmaster(@GID)+" ]^000000";
+mes "เจ้าไม่ใช้หัวหน้ากิล ไปสะ";
+close;
+}
+mes "[ ^0000FFItemGuildWar^000000 ]";
+mes "สำหรับ หัวหน้ากิล ที่ชื่อ ^ff0000[ "+getguildmaster(@GID)+" ]^000000";
+mes "เท่านั้น";
+close;
+}
+///////////////////////////////////////////////////////////////////////
+-	script	ItemGuild_H3::ITGW3	-1,{
+set @GID,getcastledata("prtg_cas01",1);
+if (strcharinfo(0) == getguildmaster(@GID)) {
+mes "[ ^0000FFItemGuildWar^000000 ]";
+mes "...ท่านเป็นหัวหน้ากิล...";
+mes "ข้าให้ ItemGuildWar สำหรับเจ้า เพราะเจ้าชนะ Guildwar ครั้งนี้ ";
+mes "... อย่าลืมเอาไปแจกลูกกิลล่ะ ...";
+next;
+getitem $@GW3_I1,$@GW3_I1a;
+getitem $@GW3_I2,$@GW3_I2a;
+getitem $@GW3_I3,$@GW3_I3a;
+getitem $@GW3_I4,$@GW3_I4a;
+getitem $@GW3_I5,$@GW3_I5a;
+disablenpc "ItemGuildWar3#03";
+close;
+}
+if (getcharid(2) == @GID) {
+mes "[ ^0000FFItemGuildWar^000000 ]";
+mes "ข้ารอ หัวหน้ากิลของเจ้า ที่ชื่อ ^5533FF[ "+getguildmaster(@GID)+" ]^000000";
+mes "เจ้าไม่ใช้หัวหน้ากิล ไปสะ";
+close;
+}
+mes "[ ^0000FFItemGuildWar^000000 ]";
+mes "สำหรับ หัวหน้ากิล ที่ชื่อ ^ff0000[ "+getguildmaster(@GID)+" ]^000000";
+mes "เท่านั้น";
+close;
+}
+///////////////////////////////////////////////////////////////////////
+-	script	ItemGuild_H4::ITGW4	-1,{
+set @GID,getcastledata("aldeg_cas05",1);
+if (strcharinfo(0) == getguildmaster(@GID)) {
+mes "[ ^0000FFItemGuildWar^000000 ]";
+mes "...ท่านเป็นหัวหน้ากิล...";
+mes "ข้าให้ ItemGuildWar สำหรับเจ้า เพราะเจ้าชนะ Guildwar ครั้งนี้ ";
+mes "... อย่าลืมเอาไปแจกลูกกิลล่ะ ...";
+next;
+getitem $@GW4_I1,$@GW4_I1a;
+getitem $@GW4_I2,$@GW4_I2a;
+getitem $@GW4_I3,$@GW4_I3a;
+getitem $@GW4_I4,$@GW4_I4a;
+getitem $@GW4_I5,$@GW4_I5a;
+disablenpc "ItemGuildWar4#04";
+close;
+}
+if (getcharid(2) == @GID) {
+mes "[ ^0000FFItemGuildWar^000000 ]";
+mes "ข้ารอ หัวหน้ากิลของเจ้า ที่ชื่อ ^5533FF[ "+getguildmaster(@GID)+" ]^000000";
+mes "เจ้าไม่ใช้หัวหน้ากิล ไปสะ";
+close;
+}
+mes "[ ^0000FFItemGuildWar^000000 ]";
+mes "สำหรับ หัวหน้ากิล ที่ชื่อ ^ff0000[ "+getguildmaster(@GID)+" ]^000000";
+mes "เท่านั้น";
+close;
+}
+///////////////////////////////////////////////////////////////////////
+-	script	Visible	-1,{
+end;
+OnInit:
+disablenpc "ItemGuildWar1#01";
+disablenpc "ItemGuildWar2#02";
+disablenpc "ItemGuildWar3#03";
+disablenpc "ItemGuildWar4#04";
+end;
+OnAgitEnd:
+enablenpc "ItemGuildWar1#01";
+enablenpc "ItemGuildWar2#02";
+enablenpc "ItemGuildWar3#03";
+enablenpc "ItemGuildWar4#04";
+end;
+OnAgitStart:
+disablenpc "ItemGuildWar1#01";
+disablenpc "ItemGuildWar2#02";
+disablenpc "ItemGuildWar3#03";
+disablenpc "ItemGuildWar4#04";
+end;
+}
+
+//แจกของกิลวอ
+izlude,167,165,4	duplicate(ITGW1)	ItemGuildWar1#01	105
+izlude,163,165,4	duplicate(ITGW2)	ItemGuildWar2#02	105
+izlude,159,165,4	duplicate(ITGW3)	ItemGuildWar3#03	105
+izlude,155,165,4	duplicate(ITGW4)	ItemGuildWar4#04	105
+
+///////////////////////////////////////////////////////////////////////
+//กำหนดไอเทมรางวัล
+-	script	SetupGuildWar	-1,{
+end;
+OnInit:
+
+// Item Guildwar 1
+set $@GW1_I1,61001; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW1_I1a,2000; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW1_I2,61005; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW1_I2a,1; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW1_I3,61009; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW1_I3a,1; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW1_I4,12221; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW1_I4a,20; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW1_I5,675; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW1_I5a,10; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+
+// Item GuildWar 2
+set $@GW2_I1,61001; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW2_I1a,2000; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW2_I2,61005; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW2_I2a,1; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW2_I3,61009; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW2_I3a,1; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW2_I4,12221; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW2_I4a,20; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW2_I5,675; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW2_I5a,10; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+
+// Item GuildWar 3
+set $@GW3_I1,61001; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW3_I1a,2000; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW3_I2,61005; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW3_I2a,1; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW3_I3,61009; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW3_I3a,1; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW3_I4,12221; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW3_I4a,20; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW3_I5,675; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW3_I5a,10; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+
+// Item GuildWar 4
+set $@GW4_I1,61001; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW4_I1a,2000; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW4_I2,61005; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW4_I2a,1; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW4_I3,61009; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW4_I3a,1; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW4_I4,12221; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW4_I4a,20; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+set $@GW4_I5,675; // รหัสไอเทมกิลวอ หลัง 1 ที่จะแจก
+set $@GW4_I5a,10; // จำนวนไอเทมกิลวอหลัง 1 ที่จะได้ ถ้าไม่ต้องการให้ใส่ตงนี้ 0
+
+end;
+}
+
+//izlude,113,104,0,0	monster	หินวอร์		3300,2,0,0,1
+izlude,109,104,0,0	monster	Dummy 50	2409,2,0,0,1
+izlude,106,104,0,0	monster	Dummy 100	2410,2,0,0,1
+izlude,103,104,0,0	monster	Dummy 150	2411,2,0,0,1

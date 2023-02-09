@@ -1,0 +1,20 @@
+wonderworld,147,89,8	script	รับไอเทมฟรีทุกวัน	515,{
+
+set .@item,607; //ไอเทม
+set .@quantity,20; //จำนวน
+if(gettime(5) != FREE_DATE) {
+mes "สวัสดีค่ะยินดีให้บริการค่ะ";
+mes "วันนี้คุณสามารถรับไอเทมได้ฟรี";
+mes "และจะสามารถรับได้อีกในวันถัดไปนะค่ะ^_^";
+set FREE_DATE,gettime(5);
+getitem .@item,.@quantity;
+close;
+} else {
+mes "คุณรับไอเทมไปแล้วจะสามารถรับ";
+mes "ได้อีกในวันถัดไปนะค่ะ";
+close;
+OnInit: 
+waitingroom "รับไอเทมฟรีทุกวัน",0; 
+end; 
+}
+}

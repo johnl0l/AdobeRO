@@ -1,0 +1,441 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+wonderworld.gat,145,68,6	script	กิจกรรมเดวิลเมย์คราย	837,{ 
+
+mes "สวัสดีครับ ท่านผู้กล้า";
+mes "ต้องการเข้าร่วมกิจกรรมมั้ยครับ";
+next;
+menu 
+"^009933•^000000 ต้องการ",-,
+"^FF0000•^000000 รายละเอียด",Info,
+"^FF0000•^000000 ยกเลิก",Cancel;
+
+if($boss == 1) goto L_go;
+goto L_eror;
+
+L_go:
+if (getmapusers("guild_vs5.gat")==30) goto toomany;
+announce "[กิจกรรมเดวิลเมย์คราย] : ท่าน "+strcharinfo(0)+" ได้เข้าร่วมกิจกรรม เดวิลเมย์คราย แล้ว !!",0,0xEEC900; 
+percentheal 100,100;
+warp "guild_vs5.gat",50,71;
+end;
+
+L_eror:
+mes "ยังไม่ถึงเวลากิจกรรมครับ";
+mes "กิจกรรมจะเปิดทุก 4 ชม. ครับ";
+close;
+
+Info: 
+mes "กำจัดมอนเตอร์ในแต่ละด่านครับ";
+mes "เมื่อคบกำหนดท่านจะมีสิทธ์";
+mes "เปิดกล่องสมบัติครับ";
+close;
+
+Cancel:
+mes "ยินดีให้บริการครับ";
+close;
+
+OnInit:
+waitingroom "กิจกรรมเดวิลเมย์คราย",0; 
+end;
+}
+
+guild_vs5.gat,0,0,0	script	CheckMac	-1,{
+
+OnTimer10000:
+if (getmapusers("guild_vs5.gat") == 0) {
+announce "[กิจกรรมเดวิลเมย์คราย] : กิจกรรมได้จบลงแล้ว !!",0,0xEEC900; 
+set $status,1;
+killmonsterall "guild_vs5.gat";
+end;
+}
+//announce "",0,0x00EE00;
+initnpctimer;
+end;
+}
+
+guild_vs5.gat,0,0,0	script	HiddenNpcMac	-1,{
+end;
+OnClock0200:
+OnClock0600:
+OnClock1000:
+OnClock1400:
+OnClock1800:
+OnClock2200:
+L_DevilStart:
+announce "[กิจกรรมเดวิลเมย์คราย] : กิจกรรมกำลังจะเปิดใน 5 นาที !!",0,0xEEC900;
+//disablenpc "Exit-Staff#boss1";
+initnpctimer;
+set $boss,1;
+set $status,0;
+killmonsterall "guild_vs5.gat";
+end;
+
+OnTimer60000:
+announce "[กิจกรรมเดวิลเมย์คราย] : กิจกรรมกำลังจะเปิดใน 4 นาที !!",0,0xEEC900;
+end;
+
+OnTimer120000:
+announce "[กิจกรรมเดวิลเมย์คราย] : กิจกรรมกำลังจะเปิดใน 3 นาที !!",0,0xEEC900;
+end;
+
+OnTimer180000:
+announce "[กิจกรรมเดวิลเมย์คราย] : กิจกรรมกำลังจะเปิดใน 2 นาที !!",0,0xEEC900;
+end;
+
+OnTimer240000:
+announce "[กิจกรรมเดวิลเมย์คราย] : กิจกรรมกำลังจะเปิดใน 1 นาที !!",0,0xEEC900;
+end;
+
+OnTimer300000:
+announce "[กิจกรรมเดวิลเมย์คราย] : กิจกรรมได้เริ่มต้นขึ้นแล้ว !!",0,0xEEC900;
+initnpctimer "CheckMac";
+set $boss,0;
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 1",1150,1,"HiddenNpcMac::Ondevildead";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 1",1150,1,"HiddenNpcMac::Ondevildead";
+end;
+
+Ondevildead:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 2 แล้ว",bc_map,0xFFFF00;
+goto Ondevil2;
+}
+end;
+
+Ondevil2:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 2",1115,1,"HiddenNpcMac::Ondevildead2";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 2",1115,1,"HiddenNpcMac::Ondevildead2";
+end;
+
+Ondevildead2:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 3 แล้ว",bc_map,0xFFFF00;
+goto Ondevil3;
+}
+end;
+
+Ondevil3:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 3",1059,1,"HiddenNpcMac::Ondevildead3";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 3",1059,1,"HiddenNpcMac::Ondevildead3";
+end;
+
+Ondevildead3:
+ if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 4 แล้ว",bc_map,0xFFFF00;
+goto Ondevil4;
+}
+end;
+
+Ondevil4:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 4",1087,1,"HiddenNpcMac::Ondevildead4";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 4",1087,1,"HiddenNpcMac::Ondevildead4";
+end;
+
+Ondevildead4:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 5 แล้ว",bc_map,0xFFFF00;
+goto Ondevil5;
+}
+end;
+
+Ondevil5:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 5",1038,1,"HiddenNpcMac::Ondevildead5";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 5",1038,1,"HiddenNpcMac::Ondevildead5";
+end;
+
+Ondevildead5:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 6 แล้ว",bc_map,0xFFFF00;
+goto Ondevil6;
+}
+end;
+
+Ondevil6:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 6",1159,1,"HiddenNpcMac::Ondevildead6";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 6",1159,1,"HiddenNpcMac::Ondevildead6";
+end;
+
+Ondevildead6:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 7 แล้ว",bc_map,0xFFFF00;
+goto Ondevil7;
+}
+end;
+
+Ondevil7:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 7",1086,1,"HiddenNpcMac::Ondevildead7";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 7",1086,1,"HiddenNpcMac::Ondevildead7";
+end;
+
+Ondevildead7:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 8 แล้ว",bc_map,0xFFFF00;
+goto Ondevil8;
+}
+end;
+
+Ondevil8:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 8",1251,1,"HiddenNpcMac::Ondevildead8";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 8",1251,1,"HiddenNpcMac::Ondevildead8";
+end;
+
+Ondevildead8:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 9 แล้ว",bc_map,0xFFFF00;
+goto Ondevil9;
+}
+end;
+
+Ondevil9:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 9",1046,1,"HiddenNpcMac::Ondevildead9";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 9",1046,1,"HiddenNpcMac::Ondevildead9";
+end;
+
+Ondevildead9:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 10 แล้ว",bc_map,0xFFFF00;
+goto Ondevil10;
+}
+end;
+
+Ondevil10:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 10",1039,1,"HiddenNpcMac::Ondevildead10";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 10",1039,1,"HiddenNpcMac::Ondevildead10";
+end;
+
+Ondevildead10:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 11 แล้ว",bc_map,0xFFFF00;
+goto Ondevil11;
+}
+end;
+
+Ondevil11:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 11",1112,1,"HiddenNpcMac::Ondevildead11";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 11",1112,1,"HiddenNpcMac::Ondevildead11";
+end;
+
+Ondevildead11:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 12 แล้ว",bc_map,0xFFFF00;
+goto Ondevil12;
+}
+end;
+
+Ondevil12:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 12",1147,1,"HiddenNpcMac::Ondevildead12";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 12",1147,1,"HiddenNpcMac::Ondevildead12";
+end;
+
+Ondevildead12:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 13 แล้ว",bc_map,0xFFFF00;
+goto Ondevil13;
+}
+end;
+
+Ondevil13:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 13",1157,1,"HiddenNpcMac::Ondevildead13";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 13",1157,1,"HiddenNpcMac::Ondevildead13";
+end;
+
+Ondevildead13:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 14 แล้ว",bc_map,0xFFFF00;
+goto Ondevil14;
+}
+end;
+
+Ondevil14:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 14",1190,1,"HiddenNpcMac::Ondevildead14";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 14",1190,1,"HiddenNpcMac::Ondevildead14";
+end;
+
+Ondevildead14:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 15 แล้ว",bc_map,0xFFFF00;
+goto Ondevil15;
+}
+end;
+
+Ondevil15:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 15",1272,1,"HiddenNpcMac::Ondevildead15";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 15",1272,1,"HiddenNpcMac::Ondevildead15";
+end;
+
+Ondevildead15:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 16 แล้ว",bc_map,0xFFFF00;
+goto Ondevil16;
+}
+end;
+
+Ondevil16:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 16",1511,1,"HiddenNpcMac::Ondevildead16";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 16",1511,1,"HiddenNpcMac::Ondevildead16";
+end;
+
+Ondevildead16:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 17 แล้ว",bc_map,0xFFFF00;
+goto Ondevil17;
+}
+end;
+
+Ondevil17:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 17",1719,1,"HiddenNpcMac::Ondevildead17";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 17",1719,1,"HiddenNpcMac::Ondevildead17";
+end;
+
+Ondevildead17:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 18 แล้ว",bc_map,0xFFFF00;
+goto Ondevil18;
+}
+end;
+
+Ondevil18:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 18",1719,1,"HiddenNpcMac::Ondevildead18";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 18",1719,1,"HiddenNpcMac::Ondevildead18";
+end;
+
+Ondevildead18:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 19 แล้ว",bc_map,0xFFFF00;
+goto Ondevil19;
+}
+end;
+
+Ondevil19:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 19",1734,1,"HiddenNpcMac::Ondevildead19";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 19",1734,1,"HiddenNpcMac::Ondevildead19";
+end;
+
+Ondevildead19:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับต่อไป",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : ได้เข้าสู่ระดับที่ 20 แล้ว",bc_map,0xFFFF00;
+goto Ondevil20;
+}
+end;
+
+Ondevil20:
+set $mob,2;
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 20",1708,1,"HiddenNpcMac::Ondevildead20";
+areamonster "guild_vs5.gat",50,51,53,54,"BOSS SERVER ชั้น 20",1708,1,"HiddenNpcMac::Ondevildead20";
+end;
+
+Ondevildead20:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 2) mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : เหลือบอสมอนเตอร์อีก 2 ตัวสู่ทางผ่านของระดับ โบนัส",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs5.gat","[กิจกรรมเดวิลเมย์คราย] : กล่องสมบัติเกิดแล้ว !!",bc_map,0xFFFF00;
+goto Ondevilbox;
+}
+end;
+
+Ondevilbox:
+set $mob,5;
+areamonster "guild_vs5.gat",50,51,53,54,"สมบัติ ของ กิจกรรมเดวิลเมย์คราย",1325,1,"HiddenNpcMac::Onboxdead";
+areamonster "guild_vs5.gat",50,51,53,54,"สมบัติ ของ กิจกรรมเดวิลเมย์คราย",1325,1,"HiddenNpcMac::Onboxdead";
+areamonster "guild_vs5.gat",50,51,53,54,"สมบัติ ของ กิจกรรมเดวิลเมย์คราย",1329,1,"HiddenNpcMac::Onboxdead";
+areamonster "guild_vs5.gat",50,51,53,54,"สมบัติ ของ กิจกรรมเดวิลเมย์คราย",1331,1,"HiddenNpcMac::Onboxdead";
+areamonster "guild_vs5.gat",50,51,53,54,"สมบัติ ของ กิจกรรมเดวิลเมย์คราย",1331,1,"HiddenNpcMac::Onboxdead";
+end;
+
+Onboxdead:
+if ($status == 1) end;
+set $mob, $mob - 1;
+announce "[กิจกรรมเดวิลเมย์คราย] : ท่าน " + strcharinfo(0) +" ได้เปิดกล่องสมบัติ กิจกรรมเดวิลเมย์คราย แล้ว !!",0,0xEEC900;
+//if($mob == 0) enablenpc "Exit-Staff#boss1";
+getitem 7227,10;
+end;
+}
+
+guild_vs5	mapflag	nowarp
+guild_vs5	mapflag	nowarpto
+guild_vs5	mapflag	noteleport
+guild_vs5	mapflag	nosave	SavePoint
+guild_vs5	mapflag	nomemo
+guild_vs5	mapflag	pvp	off
+guild_vs5	mapflag	gvg	off
+guild_vs5	mapflag	nobranch

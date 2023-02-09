@@ -1,0 +1,120 @@
+//=======================================//
+//	Bossnia Script V.1 By กำเพลิง   //
+//========================================//
+
+-	script	Bosschance	-1,{
+	set .@Price,4999;
+	set @npcname$,"[ ^FF0000ระบบรับซื้อของบอส^000000 ]";
+	mes "[ ^FF0000ระบบรับซื้อของบอส^000000 ]";
+	mes "หากท่านไม่รู้จะนำไอเทมบอสไปทำอะไร";
+	mes "โปรดมาขายให้เราเถอะ";
+	next;
+	mes "[ ^FF0000ระบบรับซื้อของบอส^000000 ]";
+	mes "อัตราการรับซื้อนั้นจะแตกต่างกัน ";
+	mes "^FF0000ขึ้นอยู่กับความยาก ง่าย ของไอเทมนั้น^000000";
+	mes "เลือกว่าคุณต้องการขายไอเทมชิ้นไหน";
+	mes "^FF0000หากตัดสินใจขายแล้วไม่รับคืนนะครับ^000000";
+	mes "^FF0000ตัวหนังซื้อสีแดง คือราคารับซื้อนะครับ^000000";
+	next;
+	menu
+	"^FF0000•^000000 Golden Gear ^FF00005 poring coin^000000",BN_01,
+	"^FF0000•^000000 Sphinx Hat ^FF00005 poring coin^000000",BN_02,
+	"^FF0000•^000000 Corsair ^FF00005 poring coin^000000",BN_03,
+	"^FF0000•^000000 Jewel Crown ^FF00005 poring coin^000000 ",BN_04,
+	"^FF0000•^000000 Coronet ^FF00005 poring coin^000000",BN_05,
+	"^FF0000•^000000 Ulle's Cap ^FF00005 poring coin^000000",BN_06,
+	"^FF0000•^000000 Majestic Goat ^FF00005 poring coin^000000",BN_08,
+	"^FF0000•^000000 Spiky Band ^FF00005 poring coin^000000",BN_09,
+	"^FF0000•^000000 Grand Circlet ^FF00005 poring coin^000000",BN_010,
+	"^FF0000•^000000 Crown ^FF00005 poring coin^000000",BN_011,
+	"^FF0000•^000000 Tiara ^FF00005 poring coin^000000",BN_012,
+	"^FF0000•^000000 Pipe ^FF00005 poring coin^000000",BN_013;
+	
+	
+	BN_01:
+	if (countitem(2246)<1) goto RE_MONEY;
+  	delitem 2246,1;
+	getitem 7539,5;
+	close;
+	
+	BN_02:
+	if (countitem(5053)<1) goto RE_MONEY;
+  	delitem 5053,1;
+	getitem 7539,5;
+	close;
+	
+	BN_03:
+	if (countitem(5019)<1) goto RE_MONEY;
+  	delitem 5019,1;
+	getitem 7539,5;
+	close;
+	
+	BN_04:
+	if (countitem(5002)<1) goto RE_MONEY;
+  	delitem 5002,1;
+	getitem 7539,5;
+	close;
+
+	BN_05:
+	if (countitem(2249)<1) goto RE_MONEY;
+  	delitem 2249,1;
+	getitem 7539,5;
+	close;
+
+	BN_06:
+	if (countitem(5123)<1) goto RE_MONEY;
+  	delitem 5123,1;
+	getitem 7539,5;
+	close;
+
+	BN_08:
+	if (countitem(2256)<1) goto RE_MONEY;
+  	delitem 2256,1;
+	getitem 7539,5;
+	close;
+
+	BN_09:
+	if (countitem(2258)<1) goto RE_MONEY;
+  	delitem 2258,1;
+	getitem 7539,5;
+	close;
+
+	BN_010:
+	if (countitem(5007)<1) goto RE_MONEY;
+  	delitem 5007,1;
+	getitem 7539,5;
+	close;
+
+	BN_011:
+	if (countitem(2235)<1) goto RE_MONEY;
+  	delitem 2235,1;
+	getitem 7539,5;
+	close;
+
+	BN_012:
+	if (countitem(2234)<1) goto RE_MONEY;
+  	delitem 2234,1;
+	getitem 7539,5;
+	close;
+
+	BN_013:
+	if (countitem(2268)<1) goto RE_MONEY;
+  	delitem 2268,1;
+	getitem 7539,5;
+	close;
+	
+	RE_MONEY:
+	mes "[^0033CCระบบแลกเปลี่ยน^000000 ]";
+	mes "ท่านไม่มีไอเทมที่ท่านต้องการแลก";
+	mes "กรุณาตรวจสอบให้ดีก่อน";
+	close;
+	
+
+OnInit:
+waitingroom "รับซื้อของบอส",0;
+end;
+}
+
+
+
+izlude,116,165,4	duplicate(Bosschance)	รับซื้อของบอส#Tmor	790

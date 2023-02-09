@@ -1,0 +1,343 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+-	script	Devil Square::e-devil	123,{
+
+mes "สวัสดีค่ะ ท่านผู้กล้า";
+mes "ต้องการเข้าร่วมกิจกรรมมั้ยค่ะ";
+next;
+menu 
+"^009933•^000000 ต้องการ",-,
+"^FF0000•^000000 รายละเอียด",Info,
+"^FF0000•^000000 ยกเลิก",Cancel;
+
+//if(Baselevel < 80) goto LReq;
+//if(Zeny < 10000) goto LReq;
+if($inf == 1) goto L_go;
+goto L_eror;
+
+//LReq:
+//mes "ท่านต้องมี Lv. มากว่า 80 ค่ะ";
+//mes "ท่านต้องมีเงิน 10,000 Zeny ค่ะ";
+//close;
+
+L_go:	
+if (getmapusers("guild_vs2")>=20) goto toomany;
+set Zeny,Zeny - 10000;
+announce "[ Devil Square ] : ท่าน "+strcharinfo(0)+" ได้เข้าร่วมกิจกรรม Devil Square แล้ว !!",0,0xFF1493;
+percentheal 100,100; 	warp "guild_vs2",0,0;
+end;
+
+L_eror: 	
+mes "ยังไม่ถึงเวลากิจกรรมค่ะ";
+mes "กิจกรรมจะเปิดทุก 4 ชม. ค่ะ";
+close;
+
+Info:
+mes "กำจัดมอนเตอร์ในแต่ละด่านค่ะ";
+mes "เมื่อคบกำหนดท่านจะมีสิทธ์";
+mes "เปิดกล่องสมบัติค่ะ";
+close;
+end;
+
+toomany:
+mes "จำนวนคนเกินที่กำหนดแล้วค่ะ";
+mes "เข้าร่วมได้รอบล่ะ 20 คนเท่านั้นค่ะ";
+set $inf,0;
+close;
+end;
+
+Cancel:
+mes "ยินดีให้บริการค่ะ";
+close;
+end;
+OnInit:
+waitingroom "[•] Devil Square", 0;
+end;
+}
+
+//End Of Devil Square Entrance
+
+guild_vs2,50,50,5	script	Cek	-1,{
+
+OnTimer30000:
+if (getmapusers("guild_vs2") == 0) {
+announce "[ Devil Square ] : กิจกรรมได้จบลงแล้ว !!",0,0xFF1493;
+set $status,1;
+killmonsterall "guild_vs2";
+end;
+}
+//announce "[ Devil Square ] : " + getmapusers("guild_vs2") + "",8;
+initnpctimer;
+end;
+}
+
+guild_vs2,50,50,5	script	HiddenNpc	-1,{
+
+OnClock0300:
+announce "[ Devil Square ] : กิจกรรมกำลังจะเปิดใน 5 นาที !!",0,0xFF1493;
+disablenpc "Exit1";
+initnpctimer;
+set $inf,1;
+set $status,0;
+killmonsterall "guild_vs2";
+end;
+
+OnClock0700:
+announce "[ Devil Square ] : กิจกรรมกำลังจะเปิดใน 5 นาที !!",0,0xFF1493;
+disablenpc "Exit1";
+initnpctimer;
+set $inf,1;
+set $status,0;
+killmonsterall "guild_vs2";
+end;
+
+OnClock1100:
+announce "[ Devil Square ] : กิจกรรมกำลังจะเปิดใน 5 นาที !!",0,0xFF1493;
+disablenpc "Exit1";
+initnpctimer;
+set $inf,1;
+set $status,0;
+killmonsterall "guild_vs2";
+end;
+
+OnClock1500:
+announce "[ Devil Square ] : กิจกรรมกำลังจะเปิดใน 5 นาที !!",0,0xFF1493;
+disablenpc "Exit1";
+initnpctimer;
+set $inf,1;
+set $status,0;
+killmonsterall "guild_vs2";
+end;
+
+OnClock1900:
+announce "[ Devil Square ] : กิจกรรมกำลังจะเปิดใน 5 นาที !!",0,0xFF1493;
+disablenpc "Exit1";
+initnpctimer;
+set $inf,1;
+set $status,0;
+killmonsterall "guild_vs2";
+end;
+
+OnClock2300:
+announce "[ Devil Square ] : กิจกรรมกำลังจะเปิดใน 5 นาที !!",0,0xFF1493;
+disablenpc "Exit1";
+initnpctimer;
+set $inf,1;
+set $status,0;
+killmonsterall "guild_vs2";
+end;
+
+OnTimer60000:
+announce "[ Devil Square ] : กิจกรรมกำลังจะเปิดใน 4 นาที !!",0,0xFF1493;
+end;
+
+OnTimer120000:
+announce "[ Devil Square ] : กิจกรรมกำลังจะเปิดใน 3 นาที !!",0,0xFF1493;
+end;
+
+OnTimer180000:
+announce "[ Devil Square ] : กิจกรรมกำลังจะเปิดใน 2 นาที !!",0,0xFF1493;
+end;
+
+OnTimer240000:
+announce "[ Devil Square ] : กิจกรรมกำลังจะเปิดใน 1 นาที !!",0,0xFF1493;
+end;
+
+OnTimer300000:
+announce "[ Devil Square ] : กิจกรรมได้เริ่มต้นขึ้นแล้ว !!",0,0xFF1493;
+initnpctimer "Cek";
+set $inf,0;
+set $mob,180;
+areamonster "guild_vs2",50,50,50,50,"[DS] SOLDIER SKELETON",1028,15,"HiddenNpc::Ondevildead";
+areamonster "guild_vs2",50,50,50,50,"[DS] ORC ARCHER",1189,15,"HiddenNpc::Ondevildead";
+areamonster "guild_vs2",50,50,50,50,"[DS] SANDMAN",1165,15,"HiddenNpc::Ondevildead";
+areamonster "guild_vs2",50,50,50,50,"[DS] ARCHER SKELETON",1016,15,"HiddenNpc::Ondevildead";
+areamonster "guild_vs2",50,50,50,50,"[DS] MINOROUS",1149,15,"HiddenNpc::Ondevildead";
+areamonster "guild_vs2",50,50,50,50,"[DS] REQUIEM",1164,15,"HiddenNpc::Ondevildead";
+areamonster "guild_vs2",50,50,50,50,"[DS] SOLDIER SKELETON",1028,15,"HiddenNpc::Ondevildead";
+areamonster "guild_vs2",50,50,50,50,"[DS] ORC ARCHER",1189,15,"HiddenNpc::Ondevildead";
+areamonster "guild_vs2",50,50,50,50,"[DS] SANDMAN",1165,15,"HiddenNpc::Ondevildead";
+areamonster "guild_vs2",50,50,50,50,"[DS] ARCHER SKELETON",1016,15,"HiddenNpc::Ondevildead";
+areamonster "guild_vs2",50,50,50,50,"[DS] MINOROUS",1149,15,"HiddenNpc::Ondevildead";
+areamonster "guild_vs2",50,50,50,50,"[DS] REQUIEM",1164,15,"HiddenNpc::Ondevildead";
+end;
+
+Ondevildead:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 25) mapannounce "guild_vs2","[ Devil Square ] : เหลือมอนเตอร์อีก 25 ตัวสู่ทางผ่านของระดับที่ 2",bc_map,0xFFFF00;
+else if($mob == 5) mapannounce "guild_vs2","[ Devil Square ] : เหลือมอนเตอร์อีก 5 ตัวสู่ทางผ่านของระดับที่ 2",bc_map,0xFFFF00;
+else if($mob == 1) mapannounce "guild_vs2","[ Devil Square ] : เหลือมอนเตอร์อีก 1 ตัวสู่ทางผ่านของระดับที่ 2",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs2","[ Devil Square ] : ได้เข้าสู่ระดับที่ 2 แล้ว",bc_map,0xFFFF00;
+goto Ondevil2;
+}
+end;
+
+Ondevil2:
+set $mob,180;
+areamonster "guild_vs2",50,50,50,50,"[DS] GARGOYLE",1253,15,"HiddenNpc::Ondevildead2";
+areamonster "guild_vs2",50,50,50,50,"[DS] ALARM",1193,15,"HiddenNpc::Ondevildead2";
+areamonster "guild_vs2",50,50,50,50,"[DS] HIGH ORC",1213,15,"HiddenNpc::Ondevildead2";
+areamonster "guild_vs2",50,50,50,50,"[DS] INJUSTICE",1257,15,"HiddenNpc::Ondevildead2";
+areamonster "guild_vs2",50,50,50,50,"[DS] MIMIC",1191,15,"HiddenNpc::Ondevildead2";
+areamonster "guild_vs2",50,50,50,50,"[DS] WRAITH",1192,15,"HiddenNpc::Ondevildead2";
+areamonster "guild_vs2",50,50,50,50,"[DS] GARGOYLE",1253,15,"HiddenNpc::Ondevildead2";
+areamonster "guild_vs2",50,50,50,50,"[DS] ALARM",1193,15,"HiddenNpc::Ondevildead2";
+areamonster "guild_vs2",50,50,50,50,"[DS] HIGH ORC",1213,15,"HiddenNpc::Ondevildead2";
+areamonster "guild_vs2",50,50,50,50,"[DS] INJUSTICE",1257,15,"HiddenNpc::Ondevildead2";
+areamonster "guild_vs2",50,50,50,50,"[DS] MIMIC",1191,15,"HiddenNpc::Ondevildead2";
+areamonster "guild_vs2",50,50,50,50,"[DS] WRAITH",1192,15,"HiddenNpc::Ondevildead2";
+end;
+
+Ondevildead2:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 25) mapannounce "guild_vs2","[ Devil Square ] : เหลือมอนเตอร์อีก 25 ตัวสู่ทางผ่านของระดับที่ 3",bc_map,0xFFFF00;
+else if($mob == 5) mapannounce "guild_vs2","[ Devil Square ] : เหลือมอนเตอร์อีก 5 ตัวสู่ทางผ่านของระดับที่ 3",bc_map,0xFFFF00;
+else if($mob == 1) mapannounce "guild_vs2","[ Devil Square ] : เหลือมอนเตอร์อีก 1 ตัวสู่ทางผ่านของระดับที่ 3",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs2","[ Devil Square ] : ได้เข้าสู่ระดับที่ 3 แล้ว",bc_map,0xFFFF00;
+goto Ondevil3;
+}
+end;
+
+Ondevil3:
+set $mob,120;
+areamonster "guild_vs2",50,50,50,50,"[DS] NINE TAIL",1180,10,"HiddenNpc::Ondevildead3";
+areamonster "guild_vs2",50,50,50,50,"[DS] STING",1270,10,"HiddenNpc::Ondevildead3";
+areamonster "guild_vs2",50,50,50,50,"[DS] DARK FRAME",1260,10,"HiddenNpc::Ondevildead3";
+areamonster "guild_vs2",50,50,50,50,"[DS] MERMAN",1264,10,"HiddenNpc::Ondevildead3";
+areamonster "guild_vs2",50,50,50,50,"[DS] MINI DEMON",1292,10,"HiddenNpc::Ondevildead3";
+areamonster "guild_vs2",50,50,50,50,"[DS] LAVA GOLEM",1366,10,"HiddenNpc::Ondevildead3";
+areamonster "guild_vs2",50,50,50,50,"[DS] NINE TAIL",1180,10,"HiddenNpc::Ondevildead3";
+areamonster "guild_vs2",50,50,50,50,"[DS] STING",1270,10,"HiddenNpc::Ondevildead3";
+areamonster "guild_vs2",50,50,50,50,"[DS] DARK FRAME",1260,10,"HiddenNpc::Ondevildead3";
+areamonster "guild_vs2",50,50,50,50,"[DS] MERMAN",1264,10,"HiddenNpc::Ondevildead3";
+areamonster "guild_vs2",50,50,50,50,"[DS] MINI DEMON",1292,10,"HiddenNpc::Ondevildead3";
+areamonster "guild_vs2",50,50,50,50,"[DS] LAVA GOLEM",1366,10,"HiddenNpc::Ondevildead3";
+end;
+
+Ondevildead3:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 25) mapannounce "guild_vs2","[ Devil Square ] : เหลือมอนเตอร์อีก 25 ตัวสู่ทางผ่านของระดับที่ 4",bc_map,0xFFFF00;
+else if($mob == 5) mapannounce "guild_vs2","[ Devil Square ] : เหลือมอนเตอร์อีก 5 ตัวสู่ทางผ่านของระดับที่ 4",bc_map,0xFFFF00;
+else if($mob == 1) mapannounce "guild_vs2","[ Devil Square ] : เหลือมอนเตอร์อีก 1 ตัวสู่ทางผ่านของระดับที่ 4",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs2","[ Devil Square ] : ได้เข้าสู่ระดับที่ 4 แล้ว",bc_map,0xFFFF00;
+goto Ondevil4;
+}
+end;
+
+Ondevil4:
+set $mob,84;
+areamonster "guild_vs2",50,50,50,50,"[DS] SKELETON GENERAL",1290,7,"HiddenNpc::Ondevildead4";
+areamonster "guild_vs2",50,50,50,50,"[DS] WRAITH DEAD",1291,7,"HiddenNpc::Ondevildead4";
+areamonster "guild_vs2",50,50,50,50,"[DS] ANCIENT MUMMY",1297,7,"HiddenNpc::Ondevildead4";
+areamonster "guild_vs2",50,50,50,50,"[DS] AM MUT",1301,7,"HiddenNpc::Ondevildead4";
+areamonster "guild_vs2",50,50,50,50,"[DS] ANCIENT WORM",1305,7,"HiddenNpc::Ondevildead4";
+areamonster "guild_vs2",50,50,50,50,"[DS] CAT O NINE TAIL",1307,7,"HiddenNpc::Ondevildead4";
+areamonster "guild_vs2",50,50,50,50,"[DS] AGAV",1769,7,"HiddenNpc::Ondevildead4";
+areamonster "guild_vs2",50,50,50,50,"[DS] ECHIO",1770,7,"HiddenNpc::Ondevildead4";
+areamonster "guild_vs2",50,50,50,50,"[DS] SEEKER",1774,7,"HiddenNpc::Ondevildead4";
+areamonster "guild_vs2",50,50,50,50,"[DS] SNOWIER",1775,7,"HiddenNpc::Ondevildead4";
+areamonster "guild_vs2",50,50,50,50,"[DS] ICE TITAN",1777,7,"HiddenNpc::Ondevildead4";
+areamonster "guild_vs2",50,50,50,50,"[DS] ALICEL",1735,7,"HiddenNpc::Ondevildead4";
+end;
+
+Ondevildead4:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 25) mapannounce "guild_vs2","[ Devil Square ] : เหลือมอนเตอร์อีก 25 ตัวสู่ทางผ่านของระดับ Boss !!",bc_map,0xFFFF00;
+else if($mob == 5) mapannounce "guild_vs2","[ Devil Square ] : เหลือมอนเตอร์อีก 5 ตัวสู่ทางผ่านของระดับ Boss !!",bc_map,0xFFFF00;
+else if($mob == 1) mapannounce "guild_vs2","[ Devil Square ] : เหลือมอนเตอร์อีก 1 ตัวสู่ทางผ่านของระดับ Boss !!",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs2","[ Devil Square ] : ได้เข้าสู่ระดับ Boss แล้ว",bc_map,0xFFFF00;
+goto Ondevil5;
+}
+end;
+
+Ondevil5:
+set $mob,10;
+areamonster "guild_vs2",50,50,50,50,"[DS] MISTRESS",1059,1,"HiddenNpc::Ondevildead5";
+areamonster "guild_vs2",50,50,50,50,"[DS] Phreeoni",1159,1,"HiddenNpc::Ondevildead5";
+areamonster "guild_vs2",50,50,50,50,"[DS] Eddga",1115,1,"HiddenNpc::Ondevildead5";
+areamonster "guild_vs2",50,50,50,50,"[DS] Stormy Knight",1251,1,"HiddenNpc::Ondevildead5";
+areamonster "guild_vs2",50,50,50,50,"[DS] Orc hero",1087,1,"HiddenNpc::Ondevildead5";
+areamonster "guild_vs2",50,50,50,50,"[DS] Dracula",1389,1,"HiddenNpc::Ondevildead5";
+areamonster "guild_vs2",50,50,50,50,"[DS] PHARAOH",1157,1,"HiddenNpc::Ondevildead5";
+areamonster "guild_vs2",50,50,50,50,"[DS] Drake",1112,1,"HiddenNpc::Ondevildead5";
+areamonster "guild_vs2",50,50,50,50,"[DS] Maya",1147,1,"HiddenNpc::Ondevildead5";
+areamonster "guild_vs2",50,50,50,50,"[DS] GARM",1252,1,"HiddenNpc::Ondevildead5";
+end;
+
+Ondevildead5:
+if ($status == 1) end;
+set $mob,$mob-1;
+if($mob == 5) mapannounce "guild_vs2","[ Devil Square ] : เหลือบอสมอนเตอร์อีก 5 ตัวสู่ทางผ่านของระดับ โบนัส !!",bc_map,0xFFFF00;
+else if($mob == 1) mapannounce "guild_vs2","[ Devil Square ] : เหลือบอสมอนเตอร์อีก 1 ตัวสู่ทางผ่านของระดับ โบนัส !!",bc_map,0xFFFF00;
+else if($mob == 0) {
+mapannounce "guild_vs2","[ Devil Square ] : กล่องสมบัติเกิดแล้ว !!",bc_map,0xFFFF00;
+goto Ondevil6;
+}
+end;
+
+Ondevil6:
+set $mob,20;
+monster "guild_vs2.gat",7,52,"Treasure Box",1325,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",7,47,"Treasure Box",1351,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",28,53,"Treasure Box",1329,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",28,47,"Treasure Box",1331,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",47,73,"Treasure Box",1333,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",52,73,"Treasure Box",1335,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",52,92,"Treasure Box",1337,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",47,92,"Treasure Box",1339,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",73,52,"Treasure Box",1341,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",73,47,"Treasure Box",1343,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",92,47,"Treasure Box",1345,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",92,52,"Treasure Box",1347,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",52,26,"Treasure Box",1349,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",47,26,"Treasure Box",1349,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",47,7,"Treasure Box",1353,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",52,7,"Treasure Box",1355,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",49,46,"Treasure Box",1357,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",46,50,"Treasure Box",1359,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",50,53,"Treasure Box",1361,1,"HiddenNpc::Onboxdead";
+monster "guild_vs2.gat",53,49,"Treasure Box",1363,1,"HiddenNpc::Onboxdead";
+end;
+
+Onboxdead:
+if ($status == 1) end;
+set $mob, $mob - 1;
+announce "[ Devil Square ] : ท่าน " + strcharinfo(0) +" ได้เปิดกล่องสมบัติ Devil Square แล้ว !!",0,0xFF1493;
+if($mob == 0) enablenpc "Exit1";
+getitem 7227,3;
+set Zeny,Zeny + 5000000;
+end;
+}
+
+guild_vs2,50,50,7	script	Exit1	51,{
+mes "สวัสดีครับ ยินดีให้บริการครับ";
+next;
+warp "wonderworld",155,124;
+close;
+}
+
+
+// -- Mapflags
+// guild_vs2	mapflag	pvp
+guild_vs2	mapflag	nowarp
+guild_vs2	mapflag	nowarpto
+guild_vs2	mapflag	noteleport
+guild_vs2	mapflag	nosave	SavePoint
+guild_vs2	mapflag	nomemo
+guild_vs2	mapflag	nobranch
+guild_vs2	mapflag	nopenalty
+guild_vs2	mapflag	noicewall
+// -- End of Mapflags
+
+morocc,190,46,4	duplicate(e-devil)	Devil Square#01	837

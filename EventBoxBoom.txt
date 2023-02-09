@@ -1,0 +1,257 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+
+///----------- แก้ไข ข้อมูลต่างๆ ----------------\\\
+-	script	SettingBoxBoom	-1,{
+OnInit:
+set $MapBB$,"force_1-1";		//--- ชื่อแมป  ( ไม่แนะนำให้แก้ไข )
+set $ibb,30000;		//-- ของรางวัล รหัส
+set $abb,30;		//-- จำนวนของรางวัล
+set $zbb,5000000;		//-- เงินรางวัล
+end;
+
+///------------ เวลากิจกรรม ----------\\\
+OnClock0130:
+OnClock0330:
+OnClock0530:
+OnClock0730:
+OnClock0930:
+OnClock1130:
+OnClock1330:
+OnClock1530:
+OnClock1730:
+OnClock1930:
+OnClock2130:
+OnClock2330:
+initnpctimer "TimerBox";
+end;
+}
+
+-	script	Box Boom::boxboom	801,{
+if(getgmlevel() >= 90) goto Gm;
+main:
+mes "สวัสดีครับ ยินดีให้บริการครับ";
+mes "ต้องการเข้าร่วมกิจกรรมมั้ยครับ";
+next;
+if($@BoxStart == 1) goto Start;
+menu 
+"^FF0000•^000000 รายละเอียด",read,
+"^FF0000•^000000 ยกเลิก",exit;
+
+Start:
+menu 
+"^009933•^000000 ต้องการ",-,
+"^FF0000•^000000 รายละเอียด",read,
+"^FF0000•^000000 ยกเลิก",exit;
+if($@BoxStart == 0) close;
+warp "force_1-1",98,99;
+close;
+
+read:
+mes "เป็นการวัดดวงครับ";
+mes "โดยจะมีกล่องให้ท่านเลือก";
+mes "กดหากดวงดีก็จะได้รับรางวัลไป";
+mes "แต่ถ้าหากดวงไม่ดี";
+mes "กดโดนกล่องที่มีระเบิด";
+mes "ก็จบเกมครับ";
+close;
+
+Gm:
+mes "สวัสดีครับ ยินดีให้บริการครับ";
+mes "เลือกเมนูที่ท่านต้องการครับ";
+next;
+menu 
+"^FF0000•^000000 ยกเลิก",main,
+"^009933•^000000 เปิดกิจกรรม",open,
+"^FF0000•^000000 ปิดกิจกรรม",Cancel;
+open:
+menu 
+"^FF0000•^000000 ยกเลิก",exit,
+"^009933•^000000 ตกลง",-;
+if($@BoxStart == 1){ mes "กิจกรรมเปิดอยู่แล้วครับ"; close; }
+if(getmapusers(""+$MapBB$+"") >= 1){ mes "กิจกรรมเปิดอยู่แล้วครับ"; close; }
+initnpctimer "TimerBox";
+mes "เรียบร้อยครับ ยินดีให้บริการครับ";
+close;
+
+Cancel:
+menu 
+"^FF0000•^000000 ยกเลิก",exit,
+"^009933•^000000 ตกลง",-;
+if($@BoxStart == 0){ mes "กิจกรรมปิดอยู่แล้วครับ"; close; }
+killmonsterall ""+$MapBB$+"";
+mapwarp ""+$MapBB$+"","morocc2",195,60;
+stopnpctimer "TimerBox";
+mes "เรียบร้อยครับ ยินดีให้บริการครับ";
+close;
+
+exit:
+close;
+
+OnInit:
+waitingroom "กิจกรรมกล่องระเบิด", 0;
+end;
+}
+
+-	script	TimerBox	-1,{
+
+OnTimer1000:
+set $@BoxStart,1;
+announce "[กิจกรรมกล่องระเบิด] : กิจกรรมกำลังจะเปิดใน 5 นาที !!",0;
+end;
+
+OnTimer5000:
+announce "[กิจกรรมกล่องระเบิด] : กิจกรรมกำลังจะเปิดใน 3 นาที !!",0;
+end;
+
+OnTimer65000:
+announce "[กิจกรรมกล่องระเบิด] : กิจกรรมกำลังจะเปิดใน 2 นาที !!",0;
+end;
+
+OnTimer125000:
+announce "[กิจกรรมกล่องระเบิด] : กิจกรรมกำลังจะเปิดใน 1 นาที !!",0;
+end;
+
+OnTimer185000:
+set $@BoxStart,0;
+announce "[กิจกรรมกล่องระเบิด] : กิจกรรมได้เริ่มต้นขึ้นแล้ว !!",0;
+end;
+
+
+OnTimer190000:
+if(getmapusers(""+$MapBB$+"") < 1) goto notplayer;
+mapannounce ""+$MapBB$+"","[กิจกรรมกล่องระเบิด] : ท่านมีเวลาเตรียมตัว 30 วินาที !!",0;
+end;
+
+OnTimer195000:
+mapannounce ""+$MapBB$+"","[กิจกรรมกล่องระเบิด] : มีกล่องระเบิด 50 กล่อง มีกล่องระเบิด C4 5 กล่อง มีกล่องสมบัติ 10 กล่อง",0;
+end;
+
+OnTimer200000:
+mapannounce ""+$MapBB$+"","[กิจกรรมกล่องระเบิด] : หากท่านเปิดเจอกล่องระเบิด C4 จะทำให้ทุกคนตายหมด !!",0;
+end;
+
+OnTimer220000:
+mapannounce ""+$MapBB$+"","[กิจกรรมกล่องระเบิด] : ท่านหมดเวลาเตรียมตัวแล้ว !!",0;
+end;
+
+OnTimer225000:
+stopnpctimer;
+callfunc "boxboom";
+end;
+
+notplayer:
+announce "[กิจกรรมกล่องระเบิด] : กิจกรรมได้จบลงแล้ว !!",0;
+stopnpctimer;
+mapwarp ""+$MapBB$+"","wonderworld",155,124;
+end;
+}
+
+function	script	boxboom	{
+mapannounce ""+$MapBB$+"","[กิจกรรมกล่องระเบิด] : กรุณาคิดก่อนที่จะเปิดแต่ละกล่อง !! ",0;
+
+areamonster ""+$MapBB$+"",88,111,111,88,"กิจกรรมกล่องระเบิด",1334,50,"BOXOPEN::OnOpen_Boom";
+areamonster ""+$MapBB$+"",88,111,111,88,"กิจกรรมกล่องระเบิด",1334,5,"BOXOPEN::OnOpen_C4";
+areamonster ""+$MapBB$+"",88,111,111,88,"กิจกรรมกล่องระเบิด",1334,10,"BOXOPEN::OnOpen_Ok";
+return;
+}
+
+-	script	BOXOPEN	-1,{
+
+OnOpen_Boom:
+set .@Rate,rand(100);
+if(.@Rate < 10) goto Chock;
+mapannounce ""+$MapBB$+"","[กิจกรรมกล่องระเบิด] : ท่าน "+strcharinfo(0)+" เปิดเจอระเบิดถูกส่งกลับบ้าน !! ",0;
+specialeffect2 183;
+sleep2 1000;
+if(getmapusers(""+$MapBB$+"") <= 1) goto lastplayer;
+warp "SavePoint",0,0;
+end;
+
+Chock:
+mapannounce ""+$MapBB$+"","[กิจกรรมกล่องระเบิด] : ท่าน "+strcharinfo(0)+" เปิดเจอระเบิด รอดไประเบิดด้าน !!",0;
+specialeffect2 147;
+warp "SavePoint",0,0;
+end;
+
+OnOpen_C4:
+mapannounce ""+$MapBB$+"","[กิจกรรมกล่องระเบิด] : ท่าน "+strcharinfo(0)+" เปิดเจอระเบิด C4 !! ",0;
+donpcevent "LandEffect1::OnBoom";
+donpcevent "LandEffect2::OnBoom";
+donpcevent "LandEffect3::OnBoom";
+donpcevent "LandEffect4::OnBoom";
+donpcevent "LandEffect5::OnBoom";
+killmonsterall ""+$MapBB$+"";
+sleep2 2000;
+mapannounce ""+$MapBB$+"","[กิจกรรมกล่องระเบิด] : ทุกคนตายหมด !!",0;
+killmonsterall ""+$MapBB$+"";
+//mapwarp ""+$MapBB$+"","m_potion",106,250;
+end;
+
+OnOpen_Ok:
+mapannounce ""+$MapBB$+"","[กิจกรรมกล่องระเบิด] : ท่าน "+strcharinfo(0)+" เปิดเจอสมบัติ !!",0;
+getitem $ibb,$abb;
+set Zeny,Zeny+$zbb;
+dispbottom "คุณได้รับเงิน "+$zbb+" Zeny.";
+end;
+
+lastplayer:
+sleep2 1000;
+announce "[กิจกรรมกล่องระเบิด] : กิจกรรมได้จบลงแล้ว !!",0;
+killmonsterall ""+$MapBB$+"";
+warp "SavePoint",0,0;
+//mapwarp ""+$MapBB$+"","m_potion",106,250;
+end;
+}
+
+force_1-1,91,108,4	script	LandEffect1	139,{
+OnBoom:
+specialeffect 147;
+sleep2 1000;
+specialeffect 183;
+end;
+}
+force_1-1,108,108,4	script	LandEffect2	139,{
+OnBoom:
+specialeffect 147;
+sleep2 1000;
+specialeffect 183;
+end;
+}
+force_1-1,108,92,4	script	LandEffect3	139,{
+OnBoom:
+specialeffect 147;
+sleep2 1000;
+specialeffect 183;
+end;
+}
+force_1-1,91,92,4	script	LandEffect4	139,{
+OnBoom:
+specialeffect 147;
+sleep2 1000;
+specialeffect 183;
+end;
+}
+force_1-1,99,100,4	script	LandEffect5	139,{
+OnBoom:
+specialeffect 147;
+sleep2 1000;
+specialeffect 183;
+end;
+}
+
+///------ MAP FLAG ---------\\\
+force_1-1	mapflag	noreturn
+force_1-1	mapflag	noteleport
+force_1-1	mapflag	nowarp
+force_1-1	mapflag	nowarpto
+force_1-1	mapflag	notrade
+force_1-1	mapflag	nodrop
+force_1-1	mapflag	noskill
+force_1-1	mapflag	noloot
+force_1-1	mapflag	nobranch
+
+wonderworld.gat,145,74,6	duplicate(boxboom)	กิจกรรมกล่องระเบิด#osos1	837

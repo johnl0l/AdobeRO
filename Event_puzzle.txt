@@ -1,0 +1,793 @@
+-	script	puzzle	-1,{
+
+
+
+mes "[ ^0000FFเกมจับคู่^000000 ]";
+
+mes "สวัสดีจ้าคุณ " + strcharinfo(0) + "";
+
+mes "ตอนนี้คุณมีแต้มเกมจับคู่  [ ^ff0000"+COPY_POINT+" ^000000 ] แต้ม";
+
+mes "สามารถเอาแต้มไปแลกของรางวัลได้";
+
+
+
+	switch(select("- เริ่มเล่น","- ข้อมูลและวิธ่เล่น")){
+
+		case 1:
+
+		next;
+
+		if (countitem(7539)<10) { mes "[ ^0000FFเกมจับคู่^000000 ]";mes "ในการเล่นคุณจะต้องใช้";mes "^FF0000Poring  Coin^000000 10 ea.";mes "ในการเล่น 1 รอบ"; close; }
+
+		if ($evCStart1== 0) { mes "[ ^0000FFเกมจับคู่^000000 ]"; mes "^FF0000มีผู้เล่นอื่นกำลังเล่นอยู่^000000";	mes "^FF0000กรุณารอสักครู่^000000";	close;}
+
+		delitem 7539,10;
+
+		set .C_POINTXx1,0; 
+
+		initnpctimer "เกมจับคู่#1"; 
+
+		doevent "Start#mobswitch_system1::OnStart1";
+
+		npctalk "เกมรอบนี้เป็นของ คุณ " + strcharinfo(0) + " มีเวลาในการเล่น 90 วินาที ในการเล่น เริ่มได้ !!";
+
+		break;
+
+
+
+
+
+		case 2:	
+
+		next;
+
+		mes "[ ^0000FFเกมจับคู่^000000 ]";
+
+		mes "วิธีเล่น";
+
+		mes "มีเวลาเล่นรอบระ ^FF000090^000000 วินาที";	
+
+		mes "ในการเล่น ^FF00001^000000 รอบคุณจะต้องใช้";
+
+		mes "^FF0000Poring  Coin^000000 10 ea.";
+
+		mes "เมื่อเริ่มเกมจะป้ายขึ้นมา ^FF000030^000000 อัน";
+
+		mes "จะมี มอนเตอร์ ทั้งหมด ^FF000015^000000 แบบ";
+
+		next;
+
+		mes "[ ^0000FFเกมจับคู่^000000 ]";
+
+		mes "ถ้าจับคู่ถูกจะได้ ^FF00001^000000 แต้ม";	
+
+		mes "แต่ถ้าคุณจับคู่ได้ทั้งหมด ^FF000015^000000 คู่";	
+
+		mes "ก็จะได้โบนัสพิเศษ ^FF000010^000000 แต้ม";		
+
+		break;
+
+
+
+	}
+
+	close;
+
+end;
+
+OnTimer30000:
+
+	npctalk "เหลืออีก 60 วินาที !!";
+
+	end;
+
+OnTimer60000:
+
+	npctalk "เหลืออีก 30 วินาที !!";
+
+	end;
+
+OnTimer75000:
+
+	npctalk "เหลืออีก 15 วินาที !!";
+
+	end;
+
+OnTimer80000:
+
+	sleep 1000;npctalk "10";
+
+	sleep 1000;npctalk "9";
+
+	sleep 1000;npctalk "8";
+
+	sleep 1000;npctalk "7";
+
+	sleep 1000;npctalk "6";
+
+	sleep 1000;npctalk "5";
+
+	sleep 1000;npctalk "4";
+
+	sleep 1000;npctalk "3";
+
+	sleep 1000;npctalk "2";
+
+	sleep 1000;npctalk "1";
+
+	sleep 1000;npctalk "หมดเวลา !!";
+
+	stopnpctimer;
+
+	sleep 2500;
+
+	enablenpc "เริ่มเล่นคุยที่NPC#01";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#02";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#03";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#04";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#05";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#06";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#07";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#08";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#09";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#10";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#11";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#12";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#13";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#14";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#15";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#16";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#17";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#18";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#19";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#20";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#21";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#22";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#23";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#24";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#25";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#26";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#27";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#28";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#29";
+
+	enablenpc "เริ่มเล่นคุยที่NPC#30";
+
+	end;
+
+
+
+OnInit: 
+
+set $evCStart1,1; 	
+
+end; 
+
+}
+
+
+
+izlude,134,186,4	script	#mobswitch1_1_1	100,{
+
+	if(@jh)end;
+
+	set @click$,strnpcinfo(2);
+
+	doevent	"Start#mobswitch_system1::OnClick";
+
+	end;
+
+OnInit:
+
+	hideonnpc strnpcinfo(0);
+
+	end;
+
+}
+
+
+
+izlude,136,186,4	duplicate(#mobswitch1_1_1)	#mobswitch1_1_2	100
+izlude,138,186,4	duplicate(#mobswitch1_1_1)	#mobswitch1_1_3	100
+izlude,140,186,4	duplicate(#mobswitch1_1_1)	#mobswitch1_1_4	100
+izlude,142,186,4	duplicate(#mobswitch1_1_1)	#mobswitch1_1_5	100
+izlude,144,186,4	duplicate(#mobswitch1_1_1)	#mobswitch1_1_6	100
+izlude,146,186,4	duplicate(#mobswitch1_1_1)	#mobswitch1_1_7	100
+izlude,148,186,4	duplicate(#mobswitch1_1_1)	#mobswitch1_1_8	100
+izlude,150,186,4	duplicate(#mobswitch1_1_1)	#mobswitch1_1_9	100
+izlude,152,186,4	duplicate(#mobswitch1_1_1)	#mobswitch1_1_10	100
+
+izlude,134,184,4	duplicate(#mobswitch1_1_1)	#mobswitch1_2_1	100
+izlude,136,184,4	duplicate(#mobswitch1_1_1)	#mobswitch1_2_2	100
+izlude,138,184,4	duplicate(#mobswitch1_1_1)	#mobswitch1_2_3	100
+izlude,140,184,4	duplicate(#mobswitch1_1_1)	#mobswitch1_2_4	100
+izlude,142,184,4	duplicate(#mobswitch1_1_1)	#mobswitch1_2_5	100
+izlude,144,184,4	duplicate(#mobswitch1_1_1)	#mobswitch1_2_6	100
+izlude,146,184,4	duplicate(#mobswitch1_1_1)	#mobswitch1_2_7	100
+izlude,148,184,4	duplicate(#mobswitch1_1_1)	#mobswitch1_2_8	100
+izlude,150,184,4	duplicate(#mobswitch1_1_1)	#mobswitch1_2_9	100
+izlude,152,184,4	duplicate(#mobswitch1_1_1)	#mobswitch1_2_10	100
+
+izlude,134,182,4	duplicate(#mobswitch1_1_1)	#mobswitch1_3_1	100
+izlude,136,182,4	duplicate(#mobswitch1_1_1)	#mobswitch1_3_2	100
+izlude,138,182,4	duplicate(#mobswitch1_1_1)	#mobswitch1_3_3	100
+izlude,140,182,4	duplicate(#mobswitch1_1_1)	#mobswitch1_3_4	100
+izlude,142,182,4	duplicate(#mobswitch1_1_1)	#mobswitch1_3_5	100
+izlude,144,182,4	duplicate(#mobswitch1_1_1)	#mobswitch1_3_6	100
+izlude,146,182,4	duplicate(#mobswitch1_1_1)	#mobswitch1_3_7	100
+izlude,148,182,4	duplicate(#mobswitch1_1_1)	#mobswitch1_3_8	100
+izlude,150,182,4	duplicate(#mobswitch1_1_1)	#mobswitch1_3_9	100
+izlude,152,182,4	duplicate(#mobswitch1_1_1)	#mobswitch1_3_10	100
+
+
+
+-	script	Start#mobswitch_system1	-1,{
+
+OnStart1:
+
+	if(.aid)end;
+
+	callsub SetDate;
+
+	set .aid,getcharid(3);
+
+	initnpctimer;
+
+	set @click$,"";
+
+	set @clickA$,"";
+
+	set @clickB$,"";
+
+	set .C_POINTXx1,0;
+
+	set $evCStart1,0; 
+
+//=================================
+
+OnTimer90000:
+
+//=================================
+
+	disablenpc "เริ่มเล่นคุยที่NPC#01";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#02";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#03";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#04";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#05";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#06";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#07";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#08";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#09";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#10";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#11";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#12";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#13";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#14";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#15";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#16";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#17";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#18";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#19";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#20";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#21";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#22";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#23";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#24";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#25";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#26";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#27";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#28";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#29";
+
+	disablenpc "เริ่มเล่นคุยที่NPC#30";
+
+//=================================
+
+	for(set .@i,1;.@i<=3;set .@i,.@i+1)
+
+		for(set .@j,1;.@j<=10;set .@j,.@j+1)
+
+			if(playerattached())
+
+				hideoffnpc "#mobswitch1_"+.@i+"_"+.@j;
+
+			else
+
+				hideonnpc "#mobswitch1_"+.@i+"_"+.@j;
+
+	if(!playerattached())
+
+	{
+
+		if(isloggedin(.aid))
+
+		stopnpctimer;
+
+		if (.C_POINTXx1 == 15) { mapannounce "izlude","[ เกมจับคู่ ] : สุดยอดเลย !! คุณ "+rid2name(.aid)+" สามารถจับคู่ได้ทั้งหมด "+.C_POINTXx1+" คู่ !! ได้รับ โบนัสพิเศษ เพิ่มอีก 10 แต้ม !!",bc_map;	sleep 3500;	set .aid,0;set $evCStart1,1; end;}
+
+		mapannounce "izlude","[ เกมจับคู่ ] : คุณ "+rid2name(.aid)+" สามารถจับคู่ได้ทั้งหมด "+.C_POINTXx1+" คู่",bc_map;
+
+		sleep 3500;
+
+		set .aid,0;
+
+		set $evCStart1,1;
+
+	}
+
+	end;
+
+	function	e	{
+
+		debugmes ""+getarg(0);
+
+		return getarg(0);
+
+	}
+
+	function	getv	{
+
+		return getd("."+getarg(0)+"view");
+
+	}
+
+	function	hnpc	{
+
+		if(getarg(2))
+
+		{
+
+			hideonnpc "#"+getarg(0);
+
+			hideonnpc "#"+getarg(1);
+
+		}
+
+		else{
+
+			hideoffnpc "#"+getarg(0);
+
+			hideoffnpc "#"+getarg(1);
+
+		}
+
+		return;
+
+	}
+
+	function	setnpc	{
+
+		setnpcdisplay "#"+getarg(0),(!getarg(1)?"":strmobinfo(1,getv(getarg(0))))+"#"+getarg(0),!getarg(1)?857:getv(getarg(0));
+
+	}
+
+	function	viewid	{
+
+		function 	md	{
+
+			//while(!strmobinfo(3,set(.@t,rand(1001,1251))));
+
+			while(1)
+
+			{
+
+				set .@zt,.@zt+1;
+
+				
+				if(.@zt&13)sleep2(1);
+
+				if(strmobinfo(3,set(.@t,rand(1001,1251))))
+
+					break;
+
+			}
+
+			return .@t;
+
+		}
+
+		set .@t,md();
+
+		for(set .@i,0;.@i<30;set .@i,.@i+1)
+
+			if(.@t==.viewid[.@i]||.@t==1285||.@t==1286||.@t==1287||.@t==1288)
+
+			{
+
+				set .@t,md();
+
+				set .@i,-1;
+
+			}
+
+		return .@t;
+
+	}
+
+	function	gviewid	{
+
+		set .@n,getarraysize(.viewid);
+
+		//while(!set(.@u,.viewid[set(.@t,rand(.@n))]))continue;
+
+		while(1)
+
+		{
+
+			set .@zt,.@zt+1;
+
+			if(.@zt&13)sleep2(1);
+
+			if(set(.@u,.viewid[set(.@t,rand(.@n))]))
+
+				break;
+
+		}
+
+		for(;.@t<.@n;set .@t,.@t+1)
+
+			set .viewid[.@t],.viewid[.@t+1];
+
+		return .@u;
+
+	}
+
+	function	rviewid	{
+
+		setd ".mobswitch1"+getarg(0)+"view",getarg(1);
+
+		return 0;
+
+	}
+
+OnClick:
+
+	if(.aid!=getcharid(3)||@click$==@clickA$||@click$==@clickB$||@jh)end;
+
+	set @jh,1;
+
+	setnpc(@click$,getv(@click$));
+
+	if(@clickA$==""&&@clickB$=="")
+
+	{
+
+		set @clickA$,@click$;
+
+		set @jh,0;
+
+		end;
+
+	}
+
+	set @clickB$,@click$;
+
+	callsub Check;
+
+	set @click$,"";
+
+	set @clickA$,"";
+
+	set @clickB$,"";
+
+	set @jh,0;
+
+	end;
+
+Check:
+
+	if(getv(@clickA$)==getv(@clickB$))
+
+	{
+
+		specialeffect 40,AREA,"#"+@clickA$;
+
+		specialeffect 40,AREA,"#"+@clickB$;
+
+		set .C_POINTXx1,.C_POINTXx1+1;
+
+		sleep2(1000);
+
+		set COPY_POINT,COPY_POINT+1;
+
+		dispbottom "[ เกมจับคู่ ] : ท่านได้รับแต้ม + 1 แต้ม ขณะนี้ท่านมีแต้มทั้งหมด "+COPY_POINT+" แต้ม ";
+
+		hnpc(@clickA$,@clickB$,1);
+
+		setnpc(@clickA$,0);
+
+		setnpc(@clickB$,0);
+
+		if (.C_POINTXx1 == 15) { set COPY_POINT,COPY_POINT+10; dispbottom "[ เกมจับคู่ ] : ท่านได้รับแต้มพิเศษเมื่อจับคู่ครบทั้งหมด รับ โบนัสพิเศษ อีก + 10 แต้ม ขณะนี้ท่านมีแต้มทั้งหมด "+COPY_POINT+" แต้ม "; specialeffect2 266;	sleep2 100;	specialeffect2 183;	sleep2 100;	specialeffect2 262;	sleep2 200;	specialeffect2 183;	sleep2 100;	specialeffect2 236;	sleep2 100;	specialeffect2 237;	sleep2 100;	specialeffect2 238;	sleep2 100;	specialeffect2 263;	sleep2 100;	specialeffect2 183;	sleep2 100;	specialeffect2 68;	sleep2 500;	specialeffect2 68;	sleep2 500;	specialeffect2 68;	sleep2 500;	specialeffect2 68;return;}
+
+		return;
+
+	}
+
+	specialeffect 67,AREA,"#"+@clickA$;
+
+	specialeffect 67,AREA,"#"+@clickB$;
+
+	//set .C_POINTXx1,.C_POINTXx1-1;
+
+	dispbottom "[ เกมจับคู่ ] : ท่านจับคู่ผิดกรุณาเลือกใหม่ !! ";
+
+	sleep2(1000);
+
+	hnpc(@clickA$,@clickB$,1);
+
+	setnpc(@clickA$,0);
+
+	setnpc(@clickB$,0);
+
+	if(.aid)hnpc(@clickA$,@clickB$,0);
+
+	return;
+
+
+
+SetDate:
+
+	deletearray .viewid[0],128;
+
+	for(set .@i,0;.@i<15;set .@i,.@i+1)
+
+		set .viewid[.@i+15],set(.viewid[.@i],viewid());
+
+	for(set .@i,1;.@i<=3;set .@i,.@i+1)
+
+		for(set .@j,1;.@j<=10;set .@j,.@j+1)
+
+			setnpc("mobswitch1_"+.@i+"_"+.@j,rviewid("_"+.@i+"_"+.@j,gviewid()));
+
+	return;
+
+}
+
+
+
+izlude,134,186,4	script	เริ่มเล่นคุยที่NPC#01	858,{}
+izlude,136,186,4	script	เริ่มเล่นคุยที่NPC#02	858,{}
+izlude,138,186,4	script	เริ่มเล่นคุยที่NPC#03	858,{}
+izlude,140,186,4	script	เริ่มเล่นคุยที่NPC#04	858,{}
+izlude,142,186,4	script	เริ่มเล่นคุยที่NPC#05	858,{}
+izlude,144,186,4	script	เริ่มเล่นคุยที่NPC#06	858,{}
+izlude,146,186,4	script	เริ่มเล่นคุยที่NPC#07	858,{}
+izlude,148,186,4	script	เริ่มเล่นคุยที่NPC#08	858,{}
+izlude,150,186,4	script	เริ่มเล่นคุยที่NPC#09	858,{}
+izlude,152,186,4	script	เริ่มเล่นคุยที่NPC#10	858,{}
+
+izlude,134,184,4	script	เริ่มเล่นคุยที่NPC#11	858,{}
+izlude,136,184,4	script	เริ่มเล่นคุยที่NPC#12	858,{}
+izlude,138,184,4	script	เริ่มเล่นคุยที่NPC#13	858,{}
+izlude,140,184,4	script	เริ่มเล่นคุยที่NPC#14	858,{}
+izlude,142,184,4	script	เริ่มเล่นคุยที่NPC#15	858,{}
+izlude,144,184,4	script	เริ่มเล่นคุยที่NPC#16	858,{}
+izlude,146,184,4	script	เริ่มเล่นคุยที่NPC#17	858,{}
+izlude,148,184,4	script	เริ่มเล่นคุยที่NPC#18	858,{}
+izlude,150,184,4	script	เริ่มเล่นคุยที่NPC#19	858,{}
+izlude,152,184,4	script	เริ่มเล่นคุยที่NPC#20	858,{}
+
+izlude,134,182,4	script	เริ่มเล่นคุยที่NPC#21	858,{}
+izlude,136,182,4	script	เริ่มเล่นคุยที่NPC#22	858,{}
+izlude,138,182,4	script	เริ่มเล่นคุยที่NPC#23	858,{}
+izlude,140,182,4	script	เริ่มเล่นคุยที่NPC#24	858,{}
+izlude,142,182,4	script	เริ่มเล่นคุยที่NPC#25	858,{}
+izlude,144,182,4	script	เริ่มเล่นคุยที่NPC#26	858,{}
+izlude,146,182,4	script	เริ่มเล่นคุยที่NPC#27	858,{}
+izlude,148,182,4	script	เริ่มเล่นคุยที่NPC#28	858,{}
+izlude,150,182,4	script	เริ่มเล่นคุยที่NPC#29	858,{}
+izlude,152,182,4	script	เริ่มเล่นคุยที่NPC#30	858,{}
+
+
+-	shop	PuzzleShop	-1,40162:800,40001:800,40131:800,40015:800,40056:800,40060:800,40075:800,40150:800,40004:800,40006:800,40013:800,40048:800,40052:800,40085:800,40137:800,40012:800,40039:800,40080:800,40102:800,40107:800,40111:800,40112:800,40161:800,7619:200,7620:200,7539:30
+
+
+
+function	script	BuyPuzzleShop	{
+
+if(@bought_nameid == 40162)		{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40001)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40131)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40015)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40056)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40060)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40075)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40150)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40004)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40006)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40013)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40048)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40052)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40085)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40137)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40012)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40039)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40080)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40102)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40107)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40111)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40112)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 40161)	{		set @PuzShop,800*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 7619)	{		set @PuzShop,200*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 7620)	{		set @PuzShop,200*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+else if(@bought_nameid == 7539)	{		set @PuzShop,30*@bought_quantity;		callfunc "ShopPuzzle"; end;}
+
+
+
+return;
+
+}
+
+
+
+-	script	rewardpuzzle	-1,{
+
+mes "[^0000FFแลกของรางวัลจับคู่^000000]";
+
+mes "สวัสดีค่ะคุณ :: ^4233F4"+strcharinfo(0)+"^000000";
+
+mes "ตอนนี้คุณมีแต้มเกมจับคู่  [ ^ff0000"+COPY_POINT+" ^000000 ] แต้ม";
+
+	callshop "PuzzleShop",1;
+
+	npcshopattach "PuzzleShop";
+
+end;
+
+
+
+OnBuyItem:
+
+callfunc "BuyPuzzleShop";
+
+end;
+
+
+
+OnInit:
+
+waitingroom "แลกของรางวัลจับคู่",0;
+
+end;
+
+
+
+}
+
+
+
+function	script	ShopPuzzle	{
+
+
+
+	if(@PuzShop<= COPY_POINT) {
+
+	set COPY_POINT,COPY_POINT-@PuzShop;
+
+	getitem @bought_nameid,@bought_quantity;
+
+	dispbottom "[ >> คุณได้รับของเรียบร้อยแล้ว << ]";
+
+		} else {
+
+			dispbottom "จำนวน คะแนนจับคู่ ไม่พอแลก "+getitemname(@bought_nameid)+"  "+@bought_quantity+" ชิ้น จำนวน แต้มจับคู่ ที่ต้องการคือ "+@PuzShop;
+
+			end;
+
+		}
+
+end;
+
+}
+
+
+
+function	script	PuzzleCoin	{
+
+input @puzzlecoin;
+
+if (countitem(7539) < @puzzlecoin) goto nonitem;
+
+delitem 7539,@puzzlecoin;
+
+	set COPY_POINT,(COPY_POINT + @puzzlecoin);
+
+	dispbottom "========= คุณมี Puzzle Point ทั้งหมด "+COPY_POINT+" Cash===========";
+
+end;
+
+nonitem:
+
+	dispbottom "========= Poring  Coin ของคุณมีจำนวนน้อยกว่าที่คุณระบุ ===========";
+
+	dispbottom "========= Poring  Coin ของคุณมีจำนวนน้อยกว่าที่คุณระบุ ===========";
+
+end;
+
+}
+
+izlude,152,178,4	duplicate(puzzle)	เกมจับคู่#1	408
+izlude,152,175,4	duplicate(rewardpuzzle)	แลกของรางวัลจับคู่	561

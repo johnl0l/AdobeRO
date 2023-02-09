@@ -1,0 +1,681 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+
+-	script	osdioao::bomeluc6464	647,{
+//== ตัวแปรห้ามแก้ไข ============================================
+set @npc$,"[^000080"+strnpcinfo(0)+"^000000]";
+set .@s$,strcharinfo(0);
+//===========================================================
+//mes @npc$;
+mes "กรุณารอสักครู่นะครับ";
+mes "ทางเรากำลังจัดเตรียม";
+mes "กิจกรรมครับ";
+close;
+
+OnInit:
+set $Ev_BomeLucky,0;	//สถานะกิจกรรม
+set $Ev_BomeLucky_time$,"00:00 น. ของทุกวัน";	//เวลากิจกรรม
+end;
+
+OnClock0000: 
+set $@EvBometimeST$,"00:00 น.";
+donpcevent "Ev_BomeLucky_time::Ontime_game";
+end;
+}
+
+-	script	Ev_BomeLucky_time	-1,{
+
+Ontime_game:
+set $Ev_BomeLucky,1;
+set $Ev_BomeLucky_Boom1,0;
+set $Ev_BomeLucky_Boom2,0;
+set $Ev_BomeLucky_Boom3,0;
+set $Ev_BomeLucky_Boom4,0;
+set $EvBomeBoom1,0;
+set $EvBomeBoom2,0;
+set $EvBomeBoom3,0;
+set $EvBomeBoom4,0;
+disablenpc "BomeLucky_Warp1";
+disablenpc "BomeLucky_Warp2"; 
+disablenpc "BomeLucky_Warp3"; 
+disablenpc "BomeLucky_Warp4"; 
+announce "[กิจกรรมระเบิดนำโชค] : กิจกรรมกำลังจะเปิดใน 3 นาที !!",0;
+sleep2 5000;
+announce "[กิจกรรมระเบิดนำโชค] : กิจกรรมกำลังจะเปิดใน 2 นาที !!",0;
+sleep2 5000;
+donpcevent "Ev_BomeLucky_time::Ontime3_1";
+end;
+
+Ontime3_1:
+announce "[กิจกรรมระเบิดนำโชค] : กิจกรรมกำลังจะเปิดใน 1 นาที !!",0;
+sleep2 60000;
+donpcevent "Ev_BomeLucky_time::Ontime3_2";
+end;
+
+Ontime3_2:
+set $Ev_BomeLucky,0;
+announce "[กิจกรรมระเบิดนำโชค] : กิจกรรมได้เริ่มต้นขึ้นแล้ว !!",0;
+sleep2 15000;
+donpcevent "Ev_BomeLucky_time::Ongame4_1a";
+end;
+
+Ongame4_1a:
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : วิธีการเล่นคือให้ท่านลือกเข้าห้องที่คิดว่าไม่มีระเบิด !!",0;
+sleep2 5000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ผู้ที่เข้าห้องผิด เมื่อโดนระเบิด ก็จะส่งตัวไปรับของรางวัลและกลับบ้าน",0;
+sleep2 5000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ผู้ที่เข้าห้องถูก เมื่อจบเวลากิจกรรม ก็จะส่งตัวไปรับของรางวัลและกลับบ้าน",0;
+sleep2 10000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ขณะนี้ได้ทำการเปิดวาร์ปแล้ว",0;
+sleep2 2000;
+enablenpc "BomeLucky_Warp1";
+enablenpc "BomeLucky_Warp2"; 
+enablenpc "BomeLucky_Warp3"; 
+enablenpc "BomeLucky_Warp4"; 
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : กรุณาเลือกห้องที่คิดว่าไม่มีระเบิดใน 1 นาที",0;
+sleep2 60000;
+donpcevent "Ev_BomeLucky_time::Ongame4_1b";
+end;
+
+Ongame4_1b:
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : หมดเวลาในการเข้าห้อง ผู้ไม่เข้าห้องจะถูกส่งกลับบ้าน",0;
+areawarp "quiz_02",310,87,358,59,"wonderworld",155,124;
+sleep2 5000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ตอนนี้ได้เวลาเริ่มวัดดวงรอบที่ 1 กันแล้ว",0;
+sleep2 5000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : 3 !!",0;
+sleep2 3000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : 2 !!",0;
+sleep2 3000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : 1 !!",0;
+sleep2 3000;
+set .@BomeBoom,rand(1,4);
+set $EvBomeBoom1,.@BomeBoom;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ระเบิดอยู่ห้องหมายเลข ["+.@BomeBoom+"] !!",0;
+sleep2 1000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ระเบิดทำงาน",0;
+if (.@BomeBoom == 1) set $Ev_BomeLucky_Boom1,1;
+if (.@BomeBoom == 2) set $Ev_BomeLucky_Boom2,1;
+if (.@BomeBoom == 3) set $Ev_BomeLucky_Boom3,1;
+if (.@BomeBoom == 4) set $Ev_BomeLucky_Boom4,1;
+sleep2 10000;
+donpcevent "Ev_BomeLucky_time::Ongame4_2a";
+end;
+
+Ongame4_2a:
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ขอแสดงความยินดีกับท่านที่ดวงดีทุกท่าน",0;
+if (.@BomeBoom != 1) set $Ev_BomeLucky_Boom1,2;
+if (.@BomeBoom != 2) set $Ev_BomeLucky_Boom2,2;
+if (.@BomeBoom != 3) set $Ev_BomeLucky_Boom3,2;
+if (.@BomeBoom != 4) set $Ev_BomeLucky_Boom4,2;
+sleep2 3000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ขอแสดงความยินดีกับท่านที่ดวงดีทุกท่าน",0;
+sleep2 10000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : กรุณาเลือกห้องที่คิดว่าไม่มีระเบิดใน 1 นาที",0;
+sleep2 60000;
+donpcevent "Ev_BomeLucky_time::Ongame4_2b";
+end;
+
+Ongame4_2b:
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : หมดเวลาในการเข้าห้อง ผู้ไม่เข้าห้องจะถูกส่งกลับบ้าน",0;
+areawarp "quiz_02",310,87,358,59,"wonderworld",155,124;
+sleep2 5000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ตอนนี้ได้เวลาเริ่มวัดดวงรอบที่ 2 กันแล้ว",0;
+sleep2 5000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : 3",0;
+sleep2 3000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : 2",0;
+sleep2 3000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : 1",0;
+sleep2 3000;
+goto Lradom_2b;
+
+Lradom_2b:
+set .@BomeBoom,rand(1,4);
+if (.@BomeBoom == $EvBomeBoom1) goto Lradom_2b;
+set $EvBomeBoom2,.@BomeBoom;
+
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ระเบิดอยู่ห้องหมายเลข ["+.@BomeBoom+"] !!",0;
+sleep2 1000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ระเบิดทำงาน",0;
+if (.@BomeBoom == 1) set $Ev_BomeLucky_Boom1,1;
+if (.@BomeBoom == 2) set $Ev_BomeLucky_Boom2,1;
+if (.@BomeBoom == 3) set $Ev_BomeLucky_Boom3,1;
+if (.@BomeBoom == 4) set $Ev_BomeLucky_Boom4,1;
+sleep2 10000;
+donpcevent "Ev_BomeLucky_time::Ongame4_3a";
+end;
+
+Ongame4_3a:
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ขอแสดงความยินดีกับท่านที่ดวงดีทุกท่าน",0;
+if (.@BomeBoom != 1) set $Ev_BomeLucky_Boom1,2;
+if (.@BomeBoom != 2) set $Ev_BomeLucky_Boom2,2;
+if (.@BomeBoom != 3) set $Ev_BomeLucky_Boom3,2;
+if (.@BomeBoom != 4) set $Ev_BomeLucky_Boom4,2;
+sleep2 3000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ขอแสดงความยินดีกับท่านที่ดวงดีทุกท่าน",0;
+sleep2 10000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : กรุณาเลือกห้องที่คิดว่าไม่มีระเบิดใน 1 นาที",0;
+sleep2 60000;
+donpcevent "Ev_BomeLucky_time::Ongame4_3b";
+end;
+
+Ongame4_3b:
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : หมดเวลาในการเข้าห้อง ผู้ไม่เข้าห้องจะถูกส่งกลับบ้าน",0;
+areawarp "quiz_02",310,87,358,59,"wonderworld",155,124;
+sleep2 5000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ตอนนี้ได้เวลาเริ่มวัดดวงรอบที่ 3 กันแล้ว",0;
+sleep2 5000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : 3",0;
+sleep2 3000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : 2",0;
+sleep2 3000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : 1",0;
+sleep2 3000;
+goto Lradom_3b;
+
+Lradom_3b:
+set .@BomeBoom,rand(1,4);
+if (.@BomeBoom == $EvBomeBoom1) goto Lradom_3b;
+if (.@BomeBoom == $EvBomeBoom2) goto Lradom_3b;
+set $EvBomeBoom3,.@BomeBoom;
+
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ระเบิดอยู่ห้องหมายเลข ["+.@BomeBoom+"] !!",0;
+sleep2 1000;
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ระเบิดทำงาน",0;
+if (.@BomeBoom == 1) set $Ev_BomeLucky_Boom1,1;
+if (.@BomeBoom == 2) set $Ev_BomeLucky_Boom2,1;
+if (.@BomeBoom == 3) set $Ev_BomeLucky_Boom3,1;
+if (.@BomeBoom == 4) set $Ev_BomeLucky_Boom4,1;
+sleep2 10000;
+donpcevent "Ev_BomeLucky_time::Ongame4_4a";
+end;
+
+Ongame4_4a:
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : เหลือห้องสุดท้ายที่ไม่โดนระเบิด",0;
+sleep2 3000;
+donpcevent "Ev_BomeLucky_time::Ongame_end";
+end;
+
+Ongame_end:
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : ขอแสดงความยินดีกับท่านที่ดวงดีทุกท่าน เชิญไปรับรางวัลและกลับบ้าน",0;
+sleep2 3000;
+goto Lwinwin;
+
+Lwinwin:
+set .@BomeBoom,rand(1,4);
+if (.@BomeBoom == $EvBomeBoom1) goto Lwinwin;
+if (.@BomeBoom == $EvBomeBoom2) goto Lwinwin;
+if (.@BomeBoom == $EvBomeBoom3) goto Lwinwin;
+set $EvBomeBoom4,.@BomeBoom;
+
+areaannounce "quiz_02",310,87,359,34,"[กิจกรรมระเบิดนำโชค] : เลข "+$EvBomeBoom4+" คือดีสำหรับท่านวันนี้",0;
+sleep2 3000;
+if ($EvBomeBoom4 == 1) set $Ev_BomeLucky_Boom1,3;
+if ($EvBomeBoom4 == 2) set $Ev_BomeLucky_Boom2,3;
+if ($EvBomeBoom4 == 3) set $Ev_BomeLucky_Boom3,3;
+if ($EvBomeBoom4 == 4) set $Ev_BomeLucky_Boom4,3;
+sleep2 3000;
+announce "[กิจกรรมระเบิดนำโชค] : กิจกรรมได้จบลงแล้ว !!",0;
+end;
+
+}
+
+
+quiz_02,319,61,4	script	BomeLucky_Warp1	45,1,1,{
+	warp "quiz_02",319,47;
+	end;
+}
+
+quiz_02,331,61,4	script	BomeLucky_Warp2	45,1,1,{
+	warp "quiz_02",331,47;
+	end;
+}
+
+quiz_02,343,61,4	script	BomeLucky_Warp3	45,1,1,{
+	warp "quiz_02",343,47;
+	end;
+}
+
+quiz_02,355,61,4	script	BomeLucky_Warp4	45,1,1,{
+	warp "quiz_02",355,47;
+	end;
+}
+
+
+
+
+
+-	script	BomeLuckyEffect1	-1,{
+
+OnInit:
+
+Lst_effect:
+if($Ev_BomeLucky_Boom1 == 1) disablenpc "BomeLucky_Warp1"; 
+if($Ev_BomeLucky_Boom1 == 1) specialeffect 90;	//หลอดวินเลม
+if($Ev_BomeLucky_Boom1 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom1 == 1) specialeffect 106;	//ระเบิด1
+if($Ev_BomeLucky_Boom1 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom1 == 1) specialeffect 183;	//ระเบิด2
+if($Ev_BomeLucky_Boom1 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom1 == 1) specialeffect 585;	//ระเบิด3
+if($Ev_BomeLucky_Boom1 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom1 == 1) areawarp "quiz_02",314,57,323,34,"job_star",99,12;
+if($Ev_BomeLucky_Boom1 == 1) set $Ev_BomeLucky_Boom1,0;
+if($Ev_BomeLucky_Boom1 == 2) areawarp "quiz_02",314,57,323,34,"quiz_02",337,74;
+if($Ev_BomeLucky_Boom1 == 2) set $Ev_BomeLucky_Boom1,0;
+if($Ev_BomeLucky_Boom1 == 3) specialeffect 91;	//นางฟ้า
+if($Ev_BomeLucky_Boom1 == 3) sleep2 1000;
+if($Ev_BomeLucky_Boom1 == 3) areawarp "quiz_02",314,57,323,34,"job_star",33,12;
+if($Ev_BomeLucky_Boom1 == 3) set $Ev_BomeLucky_Boom1,0;
+sleep2 1000;
+goto Lst_effect;
+
+ end;
+}
+
+-	script	BomeLuckyEffect2	-1,{
+
+OnInit:
+
+Lst_effect:
+if($Ev_BomeLucky_Boom2 == 1) disablenpc "BomeLucky_Warp2"; 
+if($Ev_BomeLucky_Boom2 == 1) specialeffect 90;		//หลอด
+if($Ev_BomeLucky_Boom2 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom2 == 1) specialeffect 106;	//ระเบิด1
+if($Ev_BomeLucky_Boom2 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom2 == 1) specialeffect 183;	//ระเบิด2
+if($Ev_BomeLucky_Boom2 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom2 == 1) specialeffect 585;	//ระเบิด3
+if($Ev_BomeLucky_Boom2 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom2 == 1) areawarp "quiz_02",326,57,335,34,"job_star",99,12;
+if($Ev_BomeLucky_Boom2 == 1) set $Ev_BomeLucky_Boom2,0;
+if($Ev_BomeLucky_Boom2 == 2) areawarp "quiz_02",326,57,335,34,"quiz_02",337,74;
+if($Ev_BomeLucky_Boom2 == 2) set $Ev_BomeLucky_Boom2,0;
+if($Ev_BomeLucky_Boom2 == 3) specialeffect 91;		//นางฟ้า
+if($Ev_BomeLucky_Boom2 == 3) sleep2 1000;
+if($Ev_BomeLucky_Boom2 == 3) areawarp "quiz_02",326,57,335,34,"job_star",33,12;
+if($Ev_BomeLucky_Boom2 == 3) set $Ev_BomeLucky_Boom2,0;
+sleep2 1000;
+goto Lst_effect;
+
+ end;
+}
+
+-	script	BomeLuckyEffect3	-1,{
+
+OnInit:
+
+Lst_effect:
+if($Ev_BomeLucky_Boom3 == 1) disablenpc "BomeLucky_Warp3"; 
+if($Ev_BomeLucky_Boom3 == 1) specialeffect 90;		//หลอด
+if($Ev_BomeLucky_Boom3 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom3 == 1) specialeffect 106;	//ระเบิด1
+if($Ev_BomeLucky_Boom3 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom3 == 1) specialeffect 183;	//ระเบิด2
+if($Ev_BomeLucky_Boom3 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom3 == 1) specialeffect 585;	//ระเบิด3
+if($Ev_BomeLucky_Boom3 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom3 == 1) areawarp "quiz_02",338,57,347,34,"job_star",99,12;
+if($Ev_BomeLucky_Boom3 == 1) set $Ev_BomeLucky_Boom3,0;
+if($Ev_BomeLucky_Boom3 == 2) areawarp "quiz_02",338,57,347,34,"quiz_02",337,74;
+if($Ev_BomeLucky_Boom3 == 2) set $Ev_BomeLucky_Boom3,0;
+if($Ev_BomeLucky_Boom3 == 3) specialeffect 91;		//นางฟ้า
+if($Ev_BomeLucky_Boom3 == 3) sleep2 1000;
+if($Ev_BomeLucky_Boom3 == 3) areawarp "quiz_02",338,57,347,34,"job_star",33,12;
+if($Ev_BomeLucky_Boom3 == 3) set $Ev_BomeLucky_Boom3,0;
+sleep2 1000;
+goto Lst_effect;
+
+ end;
+}
+
+-	script	BomeLuckyEffect4	-1,{
+
+OnInit:
+
+Lst_effect:
+if($Ev_BomeLucky_Boom4 == 1) disablenpc "BomeLucky_Warp4"; 
+if($Ev_BomeLucky_Boom4 == 1) specialeffect 90;		//หลอด
+if($Ev_BomeLucky_Boom4 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom4 == 1) specialeffect 106;	//ระเบิด1
+if($Ev_BomeLucky_Boom4 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom4 == 1) specialeffect 183;	//ระเบิด2
+if($Ev_BomeLucky_Boom4 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom4 == 1) specialeffect 585;	//ระเบิด3
+if($Ev_BomeLucky_Boom4 == 1) sleep2 1000;
+if($Ev_BomeLucky_Boom4 == 1) areawarp "quiz_02",350,57,359,34,"job_star",99,12;
+if($Ev_BomeLucky_Boom4 == 1) set $Ev_BomeLucky_Boom4,0;
+if($Ev_BomeLucky_Boom4 == 2) areawarp "quiz_02",350,57,359,34,"quiz_02",337,74;
+if($Ev_BomeLucky_Boom4 == 2) set $Ev_BomeLucky_Boom4,0;
+if($Ev_BomeLucky_Boom4 == 3) specialeffect 91;		//นางฟ้า
+if($Ev_BomeLucky_Boom4 == 3) sleep2 1000;
+if($Ev_BomeLucky_Boom4 == 3) areawarp "quiz_02",350,57,359,34,"job_star",33,12;
+if($Ev_BomeLucky_Boom4 == 3) set $Ev_BomeLucky_Boom4,0;
+sleep2 1000;
+goto Lst_effect;
+
+ end;
+}
+
+// 1 /////////////////////////////////////////////////////////////////////////////////////////////////
+
+quiz_02,314,56,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#1-1	139
+quiz_02,317,56,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#1-2	139
+quiz_02,320,56,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#1-3	139
+quiz_02,323,56,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#1-4	139
+
+quiz_02,314,53,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#2-1	139
+quiz_02,317,53,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#2-2	139
+quiz_02,320,53,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#2-3	139
+quiz_02,323,53,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#2-4	139
+
+quiz_02,314,50,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#3-1	139
+quiz_02,317,50,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#3-2	139
+quiz_02,320,50,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#3-3	139
+quiz_02,323,50,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#3-4	139
+
+quiz_02,314,47,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#4-1	139
+quiz_02,317,47,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#4-2	139
+quiz_02,320,47,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#4-3	139
+quiz_02,323,47,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#4-4	139
+
+quiz_02,314,44,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#5-1	139
+quiz_02,317,44,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#5-2	139
+quiz_02,320,44,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#5-3	139
+quiz_02,323,44,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#5-4	139
+
+quiz_02,314,41,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#6-1	139
+quiz_02,317,41,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#6-2	139
+quiz_02,320,41,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#6-3	139
+quiz_02,323,41,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#6-4	139
+
+quiz_02,314,38,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#7-1	139
+quiz_02,317,38,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#7-2	139
+quiz_02,320,38,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#7-3	139
+quiz_02,323,38,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#7-4	139
+
+quiz_02,314,35,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#8-1	139
+quiz_02,317,35,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#8-2	139
+quiz_02,320,35,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#8-3	139
+quiz_02,323,35,4	duplicate(BomeLuckyEffect1)	BomeLuckyEffect1#8-4	139
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 2 /////////////////////////////////////////////////////////////////////////////////////////////////
+
+quiz_02,326,56,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#1-1	139
+quiz_02,329,56,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#1-2	139
+quiz_02,332,56,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#1-3	139
+quiz_02,335,56,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#1-4	139
+
+quiz_02,326,53,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#2-1	139
+quiz_02,329,53,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#2-2	139
+quiz_02,332,53,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#2-3	139
+quiz_02,335,53,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#2-4	139
+
+quiz_02,326,50,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#3-1	139
+quiz_02,329,50,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#3-2	139
+quiz_02,332,50,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#3-3	139
+quiz_02,335,50,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#3-4	139
+
+quiz_02,326,47,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#4-1	139
+quiz_02,329,47,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#4-2	139
+quiz_02,332,47,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#4-3	139
+quiz_02,335,47,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#4-4	139
+
+quiz_02,326,44,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#5-1	139
+quiz_02,329,44,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#5-2	139
+quiz_02,332,44,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#5-3	139
+quiz_02,335,44,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#5-4	139
+
+quiz_02,326,41,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#6-1	139
+quiz_02,329,41,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#6-2	139
+quiz_02,332,41,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#6-3	139
+quiz_02,335,41,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#6-4	139
+
+quiz_02,326,38,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#7-1	139
+quiz_02,329,38,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#7-2	139
+quiz_02,332,38,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#7-3	139
+quiz_02,335,38,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#7-4	139
+
+quiz_02,326,35,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#8-1	139
+quiz_02,329,35,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#8-2	139
+quiz_02,332,35,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#8-3	139
+quiz_02,335,35,4	duplicate(BomeLuckyEffect2)	BomeLuckyEffect2#8-4	139
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 3 /////////////////////////////////////////////////////////////////////////////////////////////////
+
+quiz_02,338,56,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#1-1	139
+quiz_02,341,56,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#1-2	139
+quiz_02,344,56,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#1-3	139
+quiz_02,347,56,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#1-4	139
+
+quiz_02,338,53,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#2-1	139
+quiz_02,341,53,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#2-2	139
+quiz_02,344,53,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#2-3	139
+quiz_02,347,53,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#2-4	139
+
+quiz_02,338,50,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#3-1	139
+quiz_02,341,50,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#3-2	139
+quiz_02,344,50,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#3-3	139
+quiz_02,347,50,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#3-4	139
+
+quiz_02,338,47,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#4-1	139
+quiz_02,341,47,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#4-2	139
+quiz_02,344,47,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#4-3	139
+quiz_02,347,47,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#4-4	139
+
+quiz_02,338,44,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#5-1	139
+quiz_02,341,44,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#5-2	139
+quiz_02,344,44,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#5-3	139
+quiz_02,347,44,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#5-4	139
+
+quiz_02,338,41,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#6-1	139
+quiz_02,341,41,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#6-2	139
+quiz_02,344,41,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#6-3	139
+quiz_02,347,41,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#6-4	139
+
+quiz_02,338,38,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#7-1	139
+quiz_02,341,38,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#7-2	139
+quiz_02,344,38,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#7-3	139
+quiz_02,347,38,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#7-4	139
+
+quiz_02,338,35,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#8-1	139
+quiz_02,341,35,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#8-2	139
+quiz_02,344,35,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#8-3	139
+quiz_02,347,35,4	duplicate(BomeLuckyEffect3)	BomeLuckyEffect3#8-4	139
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 4 /////////////////////////////////////////////////////////////////////////////////////////////////
+
+quiz_02,350,56,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#1-1	139
+quiz_02,353,56,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#1-2	139
+quiz_02,356,56,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#1-3	139
+quiz_02,359,56,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#1-4	139
+
+quiz_02,350,53,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#2-1	139
+quiz_02,353,53,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#2-2	139
+quiz_02,356,53,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#2-3	139
+quiz_02,359,53,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#2-4	139
+
+quiz_02,350,50,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#3-1	139
+quiz_02,353,50,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#3-2	139
+quiz_02,356,50,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#3-3	139
+quiz_02,359,50,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#3-4	139
+
+quiz_02,350,47,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#4-1	139
+quiz_02,353,47,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#4-2	139
+quiz_02,356,47,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#4-3	139
+quiz_02,359,47,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#4-4	139
+
+quiz_02,350,44,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#5-1	139
+quiz_02,353,44,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#5-2	139
+quiz_02,356,44,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#5-3	139
+quiz_02,359,44,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#5-4	139
+
+quiz_02,350,41,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#6-1	139
+quiz_02,353,41,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#6-2	139
+quiz_02,356,41,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#6-3	139
+quiz_02,359,41,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#6-4	139
+
+quiz_02,350,38,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#7-1	139
+quiz_02,353,38,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#7-2	139
+quiz_02,356,38,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#7-3	139
+quiz_02,359,38,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#7-4	139
+
+quiz_02,350,35,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#8-1	139
+quiz_02,353,35,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#8-2	139
+quiz_02,356,35,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#8-3	139
+quiz_02,359,35,4	duplicate(BomeLuckyEffect4)	BomeLuckyEffect4#8-4	139
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+job_star,100,37,4	script	พนักงานกิจกรรม[แพ้]	837,{
+cutin "jpn_ellen01",2;
+//== ตัวแปรห้ามแก้ไข ============================================
+set @npc$,"[^000080"+strnpcinfo(0)+"^000000]";
+set .@s$,strcharinfo(0);
+//=========================================================
+//mes @npc$;
+mes "แสดงความเสียใจด้วยครับ";
+mes "นี่คือรางวัลปลอบใจครับ";
+getitem 30000,10;
+warp "SavePoint",0,0;
+cutin "jpn_ellen01",255;
+close;
+
+OnInit:
+waitingroom "รางวัลผู้ดวงตก",0;
+end;
+}
+
+job_star,34,37,4	script	พนักงานกิจกรรม[ชนะ]	837,{
+cutin "jpn_ellen01",2;
+//== ตัวแปรห้ามแก้ไข ============================================
+set @npc$,"[^000080"+strnpcinfo(0)+"^000000]";
+set .@s$,strcharinfo(0);
+//=========================================================
+//mes @npc$;
+mes "แสดงความยินดีด้วยครับ";
+mes "นี่คือรางวัลสำหรับผู้ชนะครับ";
+getitem 30000,50;
+set Zeny, Zeny + 5000000;
+warp "SavePoint",0,0;
+cutin "jpn_ellen01",255;
+close;
+
+OnInit:
+waitingroom "รางวัลผู้ดวงดี",0;
+end;
+}
+
+
+-	script	Bome Lucky::bomelucky	-1,{
+cutin "jpn_ellen01",2;
+//== ตัวแปรห้ามแก้ไข ============================================
+set @npc$,"[^000080"+strnpcinfo(0)+"^000000]";
+set .@s$,strcharinfo(0);
+//=========================================================
+//mes @npc$;
+specialeffect 411;
+mes "สวัสดีครับ ยินดีให้บริการครับ";
+mes "ต้องเข้าร่วมกิจกรรมมั้ยครับ";
+next;
+menu 
+"^009933•^000000 ต้องการ",Levents1,
+"^FF0000•^000000 ยกเลิก",Lend;
+
+Lend:
+//mes @npc$;
+mes "ยินดีให้บริการครับ";
+cutin "jpn_ellen01",255;
+close;
+
+Levents1:
+//mes @npc$;
+mes "สวัสดีครับ ยินดีให้บริการครับ";
+mes "เลือกเมนูที่ท่านต้องการครับ";
+next;
+
+if($Ev_BomeLucky == 1) 
+menu 
+"^FF0000•^000000 รายละเอียด",Levents1_data,
+"^009933•^000000 เข้าร่วมกิจกรรม",Levents1_go,
+"^FF0000•^000000 ยกเลิก",Lend;
+
+if(getgmlevel() >=99) 
+menu 
+"^FF0000•^000000 รายละเอียด",Levents1_data,
+"^009933•^000000 เปิดกิจกรรม",Levents1_gm,
+"^FF0000•^000000 ยกเลิก",Lend;
+
+if($Ev_BomeLucky == 0) 
+menu 
+"^FF0000•^000000 รายละเอียด",Levents1_data,
+"^FF0000•^000000 ยกเลิก",Lend;
+
+Levents1_gm:
+set $@EvBometimeST$,"พิเศษ";
+set $Ev_BomeLucky,1;
+donpcevent "Ev_BomeLucky_time::Ontime_game";
+goto Levents1;
+
+Levents1_data:
+//mes @npc$;
+mes "เป็นการวัดดวงครับ";
+mes "โดยให้ท่านเลือกห้อง";
+mes "จากทั้งหมด 4 ห้องครับ";
+mes "จะมี 1 ห้องที่มีระเบิดครับ";
+mes "ถ้าดวงดีรอดก็จะลดห้อง";
+mes "ลงไปเรื่อยๆครับจนกว่า";
+mes "จะเหลือเพียงห้องเดียว";
+mes "ก็จะได้เป็นผู้ชนะไป";
+mes "และได้รับรางวัลครับ";
+next;
+goto Levents1;
+
+Levents1_time:
+//mes @npc$;
+mes "";
+mes "";
+next;
+goto Levents1;
+
+Levents1_go:
+//mes @npc$;
+mes "ยินดีให้บริการครับ";
+set .@ev_warp,rand(0,3);
+if(.@ev_warp == 0) warp "quiz_02",332,83;
+if(.@ev_warp == 1) warp "quiz_02",343,83;
+if(.@ev_warp == 2) warp "quiz_02",330,66;
+if(.@ev_warp == 3) warp "quiz_02",345,66;
+cutin "jpn_ellen01",255;
+close;
+
+//==========================================================
+OnInit:
+waitingroom "[•] Boom Lucky",0;
+end;
+}
+
+quiz_02	mapflag	nowarpto
+quiz_02	mapflag	noteleport
+quiz_02	mapflag	nosave	SavePoint
+quiz_02	mapflag	nomemo
+quiz_02	mapflag	nowarp
+quiz_02	mapflag	noreturn
+quiz_02	mapflag	noloot
+quiz_02	mapflag	nobranch
+quiz_02	mapflag	noicewall
+quiz_02	mapflag	noexp
+quiz_02	mapflag	noskill
+
+morocc,184,51,4	duplicate(bomelucky)	Boom Lucky#01	837
+quiz_02,337,82,4	duplicate(bomeluc6464)	Boom Lucky#02	837

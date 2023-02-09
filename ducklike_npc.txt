@@ -1,0 +1,190 @@
+-	shop	fbpoint_shop1	-1,501:-1
+
+izlude,89,140,5	script	แลกไอเทม Like-Share::fbpoint_shop	 778,{
+
+	function showmsg;
+	function check_pos;
+	function show_requirement;
+	function check_requirement;
+	function make_trade;
+
+	set .@accid, getcharid(3);
+
+	cleararray @katoo$[0] , 0, getarraysize(@katoo$);
+	cleararray .@point[0] , 0, getarraysize(.@point);
+	set .@player_fbpoint, 0;
+	query_sql "SELECT `point` FROM `ducklike` WHERE `account_id` = " + .@accid + " LIMIT 1", .@point;
+	if( .@point[0] > 0 )
+  {
+  	set .@player_fbpoint, .@point;
+  }
+
+	cleararray @quest[ 0 ] , 0 , getarraysize(  @quest ) ;
+
+	mes "ปัจจุบันท่านมี FB Point : ^0000FF"+ .@player_fbpoint +"^000000";
+	close2;
+
+	callshop "fbpoint_shop1", 1;
+	npcshopattach "fbpoint_shop1";
+	end;
+
+L_cancel:
+	mes " วันหลังโปรดใช้บริการใหม่นะคะ";
+	close;
+
+OnBuyItem:
+	for( set @i, 0; @i < getarraysize(@bought_nameid); set @i, @i + 1 )
+	{
+		if( @bought_quantity[@i] <= 0 )
+		{
+			showmsg("เกิดข้อผิดพลาด โปรดลองอีกครั้ง!!");
+			break;
+		}
+
+		set @j, check_pos( @bought_nameid[ @i ], .shop_id );
+		if( @j == 0 )
+		{
+			showmsg("ไม่พบของที่ท่านต้องการ โปรดลองใหม่อีกครั้ง!!");
+			break;
+		}
+		cleararray @quest[ 0 ], 0, getarraysize(@quest);
+		copyarray @quest[ 0 ] , getd( ".quest" + .shop_id + "_" + @j + "[ 0 ]" ) , getarraysize( getd( ".quest" + .shop_id + "_" + @j ) ) ;
+		if( !check_requirement(@bought_quantity[@i]) )
+		{
+			make_trade(@bought_quantity[@i]) ;
+		}
+		else
+		{
+			showmsg("=====================================");
+			showmsg("แต้มที่ใช้ในการแลกเปลี่ยน " + getitemname(@bought_nameid[ @i ]) + "");
+			show_requirement();
+		}
+	}
+
+	deletearray @bought_quantity, getarraysize(@bought_quantity);
+	deletearray @bought_nameid, getarraysize(@bought_nameid);
+	end;
+
+
+/* -------------------------------------------------------------------------------------
+ ----- FUNCTIONS ! ---------------------------------------------------------------------
+ ----- Edit at your own risk -----------------------------------------------------------
+ -------------------------------------------------------------------------------------- */
+
+	function	showmsg
+	{
+		dispbottom getarg(0);
+	}
+
+	function	check_pos
+	{
+		// arg 0: item_id
+		// arg 1: shop_id
+		if( getarg(1) < 1 || getarg(1) > 9 )
+			return 0;
+
+		for( set .@i, 1; .@i <= 100; set .@i, .@i+1 )
+			if( getd(".quest" + getarg(1) + "_" + .@i + "[ 0 ]") == getarg(0) )
+				return .@i;
+		return 0;
+	}
+
+	//-- Function who show the requirement
+	function	show_requirement	{
+		// show needed point
+		showmsg(" FB Point :  " + @quest[ 1 ] + " แต้ม");
+		return ;
+	}
+
+	//-- Check if the player has all requirement.
+	function	check_requirement	{
+		// arg 0: bought quantity
+
+		set .@accid, getcharid(3);
+		set @l , 0 ;
+		// Look if player has enough point
+		set .@requiredpoint, @quest[ 1 ] * getarg(0);
+		query_sql "SELECT `point` FROM `ducklike` WHERE `account_id` = " + .@accid + " LIMIT 1", .@point;
+		if( .@point < .@requiredpoint )
+		{
+			// point is not enough
+			set @l , 1 ;
+		}
+		return @l ;
+	}
+
+	//-- Make The trade (delete requirements/give item)
+	function	make_trade	{
+		// arg 0: bought quantity
+
+		set .@accid, getcharid(3);
+		// deduct point
+		set .@requiredpoint, @quest[ 1 ] * getarg(0);
+		query_sql "SELECT `point` FROM `ducklike` WHERE `account_id` = " + .@accid + " LIMIT 1", .@point;
+		if( .@point < .@requiredpoint )
+		{
+			// point is not enough, not giving item
+		}
+		else
+		{
+			query_sql "UPDATE `ducklike` SET `point` = `point` - " + .@requiredpoint + " WHERE `account_id` = " + .@accid + " LIMIT 1";
+			// Give item.
+			getitem @quest[ 0 ] , getarg(0);
+			showmsg("คุณเหลือ FB Point : " + (.@point - .@requiredpoint));
+		}
+
+		return ;
+	}
+
+	function	digadditem	{
+		// arg 0: shop_id
+		// arg 1: item_code
+		// arg 2: point
+
+		set .lastpos[getarg(0)], .lastpos[getarg(0)] + 1;
+		set .@i, 1;
+		while( getarg(.@i,-1) != -1 )
+		{
+			// 0 : shop_id
+			// 1 : item_code
+			// 2 : point
+			// ex .quest0_1[0], item_code
+			// ex .quest0_1[1], point
+			setd ".quest" + getarg(0) + "_" + .lastpos[getarg(0)] + "[" + (.@i-1) + "]", getarg(.@i);
+			set .@i, .@i + 1;
+		}
+		npcshopadditem( "fbpoint_shop" + getarg(0), getd(".quest" + getarg(0) + "_" + .lastpos[getarg(0)] + "[ 0 ]"), getd(".quest" + getarg(0) + "_" + .lastpos[getarg(0)] + "[ 1 ]")  );
+
+		return;
+		end;
+	}
+
+/* -------------------------------------------------------------------------------------
+ -------------------------------------------------------------------------------------- */
+
+OnInit:
+	setarray .lastpos[1],0,0,0,0;
+
+	npcshopdelitem( "fbpoint_shop1", 501 );
+	waitingroom "แลกของ Facebook", 0;
+
+	if( .inited != 1 )
+		set .inited, 1;
+	else
+		end;
+		
+	// shop id
+	set .shop_id, 1;
+
+	//digadditem(.shop_id, 501, 5); // Redpotion ใช้ 5p
+	// item list start
+
+digadditem( .shop_id, 12209, 10);
+digadditem( .shop_id, 12208, 20);
+digadditem( .shop_id, 12210, 20);
+digadditem( .shop_id, 12622, 50);
+
+	// item list end
+
+	end;
+}

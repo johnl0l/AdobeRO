@@ -1,0 +1,36 @@
+-	shop	PORING_SELLER	-1,501:200
+-	script	PORINGSHOP	-1,{
+	mes "ตู้นี้ใช้เหรียญ Poring Coin ในการแลก";
+	mes	"^FF0000หากดึงผิดไม่รับผิดชอบใดๆทั้งสิ้น^000000";
+	mes	"^FF0000ไม่รับแลกเปลี่นยคืนเด็ดขาด^000000";
+	callshop "PORING_SELLER",1;
+	npcshopattach "PORING_SELLER";
+	end;
+	OnBuyItem:
+	for(set .@i,0; .@i<getarraysize(.customs); set .@i,.@i+1) {
+		for(set .@d,0; .@d<getarraysize(@bought_nameid); set .@d,.@d+1) {
+			if(@bought_nameid[.@d]==.customs[.@i]) {
+				if(checkweight(@bought_nameid[.@d],@bought_quantity[.@d])) {
+					if(countitem(.CoinID) >= .Price[.@i]*@bought_quantity[.@d]) {
+						delitem .CoinID,.Price[.@i]*@bought_quantity[.@d];
+						getitem @bought_nameid[.@d],@bought_quantity[.@d];
+					} else dispbottom "[ Poring Shop ] : คุณมี "+getitemname(.CoinID)+" ไม่พอในการแลก ต้องใช้ Poring Coin ในการแลก";
+				} else dispbottom "Purchasing these items will put you over the weight limit!";
+			}
+		}
+	}
+	deletearray @bought_quantity, getarraysize(@bought_quantity);
+	deletearray @bought_nameid, getarraysize(@bought_nameid);
+	close;
+
+OnInit:
+	setarray .customs[0],34017,61005,6231,6235,6456,6457,7776,12210,12214,7620,7619,6423,6607,6608,12208,14592,12710,12909,13891,13892,13893,13894,6469,6471,6470,6380,607;
+	set .CoinID,7539; // Enter the ID of the coin here.
+	setarray .Price[0],1,1000,2500,2500,1000,1000,200,100,100,100,100,80,80,80,50,50,50,50,30,30,30,30,20,20,20,20,20;
+	npcshopitem "PORING_SELLER",0,0; // Don't touch any coding beyond here
+	for(set .i,0; .customs[.i]; set .i,.i+1) npcshopadditem "PORING_SELLER",.customs[.i],.Price[.i];
+	waitingroom "- Poring Shop - ",0;
+	end;
+}
+
+izlude,136,127,4	duplicate(PORINGSHOP)	Poring Shop#1	562

@@ -1,0 +1,74 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+-	script	PlayBoxTimer	-1,{
+OnClock1308:
+
+OnClock0001:
+OnClock0101:
+OnClock0201:
+OnClock0301:
+OnClock0401:
+OnClock0501:
+OnClock0601:
+OnClock0701:
+OnClock0708:
+OnClock0801:
+OnClock0901:
+OnClock1001:
+OnClock1101:
+OnClock1201:
+OnClock1301:
+OnClock1401:
+OnClock1501:
+OnClock1601:
+OnClock1701:
+OnClock1801:
+OnClock1901:
+OnClock2001:
+OnClock2101:
+OnClock2201:
+OnClock2301:
+set $@PB_Count,0;
+announce "[กิจกรรมกล่องหรรษา] : ขณะนี้กล่อง กล่องหรรษา ได้เกิดขึ้นที่เมืองหลวง จำนวน 50 กล่อง มีเวลาในการกำจัด 5 นาที !!",0;
+monster "wonderworld",0,0,"กล่องหรรษา",3701,50,"PlayBoxTimer::OnBox";
+initnpctimer;
+end;
+
+OnBox:
+getitem 608,1;
+getitem 607,1;
+getitem 61005,1;
+getitem 61004,1;
+getitem 61003,1;
+getitem 61001,1;
+getitem 61002,1;
+set $@PB_Count,$@PB_Count+1;
+announce "[กิจกรรมกล่องหรรษา] : กล่องใบที่ [ "+$@PB_Count+"/50 ] ถูกพบโดยคุณ [ "+strcharinfo(0)+" ]",0;
+end;
+
+OnTimer60000:
+if($@PB_Count==30){ stopnpctimer; set $@PB_Count,0; }
+announce "[กิจกรรมกล่องหรรษา] : มีเวลาในการกำจัดอีก 4 นาที",0;
+end;
+OnTimer120000:
+if($@PB_Count==30){ stopnpctimer; set $@PB_Count,0; }
+announce "[กิจกรรมกล่องหรรษา] : มีเวลาในการกำจัดอีก 3 นาที",0;
+end;
+OnTimer180000:
+if($@PB_Count==30){ stopnpctimer; set $@PB_Count,0; }
+announce "[กิจกรรมกล่องหรรษา] : มีเวลาในการกำจัดอีก 2 นาที",0;
+end;
+OnTimer240000:
+if($@PB_Count==30){ stopnpctimer; set $@PB_Count,0; }
+announce "[กิจกรรมกล่องหรรษา] : มีเวลาในการกำจัดอีก 1 นาที",0;
+end;
+OnTimer300000:
+announce "[กิจกรรมกล่องหรรษา] : หมดเวลากิจกรรมแล้ว",0;
+stopnpctimer;
+set $@PB_Count,0;
+killmonsterall "wonderworld";
+end;
+}

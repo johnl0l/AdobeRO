@@ -1,0 +1,198 @@
+// --------------------------------------------------------------
+// -                      RO - STORE                    -
+//	-					www.ro-store.in.th				-
+// --------------------------------------------------------------
+
+// ========== NEW ZONE =========
+new_1-1,0,0,0,0	monster	Rocker	1052,30,0,0,0
+new_1-1,0,0,0,0	monster	Lunatic	1063,40,0,0,0
+new_1-1,0,0,0,0	monster	Poring	1002,200,0,0,0
+new_1-1,0,0,0,0	monster	Drops	1113,40,0,0,0
+new_1-1,0,0,0,0	monster	Poporing	1031,30,0,0,0
+new_1-1,0,0,0,0	monster	Marin	1242,20,0,0,0
+new_1-1,0,0,0,0	monster	Thief Bug	1051,20,0,0,0
+morocc.gat,120,93,4	script	เควสสีย้อม	643,{
+	if ((MaxWeight-Weight) < 200 || checkweight(1201,1) == 0) {
+		mes "น้ำหนักมากเกินไป";
+		close;
+	}
+	mes "[Dye Maker Java Dullihan]";
+	mes "ว้าววว...";
+	mes "วันนี้สดใสจริงๆ. สงสัยวันนี้จะทำสีผมสวยแน่.";
+	next;
+	switch(select("พูดคุย:เควสสีย้อม:ยกเลิก")) {
+	case 1:
+		mes "[Dye Maker Java Dullihan]";
+		mes "อืม, ฉันไม่ต้องการคุยกับคุณ. แต่ถ้าคุณอยากรู้เกี่ยวกับชีวิตของฉัน, ฉันจะบอกให้คุณฟังก็ได้ แต่ มันยาวนะ จะฟังไหมล่ะ?";
+		next;
+		if (select("ฟัง:ไม่ฟัง") == 1) {
+			mes "[Dye Maker Java Dullihan]";
+			mes "เท่าที่ฉันจำพ่อของฉันได้รับการย้อมสี เขาเคยใช้เวลานับไม่ถ้วนทำให้สีของสีที่แตกต่างกัน แม้เมื่อแม่ของฉันเสียชีวิตเขาไม่เคยหยุด.";
+			next;
+			mes "[Dye Maker Java Dullihan]";
+			mes "จุดหนึ่งในชีวิตของฉันฉันกลายเป็นกบฏและวิ่งหนีออกจากบ้าน ฉันไม่ต้องการที่จะติดอยู่กับธุรกิจของครอบครัวและอยากจะลองสิ่งอื่น ๆ.";
+			next;
+			mes "[Dye Maker Java Dullihan]";
+			mes "อย่างไรก็ตาม...";
+			mes "ในที่สุด ฉันกลับบ้านไปดำเนินการในประเพณีครอบครัว, การทำสีเป็นเวลา 15 ปีแล้ว ผมคิดว่ามันอยู่ในสายเลือดของฉัน.";
+			next;
+			mes "[Dye Maker Java Dullihan]";
+			mes "สิ่งที่ฉันรู้วันนี้คือว่าตอนนี้ฉันสามารถเข้าใจพ่อของฉัน ทำไมพ่อของฉันทุกอย่างเพื่อรการทำสี...";
+			next;
+			mes "[Dye Maker Java Dullihan]";
+			mes "งานน่าเบื่อและยาก เขาอาจจะรู้สึกมหัศจรรย์กับสีที่ถ่ายทอดความฝันมากมายสำหรับคนอื่น ๆ.";
+			next;
+			mes "[Dye Maker Java Dullihan]";
+			mes "ฝันนั้นที่เขาพยายามอย่างหนักเพื่อที่จะทำให้สีสำหรับลูกค้าของเขา...";
+			next;
+			mes "[Dye Maker Java Dullihan]";
+			mes "เห่อออ... ฉันจะทราบได้อย่างไร ดีที่ทางที่ผมรู้สึกได้ในขณะนี้ เมื่อสองสามปีที่ผ่านมาผมได้รับสามารถฟังในสิ่งที่สีกำลังพูด...";
+			next;
+			mes "[Dye Maker Java Dullian]";
+			mes "เพียงแค่เฝ้าดู สักวันฉันจะประสบความสำเร็จในการทำสีพ่อของฉันอยากไปถึง แต่ไม่เคยได้รับโอกาสที่จะแก้ไข.";
+			close;
+		}
+		mes "[Dye Maker Java Dullihan]";
+		mes "อ่าฮ่าาา...";
+		mes "เอาล่ะ, ผมคิดว่าไม่มีใครอยากฟังเรื่องเลวทรามต่ำช้าของเขาแล้ว. ฮ่าฮ่าฮ่า....";
+		close;
+
+	case 2:
+		mes "[Dye Maker Java Dullihan]";
+		mes "เยี่ยม! ถ้าคุณต้องการทำมัน ทำมันเพื่อฉัน. ฉันสัญญาฉันจะทำให้คุณสีที่คุณต้องการ แต่สิ่งที่ย้อมสีที่คุณต้องการจะให้? ค่าธรรมเนียมจะแตกต่างกันขึ้นอยู่กับสี.";
+		next;
+		mes "[Dye Maker Java Dullihan]";
+		mes "ทำไมคุณไม่คิดถาม? เพียงจำไว้ว่ามีสีที่ง่ายต่อการทำและผู้ที่ต้องใช้ความพยายามมากขึ้นและการทำงาน กรุณาอย่าคิดค่าธรรมเนียมแพงเกินไป.";
+		next;
+		mes "[Dye Maker Java Dullihan]";
+		mes "สีนี้มันเป็นสีที่พิเศษและทำมาจากจิตวิญญาณของข้า.";
+		next;
+		switch(select("Scarlet Dyestuffs:Lemon Dyestuffs:Cobaltblue Dyestuffs:Darkgreen Dyestuffs:Orange Dyestuffs:Violet Dyestuffs:White Dyestuffs:Black Dyestuffs:ยกเลิก")) {
+		case 1: callsub S_MakeDye,1,1; break;
+		case 2: callsub S_MakeDye,2,1; break;
+		case 3: callsub S_MakeDye,3,2; break;
+		case 4: callsub S_MakeDye,4,3; break;
+		case 5: callsub S_MakeDye,5,4; break;
+		case 6: callsub S_MakeDye,6,4; break;
+		case 7: callsub S_MakeDye,7,4; break;
+		case 8: callsub S_MakeDye,8,4; break;
+		case 9:
+			mes "[Dye Maker Java Dullihan]";
+			mes "อึ้ยยยย!! นี้มันอะไร? คุณเปลี่ยนใจแล้วหรอ!? น่าผิดหวังจริงๆ...";
+			close;
+		}
+
+	case 3:
+		mes "[Dye Maker Java Dullihan]";
+		mes "ฉันไม่ได้พูดอวดหรืออะไร แต่ผมมีทักษะในการทำสีย้อม หากคุณจำเป็นต้องย้อมโปรดมาหาฉัน ฉันจะทำให้ได้กับท่านในราคาที่เหมาะสม.";
+		close;
+	}
+
+S_MakeDye:
+	mes "[Dye Maker Java Dullihan]";
+	switch(getarg(0)) {
+	case 1:
+		mes "อืมมม... ฉันต้องการ 30 Red Herbs, 1 Counteragent, และ 1 Empty Bottle กับการทำ Red Dyestuffs. ค่าใช้จ่าย 3000 zeny ในการทำ.";
+		setarray .@item[0], 507, 973, 713;
+		setarray .@count[0], 30,   1,   1;
+		set .@cost,3000;
+		set .@dyestuff,975;
+		break;
+	case 2:
+		mes "อืมมม... ฉันต้องการ 30 Yellow Herbs, 1 Couneragent, and 1 Empty Bottle กับการทำ Lemon Dyestuffs. ค่าใช้จ่าย 3000 zeny ในการทำมัน.";
+		setarray .@item[0], 508, 973, 713;
+		setarray .@count[0], 30,   1,   1;
+		set .@cost,3000;
+		set .@dyestuff,976;
+		break;
+	case 3:
+		mes "อืมมม... ฉันต้องการ 20 Blue Herbs, 1 Counteragent, and 1 Empty Bottle กับการทำ Cobaltblue Dyestuff. มันยากในการใช้ Blue Herb, ดังนั้นค่าใช้จ่าย 3500 zeny.";
+		setarray .@item[0], 510, 973, 713;
+		setarray .@count[0], 20,   1,   1;
+		set .@cost,3500;
+		set .@dyestuff,978;
+		break;
+	case 4:
+		mes "อืมมม... ฉันต้องการ 5 Blue Herbs, 20 Green Herbs, 20 Yellow Herbs, 1 Counteragent, 1 Mixture, และ 1 Empty Bottle กับการทำ Darkgreen Dyestuffs. ไม่มีวัสดุที่ทำให้สับสน. ค่าใช้จ่ายในการทำ 5000 zeny.";
+		setarray .@item[0], 510, 511, 508, 974, 973, 713;
+		setarray .@count[0],  5,  20,  20,   1,   1,   1;
+		set .@cost,5000;
+		set .@dyestuff,979;
+		break;
+	case 5:
+		mes "อืมมม... ฉันต้องการ 20 Red Herbs, 20 Yellow Herbs, 1 Counteragent, 1 Mixture, และ 1 Empty Bottle ในการทำ Orange Dyestuff. ค่าใช้จ่าย 5000 zeny.";
+		setarray .@item[0], 507, 508, 974, 973, 713;
+		setarray .@count[0], 20,  20,   1,   1,   1;
+		set .@cost,5000;
+		set .@dyestuff,980;
+		break;
+	case 6:
+		mes "อืมมม... ฉันต้องการ 10 Blue Herbs, 30 Red Herbs, 1 Counteragent, 1 Mixture, และ 1 Empty Bottle กับการทำ Violet Dyestuffs. The fee will be 5000 zeny.";
+		setarray .@item[0], 510, 507, 974, 973, 713;
+		setarray .@count[0], 10,  30,   1,   1,   1;
+		set .@cost,5000;
+		set .@dyestuff,981;
+		break;
+	case 7:
+		mes "อืมมม... ฉันต้องการ 30 White Herbs, 1 Counteragent, และ 1 Empty bottle กับการทำ White Dyestuffs. ค่าใช้จ่าย 3000 zeny.";
+		setarray .@item[0], 509, 973, 713;
+		setarray .@count[0], 30,   1,   1; 
+		set .@cost,3000;
+		set .@dyestuff,982;
+		break;
+	case 8:
+		mes "อืมมม... ฉันต้องการ 30 of each Red, Yellow, และ Green Herb, 5 Blue Herbs, 1 Counteragent, 1 Mixture, และ 1 Empty Bottle. กระบวนการใช้เวลานานและความพยายามมากกว่าคนอื่น ๆ ดังนั้นค่าใช้จ่าย 7000 zeny.";
+		setarray .@item[0], 507, 508, 511, 510, 974, 973, 713;
+		setarray .@count[0], 30,  30,  30,   5,   1,   1,   1;
+		set .@cost,7000;
+		set .@dyestuff,983;
+		break;
+	}
+	next;
+	mes "[Dye Maker Java Dullihan]";
+	switch(getarg(1)) {
+	case 1: mes "เอ่ออ! ฉันคิดว่าคุณมีทุกอย่างพร้อมแล้ว. คุณจะเริ่มเลยไหม?"; break;
+	case 2: mes "โอเค! ฉันเชื่อว่าคุณมีทุกอย่างพร้อมหมดแล้ว. คุณพร้อมที่จะเริ่มเลยไหม?"; break;
+	case 3: mes "โอเค! ฉันเชื่อว่าคุณมีทุกอย่างพร้อมหมดแล้ว. คุณพร้อมที่จะเริ่มเลยไหม?"; break;
+	case 4: mes "โอเค! ฉันเชื่อว่าคุณมีทุกอย่างพร้อมหมดแล้ว. คุณพร้อมที่จะเริ่มเลยไหม?"; break;
+	}
+	next;
+	if (select("ย้อมสีผม:ยกเลิก") == 1) {
+		set .@size, getarraysize(.@item);
+		// check requirements
+		for( set .@i,0 ; .@i < .@size ; set .@i,.@i+1 )
+			if( countitem(.@item[.@i]) < .@count[.@i] )
+				break;
+		if( .@i < .@size || Zeny < .@cost ) {
+			mes "[Dye Maker Java Dullihan]";
+			mes "อืมมม. ไม่เพียงพอ...";
+			mes "ฉันไม่คิดว่าฉันจะสามารถทำให้สีที่คุณต้องการด้วยวัสดุเหล่านั้น ทำไมคุณไม่ไปรับวัสดุเพิ่มเติมบางส่วน...?";
+			close;
+		}
+		// delete items
+		for (set .@i, 0; .@i < .@size ; set .@i, .@i+1)
+			delitem .@item[.@i], .@count[.@i];
+		set Zeny,Zeny-.@cost;
+		// get dyestuff
+		getitem .@dyestuff,1;
+		
+		mes "[Dye Maker Java Dullihan]";
+		mes "อืมมม... มันออกมาสวยมากเลยและมันยังอยู่ได้ยาวนานอีกด้วย...";
+		next;
+		mes "[Dye Maker Java Dullihan]";
+		mes "เอาล่ะ. หยุดเมื่อไหร่ก็ได้เมื่อคุณได้สีที่ต้องการ.";
+		close;
+	}
+	mes "[Dye Maker Java Dullihan]";
+	mes "อึ้ยยยย!! นี้มันอะไรเนี้ย?";
+	mes "คุณเปลี่ยนใจแล้วหรอ!? น่าผิดหวังจริงๆ...";
+	return;
+OnInit:
+waitingroom "เควสสีย้อม",0;
+
+end;
+}
+
+
+
+

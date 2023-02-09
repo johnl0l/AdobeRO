@@ -1,0 +1,212 @@
+// ==================================================== //
+// =============== Facebook Share Shop ================ //
+// ============ Script By Kafra-studio.com ============ //
+// ========== Please report bug if you find ~! ======== //
+// ========== Email : roparty.chaos@gmail.com ========= //
+// === Official Website : http://apps.aegisthai.net === //
+// ==================================================== //
+// === How to set up ================================== //
+// === 1. add file to your npc folder ================= //
+// === 2. @loadnpc npc/kafra-shareshop.txt ================ //
+
+-	shop	sh_shop1	-1,501:-1
+
+morocc,180,96,4	script	แลกของ::sh_shop	606,{
+
+	function showmsg;
+	function check_pos;
+	function show_requirement;
+	function check_requirement;
+	function make_trade;
+	
+	set .@accid, getcharid(3);
+
+	cleararray @katoo$[0] , 0, getarraysize(@katoo$);
+	cleararray .@point[0] , 0, getarraysize(.@point);
+	query_sql "SELECT `point` FROM `kafra_share` WHERE `account_id` = " + .@accid + " LIMIT 1", .@point;
+	if( .@point[0] > 0 )
+	{
+			set #SHPOINTS, #SHPOINTS + .@point[0];
+			query_sql "UPDATE `kafra_share` SET `point`= '0' WHERE `account_id` = " + .@accid + " LIMIT 1";
+	}
+
+	cleararray @quest[ 0 ] , 0 , getarraysize(  @quest ) ;
+	
+	mes "ปัจจุบันท่านมี แต้ม ^0000FF"+ #SHPOINTS +"^000000";
+	close2;
+
+	set @s, 1;
+	callshop "sh_shop1", 1;
+	npcshopattach "sh_shop1";
+	end;
+
+L_cancel:
+	mes " วันหลังโปรดใช้บริการใหม่นะคะ";
+	close;
+
+OnBuyItem:
+	for( set @i, 0; @i < getarraysize(@bought_nameid); set @i, @i + 1 )
+	{
+		if( @bought_quantity[@i] <= 0 )
+		{
+			showmsg("เกิดข้อผิดพลาด โปรดลองอีกครั้ง!!");
+			break;
+		}
+		
+		set @j, check_pos( @bought_nameid[ @i ], @s );
+		if( @j == 0 )
+		{
+			showmsg("ไม่พบของที่ท่านต้องการ โปรดลองใหม่อีกครั้ง!!");
+			break;
+		}
+		cleararray @quest[ 0 ], 0, getarraysize(@quest);
+		copyarray @quest[ 0 ] , getd( ".quest" + @s + "_" + @j + "[ 0 ]" ) , getarraysize( getd( ".quest" + @s + "_" + @j ) ) ;
+		if( !check_requirement(@bought_quantity[@i]) )
+			make_trade(@bought_quantity[@i]) ;
+		else
+		{
+			showmsg("=====================================");
+			showmsg("ไอเทมที่ใช้ในการแลกเปลี่ยน " + getitemname(@bought_nameid[ @i ]) + "");
+			show_requirement();
+		}
+	}
+
+	deletearray @bought_quantity, getarraysize(@bought_quantity);
+	deletearray @bought_nameid, getarraysize(@bought_nameid);
+	end;
+
+
+/*---- FUNCTIONS ! -------------------------------------------------------------------------
+--- Edit at your own risk ------------------------------------------------------------------
+------------------------------------------------------------------------------------------*/
+
+	function	showmsg
+	{
+		dispbottom getarg(0);
+	}
+
+	function	check_pos
+	{
+		if( getarg(1) < 1 || getarg(1) > 9 )
+			return 0;
+
+		for( set .@i, 1; .@i <= 100; set .@i, .@i+1 )
+			if( getd(".quest" + getarg(1) + "_" + .@i + "[ 0 ]") == getarg(0) )
+				return .@i;
+		return 0;
+	}
+
+//-- Function who show the requirement
+	function	show_requirement	{
+	
+		// Show items need
+		for ( set @j , 2 ; @j < getarraysize( @quest ) ; set @j , @j + 2 )
+		{
+			set @slot$, "";
+			set @k, getiteminfo(@quest[ @j ], 10);
+			if( @k > 0 )
+				set @slot$, "[" + @k + "]";
+			// showmsg(" -  " + getitemname( @quest[ @j ] ) +  @slot$ + " - " + @quest[ @j + 1 ] + " ea.");
+			showmsg(" FACEBOOKPOINTS :  " + @quest[ @j + 1 ] + " แต้ม");
+		}
+
+		return ;
+	}
+
+//-- Check if the player has all requirement.
+	function	check_requirement	{
+
+		set @l , 0 ;
+
+// Look if player has all items
+		for ( set @j , 2 ; @j < getarraysize( @quest ) ; set @j , @j + 2 )
+		{
+			if ( #SHPOINTS < @quest[ @j + 1 ] * getarg(0) )
+			{
+				set @l , 1 ;
+			}
+		}
+		return @l ;
+	}
+
+//-- Make The trade (delete requirements/give item)
+	function	make_trade	{
+
+	// Remove items
+		for ( set @j , 2 ; @j < getarraysize( @quest ) ; set @j , @j + 2 )
+		{
+			set #SHPOINTS, #SHPOINTS - (@quest[ @j + 1 ] * getarg(0)) ;
+		}
+
+	// Give item.
+		getitem @quest[ 0 ] , getarg(0);
+		showmsg("คุณเหลือแต้มขุด: " + #SHPOINTS);
+		
+		return ;
+	}
+
+	function	digadditem	{
+
+		set .lastpos[getarg(0)], .lastpos[getarg(0)] + 1;
+
+		set .@i, 1;
+		while( getarg(.@i,-1) != -1 )
+		{
+			setd ".quest" + getarg(0) + "_" + .lastpos[getarg(0)] +"[ " + (.@i-1) + " ]",getarg(.@i);
+			set .@i, .@i + 1;
+		}
+		npcshopadditem( "sh_shop" + getarg(0), getd(".quest" + getarg(0) + "_" + .lastpos[getarg(0)] + "[ 0 ]"), getd(".quest" + getarg(0) + "_" + .lastpos[getarg(0)] + "[ 3 ]")  );
+
+		return;
+		end;
+	}
+
+OnInit:
+	setarray .lastpos[1],0,0,0,0;
+	
+	npcshopdelitem( "sh_shop1", 501 );
+	waitingroom "แลกของไลค์แชร์", 0;
+	
+	if( .inited != 1 )
+		set .inited, 1;
+	else
+		end;
+
+
+digadditem( 1, 61001, 0, 0, 30 ); // [501] Red Potion ใช้ 10 แต้ม
+digadditem( 1, 35006, 0, 0, 100 ); // [603] OBB ใช้ 50 แต้ม
+digadditem( 1, 63007, 0, 0, 75 );
+digadditem( 1, 63008, 0, 0, 150 );
+digadditem( 1, 13871, 0, 0, 1000 );
+digadditem( 1, 13872, 0, 0, 1000 );
+digadditem( 1, 13873, 0, 0, 1000 );
+digadditem( 1, 13874, 0, 0, 1000 );
+digadditem( 1, 13875, 0, 0, 1000 );
+digadditem( 1, 13876, 0, 0, 1000 );
+digadditem( 1, 7776, 0, 0, 250 );
+digadditem( 1, 5137, 0, 0, 250 );
+digadditem( 1, 5135, 0, 0, 250 );
+digadditem( 1, 5293, 0, 0, 600 );
+digadditem( 1, 2291, 0, 0, 250 );
+digadditem( 1, 47036, 0, 0, 1250 );
+digadditem( 1, 47037, 0, 0, 1250 );
+digadditem( 1, 47038, 0, 0, 1250 );
+digadditem( 1, 47039, 0, 0, 1250 );
+digadditem( 1, 47040, 0, 0, 1250 );
+digadditem( 1, 40010, 0, 0, 1250 );
+digadditem( 1, 40005, 0, 0, 1250 );
+digadditem( 1, 40013, 0, 0, 1250 );
+digadditem( 1, 40035, 0, 0, 1250 );
+digadditem( 1, 40052, 0, 0, 1250 );
+digadditem( 1, 5150, 0, 0, 250 );
+digadditem( 1, 5325, 0, 0, 250 );
+digadditem( 1, 5340, 0, 0, 250 );
+digadditem( 1, 5341, 0, 0, 250 );
+digadditem( 1, 5342, 0, 0, 250 );
+digadditem( 1, 5343, 0, 0, 250 );
+digadditem( 1, 5344, 0, 0, 250 );
+digadditem( 1, 5345, 0, 0, 250 );
+
+	
+	end;
+}

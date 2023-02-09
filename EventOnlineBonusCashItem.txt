@@ -1,0 +1,34 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+-	script	OnlineBonus	-1,{
+OnInit:
+set .time_count, 60;	// ออนไลน์นานเท่าไหร่ จึงจะได้ Cash (นาที)
+end;
+
+OnPCLoginEvent:
+dispbottom "[ระบบ] : รายละเอียด Online Bonus Cash & Item";
+dispbottom "[ระบบ] : เมื่อคุณ Online ตัวละครครบ 60 นาที !! จะได้รับ 1 Cash";
+dispbottom "[ระบบ] : และ Gold Coin จำนวน 5 ea ^^";
+initnpctimer getcharid(3);
+end;
+
+OnTimer60000:
+stopnpctimer;
+initnpctimer;
+getmapxy( .@map$, .@x, .@y, 0 );
+if ( .@map$ != @map$ || .@x != @x || .@y != @y ) {	// ถ้าไม่ขยับไปไหน จะพักเวลาไว้
+set @map$, .@map$;
+set @x, .@x;
+set @y, .@y;
+set @count, @count+1;
+if ( @count >= .time_count ) {
+set @count, 0;
+atcommand "@cash 1";
+atcommand "@item 671 5";
+}
+}
+end;
+}

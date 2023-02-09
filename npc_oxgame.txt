@@ -1,0 +1,138 @@
+quiz_01,61,194,0	warp	warp_random1	1,1,quiz_01,52,182
+quiz_01,66,194,0	warp	warp_random2	1,1,quiz_01,75,182
+quiz_01,63,196,0	script	warp_random_finish	45,1,1,{
+
+for( set .@i,0; .@i < getarraysize($randomitem); set .@i,.@i+1 ) {
+getitem $randomitem[.@i],$randomitemamount[.@i];
+announce "[ คุณ "+ strcharinfo(0) +" ได้รับรางวัล OX Game แล้ว ]",bc_all;
+}
+warp "SavePoint",0,0;
+end;
+}
+
+-	script	OX Game	-1,{
+set .@name$, "^FF0000[OX Game]^000000";
+mes .@name$;
+mes "ของรางวัลกิจกรรม";
+mes "- Poring Coin ครับ";
+next;
+switch(select("^0000FF-^000000 เข้ากิจกรรม:^0000FF-^000000 รายละเอียด")) {
+
+case 1:
+if($randomregister != 1) { 
+mes .@name$;
+mes "ยังไม่ถึงเวลากิจกรรมครับ";
+close; }
+warp "quiz_01",63,197;
+end;
+
+case 2:
+mes .@name$;
+mes "รอบ 01. 01.15 || รอบ 02. 02.15 ";
+mes "รอบ 03. 03.15 || รอบ 04. 04.15 ";
+mes "รอบ 05. 05.15 || รอบ 06. 06.15 ";
+mes "รอบ 07. 07.15 || รอบ 08. 08.15 ";
+mes "รอบ 09. 09.15 || รอบ 10. 10.15 ";
+mes "รอบ 11. 11.15 || รอบ 12. 12.15 ";
+mes "รอบ 13. 13.15 || รอบ 14. 14.15 ";
+mes "รอบ 15. 15.15 || รอบ 16. 16.15 ";
+mes "รอบ 17. 17.15 || รอบ 18. 18.15 ";
+mes "รอบ 19. 19.15 || รอบ 20. 20.15 ";
+mes "รอบ 21. 21.15 || รอบ 22. 22.15 ";
+mes "รอบ 23. 23.15 || รอบ 24. 00.15 ";
+close;
+
+}
+OnInit:
+waitingroom "๐ OX Game ๐",0;
+end;
+}
+
+-	script	warp_hidden	-1,{
+OnMinute15:
+set $randomregister,"1";
+disablenpc "warp_random_finish";
+
+announce "[ กิจกรรม OX Game จะเริ่มใน 3 นาที ]",bc_all;
+sleep2 60000;
+announce "[ กิจกรรม OX Game จะเริ่มใน 2 นาที ]",bc_all;
+sleep2 60000;
+announce "[ กิจกรรม OX Game จะเริ่มใน 1 นาที ]",bc_all;
+sleep2 60000;
+
+set $randomregister,"0";
+announce "[ กิจกรรม OX Game เริ่มแล้ว ]",bc_all;
+for( set .@i,0; .@i < 5; set .@i,.@i+1 ) {
+if(getmapusers("quiz_01.gat") == 0) break;
+callfunc("warp_function",.@i+1);
+}
+sleep2 3000;
+announce "[ กิจกรรม OX Game จบลงแล้ว ]",bc_all;
+end;
+
+OnInit:
+set $randomname$,"[ OX Game";
+set $randomregister,"0";
+disablenpc "warp_random_finish";
+setcell "quiz_01",62,185,66,181,cell_walkable,0;
+setcell "quiz_01",61,205,66,205,cell_walkable,0;
+set $randomreturnmap$,"morocc";
+set $randomreturnx,0;
+set $randomreturny,0;
+setarray $randomitem[0],7539,603;
+setarray $randomitemamount[0],50,5;
+end;
+}
+
+function	script	warp_function	{
+mapannounce "quiz_01","[ รอบที่ "+getarg(0)+" ]",bc_map;
+sleep2 1000;
+mapannounce "quiz_01","[ คุณมีเวลาเลือกห้องอีก 10 วินาที ]",bc_map;
+sleep2 1000;
+mapannounce "quiz_01","[ คุณมีเวลาเลือกห้องอีก 9 วินาที ]",bc_map;
+sleep2 1000;
+mapannounce "quiz_01","[ คุณมีเวลาเลือกห้องอีก 8 วินาที ]",bc_map;
+sleep2 1000;
+mapannounce "quiz_01","[ คุณมีเวลาเลือกห้องอีก 7 วินาที ]",bc_map;
+sleep2 1000;
+mapannounce "quiz_01","[ คุณมีเวลาเลือกห้องอีก 6 วินาที ]",bc_map;
+sleep2 1000;
+mapannounce "quiz_01","[ คุณมีเวลาเลือกห้องอีก 5 วินาที ]",bc_map;
+sleep2 1000;
+mapannounce "quiz_01","[ คุณมีเวลาเลือกห้องอีก 4 วินาที ]",bc_map;
+sleep2 1000;
+mapannounce "quiz_01","[ คุณมีเวลาเลือกห้องอีก 3 วินาที ]",bc_map;
+sleep2 1000;
+mapannounce "quiz_01","[ คุณมีเวลาเลือกห้องอีก 2 วินาที ]",bc_map;
+sleep2 1000;
+mapannounce "quiz_01","[ คุณมีเวลาเลือกห้องอีก 1 วินาที ]",bc_map;
+sleep2 1000;
+
+areawarp "quiz_01",61,204,66,194,$randomreturnmap$,$randomreturnx,$randomreturny;
+if(getarg(0) == 5) enablenpc "warp_random_finish";
+switch(rand(2)) {
+
+case 0:
+mapannounce "quiz_01","[ ผู้เล่นห้อง O เข้ารอบ ]",bc_map;
+areawarp "quiz_01",45,191,61,175,"quiz_01",63,196;
+sleep2 1000;
+areawarp "quiz_01",45,191,83,175,$randomreturnmap$,$randomreturnx,$randomreturny;
+break;
+
+case 1:
+mapannounce "quiz_01","[ ผู้เล่นห้อง X เข้ารอบ ]",bc_map;
+areawarp "quiz_01",67,191,83,175,"quiz_01",63,196;
+sleep2 1000;
+areawarp "quiz_01",45,191,83,175,$randomreturnmap$,$randomreturnx,$randomreturny;
+break;
+}
+return;
+}
+morocc,143,75,4	duplicate(OX Game)	OX Game#1	626
+quiz_01	mapflag	nobranch
+quiz_01	mapflag	noicewall
+quiz_01	mapflag	nomemo
+quiz_01	mapflag	nosave	SavePoint
+quiz_01	mapflag	noteleport
+quiz_01	mapflag	nowarp
+quiz_01	mapflag	nowarpto

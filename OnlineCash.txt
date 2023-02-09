@@ -1,0 +1,71 @@
+-	script	hourlypoints	-1,{
+
+//--Start of the Script
+OnPCLoginEvent:
+   dispbottom "==============================";
+   dispbottom "[ระบบ]:เปิดระบบจับเวลาOnline";
+   dispbottom "==============================";
+attachnpctimer ""+strcharinfo(0)+"";
+initnpctimer;
+end;
+    
+OnTimer60000:
+//Check if Vending (normal or @at)
+if(checkvending() >= 1) {
+   dispbottom "==============================";
+   dispbottom "[ระบบ]:ปิดระบบจับเวลาOnline เนื่องจากคุณได้ตั้งร้าน";
+   dispbottom "[ระบบ]:กรุณาออกเข้าใหม่ เพราะเริ่มนับเวลาใหม่";
+   dispbottom "==============================";
+    stopnpctimer;
+    end;
+}
+set @consecutive_minute,@consecutive_minute+1;
+stopnpctimer;
+initnpctimer;
+//Check for 1 Minute
+if(@consecutive_minute == 60){
+    set @consecutive_minute,0;
+    set @consecutive_hour, @consecutive_hour + 1;
+	goto Hour;
+end;
+}
+end;
+
+Hour:
+    if(@consecutive_hour == 1) { atcommand "@cash 1"; dispbottom "=============================="; dispbottom "[ระบบ]:คุณออนไลน์ครบ 1 ช.ม. แล้ว ได้รับ 1 Cash Point"; dispbottom "=============================="; end; }
+    if(@consecutive_hour == 2) { atcommand "@cash 1"; dispbottom "=============================="; dispbottom "[ระบบ]:คุณออนไลน์ครบ 2 ช.ม. แล้ว ได้รับ 1 Cash Point"; dispbottom "=============================="; end; }
+    if(@consecutive_hour == 3) { atcommand "@cash 1"; dispbottom "=============================="; dispbottom "[ระบบ]:คุณออนไลน์ครบ 3 ช.ม. แล้ว ได้รับ 1 Cash Point"; dispbottom "=============================="; end; }
+    if(@consecutive_hour == 4) { atcommand "@cash 1"; dispbottom "=============================="; dispbottom "[ระบบ]:คุณออนไลน์ครบ 4 ช.ม. แล้ว ได้รับ 1 Cash Point"; dispbottom "=============================="; end; }
+    if(@consecutive_hour == 5) { atcommand "@cash 1"; dispbottom "=============================="; dispbottom "[ระบบ]:คุณออนไลน์ครบ 5 ช.ม. แล้ว ได้รับ 1 Cash Point"; dispbottom "=============================="; end; }
+    if(@consecutive_hour == 6) { atcommand "@cash 1"; dispbottom "=============================="; dispbottom "[ระบบ]:คุณออนไลน์ครบ 6 ช.ม. แล้ว ได้รับ 1 Cash Point"; dispbottom "=============================="; end; }
+    if(@consecutive_hour == 7) { atcommand "@cash 1"; dispbottom "=============================="; dispbottom "[ระบบ]:คุณออนไลน์ครบ 7 ช.ม. แล้ว ได้รับ 1 Cash Point"; dispbottom "=============================="; end; }
+    if(@consecutive_hour == 8) { atcommand "@cash 1"; dispbottom "=============================="; dispbottom "[ระบบ]:คุณออนไลน์ครบ 8 ช.ม. แล้ว ได้รับ 1 Cash Point"; dispbottom "=============================="; end; }
+    if(@consecutive_hour == 9) { atcommand "@cash 1"; dispbottom "=============================="; dispbottom "[ระบบ]:คุณออนไลน์ครบ 9 ช.ม. แล้ว ได้รับ 1 Cash Point"; dispbottom "=============================="; end; }
+    if(@consecutive_hour == 10) { atcommand "@cash 1"; dispbottom "=============================="; dispbottom "[ระบบ]:คุณออนไลน์ครบ 10 ช.ม. แล้ว ได้รับ 1 Cash Point "; dispbottom "[ระบบ]:ปิดระบบจับเวลา Online เนื่องจากคุณออนไลน์ครบ 10 ช.ม. แล้วจะเริ่มนับอีกครั้งในวันต่อไป"; dispbottom "=============================="; stopnpctimer; end; }
+end;
+
+}
+
+izlude,98,136,6	script	Online Bonus	81,{
+
+mes "[ Check Online ]";
+mes "คุณ [^FF0000 " + strcharinfo(0) + " ^000000]";
+mes "ได้ออนไลน์ต่อเนื่องมาเป็น";
+mes "เวลา [^FF0000 " + @consecutive_hour + " ^000000]:[^FF0000 " + @consecutive_minute + " ^000000] ช.ม.";
+mes "ครบ 1 ชั่วโมงได้รับ 1 Cash Point";
+mes "ครบ 2 ชั่วโมงได้รับ 1 Cash Point";
+mes "ครบ 3 ชั่วโมงได้รับ 1 Cash Point";
+mes "ครบ 4 ชั่วโมงได้รับ 1 Cash Point";
+mes "ครบ 5 ชั่วโมงได้รับ 1 Cash Point";
+mes "ครบ 6 ชั่วโมงได้รับ 1 Cash Point";
+mes "ครบ 7 ชั่วโมงได้รับ 1 Cash Point";
+mes "ครบ 8 ชั่วโมงได้รับ 1 Cash Point";
+mes "ครบ 9 ชั่วโมงได้รับ 1 Cash Point";
+mes "ครบ 10 ชั่วโมงได้รับ 1 Cash Point";
+close;
+end;
+
+OnInit:
+waitingroom "เช็คเวลาออนไลน์",0;
+end;
+}

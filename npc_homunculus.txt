@@ -1,0 +1,44 @@
+-	script	homunculus	-1,{
+if(Class == Job_Alchemist || Class == Job_Creator || Class == Job_Genetic)  {
+
+homunculus:
+menu "^0000FF-^000000 รับ Skill Homun",homunculus1,"^0000FF-^000000 อัพ Lv. Homun",homunculus2,"^0000FF-^000000 กลายร่าง Homun",homunculus3;
+
+homunculus1:
+if (getskilllv(238) > 0 || getskilllv(243) > 0 || getskilllv(244) > 0 || getskilllv(247) > 0) close;
+skill 238,1,0;
+skill 243,1,0;
+skill 244,1,0;
+skill 247,1,0;
+goto homunculus;
+
+homunculus2:
+if(Zeny < 10000) { 
+mes "^FF0000[จัดการ Homun]^000000"; 
+mes "ต้องการ เงิน 10000 Zeny ครับ"; 
+close; 
+}
+set zeny,zeny -10000;
+atcommand "@homlvup 99";
+goto homunculus;
+
+homunculus3:
+if(Zeny < 50000) { 
+mes "^FF0000[จัดการ Homun]^000000"; 
+mes "ต้องการ เงิน 50000 Zeny ครับ"; 
+close; 
+}
+set zeny,zeny -50000;
+atcommand "@homevolution";
+goto homunculus;
+
+}
+dispbottom "คุณไม่ใช่อาชีพสายนี้นะครับ"; 
+close;
+
+OnInit: 
+waitingroom "๐ จัดการ Homun ๐",0; 
+end;
+}
+
+morocc,171,103,4	duplicate(homunculus)	homunculus#1	576,{

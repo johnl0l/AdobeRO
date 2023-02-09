@@ -1,0 +1,179 @@
+
+-	script	search	-1,{
+	set .@npc$,"[ค้นหามอนเตอร์]";
+	
+	mes .@npc$;
+	mes "บริการค้นหามอนเตอร์";
+	next;
+	menu "- ค้นหาด้วยชื่อ Monster",L_FindByName,
+		"- ค้นหาจาก A - Z",L_FindByAZ,
+		"- ค้นหาโดยชื่อ Item",L_FindByItem;
+		
+L_FindByName:
+	mes .@npc$;
+	mes "ใส่ชื่อมอนเตอร์ที่ต้องการ";
+	input .@monster_name$;
+	
+	query_sql "SELECT `ID`, `iName` FROM `mob_db` WHERE `iName` like '%"+escape_sql(.@monster_name$)+"%'", .@mob_id_1, .@mob_name_1$;
+	query_sql "SELECT `ID`, `iName` FROM `mob_db2` WHERE `iName` like '%"+escape_sql(.@monster_name$)+"%'", .@mob_id_2, .@mob_name_2$;
+	query_sql "SELECT `ID`, `iName` FROM `mob_db` WHERE `ID` like '%"+escape_sql(.@monster_name$)+"%'", .@mob_id_1, .@mob_name_1$;
+	query_sql "SELECT `ID`, `iName` FROM `mob_db2` WHERE `ID` like '%"+escape_sql(.@monster_name$)+"%'", .@mob_id_2, .@mob_name_2$;
+	set .@type,1;
+	goto L_ShowMob;
+	end;
+
+L_FindByAZ:
+	mes .@npc$;
+	mes "เลือกรายการ A - Z";
+	set .@i,select($@FINMB_az_menu$)-1;
+	set .@monster_name$,$@FINMB_az_db$[.@i];
+	
+	query_sql "SELECT `ID`, `iName` FROM `mob_db` WHERE `iName` like '"+escape_sql(.@monster_name$)+"%'", .@mob_id_1, .@mob_name_1$;
+	query_sql "SELECT `ID`, `iName` FROM `mob_db2` WHERE `iName` like '"+escape_sql(.@monster_name$)+"%'", .@mob_id_2, .@mob_name_2$;
+	query_sql "SELECT `ID`, `iName` FROM `mob_db` WHERE `ID` like '"+escape_sql(.@monster_name$)+"%'", .@mob_id_1, .@mob_name_1$;
+	query_sql "SELECT `ID`, `iName` FROM `mob_db2` WHERE `ID` like '"+escape_sql(.@monster_name$)+"%'", .@mob_id_2, .@mob_name_2$;
+	set .@type,2;
+	goto L_ShowMob;
+	end;
+
+L_FindByItem:
+	mes .@npc$;
+	mes "ใส่ชื่อ หรือ รหัส ไอเทมที่ต้องการ";
+	input .@monster_name$;
+	query_sql "SELECT `id` FROM `item_db` WHERE `name_japanese` like '%"+escape_sql(.@monster_name$)+"%'", .@item_id_1;
+	query_sql "SELECT `id` FROM `item_db2` WHERE `name_japanese` like '%"+escape_sql(.@monster_name$)+"%'", .@item_id_2;
+	if (.@item_id_1 < 1 && .@item_id_2 < 1) {
+		deletearray .@item_id_1[0],getarraysize(.@item_id_1);
+		deletearray .@item_id_2[0],getarraysize(.@item_id_2);
+		query_sql "SELECT `id` FROM `item_db` WHERE `id` = '"+escape_sql(.@monster_name$)+"'", .@item_id_1;
+		query_sql "SELECT `id` FROM `item_db2` WHERE `id` = '"+escape_sql(.@monster_name$)+"'", .@item_id_2;
+	}
+	set .@size,getarraysize(.@item_id_1);
+	for (set .@i,0; .@i < .@size; set .@i,.@i+1)
+	{
+		if (.@num >= 80)
+			break;
+		set .@menu$,.@menu$+"- "+getitemname(.@item_id_1[.@i])+""+(getitemslots(.@item_id_1[.@i])?"("+getitemslots(.@item_id_1[.@i])+")":"")+" ["+.@item_id_1[.@i]+"]:";
+		set .@itemid[.@num],.@item_id_1[.@i];
+		set .@num,.@num+1;
+	}
+	set .@size,getarraysize(.@item_id_2);
+	for (set .@i,0; .@i < .@size; set .@i,.@i+1)
+	{
+		if (.@num >= 80)
+			break;
+		set .@menu$,.@menu$+"- "+getitemname(.@item_id_2[.@i])+""+(getitemslots(.@item_id_2[.@i])?"("+getitemslots(.@item_id_2[.@i])+")":"")+" ["+.@item_id_2[.@i]+"]:";
+		set .@itemid[.@num],.@item_id_2[.@i];
+		set .@num,.@num+1;
+	}
+	set .@select,select(.@menu$) - 1;
+	set .@itemid,.@itemid[.@select];
+	mes "คุณเลือก : "+getitemname(.@itemid)+""+(getitemslots(.@itemid)?"("+getitemslots(.@itemid)+")":"")+" ["+.@itemid+"]";
+	query_sql "SELECT `ID`, `iName` FROM `mob_db` WHERE `Drop1id` = "+.@itemid+" OR `Drop2id` = "+.@itemid+" OR `Drop3id` = "+.@itemid+" OR `Drop4id` = "+.@itemid+" OR `Drop5id` = "+.@itemid+" OR `Drop6id` = "+.@itemid+" OR `Drop7id` = "+.@itemid+" OR `Drop8id` = "+.@itemid+" OR `Drop9id` = "+.@itemid+" OR `MVP1id` = "+.@itemid+" OR `MVP2id` = "+.@itemid+" OR `MVP3id` = "+.@itemid+" OR `DropCardid` = "+.@itemid+"", .@mob_id_1, .@mob_name_1$;
+	query_sql "SELECT `ID`, `iName` FROM `mob_db2` WHERE `Drop1id` = "+.@itemid+" OR `Drop2id` = "+.@itemid+" OR `Drop3id` = "+.@itemid+" OR `Drop4id` = "+.@itemid+" OR `Drop5id` = "+.@itemid+" OR `Drop6id` = "+.@itemid+" OR `Drop7id` = "+.@itemid+" OR `Drop8id` = "+.@itemid+" OR `Drop9id` = "+.@itemid+" OR `MVP1id` = "+.@itemid+" OR `MVP2id` = "+.@itemid+" OR `MVP3id` = "+.@itemid+" OR `DropCardid` = "+.@itemid+"", .@mob_id_2, .@mob_name_2$;
+	set .@type,3;
+	goto L_ShowMob;
+	end;
+	
+L_ShowMob:
+	set .@num,0;
+	set .@size,getarraysize(.@mob_id_1);
+	for (set .@i,0; .@i < .@size; set .@i,.@i+1)
+	{
+		if (.@num >= 80)
+			break;
+			
+		set .@mob_menu$,.@mob_menu$+"- "+.@mob_name_1$[.@i]+" ["+.@mob_id_1[.@i]+"]:";
+		set .@mob_name$[.@num],.@mob_name_1$[.@i];
+		set .@mob_id[.@num],.@mob_id_1[.@i];
+		set .@num,.@num+1;
+	}
+	
+	set .@size,getarraysize(.@mob_id_2);
+	for (set .@i,0; .@i < .@size; set .@i,.@i+1)
+	{
+		if (.@num >= 80)
+			break;
+			
+		set .@mob_menu$,.@mob_menu$+"- "+.@mob_name_2$[.@i]+" ["+.@mob_id_2[.@i]+"]:";
+		set .@mob_name$[.@num],.@mob_name_2$[.@i];
+		set .@mob_id[.@num],.@mob_id_2[.@i];
+		set .@num,.@num+1;
+	}
+	
+	mes "===================";
+
+	if (.@type == 1)
+	{
+		mes "ค้นหาด้วยชื่อ "+.@monster_name$+"";
+	}
+	else if (.@type == 2)
+	{
+		mes "ชื่อที่นำหน้าด้วยอักษร "+.@monster_name$+"";
+	}
+	else if (.@type == 3)
+	{
+		mes "ค้นหาด้วยไอเทม "+getitemname(.@itemid)+""+(getitemslots(.@itemid)?"("+getitemslots(.@itemid)+")":"")+" ["+.@itemid+"]";
+	}
+	
+	if (.@num == 0)
+	{
+		mes "ไม่มีรายชื่อมอนเตอร์";
+		close;
+	}
+
+	mes "พบชื่อใกล้เคียง "+.@num+" รายการ";
+	next;
+	set .@mob,select(.@mob_menu$)-1;
+	
+	query_sql "SELECT `map_name`, `x`, `y` FROM `map_monster` WHERE `mob_id` = "+.@mob_id[.@mob]+"", .@map_name$, .@x, .@y;
+	set .@size,getarraysize(.@map_name$);
+	
+	if (.@size == 0)
+	{
+		mes .@npc$;
+		mes "ไม่มีข้อมูลแมพของ";
+		mes "มอนเตอร์ "+.@mob_name$[.@mob]+"";
+		close;
+	}
+	
+	mes .@npc$;
+	mes "ชื่อ: "+.@mob_name$[.@mob]+"";
+	mes "จำนวนแมพที่พบ: "+.@size+"";
+	next;
+	
+	for (set .@i,0; .@i < .@size; set .@i,.@i+1)
+	{
+		set .@map_menu$,.@map_menu$+"- "+.@map_name$[.@i]+":";
+	}
+	
+	set .@map,select(.@map_menu$)-1;
+	warp .@map_name$[.@map], .@x[.@map], .@y[.@map];
+	end;
+OnInit:
+	waitingroom "บริการค้นหามอนเตอร์",0;
+	end;
+}
+-	script	CfgFindMonster#11	-1,{
+	end;
+	
+OnInit:
+	// Database
+	set $@FINMB_db$,"ragnarok-izaro";
+	
+	setarray $@FINMB_az_db$[0],
+		"A","B","C","D","E","F","G","H","I","J","K","L","M",
+		"N","O","P","Q","R","S","T","U","V","W","X","Y","Z";
+	
+	
+	//=======================================================================================================
+	set .@size,getarraysize($@FINMB_az_db$);
+	for (set .@i,0; .@i < .@size; set .@i,.@i+1)
+	{
+		set $@FINMB_az_menu$,$@FINMB_az_menu$+"- "+$@FINMB_az_db$[.@i]+":";
+	}
+	end;
+}
+
+morocc,174,88,4	duplicate(search)	ค้นหาชื่อมอนเตอร์#NPC	654
+morocc,154,55,4	duplicate(search)	ค้นหาชื่อมอนเตอร์#NPC1	654

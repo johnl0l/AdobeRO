@@ -1,0 +1,9 @@
+-	script	daynight Control	-1,{
+    OnInit:
+    OnClock0600:
+    OnClock1800:
+    set .@hr, gettime(3);
+    if(.@hr >= 6 && .@hr < 18) day;
+    else night;
+    end;
+}

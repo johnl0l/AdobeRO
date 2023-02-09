@@ -1,0 +1,161 @@
+//===== rAthena Script =======================================
+//= Aniti Macro
+//===== Fix 2 =============================================
+//= ป้องกันการหลบหนี ขณะตรวจจจับบอท เมื่อผู้เล่น ออกเกมหนี หรือ เลือกตัวละครจะถูกป้ายแดงเมื่อล็อคอินกลับเข้ามาอีกครั้ง 
+//= เปลี่ยนจากส่งเข้าคุก เป็นเตะออกเกมและสถานะป้ายแดง
+//= แก้บัคซื้อของผิด หรือ ขึ้นให้ซื้อซ้ำๆ 
+//= ทดสอบแล้ว ไม่มีบัคอะไร แต่หากพบเพิ่มเติม รบกวนแจ้งด้วยนะครับ www.facebook.com/Lungezt
+//======================================================
+
+
+-	shop	anti_bot_shop	-1,909:-1
+
+-	script	Anti Bot	-1,{
+OnNPCKillEvent:
+//	if(getgmlevel() > 0) end;		//  เอา // ข้างหน้าออก gm ไม่ตรวจ
+	set @kill,@kill+1;
+	if(@kill >= rand(700,1000)) goto Check;	//	จำนวนมอนที่จะสุ่มเช็ค (200,500) 200-500 ตัว
+	end;
+
+	OnInit:
+//		.max_wrong_count = 3;	//
+
+		.duration = 60;	//	 เวลาในการส่งเข้าคุก เป็น วินาที
+
+		.shop_name$ = "anti_bot_shop";
+		
+		setarray .item_list,		// แก้ ไอเท็มที่ให้ซื้อ
+			512,
+			513,
+			514,
+			515,
+			536;
+		.item_list_size = getarraysize( .item_list );
+		.npc_name$ = strnpcinfo(3);
+		npcshopdelitem .shop_name$,909;
+		for ( .@i = 0; .@i < .item_list_size; .@i++ )
+		npcshopadditem .shop_name$,.item_list[.@i],-1;
+		end;
+
+
+
+Check:
+//	if(getgmlevel() > 0) end;		//  เอา // ข้างหน้าออก gm ไม่ตรวจ
+	getmapxy .@map$, .@x, .@y, 0;
+
+//	แมพที่ไม่ต้องการให้มีการตรวจสอบ รวมถึงแมพกิจกรรมด้วย
+	if (.@map$=="prontera" || .@map$=="morocc" || .@map$=="2@tower" || .@map$=="1@tower" || .@map$=="3@tower" || .@map$=="4@tower" || .@map$=="5@tower" || .@map$=="6@tower" || .@map$=="payon" || .@map$=="izlude" || .@map$=="morocc" || .@map$=="morocc" || .@map$=="mora") end;
+
+	if(checkcart() == 1) set @cart,1;
+	if(checkfalcon() == 1) set @falcon,1;
+	if(checkriding() == 1) set @riding,1;
+	if(checkdragon() == 1) set @dragon,1;
+	if(checkmadogear() == 1) set @madogear,1;
+	set @kill,-9999;
+	atcommand "@option 2 0 0";
+	atcommand "@battleignore";
+	setoption 0x2,1;
+	sc_start sc_berserk, 1000000000, 1;
+	set jail,1;
+		mes "[ ตรวจจับมาโคร ]";
+		mes "เราขอตรวจสอบว่าท่านใช่บอทหรือไม่";
+		mes "คุณมีเวลาซื้อ "+.duration+" วินาที.";
+	OnRepeat:
+		@wrong_count++;
+		deltimer .npc_name$+"::OnJail";
+		addtimer ( .duration * 1000 ),.npc_name$+"::OnJail";
+		@rand_itemid = .item_list[ rand( .item_list_size ) ];
+		@rand_amount = rand( 2,19 );				// จำนวนที่สุ่มให้ซื้อ
+		mes "รบกวนซื้อ "+getitemname( @rand_itemid )+" "+@rand_amount+" ea";
+		mes "^FF0000คำเตือน :: ห้ามซื้อผิดและหลบหนี^000000";
+		mes "เมื่อคุณซื้อผิดเราจะเตะคุณออกจากเซิฟเวอร์";
+		dispbottom "=== ซื้อ "+getitemname( @rand_itemid )+" "+@rand_amount+" ชิ้น === ";
+		npcshopattach .shop_name$,1;
+		callshop .shop_name$,1;
+		end;
+
+
+	OnBuyItem:
+		if ( @bought_nameid[0] != @rand_itemid || @bought_quantity[0] != @rand_amount ) {
+			mes "[ ตรวจจับมาโคร ]";
+			mes "คุณตอบผิดครับ.";
+			close2;
+			if ( @wrong_count >= .max_wrong_count ) {
+			doevent .npc_name$+"::OnJail";
+			}
+			else {
+			doevent .npc_name$+"::OnJail";
+			}
+		end;
+		}
+	deltimer .npc_name$+"::OnJail";
+	set @kill,0;
+	announce "*** ขอบคุณที่ให้ความร่วมมือจ้า ***",bc_green|bc_self;
+	set jail,0;
+	atcommand "@option 0 0 0";
+	atcommand "@battleignore";
+
+//	getitem 909,1;			// รางวัลค่าเสียเวลา
+
+	setoption 0x2,0;
+	sc_end sc_berserk;
+	percentheal 100,100;
+	set @kill,0;
+	if(@cart == 1) {
+		setcart;
+		set @cart,0;
+	}
+	if(@madogear == 1) {
+		setmadogear;
+		set @madogear,0;
+	}
+	if(@falcon == 1) {
+		setfalcon;
+		set @falcon,0;
+	}
+	if(@dragon == 1) {
+		setdragon;
+		set @dragon,0;
+	}
+	if(@riding == 1) {
+		setriding;
+		set @riding,0;
+	}
+		end;
+	end;
+
+
+		
+	OnJail:
+		deltimer .npc_name$+"::OnJail";
+		set jail,0;
+	atcommand "@option 0 0 0";
+	atcommand "@battleignore";
+	setoption 0x2,0;
+	sc_end sc_berserk;
+	percentheal 100,100;
+	set @kill,0;
+		set jail,0;
+		mes "[ ตรวจจับมาโคร ]";
+		mes "คุณถูกเตะออกจากเซิฟเวอร์..";
+		atcommand "@kick "+strcharinfo(0);
+//		announce "[Anti-Bot] คุณ  "+strcharinfo(0)+" ถูกส่งเข้าคุกเพราะสงสัยว่าเป็นบอท ",0;
+		end;
+
+
+}
+
+
+
+///=============== เช็คเวลาผู้เล่นหนีตรวจบอท หาก log in มาใหม่
+
+-	script	LogInCheckLung	-1,{
+OnPCLoginEvent:
+if(jail == 1) {
+atcommand "@mute 10";
+set jail,0;
+announce "*** เนื่องจากคุณหนีจากการตรวจสอบ ***                *** คุณจึงถูกลงโทษห้ามสนทนาและใช้สกิลเป็นเวลา10นาที ***",bc_green|bc_self;
+end;
+}
+end;
+}

@@ -1,0 +1,4 @@
+morocc,121,83,0,0	monster	∑¥ Õ∫µ’À‘π	2310,1,0,0,0
+morocc,116,83,0,0	monster	∑¥ Õ∫µ’À‘π	2310,1,0,0,0
+morocc	mapflag	nodrop
+

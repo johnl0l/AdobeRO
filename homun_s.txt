@@ -1,0 +1,73 @@
+//=============================================================
+//			-             mOnster studiO Scripts               -
+//				www.monsterstudio.in.th
+//#############################################################
+
+izlude,92,148,5	script	Homunculus S	586,{
+if (gethominfo(6) >= 99 && (gethominfo(1) >= 6048 && gethominfo(1) <= 6052)) goto noevo;
+if (gethominfo(6) < 99 || (gethominfo(1) < 6009 || gethominfo(1) > 6016)) goto nolvl;
+mes "[Viorel]";
+			mes "สวัสดี .";
+			mes "ท่านต้องการพัฒนา ^0000FFHomunculus^000000. เหรอ";
+			mes "^0000FFHomunculus^000000.ของท่านต้องพัฒนาร่างและเลเวล 99 ก่อนนะ";
+			mes "เมื่อตรงตามข้อกำหนดแล้ว ก็เลือก Homunculus S ";
+			mes "ที่ท่านต้องการ พัฒนาได้เลย ";
+			next;
+if (gethominfo(6) >= 99 && (gethominfo(1) >= 6048 && gethominfo(1) <= 6052)) goto noevo;
+if (gethominfo(6) < 99 || (gethominfo(1) < 6009 || gethominfo(1) > 6016)) goto nolvl;
+homuns:
+
+			switch(select("Eira:Sera:Dieter:Bayeri:Eleanor")) {
+			case 1:
+				cutin "Mer_Eira_Card",3;
+				set .@Homunculus,6048; //MER_EIRA
+				break;
+			case 2:
+				cutin "Mer_Sera_Card",3;
+				set .@Homunculus,6050; //MER_SERA
+				break;
+			case 3:
+				cutin "Mer_Dieter_Card",3;
+				set .@Homunculus,6051; //MER_DIETER
+				break;
+			case 4:
+				cutin "Mer_Bayeri_Card",3;
+				set .@Homunculus,6049; //MER_BAYERI
+				break;
+			case 5:
+				cutin "Mer_Eleanor_Card",3;
+				set .@Homunculus,6052; //MER_ELEANOR
+				break;
+			}
+			mes "[Viorel]";
+			mes "เจ้าแน่ใจนะ ?";
+			next;
+			switch(select("ใช่.:ไม่ดีกว่า.")) {
+case 1:
+	cutin "",255;
+			specialeffect2 EF_BASH;
+			specialeffect2 EF_PROVIDENCE;
+			specialeffect2 EF_SUI_EXPLOSION;
+			morphembryo;
+			hommutate .@Homunculus;
+			close;
+case 2:
+	cutin "",255;
+			mes "[Viorel]";
+			mes "ไม่เป็นไร!";
+			mes "ไว้เจอกันใหม่นะ.";
+			close;
+}
+noevo:
+mes "[Viorel]";
+			mes "เสียใจด้วย!";
+			mes "Homunculusของท่านพัฒนาถึงจุดสูงสุดแล้ว.";
+close;
+nolvl:
+mes "[Viorel]";
+			mes "เสียใจด้วย!";
+			mes "Homunculusของท่าน ยังไม่ได้รับการพัฒนาไปยังร่าง 2.";
+			mes "หรือเลเวลยังไม่ 99.";
+close;
+end;
+			}

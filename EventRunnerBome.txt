@@ -1,0 +1,395 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+-	script	rnb	-1,{
+//-------------------------------------------------------------------------ConFig Zone--------------------------------------------------------------------------------------
+set .@npcname$,"[   ^FF0000Runner Bome^000000    ]";	// ตั้งชื่อ npc
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+while( getgmlevel() >=99 ){
+//mes .@npcname$;
+mes "สวัสดีค่ะท่าน GM";
+mes "การกำหนดค่าปัจจุบัน";
+mes "รางวัลสำหรับเข้าเส้นชัย";
+mes $rnb_item[0]?"^0000FF"+getitemname($rnb_item[0])+" "+$rnb_item[1] +" ea^000000":"^FF0000ยังไม่กำหนด^000000";
+mes "ท่านต้องการทำอะไร";
+next;
+switch(select( "• เมนูผู้เล่น","• เข้าห้องกิจกรรม","• กำหนดของรางวัลใหม่","• เปิดกิจกรรมเดียวนี้","• ออก"))
+{
+case 1:	
+//mes .@npcname$;
+mes "จะพาไปเดียวนี้ค่ะ";
+next;
+break;
+case 2:
+//mes .@npcname$;
+mes "จะพาไปเดียวนี้ค่ะ";
+next;
+warp "job_prist",168,17;
+close;
+case 3:
+//mes .@npcname$;
+mes "ระบุรหัสของรางวัล";
+mes "หากใส่ 0 คือ ปิดกิจกรรม";
+mes "หากใส่รหัสมั่ว คือ ปิดกิจกรรม";
+next;
+input $rnb_item[0];
+if ( getitemname($rnb_item[0])=="null")
+{
+set $rnb_item[0],0;
+continue;
+}
+//mes .@npcname$;
+mes "ระบุจำนวนของรางวัล สำหรับ";
+mes "^0000FF"+getitemname($rnb_item[0])+"^000000";
+mes "หากใส่ 0 คือ ยกเลิกและปิดกิจกรรม";
+next;
+input $rnb_item[1];
+if ( !$rnb_item[1])
+{
+set $rnb_item[0],0;
+set $rnb_item[1],0;
+}
+continue;
+case 4:
+//mes .@npcname$;
+if ($@runstart)
+mes "^FF0000ไม่สามารถเริ่มได้ กิจกรรมกำลังทำงาน^000000";
+else{
+mes "^0000FFกิจกรรมจะเริ่มทันทีที่คุณยืนยัน^000000";
+next;
+if(select("• ยกเลิก:• ยืนยัน")-1){
+set $@rnb_forcestart,1;
+donpcevent "STRATRNB::OnStart";
+//mes .@npcname$;
+mes "^0000FFกิจกรรมเริ่มแล้วค่ะ^000000";
+}
+}
+next;
+continue;
+case 5:
+//mes .@npcname$;
+mes "บ๊าย บาย ค่ะ";
+close;
+}
+break;
+}
+
+//mes .@npcname$;
+if (!$rnb_item[0])
+{
+mes "^FF0000ไม่สามารถเริ่มกิจกรรมได้^000000";
+mes "^0000FFกรุณาติดต่อ GM^000000";
+close;
+}
+mes "กิจกรรม Runner Bome";
+mes "เป็นกิจกรรม..";
+mes "วิ่งผ่ากับดักระเบิด ที่วางอยู่เป็น 100ๆ อัน";
+mes "^FF0000เวลากิจกรรม ทุกๆ2ชม.^000000";
+mes "ระยะเวลารอบละ 5 นาที เท่านั้น";
+mes "^0000FFเล่นได้วันละครั้ง (สำหรับคนที่ได้รางวัลไปแล้ว)^000000";
+next;
+
+if(!$@runstart && !$@rnb_forcestart)
+{
+//mes .@npcname$;
+mes "กิจกรรม Runner Bome";
+mes "ยังไม่เปิดให้เข้า";
+close;
+}
+if (#rnb_flag == gettime(5))
+{
+//mes .@npcname$;
+mes "^FF0000เอ๋ คุณ " + strcharinfo(0) + " เล่นไปแล้วหนิ";
+mes "รอวันพรุ่งนี้น่ะ ถึงจะได้เล่น..^000000";
+mes "1 ตัวละครเล่นได้วันละ ครั้งเท่านั้นนะจ๊ะ...";
+close;
+}
+switch(select( "^FF0000เข้าร่วมกิจกรรม","^000080ดูรายละเอียด","^000000ออก"))
+{
+case 1:
+//mes .@npcname$;
+mes "ขณะนี้มีคนเล่นอยู่ : ^ff0000"+getmapusers ("job_prist.gat")+"^000000 คน";
+mes "รับได้ทีละ 10 คนนะจ๊ะ..";
+next;
+if( getmapusers("job_prist") >= 10 ) 
+{
+mes "เอ๋..ต้องรอคนออกมาก่อนคนมันเยอะ 10 แล้วน่ะ";
+close; 
+}
+warp "job_prist",168,17;
+close;
+case 2:
+//mes .@npcname$;
+mes "1. กิจกรรมเปิดแล้วจะให้คนเข้าไปเรื่อยๆ ";
+mes " ";
+mes "2. ให้วิ่งไปยังจุดหมายคือ ฝั่งตรงข้าม หากรอดกลับมาได้ รับรางวัลไปเลย";
+mes " ";
+mes "3. กิจกรรมนี้จัดขึ้นรอบละ 5 นาทีเท่าน้น";
+mes " ";
+mes "4. ^FF0000เล่นได้วันละครั้ง (สำหรับคนที่ได้รางวัลไปแล้ว)^000000";
+next;
+//mes .@npcname$;
+mes "รางวัลคือ :: ^FF0000"+getitemname($rnb_item[0])+"^000000 ^000080"+$rnb_item[1]+"^000000 ea";
+close;
+case 3:
+//mes .@npcname$;
+mes "อยากวัดดวงก็มาที่นี่";
+close;
+}
+close;
+OnInit:
+waitingroom "Runner Bome",0;
+end;
+}
+
+job_prist,0,0,0	script	STRATRNB	111,{
+end;
+Onclock0025:
+Onclock0325:
+Onclock0625:
+Onclock0925:
+Onclock1220:
+Onclock1520:
+Onclock1820:
+Onclock2120:
+OnStart:
+announce "กิจกรรม Runner Bome ได้เริ่มขึ้นแล้ว ...",0,0x0DFF0D;
+set $@uwinner,0;
+set $@runstart,1;
+initnpctimer;
+end;
+
+OnTimer240000:
+announce "Runner Bome :: อีก 1 นาทีจะจบแล้ว...!!!",0,0x0DFF0D;
+end;
+OnTimer300000:
+announce "กิจกรรม Runner Bome จบลงแล้วมีคนทำ ภาระกิจสำเร็จ "+$@uwinner+" คน ...",0,0x0DFF0D;
+set $@runstart,0;
+set $@uwinner,0;
+stopnpctimer;
+if (getmapusers("job_prist")>0)  mapwarp "job_prist","SavePoint",0,0;
+end;
+OnInit:
+set $@runstart,0;
+end;
+}
+
+///============== WARP 1-3 ==================\\\
+job_prist,168,179,0	script	WARP_WINNER	45,0,0,{
+if (getgmlevel()>=80) end;
+specialeffect2 139;
+set #rnb_flag,gettime(5);
+set $@uwinner,$@uwinner+1;
+announce "Runner Bome : [ " + strcharinfo(0) + " ] ถึงจุดหมายเป็นคนที่ "+$@uwinner+" ...!!",0,0x0DFF0D;
+mes " ^FF0000คุณคือ คนที่ "+$@uwinner+" ^000000 ยินดีด้วยรับของรางวัลไปเลย";
+mes " ";
+sleep2 2000;
+getitem $rnb_item[0],$rnb_item[1];
+warp "SavePoint",0,0;
+close;
+}
+
+job_prist,162,177,0	script	ROOMWINNER	111,{
+end;
+OnInit: 
+waitingroom "•———เส้นชัย———•",0; 
+end;
+}
+
+job_prist,172,177,0	script	ROOMWINNER#2	111,{
+end;
+OnInit: 
+waitingroom "•———เส้นชัย———•",0; 
+end;
+}
+///============= BOME =================\\\
+function	script	F_runnerbome	{
+if (getgmlevel()>=80) end;
+specialeffect2 183;
+specialeffect2 170;
+specialeffect2 151;
+specialeffect2 147;
+percentheal -100,-100;
+dispbottom "Runner :: แว้กกกก..เหยียบ กับ ระเบิด...!!!!!!!";
+announce "Runner Bome :: [" + strcharinfo(0) + "] เหยียบกับระเบิด ตายคาที...!!!!!!!",16,0xFF0000;
+sleep2 1000;
+warp "SavePoint",0,0;
+end;
+}
+function	script	F_runnerbome2	{
+if (getgmlevel()>=80) end;
+set .@bm,rand(1,3);
+if (.@bm > 2) end;
+specialeffect2 183;
+specialeffect2 170;
+specialeffect2 151;
+specialeffect2 147;
+percentheal -100,-100;
+dispbottom "Runner :: แว้กกกก..เหยียบ กับ ระเบิด...!!!!!!!";
+announce "Runner Bome :: [" + strcharinfo(0) + "] เหยียบกับระเบิด ตายคาที...!!!!!!!",16,0xFF0000;
+sleep2 1000;
+warp "SavePoint",0,0;
+end;
+}
+job_prist,162,31,0	script	BOMESRP	139,1,1,{
+callfunc "F_runnerbome";
+}
+
+job_prist,162,31,0	script	BOMESRP2	139,1,1,{
+callfunc "F_runnerbome2";
+}
+job_prist,165,31,4	duplicate(BOMESRP)	B1	139,0,0
+job_prist,165,33,4	duplicate(BOMESRP)	B8#2	139,0,0
+job_prist,172,33,4	duplicate(BOMESRP)	B2	139,0,0
+job_prist,175,31,4	duplicate(BOMESRP)	B3	139,0,0
+job_prist,170,30,4	duplicate(BOMESRP)	B4	139,0,0
+job_prist,166,27,4	duplicate(BOMESRP)	B5	139,0,0
+job_prist,162,26,4	duplicate(BOMESRP)	B6	139,0,0
+job_prist,172,25,4	duplicate(BOMESRP)	B7	139,0,0
+job_prist,165,37,4	duplicate(BOMESRP)	B8	139,0,0
+job_prist,163,40,4	duplicate(BOMESRP)	B9	139,0,0
+job_prist,167,39,4	duplicate(BOMESRP)	B10	139,0,0
+job_prist,171,39,4	duplicate(BOMESRP)	B11	139,0,0
+job_prist,171,43,4	duplicate(BOMESRP)	B12	139,0,0
+job_prist,168,44,4	duplicate(BOMESRP)	B13	139,0,0
+job_prist,164,44,4	duplicate(BOMESRP)	B14	139,0,0
+job_prist,169,47,4	duplicate(BOMESRP)	B15	139,0,0
+job_prist,165,47,4	duplicate(BOMESRP)	B16	139,0,0
+job_prist,162,48,4	duplicate(BOMESRP)	B17	139,0,0
+job_prist,172,47,4	duplicate(BOMESRP)	B18	139,0,0
+job_prist,172,54,4	duplicate(BOMESRP)	B18#21	139,0,0
+job_prist,168,53,4	duplicate(BOMESRP)	B19	139,0,0
+job_prist,163,54,4	duplicate(BOMESRP)	B20	139,0,0
+job_prist,170,56,4	duplicate(BOMESRP)	B21	139,0,0
+job_prist,173,68,4	duplicate(BOMESRP)	B22	139,0,0
+job_prist,170,68,4	duplicate(BOMESRP)	B22#2	139,0,0
+job_prist,167,68,4	duplicate(BOMESRP)	B23	139,0,0
+job_prist,164,68,4	duplicate(BOMESRP)	B24	139,0,0
+job_prist,161,66,4	duplicate(BOMESRP)	B25	139,0,0
+job_prist,163,71,4	duplicate(BOMESRP)	B26	139,0,0
+job_prist,165,71,4	duplicate(BOMESRP)	B27	139,0,0
+job_prist,167,71,4	duplicate(BOMESRP)	B28	139,0,0
+job_prist,169,71,4	duplicate(BOMESRP)	B29	139,0,0
+job_prist,171,71,4	duplicate(BOMESRP)	B30	139,0,0
+job_prist,173,71,4	duplicate(BOMESRP)	B31	139,0,0
+job_prist,171,78,4	duplicate(BOMESRP)	B32	139,0,0
+job_prist,168,78,4	duplicate(BOMESRP)	B33	139,0,0
+job_prist,165,78,4	duplicate(BOMESRP)	B34	139,0,0
+job_prist,170,81,4	duplicate(BOMESRP)	B35	139,0,0
+job_prist,168,83,4	duplicate(BOMESRP)	B36	139,0,0
+job_prist,166,85,4	duplicate(BOMESRP)	B37	139,0,0
+job_prist,164,87,4	duplicate(BOMESRP)	B38	139,0,0
+job_prist,167,90,4	duplicate(BOMESRP)	B39	139,0,0
+job_prist,170,93,4	duplicate(BOMESRP)	B40	139,0,0
+job_prist,172,96,4	duplicate(BOMESRP)	B41	139,0,0
+job_prist,169,96,4	duplicate(BOMESRP)	B42	139,0,0
+job_prist,166,96,4	duplicate(BOMESRP)	B43	139,0,0
+job_prist,171,101,4	duplicate(BOMESRP)	B44	139,0,0
+job_prist,168,105,4	duplicate(BOMESRP)	B45	139,0,0
+job_prist,164,110,4	duplicate(BOMESRP)	B46	139,0,0
+job_prist,167,115,4	duplicate(BOMESRP)	B47	139,0,0
+job_prist,171,119,4	duplicate(BOMESRP)	B48	139,0,0
+job_prist,168,123,4	duplicate(BOMESRP)	B49	139,0,0
+job_prist,165,127,4	duplicate(BOMESRP)	B50	139,0,0
+job_prist,168,130,4	duplicate(BOMESRP)	B51	139,0,0
+job_prist,171,132,4	duplicate(BOMESRP)	B52	139,0,0
+job_prist,164,132,4	duplicate(BOMESRP)	B53	139,0,0
+job_prist,168,134,4	duplicate(BOMESRP)	B54	139,0,0
+job_prist,175,159,4	duplicate(BOMESRP)	B55	139,0,0
+job_prist,173,159,4	duplicate(BOMESRP)	B56	139,0,0
+job_prist,171,159,4	duplicate(BOMESRP)	B57	139,0,0
+job_prist,169,159,4	duplicate(BOMESRP)	B58	139,0,0
+job_prist,167,159,4	duplicate(BOMESRP)	B59	139,0,0
+job_prist,165,159,4	duplicate(BOMESRP)	B60	139,0,0
+job_prist,163,159,4	duplicate(BOMESRP)	B61	139,0,0
+job_prist,161,159,4	duplicate(BOMESRP)	B62	139,0,0
+job_prist,166,169,4	duplicate(BOMESRP)	B63	139,0,0
+job_prist,169,169,4	duplicate(BOMESRP)	B64	139,0,0
+job_prist,169,162,4	duplicate(BOMESRP)	B65	139,0,0
+job_prist,166,161,4	duplicate(BOMESRP)	B66	139,0,0
+job_prist,164,165,4	duplicate(BOMESRP)	B67	139,0,0
+job_prist,172,165,4	duplicate(BOMESRP)	B68	139,0,0
+job_prist,172,172,4	duplicate(BOMESRP)	B70	139,0,0
+job_prist,169,172,4	duplicate(BOMESRP)	B71	139,0,0
+job_prist,166,172,4	duplicate(BOMESRP)	B72	139,0,0
+
+job_prist,175,157,4	duplicate(BOMESRP)	B73	139,0,0
+job_prist,173,157,4	duplicate(BOMESRP)	B74	139,0,0
+job_prist,171,157,4	duplicate(BOMESRP)	B75	139,0,0
+job_prist,169,157,4	duplicate(BOMESRP)	B76	139,0,0
+job_prist,167,157,4	duplicate(BOMESRP)	B77	139,0,0
+job_prist,165,157,4	duplicate(BOMESRP)	B78	139,0,0
+job_prist,163,157,4	duplicate(BOMESRP)	B79	139,0,0
+job_prist,162,156,4	duplicate(BOMESRP)	B80	139,0,0
+
+job_prist,161,169,4	duplicate(BOMESRP2)	B81	139,0,0
+job_prist,162,169,4	duplicate(BOMESRP2)	B82	139,0,0
+job_prist,163,169,4	duplicate(BOMESRP2)	B83	139,0,0
+job_prist,164,169,4	duplicate(BOMESRP2)	B84	139,0,0
+job_prist,165,169,4	duplicate(BOMESRP2)	B85	139,0,0
+job_prist,166,169,4	duplicate(BOMESRP2)	B86	139,0,0
+job_prist,167,169,4	duplicate(BOMESRP2)	B87	139,0,0
+job_prist,168,169,4	duplicate(BOMESRP2)	B88	139,0,0
+job_prist,169,169,4	duplicate(BOMESRP2)	B89	139,0,0
+job_prist,170,169,4	duplicate(BOMESRP2)	B90	139,0,0
+job_prist,171,169,4	duplicate(BOMESRP2)	B91	139,0,0
+job_prist,172,169,4	duplicate(BOMESRP2)	B92	139,0,0
+job_prist,173,169,4	duplicate(BOMESRP2)	B93	139,0,0
+job_prist,174,169,4	duplicate(BOMESRP2)	B94	139,0,0
+job_prist,175,169,4	duplicate(BOMESRP2)	B95	139,0,0
+
+job_prist,175,133,4	duplicate(BOMESRP)	B96	139,0,0
+job_prist,172,135,4	duplicate(BOMESRP)	B97	139,0,0
+job_prist,170,133,4	duplicate(BOMESRP)	B98	139,0,0
+job_prist,167,135,4	duplicate(BOMESRP)	B99	139,0,0
+job_prist,165,132,4	duplicate(BOMESRP)	B100	139,0,0
+job_prist,162,134,4	duplicate(BOMESRP)	B101	139,0,0
+job_prist,161,129,4	duplicate(BOMESRP)	B102	139,0,0
+job_prist,168,175,4	duplicate(BOMESRP)	B103	139,0,0
+
+job_prist,171,155,4	duplicate(BOMESRP2)	B104	139,0,0
+job_prist,170,155,4	duplicate(BOMESRP2)	B105	139,0,0
+job_prist,169,155,4	duplicate(BOMESRP2)	B106	139,0,0
+job_prist,168,155,4	duplicate(BOMESRP2)	B107	139,0,0
+job_prist,167,155,4	duplicate(BOMESRP2)	B108	139,0,0
+job_prist,166,155,4	duplicate(BOMESRP2)	B109	139,0,0
+job_prist,165,155,4	duplicate(BOMESRP2)	B110	139,0,0
+job_prist,164,155,4	duplicate(BOMESRP2)	B111	139,0,0
+job_prist,166,165,4	duplicate(BOMESRP)	B112	139,0,0
+job_prist,170,165,4	duplicate(BOMESRP)	B113	139,0,0
+job_prist,173,34,4	duplicate(BOMESRP2)	B114	139,0,0
+job_prist,173,45,4	duplicate(BOMESRP2)	B115	139,0,0
+job_prist,170,99,4	duplicate(BOMESRP)	B116	139,0,0
+job_prist,166,99,4	duplicate(BOMESRP)	B117	139,0,0
+job_prist,163,105,4	duplicate(BOMESRP)	B118	139,0,0
+job_prist,171,105,4	duplicate(BOMESRP)	B119	139,0,0
+job_prist,168,106,4	duplicate(BOMESRP)	B120	139,0,0
+job_prist,166,111,4	duplicate(BOMESRP)	B121	139,0,0
+
+job_prist,172,148,0	script	BOMELINE	139,10,0,{
+if (getgmlevel()>=80) end;
+set .@bomeline,rand(100);
+if (.@bomeline > 50) close;
+specialeffect2 183;
+specialeffect2 170;
+specialeffect2 151;
+specialeffect2 147;
+percentheal -100,-100;
+dispbottom "Runner :: แว้กกกก..เหยียบ กับ ระเบิด...!!!!!!!";
+announce "Runner Bome :: [" + strcharinfo(0) + "] เหยียบกับระเบิด ตายคาที...!!!!!!!",16,0xFF0000;
+sleep2 1000;
+warp "SavePoint",0,0;
+end;
+}
+
+job_prist	mapflag	nomemo
+job_prist	mapflag	noteleport
+job_prist	mapflag	nosave
+job_prist	mapflag	nobranch
+job_prist	mapflag	nodrop
+job_prist	mapflag	noskill
+
+wonderworld,152,84,4	duplicate(rnb)	Runner Bome	837

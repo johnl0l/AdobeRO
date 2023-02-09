@@ -1,0 +1,193 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+wonderworld,172,91,0	script	#mobswitch_1_1	72,{
+if(@jh)end;
+set @click$,strnpcinfo(2);
+doevent	"เกมส์จับคู่มอนเตอร์::OnClick";
+end;
+OnInit:
+hideonnpc strnpcinfo(0);
+end;
+}
+wonderworld,170,91,0	duplicate(#mobswitch_1_1)	#mobswitch_1_2	100
+wonderworld,168,91,0	duplicate(#mobswitch_1_1)	#mobswitch_1_3	100
+wonderworld,166,91,0	duplicate(#mobswitch_1_1)	#mobswitch_1_4	100
+wonderworld,164,91,0	duplicate(#mobswitch_1_1)	#mobswitch_1_5	100
+wonderworld,162,91,0	duplicate(#mobswitch_1_1)	#mobswitch_1_6	100
+wonderworld,160,91,0	duplicate(#mobswitch_1_1)	#mobswitch_1_7	100
+wonderworld,158,91,0	duplicate(#mobswitch_1_1)	#mobswitch_1_8	100
+wonderworld,156,91,0	duplicate(#mobswitch_1_1)	#mobswitch_1_9	100
+wonderworld,154,91,0	duplicate(#mobswitch_1_1)	#mobswitch_1_10	100
+
+wonderworld,172,93,0	duplicate(#mobswitch_1_1)	#mobswitch_2_1	100
+wonderworld,170,93,0	duplicate(#mobswitch_1_1)	#mobswitch_2_2	100
+wonderworld,168,93,0	duplicate(#mobswitch_1_1)	#mobswitch_2_3	100
+wonderworld,166,93,0	duplicate(#mobswitch_1_1)	#mobswitch_2_4	100
+wonderworld,164,93,0	duplicate(#mobswitch_1_1)	#mobswitch_2_5	100
+wonderworld,162,93,0	duplicate(#mobswitch_1_1)	#mobswitch_2_6	100
+wonderworld,160,93,0	duplicate(#mobswitch_1_1)	#mobswitch_2_7	100
+wonderworld,158,93,0	duplicate(#mobswitch_1_1)	#mobswitch_2_8	100
+wonderworld,156,93,0	duplicate(#mobswitch_1_1)	#mobswitch_2_9	100
+wonderworld,154,93,0	duplicate(#mobswitch_1_1)	#mobswitch_2_10	100
+
+wonderworld,172,95,0	duplicate(#mobswitch_1_1)	#mobswitch_3_1	100
+wonderworld,170,95,0	duplicate(#mobswitch_1_1)	#mobswitch_3_2	100
+wonderworld,168,95,0	duplicate(#mobswitch_1_1)	#mobswitch_3_3	100
+wonderworld,166,95,0	duplicate(#mobswitch_1_1)	#mobswitch_3_4	100
+wonderworld,164,95,0	duplicate(#mobswitch_1_1)	#mobswitch_3_5	100
+wonderworld,162,95,0	duplicate(#mobswitch_1_1)	#mobswitch_3_6	100
+wonderworld,160,95,0	duplicate(#mobswitch_1_1)	#mobswitch_3_7	100
+wonderworld,158,95,0	duplicate(#mobswitch_1_1)	#mobswitch_3_8	100
+wonderworld,156,95,0	duplicate(#mobswitch_1_1)	#mobswitch_3_9	100
+wonderworld,154,95,0	duplicate(#mobswitch_1_1)	#mobswitch_3_10	100
+
+wonderworld,164,89,0	script	เกมส์จับคู่มอนเตอร์	509,{
+set .@mes$,"[ ^FA0080เกมส์จับคู่มอนเตอร์^000000 ]";
+if (.aid$!="") { mes .@mes$; mes "- ขณะนี้ "+.aid$+" ได้เข้าเล่นอยู่"; close; }
+mes .@mes$;
+mes "วิธีการเล่นโดยต้องเปิดป้าย";
+mes "เพื่อจับคู่มอนเตอร์หน้าเหมือนกัน";
+mes "มีเวลาในการเล่น 1 นาที";
+mes "กิจกรรมนี้ไม่มีรางวัล หรือการเดิมพันใดๆ";
+menu "- เริ่มเกมส์",StartGame,"- ยกเลิก",-;
+close;
+
+StartGame:
+close2;
+if(.aid)end;
+callsub SetDate;
+set .aid$,strcharinfo(0);
+set .aid,getcharid(3);
+initnpctimer;
+set @click$,"";
+set @clickA$,"";
+set @clickB$,"";
+set .p,0;
+OnTimer60000:
+for(set .@i,1;.@i<=3;set .@i,.@i+1)
+for(set .@j,1;.@j<=10;set .@j,.@j+1)
+if(playerattached())
+hideoffnpc "#mobswitch_"+.@i+"_"+.@j;
+else
+hideonnpc "#mobswitch_"+.@i+"_"+.@j;
+if(!playerattached())
+{
+if(isloggedin(.aid))
+mapannounce "wonderworld","[ เกมส์จับคู่มอนเตอร์ ] : ได้รับคะแนน "+rid2name(.aid)+" ทั้งหมด "+.p+"  คะแนน",bc_map;
+set .aid,0;
+set .aid$,"";
+}
+end;
+function	e	{
+debugmes ""+getarg(0);
+return getarg(0);
+}
+function	getv	{
+return getd("."+getarg(0)+"view");
+}
+function	hnpc	{
+if(getarg(2))
+{
+hideonnpc "#"+getarg(0);
+hideonnpc "#"+getarg(1);
+}
+else{
+hideoffnpc "#"+getarg(0);
+hideoffnpc "#"+getarg(1);
+}
+return;
+}
+function	setnpc	{
+setnpcdisplay "#"+getarg(0),(!getarg(1)?"":strmobinfo(1,getv(getarg(0))))+"#"+getarg(0),!getarg(1)?857:getv(getarg(0));
+}
+
+function	viewid	{
+function 	md	{
+//while(!strmobinfo(3,set(.@t,rand(1001,1323))));
+while(1)
+{
+set .@zt,.@zt+1;
+if(.@zt&13)sleep2(1);
+if(strmobinfo(3,set(.@t,rand(1001,1323))))
+break;
+}
+return .@t;
+}
+set .@t,md();
+for(set .@i,0;.@i<30;set .@i,.@i+1)
+if(.@t==.viewid[.@i]||.@t==1285||.@t==1286||.@t==1287||.@t==1288)
+{
+set .@t,md();
+set .@i,-1;
+}
+return .@t;
+}
+function	gviewid	{
+set .@n,getarraysize(.viewid);
+//while(!set(.@u,.viewid[set(.@t,rand(.@n))]))continue;
+while(1)
+{
+set .@zt,.@zt+1;
+if(.@zt&13)sleep2(1);
+if(set(.@u,.viewid[set(.@t,rand(.@n))]))
+break;
+}
+for(;.@t<.@n;set .@t,.@t+1)
+set .viewid[.@t],.viewid[.@t+1];
+return .@u;
+}
+function	rviewid	{
+setd ".mobswitch"+getarg(0)+"view",getarg(1);
+return 0;
+}
+
+OnClick:
+if(.aid!=getcharid(3)||@click$==@clickA$||@click$==@clickB$||@jh)end;
+set @jh,1;
+setnpc(@click$,getv(@click$));
+if(@clickA$==""&&@clickB$=="")
+{
+set @clickA$,@click$;
+set @jh,0;
+end;
+}
+set @clickB$,@click$;
+callsub check;
+set @click$,"";
+set @clickA$,"";
+set @clickB$,"";
+set @jh,0;
+end;
+check:
+if(getv(@clickA$)==getv(@clickB$))
+{
+specialeffect 154,AREA,"#"+@clickA$;
+specialeffect 154,AREA,"#"+@clickB$;
+set .p,.p+1;
+sleep2(1500);
+hnpc(@clickA$,@clickB$,1);
+return;
+}
+specialeffect 155,AREA,"#"+@clickA$;
+specialeffect 155,AREA,"#"+@clickB$;
+sleep2(1500);
+hnpc(@clickA$,@clickB$,1);
+setnpc(@clickA$,0);
+setnpc(@clickB$,0);
+if(.aid)hnpc(@clickA$,@clickB$,0);
+return;
+SetDate:
+deletearray .viewid[0],128;
+for(set .@i,0;.@i<15;set .@i,.@i+1)
+set .viewid[.@i+15],set(.viewid[.@i],viewid());
+for(set .@i,1;.@i<=3;set .@i,.@i+1)
+for(set .@j,1;.@j<=10;set .@j,.@j+1)
+setnpc("mobswitch_"+.@i+"_"+.@j,rviewid("_"+.@i+"_"+.@j,gviewid()));
+return;
+OnInit:
+waitingroom "เกมจับคู่มอนเตอร์ ",0;
+end;
+}

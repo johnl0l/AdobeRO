@@ -1,0 +1,216 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+-	script	Poringcatcher::PorC	-1,{
+
+set @npcname$,"[ ตามหา Poring ]"; // ตั้งชื่อ npc
+
+while (getgmlevel() >= 99)
+{
+//mes @npcname$;
+mes "สวัสดีค่ะท่าน GM";
+mes "การกำหนดค่าปัจจุบัน";
+mes "รางวัลสำหรับผู้ที่หาเจอ";
+mes $fp_item[0]?"^00AA00"+getitemname($fp_item[0])+" "+$fp_item[1] +" ea^000000":"^FF0000ยังไม่กำหนด^000000";
+mes "ท่านต้องการทำอะไร";
+next;
+switch(select( "• เมนูผู้เล่น","• เข้าห้องกิจกรรม","• กำหนดของรางวัลใหม่","• เปิดกิจกรรมเดี๋ยวนี้","• ออก"))
+{
+case 1:	
+//mes @npcname$;
+mes "จะพาไปเดี๋ยวนี้ค่ะ";
+next;
+break;
+case 2:
+//mes @npcname$;
+mes "จะพาไปเดี๋ยวนี้ค่ะ";
+next;
+warp "job_wiz",115,99;
+close;
+case 3:
+//mes @npcname$;
+mes "ระบุรหัสของรางวัล";
+mes "หากใส่ 0 คือ ปิดกิจกรรม";
+mes "หากใส่รหัสมั่ว คือ ปิดกิจกรรม";
+next;
+input $fp_item[0];
+if (getitemname($fp_item[0])=="null") {
+set $fp_item[0],0;
+continue;
+}
+//mes @npcname$;
+mes "ระบุจำนวนของรางวัล สำหรับ";
+mes "^00AA00"+getitemname($fp_item[0])+"^000000";
+mes "หากใส่ 0 คือ ยกเลิกและปิดกิจกรรม";
+next;
+input $fp_item[1];
+if (!$fp_item[1]) {
+set $fp_item[0],0;
+set $fp_item[1],0;
+}
+continue;
+case 4:
+//mes @npcname$;
+if ($pstart)
+mes "^FF0000ไม่สามารถเริ่มได้ กิจกรรมกำลังทำงาน^000000";
+else {
+mes "^00AA00กิจกรรมจะเริ่มทันทีที่คุณยืนยัน^000000";
+next;
+if (select("• ยกเลิก:• ยืนยัน")-1) {
+set $@fp_forcestart,1;
+donpcevent "poring_event::OnStart";
+//mes @npcname$;
+mes "^00AA00กิจกรรมเริ่มแล้วค่ะ^000000";
+}
+}
+next;
+continue;
+case 5:
+//mes @npcname$;
+mes "บ๊าย บาย ค่ะ";
+close;
+}
+break;
+}
+
+//mes @npcname$;
+if (!$fp_item[0]) {
+mes "ไม่สามารถเริ่มกิจกรรมได้";
+mes "กรุณาติดต่อ GM";
+close;
+}
+if (!$@pstart && !$@fp_forcestart) {
+mes "^FF0000[ ตารางเวลากิจกรรม ]^000000";
+mes "^00AA00 ทุกๆ 2 ชม.^000000";
+close;
+}
+mes "สวัสดี "+strcharinfo(0)+" คุณต้องการอะไร ?";
+next;
+switch(select("• เข้าไป","• คำแนะนำ","• ไม่มีอะไร"))
+{
+case 1:
+if(getmapusers("job_wiz") >= 40 ) {
+//mes @npcname$;
+mes "ขออภัย คนครบ 40 คนแล้วครับ"; 
+break;
+}
+//mes @npcname$;
+mes "ไปกันเลย   !";
+next;
+announce "[ตามหา Poring] : "+strcharinfo(0)+" ได้เข้าไปยัง กิจกรรม ตามหา Poring แล้วครับ",0;
+warp "job_wiz",115,99;
+break;
+
+case 2:
+//mes @npcname$;
+mes "นี่คือ กิจกรรมตามหา Poring ซึ่งจะมี 1 ใน 100";
+mes "เมื่อคุณพบ Poring จงฆ่ามันซะ และจะได้รับ "+getitemname($itemporing)+" "+$numitemporing+" ea.";
+mes "ถ้าคุณทำพลาด ฆ่ามอนเตอร์ตัวอื่น คุณจะออกจากการแข่งขันทันที";
+mes "จำกัด  40 คน มอนเตอร์จะเกิดเรื่อยๆจนครบ 10 นาที";
+next;
+mes "^FF0000[ ตารางเวลากิจกรรม ]^000000";
+mes "^00AA00 ทุกๆ 2 ชม. ^000000";
+break;
+case 3:
+//mes @npcname$;
+mes "โชคดี สำลีแปะหัว ฮ่าๆ";
+break;
+}
+close;
+
+OnInit:
+set $pstart,0;
+waitingroom "ตามหา Poring",0;
+end;
+}
+
+
+job_wiz,116,112,4	script	poring_event	-1,{
+
+Onclock0009:
+Onclock0209:
+Onclock0409:
+Onclock0609:
+Onclock0809:
+Onclock1015:
+Onclock1209:
+Onclock1409:
+Onclock1609:
+Onclock1809:
+Onclock2009:
+Onclock2209:
+OnStart:
+if (!$fp_item[0])end;
+killmonster "job_wiz","All";
+announce "[ตามหา Poring] : กิจกรรม ตามหา Poring จะเริ่มในอีก 1 นาทีข้างหน้านี้ ด่วน !! รับ แค่ 40 คน !",0;
+initnpctimer;
+end;
+
+OnTimer60000:
+announce "[ตามหา Poring] : กิจกรรม ตามหา Poring ได้เริ่มต้น แล้วครับ ด่วน !! รับ แค่ 40 คน !",0;
+set $@pstart,1;
+donpcevent "Poringsummoner::OnSummon";
+end;
+
+OnTimer660000:
+stopnpctimer;
+setnpctimer 0;
+set $@pstart,0;
+killmonster "job_wiz","All";
+if (getmapusers("job_wiz")>0) mapwarp "job_wiz","SavePoint",0,0;
+end;
+}
+
+-	script	Poringsummoner	-1,{
+
+OnSummon:
+monster "job_wiz",115,99,"Pouring",1002,15,"poring_ev::OnMobKilled";
+monster "job_wiz",115,99,"Proing",1002,12,"poring_ev::OnMobKilled";
+monster "job_wiz",115,99,"Poirng",1002,15,"poring_ev::OnMobKilled";
+monster "job_wiz",115,99,"Poing",1002,15,"poring_ev::OnMobKilled";
+monster "job_wiz",116,99,"I'm not a Poring",1002,8,"poring_ev::OnMobKilled";
+monster "job_wiz",115,99,"Poring",1113,5,"poring_ev::OnMobKilled";
+monster "job_wiz",115,99,"Poring",1062,5,"poring_ev::OnMobKilled";
+monster "job_wiz",115,99,"Poring",1002,1,"poring_ev::OnMobKilled2";
+monster "job_wiz",116,99,"Gnirop",1002,4,"poring_ev::OnMobKilled";
+monster "job_wiz",115,99,"Por|ng",1002,12,"poring_ev::OnMobKilled";
+monster "job_wiz",115,99,"Por1ng",1002,15,"poring_ev::OnMobKilled";
+monster "job_wiz",115,99,"Porong",1002,11,"poring_ev::OnMobKilled";
+monster "job_wiz",115,99,"P0ring",1002,12,"poring_ev::OnMobKilled";
+monster "job_wiz",115,99,"P@ring",1002,12,"poring_ev::OnMobKilled";
+monster "job_wiz",115,99,"Porng",1002,5,"poring_ev::OnMobKilled";
+end;
+}
+
+-	script	poring_ev	-1,{
+
+OnMobKilled2:
+dispbottom "คุณได้รับ  "+getitemname($fp_item[0])+" "+$fp_item[1]+" ea.";
+dispbottom "ขอแสดงความดีใจด้วย";
+getitem $fp_item[0],$fp_item[1];
+killmonster "job_wiz","All";
+donpcevent "Poringsummoner::OnSummon";
+end;
+
+OnMobKilled:
+dispbottom "ว้า !!!, คุณแพ้แล้ว ";
+percentheal -100,-100;
+warp "SavePoint",0,0;
+end;
+}
+
+// -- Mapflags
+job_wiz	mapflag	nobranch
+job_wiz	mapflag	noicewall
+job_wiz	mapflag	noreturn
+job_wiz	mapflag	nomemo
+job_wiz	mapflag	nosave	SavePoint
+job_wiz	mapflag	noteleport
+job_wiz	mapflag	nodrop
+job_wiz	mapflag	nowarp
+job_wiz	mapflag	nowarpto
+job_wiz	mapflag	noskill
+
+wonderworld,158,84,4	duplicate(PorC)	ตามหา Poring	837

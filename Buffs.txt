@@ -1,0 +1,123 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+-	script	BuffsSupports	-1,{
+set .@delay, 3;	// ดีเลย์การใช้งาน (วินาที)
+set .@cast, 1;	// ระยะเวลาร่าย (วินาที)
+if ( gettimetick(2)-@delay_heal < .@delay )
+dispbottom "[ระบบ] โปรดรออีก "+(.@delay-(gettimetick(2)-@delay_heal))+" วินาทีถึงจะใช้งานได้อีกครั้งนะค่ะ";
+else {
+progressbar "0x007000", .@cast;
+set @delay_heal, gettimetick(2);
+
+//ข้อความที่ต้องการให้NPCพูด
+npctalk "ท่านได้รับพลังพิเศษจากเทพอาธีน่าแล้ว";
+//เช็คไอเทมที่เสียหายถ้ามีซ่อมให้ทันที
+if (getbrokenid(1) > 0) { atcommand "@repairall"; }
+//แก้สถานะต่างๆ
+sc_end SC_POISON;
+sc_end SC_FREEZE;
+sc_end SC_SLEEP;
+sc_end SC_STAN;
+sc_end SC_STUN;
+sc_end SC_STONE;
+sc_end SC_SILENCE;
+sc_end SC_BLIND;
+sc_end SC_Bleeding;
+sc_end SC_CONFUSION;
+sc_end SC_CURSE;
+sc_end SC_HALLUCINATION;
+sc_end SC_ORCISH;
+//==============================================
+//บัพค่าอาหาร 30นาที Support Hercules
+//sc_start SC_FOOD_STR, 1800000,5;
+//sc_start SC_FOOD_AGI, 1800000,5;
+//sc_start SC_FOOD_VIT, 1800000,5;
+//sc_start SC_FOOD_INT, 1800000,5;
+//sc_start SC_FOOD_DEX, 1800000,5;
+//sc_start SC_FOOD_LUK, 1800000,5;
+//บัพสกิลต่างๆ
+//sc_start SC_BLESSING,1800000,10;
+//sc_start SC_INC_AGI, 1800000,10;
+//sc_start 41,1800000,10; //กอเรีย
+//sc_start 40,1800000,10; // MAGNIFICAT เร่ง
+//==============================================
+//บัพค่าอาหาร 30นาที Support rAthena
+sc_start SC_STRFood, 1800000,5;
+sc_start SC_AGIFood, 1800000,5;
+sc_start SC_VITFood, 1800000,5;
+sc_start SC_INTFood, 1800000,5;
+sc_start SC_DEXFood, 1800000,5;
+sc_start SC_LUKFood, 1800000,5;
+//บัพสกิลต่างๆ
+sc_start SC_BLESSING,1800000,10;
+sc_start SC_INCREASEAGI,1800000,10;
+sc_start 41,1800000,10; //กอเรีย
+sc_start 40,1800000,10; // MAGNIFICAT เร่ง
+sc_start4 SC_POEMBRAGI,1000*60*5,5,70,90,10;
+sc_start4 SC_SERVICE4U,1000*60*5,5,40,40,1;
+//เพิ่มHPและSP 100%
+percentheal 100,100; 
+//==============================================
+//เอฟเฟกเพิ่มความสวยงาม
+specialeffect2 509;
+specialeffect 509;
+//==============================================
+dispbottom "คุณได้อยู่ในสถานะ ( A Poem of Bragi & Service for You ) เป็นเวลา 3 นาที ไม่สามารถใช้ใน PvP ได้ ";
+//==============================================
+//ส่องไอเทมปริศนาที่มีในตัวทั้งหมด
+getinventorylist;
+for(set @i, 0; @i < @inventorylist_count; set @i, @i + 1) {
+if (@inventorylist_identify[@i] == 1) continue;
+delitem2 @inventorylist_id[@i],1,0,0,0,0,0,0,0;
+getitem @inventorylist_id[@i],1;
+}
+end;
+}
+}
+//==============================================
+
+// Duplicates
+//============================================================
+alberta,25,240,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#alb	894
+aldebaran,135,118,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#alde	894
+amatsu,200,79,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#ama	894
+ayothaya,207,169,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#ayo	894
+comodo,184,158,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#com	894
+einbech,57,36,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#einbe	894
+einbroch,57,202,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#einbr	894
+geffen,115,72,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#gef	894
+gonryun,156,122,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#gon	894
+hugel,89,150,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#hug	894
+izlude,125,118,5	duplicate(BuffsSupports)	เติมเลือดและแจก AB#izl	894
+jawaii,250,139,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#jaw	894
+lighthalzen,152,100,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#lhz	894
+louyang,226,103,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#lou	894
+manuk,272,144,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#man	894
+mid_camp,203,289,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#mid	894
+moc_ruins,72,164,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#moc	894
+morocc,153,97,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#mor	894
+moscovia,220,191,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#mos	894
+niflheim,212,182,5	duplicate(BuffsSupports)	เติมเลือดและแจก AB#nif	894
+payon,179,106,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#pay	894
+prontera,162,193,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#prt	894
+rachel,125,116,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#rac	894
+splendide,201,153,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#spl	894
+thor_camp,249,74,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#thor	894
+umbala,105,148,3	duplicate(BuffsSupports)	เติมเลือดและแจก AB#umb	894
+veins,217,121,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#ve	894
+xmas,143,136,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#xmas	894
+yuno,164,45,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#yuno	894
+
+// Duplicates (Renewal)
+//============================================================
+brasilis,194,221,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#bra	894
+dewata,195,187,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#dew	894
+dicastes01,201,194,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#dic	894
+ecl_in01,45,60,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#ecl	894
+malangdo,132,114,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#mal	894
+malaya,205,205,6	duplicate(BuffsSupports)	เติมเลือดและแจก AB#ma	894
+mora,55,152,4	duplicate(BuffsSupports)	เติมเลือดและแจก AB#mora	894
+//==============================================

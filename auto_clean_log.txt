@@ -1,0 +1,31 @@
+-	script	cleanlogday	-1,{
+	end;
+	
+OnClock0800:
+	query_logsql "TRUNCATE `picklog`";
+	query_logsql "TRUNCATE `zenylog`";
+	query_logsql "TRUNCATE `branchlog`";
+	query_logsql "TRUNCATE `mvplog`";
+	query_logsql "TRUNCATE `npclog`";
+	query_logsql "TRUNCATE `chatlog`";
+
+	query_sql "TRUNCATE `charlog`";
+	query_sql "TRUNCATE `interlog`";
+	end;
+}
+-	script	cleanlognight	-1,{
+	end;
+	
+OnClock2000:
+	query_logsql "TRUNCATE `picklog`";
+	query_logsql "TRUNCATE `zenylog`";
+	query_logsql "TRUNCATE `branchlog`";
+	query_logsql "TRUNCATE `mvplog`";
+	query_logsql "TRUNCATE `npclog`";
+	query_logsql "TRUNCATE `chatlog`";
+
+	query_sql "TRUNCATE `charlog`";
+	query_sql "TRUNCATE `interlog`";
+	end;
+}
+

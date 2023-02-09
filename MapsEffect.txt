@@ -1,0 +1,7 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+morocc	mapflag	sakura
+morocc	mapflag	fireworks

@@ -1,0 +1,1676 @@
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=)
+//	(            HIME's Script            )
+//	(       ______  __    __                                  )
+//	(      /\  _  \/\ \__/\ \                                 )
+//	(    __\ \ \_\ \ \ ,_\ \ \___      __    ___      __      )
+//	(  /'__`\ \  __ \ \ \/\ \  _ `\  /'__`\/' _ `\  /'__`\    )
+//	( /\  __/\ \ \/\ \ \ \_\ \ \ \ \/\  __//\ \/\ \/\ \_\.\_  )
+//	( \ \____\\ \_\ \_\ \__\\ \_\ \_\ \____\ \_\ \_\ \__/.\_\ )
+//	(  \/____/ \/_/\/_/\/__/ \/_/\/_/\/____/\/_/\/_/\/__/\/_/ )
+//	(   _   _   _   _   _   _   _     _   _   _   _   _   _   )
+//	(  / \ / \ / \ / \ / \ / \ / \   / \ / \ / \ / \ / \ / \  )
+//	( ( e | n | g | l | i | s | h ) ( A | t | h | e | n | a ) )
+//	(  \_/ \_/ \_/ \_/ \_/ \_/ \_/   \_/ \_/ \_/ \_/ \_/ \_/  )
+//	(                                                         	)
+//	(              BAKA Script Project - EVA             )
+//(=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=)
+//===== Athena Script =====================================
+//= Online Bonus - ออนตัวไว้แลกของ !!
+//===== By HIME_meaw ================================
+//= พบข้าพเจ้าได้ที่ ..
+//= http://michiyo.blog.com
+//= http://www.yugiohthailand.com/phpBB3/index.php -> Eisen Wolf
+//= http://facebook.com/KuroiSenPU -> HIME meaw
+//= http://www.stmagnusgame.com/webboard/ -> Saruwatari Michiyo
+//= http://kidcardth.net/bbs/index.php -> HIME_meaw / Aria_David
+//= http://www.itwebzone.com/forum/ -> HIME_meaw
+//= http://www.eathena.ws/board/index.php -> ChaoLicTZ [ยังไม่เคยโพสเลยนะ]
+//= www.ea.in.th/ -> IK@RI
+//===== Description =======================================
+//= สคริปต์ที่ดูเป็นการเป็นงานหน่อยๆ หลังจากพักนี้เริ่มเละเทะออกทะเลมาเป็นเวลานาน ... แสนนาน ไร้แก่นสารอยู่หลายวัน
+//= เป็นอีก 1 สคริปต์ที่น่าจะเอามาใช้ในการเปิดเซิฟจริงได้ หลังจากที่เขียนมาทั้งหมดเอาไว้ทำเทือกอะไรไม่ได้เลยนอกจากเล่นตลก
+//===== Script Idea =======================================
+//= Neon Genesis Evangelion [PSP] - เหลือบไปเห็นว่าเซฟเกมนี้มันมีเวลาบันทึกด้วย เลยเออ .. น่าเอามาลองทำดู
+//= กว่าจะหาทางกำหนดตัวแปรได้แทบม่องไปหลายสิบยกเพราะตัวแปร วัน ชั่วโมง นาที วินาที มันโคตรมึนเลยทีเดียว วินาทีนี่ สารภาพว่ามั่วเอาค่ะ
+//===== Credits ===========================================
+//= Neon Genesis Evangelion ... ไม่มีอะไรค่ะ แค่ชอบเรื่องนี้มากแค่นั้น ห้าๆๆๆ
+//= PSP Save Data สำหรับไอเดีย
+//===== Special Thanks# ===========================================
+//= คุณพ่อ-คุณแม่ - ที่ช่วยเหลือทุกเรื่องเสมอมา ไม่มีพ่อแม่ไม่มีหนูวันนี้ ขอบคุณมากๆค่ะ
+//= Neon Genesis Evangelion - คาโอรุกับชินจิคุงน่ารักมากค่ะ ขอบคุณอนิเมะเก่าแต่อมตะที่เราดูแก้เบื่อประจำ มีเวลาดู NGE 2.22 แล้ว !!
+//= Yu-Gi-Oh! Official Card Game - ขอบคุณกิจกรรมยามว่างดีๆที่ทำให้ไม่เบื่อเวลาหัวตันจากการเขียนสคริปต์ค่ะ BF สุดย้อดดด รักคาลูทที่สุดเล้ยยย
+//= Summoner Master - ขอบคุณสำหรับการ์ดดีราคาถูก(?) ที่ทำให้เราได้จอยกับเพื่อนเสมอๆเวลาคาบว่าง-พักกเที่ยง-เลิกเรียนค่ะ รักเดวิดค่ะ ห้าๆๆๆ
+//= Notebook - ขอบคุณสำหรับเครื่องที่แม้จะแบตเตอร์รี่เสื่อมเก่าชิบหาย แต่ก็ยังใช้งานได้ดีไม่มีตกหล่น ไม่มีมันฉันเขียนสคริปต์ไม่ได้นะนี่
+//= คาบว่าง - เขียนที่ รร. ไม่มีคาบว่างคงไม่มีโอกาสได้มานั่งเขียนแบบมาราธอนแน่นอน ขอบคุณคาบว่างที่ทำให้ไม่ต้องกลับไปเขียสคริปต์ที่บ้าน จะได้ดูเมะได้ ห้าๆๆๆๆ
+//= Downloader ทุกๆท่าน - ขอบคุณที่ให้ความไว้ใจและดาวน์โหลดสคริปต์เราไปใช้ ห้าๆๆๆ ผิดพลาดประการใดติดต่อข้าพเจ้าได้ตามที่อยู่ด้านบนเลยค่ะ
+//===== Version ===========================================
+//= v1.18
+//=========================================================
+//= v1.0
+//= - เริ่มเขียนแบบง่ายๆ เทสเซ็ตเวลาและบันทึกเวลาออน-ออฟ
+//= v1.1
+//= - เพิ่ม NPC Online Manager ขึ้นมา [Status: Complete]
+//= - เทสเมนูเซ็ตรางวัล ไอเทม ออลเคลียร์ [Status: Complete]
+//= v1.3
+//= - เพิ่มเมนูเซ็ตรางวัลเป็นเงิน Zeny [Status: Complete]
+//= - เทสเมนูเซ็ตรางวัลเป็นเงิน Zeny ออลเคลียร์ [Status: Complete]
+//= v1.4
+//= - เพิ่มเมนูแลกชั่วโมงออนไลน์กับ Cash Point [Status: Complete]
+//= - แก้บั๊กแลกชั่วโมงออนไลน์กับ Cash Point [Status: Complete]
+//= v1.7
+//= - แก้เมนูให้เลือกแลกเป็นไอเทมหรือ Zeny พร้อมกันได้ [Status: Complete]
+//= - เพิ่มเมนูแลกชั่วโมงออนไลน์กับ Poring Coin [Status: Complete]
+//= - แก้บั๊กแลกชั่วโมงออนไลน์กับ  Poring Coin [Status: Complete]
+//= v1.8
+//= - แก้ให้ดูข้อมูลของรางวัลที่แจกแบบเลือกดูเป็นไอเทมหรือ Zeny แยกกันแล้ว [Status: Complete]
+//= v1.9
+//= - เพิ่มคำสั่ง next; ในบางจุด [Status: Complete]
+//= - แก้บั๊กเซ็ตตัวแปรไม่ครบและผิดพลาด [Status: Complete]
+//= v1.12
+//= - แก้โมดูลเมนูที่ยังผิดพลาดอยู่ใหม่หมด [Status: Complete]
+//= - แก้ส่วนของการประกาศเวลาเข้าเกมใหม่ให้ดูง่ายขึ้น [Status: Complete]
+//= v1.15
+//= - แก้แลกของรางวัลที่ยังแลกไม่ได้และผิดพลาดในบางจุด [Status: Complete]
+//= - เพิ่มตัวแปรเช็คสถานะของไอเทมและ Zeny ที่จะใช้เป็นรางวัล ถ้ายังไม่มีการกำหนดจะเข้าไปแลกไม่ได้ ป้องกันการบั๊ก [Status: Complete]
+//= v1.16
+//= - แก้คำสั่งที่ยังผิดพลาด ตกหล่น และบั๊กในบางจุด [Status: Complete]
+//= - เปลี่ยนตัวแปรใหม่เล็กน้อยให้แก้ไขง่ายขึ้น [Status: Complete]
+//= - เพิ่มคีย์เวิร์ดสำหรับเซิร์ซหาจุดที่ต้องการแก้ไข ทำให้แก้สคริปต์ได้ง่ายขึ้น ดูได้ที่ด้านล่างค่ะ [Status: Complete]
+//= v1.17
+//= - เพิ่มระบบ Password เพิ่มความปลอดภัยสองชั้นซ้อนๆ [Status: Complete]
+//= v1.18
+//= - เพิ่ม Password ก่อนใช้บริการ NPC Online Manager [Status: Complete]
+//= - เพิ่ม Password ในเมนูรีเซ็ตเวลาออนไลน์ [Status: Complete]
+//= - เทสและแก้บั๊กระบบ Password [Status: Complete]
+//= v1.22
+//= - เแก้ไขให้แก้อัตราการแลก Cash Point และ Poring Coin ได้แล้ว [Status: Complete]
+//= - เพิ่มเมนูรีเซ็ตรางวัล Cash และ Poring Coin [Status: Complete]
+//= - เทสและแก้ไขจุดที่ยังผิดพลาดในสคริปต์ [Status: Complete]
+//= - เพิ่มเมนูดูรายละเอียดรางวัลของ Cash Point และ Poring Coin [Status: Complete]
+//======================= สารบัญ =============================
+//= o ตั้งค่าของรางวัล - [SET00]
+//=	- ตั้งค่าของรางวัล: ไอเทม - [HI000]
+//=		- 1st Hr. : Item - [HI001]
+//=		- 2nd Hr. : Item - [HI002]
+//=		- 3rd Hr. : Item - [HI003]
+//=		- 4th Hr. : Item - [HI004]
+//=		- 5th Hr. : Item - [HI005]
+//=		- 6th Hr. : Item - [HI006]
+//=	- ตั้งค่าของรางวัล: Zeny - [HZ000]
+//=		- 1st Hr. : Zeny - [HZ001]
+//=		- 2nd Hr. : Zeny - [HZ002]
+//=		- 3rd Hr. : Zeny - [HZ003]
+//=		- 4th Hr. : Zeny - [HZ004]
+//=		- 5th Hr. : Zeny - [HZ005]
+//=		- 6th Hr. : Zeny - [HZ006]
+//=	- ตั้งค่าของรางวัล: Cash Point - [HC000]
+//=		- ตั้งเวลาสำหรับแลก Cash Point - [HC001]
+//=		- รีเซ็ตเวลาสำหรับแลก Cash Point - [HC002]
+//=	- ตั้งค่าของรางวัล: Poring Coin - [HP000]
+//=		- ตั้งเวลาสำหรับแลก Poring Coin - [HP001]
+//=		- รีเซ็ตเวลาสำหรับแลก Poring Coin - [HP002]
+//= o แลก เวลาออนไลน์ -> ไอเทม - [HTI00]
+//= 	- รับไอเทมจาก แลก เวลาออนไลน์ -> ไอเทม - [GIH00]
+//=		- 1st Hr. : Get Item - [GIH01]
+//=		- 2nd Hr. : Get Item - [GIH02]
+//=		- 3rd Hr. : Get Item - [GIH03]
+//=		- 4th Hr. : Get Item - [GIH04]
+//=		- 5th Hr. : Get Item - [GIH05]
+//=		- 6th Hr. : Get Item - [GIH06]
+//= o แลก เวลาออนไลน์ -> Zeny - [HTZ00]
+//=	- รับเงินจาก แลก เวลาออนไลน์ -> Zeny - [GZH00]
+//=		- 1st Hr. : Get Zeny - [GZH01]
+//=		- 2nd Hr. : Get Zeny - [GZH02]
+//=		- 3rd Hr. : Get Zeny - [GZH03]
+//=		- 4th Hr. : Get Zeny - [GZH04]
+//=		- 5th Hr. : Get Zeny - [GZH05]
+//=		- 6th Hr. : Get Zeny - [GZH06]
+//= o แลก เวลาออนไลน์ -> Cash point - [HTC00]
+//= o แลก เวลาออนไลน์ -> Poring Coin - [HTP00]
+//= o รายละเอียดของรางวัลไอเทมและ Zeny - [AZD00]
+//=	- Item Details - [AZD01]
+//=	- Zeny Details - [AZD02]
+//=	- Cash Point Details - [ACD03]
+//=	- Poring Coin Details - [APD04]
+//= o รีเซ็ตเวลาออนไลน์ใหม่ - [RES00]
+//= o ตัวจัดการด้าน Password - [PAS00]
+//=	- ตั้งรหัสผ่านเมื่อใช้งาน NPC ครั้งแรก - [PAS01]
+//=	- แก้ไขรหัสผ่าน - [PAS02]
+//= o ตัวเลือก 'ยกเลิก' - [ESC00]
+//= o ตั้งห้องบนหัว NPC : ชื่อห้อง 'Online Manager' - [ONI00]
+//=========================================================
+//= ------------------------------------อย่าเอาเครดิตออกนะคะ ------------------------------------
+//=========================================================
+-	script	Online_Counting	-1,{
+	OnPCLoginEvent:
+		attachnpctimer ""+strcharinfo(0)+"";
+		set .@Day,#Online_Count/86400;
+		set .@Hour,(#Online_Count - .@Day*86400)/3600;
+		set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+		set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+//		set @Login_Time, gettimetick(2);
+		dispbottom "[ "+strcharinfo(0)+" ] : เวลาออนไลน์ทั้งหมด [ "+.@Day+" ] วัน [ "+.@Hour+" ] ช.ม. [ "+.@Minute+" ] นาที [ "+.@Second+" ] วินาที";
+		initnpctimer;
+		end;
+
+	OnTimer1000:
+		if (checkvending() >= 1 || checkchatting() == 1) {
+			dispbottom "[ "+strcharinfo(0)+" ] : เนื่องจากคุณได้ทำการตั้งร้าน และ/หรือตั้งห้องแชท ระบบจะยกเลิกการนับชั่วโมงออนไลน์ของคุณ กรุณาออกและเข้าเกมส์ใหม่หากต้องการสะสม ชั่วโมงออนไลน์ของคุณต่อ";
+			stopnpctimer;
+			end;
+		}
+		getmapxy( .@map$, .@x, .@y, 0 );
+			if(@map$ == .@map$ && @x == .@x && @y == .@y) {
+			set @move, @move + 1;
+		} else {
+			set @move, 0;
+		}
+		set @map$, .@map$; set @x, .@x; set @y, .@y;
+		if (@move == 1200) {
+			dispbottom "[ "+strcharinfo(0)+" ] : เนื่องจากคุณหยุดอยู่นิ่งเป็นเวลาเกิน 20 นาที ระบบจะหยุดนับชั่วโมงออนไลน์ของคุณ กรุณาออกและเข้าเกมส์ใหม่หากต้องการสะสม ชั่วโมงออนไลน์ของคุณต่อ";
+			stopnpctimer;
+			end;
+		}		
+		set #Online_Count,#Online_Count + 1;
+		stopnpctimer;
+		initnpctimer;
+		end;
+
+//	OnPCLogoutEvent:
+//		set @Logout_Time, gettimetick(2) - @Login_Time;
+//		set #Online_Count,#Online_Count + @Logout_Time;
+//		end;
+
+}
+
+wonderworld,143,89,8	script	Online Manager	510,{
+		set .name$,"^0000FF[^63B8FF Online Manager ^0000FF]^000000"; // ชื่อของ Npc
+		set .@Day,#Online_Count/86400;
+		set .@Hour,(#Online_Count - .@Day*86400)/3600;
+		set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+		set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+		set @Login_Time, gettimetick(2);
+	if (#OnlineBonusPass == 0) {
+		mes ""+.name$+"";
+		mes "สวัสดีค่ะคุณ ^0000cc"+strcharinfo(0)+"^000000";
+		mes "ยินดีต้องรับสู่การใช้งาน";
+		mes "Online Manager ครั้งแรก";
+		next;
+		mes ""+.name$+"";
+		mes "ก่อนที่คุณจะเข้าสู่ขั้นตอนอื่นต่อไป";
+		mes "กรุณาตั้งรหัสผ่านเพื่อความปลอดภัย";
+		mes "ของไอดีคุณค่ะ";
+		next;
+		goto L_First_Setpass;
+		} else {
+		mes ""+.name$+"";
+		mes "--------------------------------";
+		mes "กรุณาใส่รหัสผ่านของคุณค่ะ";
+		mes "--------------------------------";
+			input @PasswordOB;
+			next;
+				if (@PasswordOB != #OnlineBonusPass) {
+						mes ""+.name$+"";
+						mes "--------------------------------";
+						mes "เสียใจด้วย คุณใส่รหัสผ่านผิดค่ะ";
+						mes "--------------------------------";
+						close;
+						}
+			goto main;
+		}
+			
+	main:
+		mes ""+.name$+"";
+		mes "สวัสดีค่ะคุณ ^0000cc"+strcharinfo(0)+"^000000";
+		mes "ยินดีต้อนรับเข้าสู่ระบบ";
+		mes "Online Manager ระบบ";
+		mes "จัดการเวลาออนไลน์ของคุณ";
+		if (getgmlevel() < 90) {
+		menu
+			"- ^8B4513รายละเอียดของรางวัลไอเทมและ Zeny^000000",L_Rew_Detail,
+			"- แลก ^FF4444เวลาออนไลน์^000000",L_Online_Trade,
+			"- รีเซ็ต^FF4444เวลาออนไลน์^000000ใหม่",L_Reset,
+			"- ^336666แก้ไขรหัสผ่าน^000000",L_Change_Pass,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		} else if (getgmlevel() > 90) {
+		menu
+			"- ^CC00CCตั้งค่าของรางวัล^000000",L_Setup,
+			"- ^8B4513รายละเอียดของรางวัลไอเทมและ Zeny^000000",L_Rew_Detail,
+			"- แลก ^FF4444เวลาออนไลน์^000000",L_Online_Trade,
+			"- รีเซ็ต^FF4444เวลาออนไลน์^000000ใหม่",L_Reset,
+			"- ^336666แก้ไขรหัสผ่าน^000000",L_Change_Pass,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		}
+
+		L_Online_Trade:
+		menu
+			"- แลก ^FF4444เวลาออนไลน์^000000 -> ^00CC00ไอเทม^000000",L_Tr_Item,
+			"- แลก ^FF4444เวลาออนไลน์^000000 -> ^CCCC00Zeny^000000",L_Tr_Zeny,
+			"- แลก ^FF4444เวลาออนไลน์^000000 -> ^006600Cash Points^000000",L_Tr_Cash,
+			"- แลก ^FF4444เวลาออนไลน์^000000 -> ^FF8888Poring Coin^000000",L_Tr_PCoin,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+
+		L_Rew_Detail:
+		menu
+			"- ^00CC00ไอเทม^000000",L_ItemR_Det,
+			"- ^CCCC00Zeny^000000",L_ZenyR_Det,
+			"- ^660099Cash Point^000000",L_CashR_Det,
+			"- ^6666FFPoring Coin^000000",L_PoringR_Det,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		
+
+///-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o- ตั้งค่าของรางวัล - [SET00] -o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-\\\
+	L_Setup:
+	menu
+		"- ^00CC00ไอเทม^000000",L_Item_Setup,
+		"- ^CCCC00Zeny^000000",L_Zeny_Setup,
+		"- ^660099ตั้งเวลาแลก Cash Point^000000",L_Cash_Menu,
+		"- ^6666FFตั้งเวลาแลก Poring Coin^000000",L_Poring_Menu,
+		"- ^FF0000ยกเลิก^000000",L_EXIT;
+
+
+	L_Item_Setup:
+	menu
+		"- ^BA55D31 Hour^000000",L_Item_1HR,
+		"- ^6959CD2 Hour^000000",L_Item_2HR,
+		"- ^1E90FF3 Hour^000000",L_Item_3HR,
+		"- ^76EE004 Hour^000000",L_Item_4HR,
+		"- ^FFC1255 Hour^000000",L_Item_5HR,
+		"- ^FF7F006 Hour^000000",L_Item_6HR,
+		"- ^FF0000ยกเลิก^000000",L_EXIT;
+
+	L_Zeny_Setup:
+	menu
+		"- ^BA55D31 Hour^000000",L_Zeny_1HR,
+		"- ^6959CD2 Hour^000000",L_Zeny_2HR,
+		"- ^1E90FF3 Hour^000000",L_Zeny_3HR,
+		"- ^76EE004 Hour^000000",L_Zeny_4HR,
+		"- ^FFC1255 Hour^000000",L_Zeny_5HR,
+		"- ^FF7F006 Hour^000000",L_Zeny_6HR,
+		"- ^FF0000ยกเลิก^000000",L_EXIT;
+
+	L_Cash_Menu:
+	menu
+		"- ^669966ตั้งเวลาสำหรับแลก Cash Point^000000",L_Cash_Setup_01,
+		"- ^6633CCรีเซ็ตเวลาสำหรับแลก Cash Point^000000",L_Cash_Setup_02,
+		"- ^FF0000ยกเลิก^000000",L_EXIT;
+
+	L_Poring_Menu:
+	menu
+		"- ^CC6600ตั้งเวลาสำหรับแลก Poring Coin^000000",L_Poring_Setup_01,
+		"- ^CC6633รีเซ็ตเวลาสำหรับแลก Poring Coin^000000",L_Poring_Setup_02,
+		"- ^FF0000ยกเลิก^000000",L_EXIT;
+
+
+///-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o- ตั้งค่าของรางวัล: ไอเทม - [HI000] -o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-\\\
+///---------------------- 1st Hr. : Item - [HI001] ----------------------\\\
+	L_Item_1HR:
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่ Item ID ที่คุณต้องการ";
+		mes "ใช้เป็นของรางวัล หากต้องการ";
+		mes "ยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ItemID;
+			next;
+			if (@ItemID == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "ไอเทมที่คุณใช้เป็นของรางวัลคือ";
+		mes "====================";
+		mes "^FF3E96"+getitemname(@ItemID)+"^000000";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวนไอเทมที่คุณ";
+		mes "ต้องการใช้เป็นของรางวัล หาก";
+		mes "ต้องการยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ItemAmount;
+			next;
+			if (@ItemAmount == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "จำนวนไอเทมที่คุณจะแจกคือ";
+		mes "====================";
+		mes "^FF3E96"+@ItemAmount+"^000000";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $1_Hour_Item,@ItemID;
+		set $1_Hour_Amount,@ItemAmount;
+		mes ""+.name$+"";
+		mes "ของรางวัลของออนไลน์ 1 ชั่วโมง:";
+		mes "====================";
+		mes "^FF3E96"+getitemname($1_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$1_Hour_Amount+"^000000 ชิ้น";
+		mes "====================";
+		close;
+		
+
+///---------------------- 2nd Hr. : Item - [HI002] ----------------------\\\
+	L_Item_2HR:
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่ Item ID ที่คุณต้องการ";
+		mes "ใช้เป็นของรางวัล หากต้องการ";
+		mes "ยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ItemID2;
+			next;
+			if (@ItemID2 == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "ไอเทมที่คุณใช้เป็นของรางวัลคือ";
+		mes "====================";
+		mes "^FF3E96"+getitemname(@ItemID2)+"^000000";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวนไอเทมที่คุณ";
+		mes "ต้องการใช้เป็นของรางวัล หาก";
+		mes "ต้องการยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ItemAmount2;
+			next;
+			if (@ItemAmount2 == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "จำนวนไอเทมที่คุณจะแจกคือ";
+		mes "====================";
+		mes "^FF3E96"+@ItemAmount2+"^000000";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $2_Hour_Item,@ItemID2;
+		set $2_Hour_Amount,@ItemAmount2;
+		mes ""+.name$+"";
+		mes "ของรางวัลของออนไลน์ 2 ชั่วโมง:";
+		mes "====================";
+		mes "^FF3E96"+getitemname($2_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$2_Hour_Amount+"^000000 ชิ้น";
+		mes "====================";
+		close;
+
+
+///---------------------- 3rd Hr. : Item - [HI003] ----------------------\\\
+	L_Item_3HR:
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่ Item ID ที่คุณต้องการ";
+		mes "ใช้เป็นของรางวัล หากต้องการ";
+		mes "ยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ItemID3;
+			next;
+			if (@ItemID3 == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "ไอเทมที่คุณใช้เป็นของรางวัลคือ";
+		mes "====================";
+		mes "^FF3E96"+getitemname(@ItemID3)+"^000000";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวนไอเทมที่คุณ";
+		mes "ต้องการใช้เป็นของรางวัล หาก";
+		mes "ต้องการยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ItemAmount3;
+			next;
+			if (@ItemAmount3 == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "จำนวนไอเทมที่คุณจะแจกคือ";
+		mes "====================";
+		mes "^FF3E96"+@ItemAmount3+"^000000";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $3_Hour_Item,@ItemID3;
+		set $3_Hour_Amount,@ItemAmount3;
+		mes ""+.name$+"";
+		mes "ของรางวัลของออนไลน์ 3 ชั่วโมง:";
+		mes "====================";
+		mes "^FF3E96"+getitemname($3_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$3_Hour_Amount+"^000000 ชิ้น";
+		mes "====================";
+		close;
+
+
+///---------------------- 4th Hr. : Item - [HI004] ----------------------\\\
+	L_Item_4HR:
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่ Item ID ที่คุณต้องการ";
+		mes "ใช้เป็นของรางวัล หากต้องการ";
+		mes "ยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ItemID4;
+			next;
+			if (@ItemID4 == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "ไอเทมที่คุณใช้เป็นของรางวัลคือ";
+		mes "====================";
+		mes "^FF3E96"+getitemname(@ItemID4)+"^000000";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวนไอเทมที่คุณ";
+		mes "ต้องการใช้เป็นของรางวัล หาก";
+		mes "ต้องการยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ItemAmount4;
+			next;
+			if (@ItemAmount4 == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "จำนวนไอเทมที่คุณจะแจกคือ";
+		mes "====================";
+		mes "^FF3E96"+@ItemAmount4+"^000000";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $4_Hour_Item,@ItemID4;
+		set $4_Hour_Amount,@ItemAmount4;
+		mes ""+.name$+"";
+		mes "ของรางวัลของออนไลน์ 4 ชั่วโมง:";
+		mes "====================";
+		mes "^FF3E96"+getitemname($4_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$4_Hour_Amount+"^000000 ชิ้น";
+		mes "====================";
+		close;
+
+
+///---------------------- 5th Hr. : Item - [HI005] ----------------------\\\
+	L_Item_5HR:
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่ Item ID ที่คุณต้องการ";
+		mes "ใช้เป็นของรางวัล หากต้องการ";
+		mes "ยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ItemID5;
+			next;
+			if (@ItemID5 == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "ไอเทมที่คุณใช้เป็นของรางวัลคือ";
+		mes "====================";
+		mes "^FF3E96"+getitemname(@ItemID5)+"^000000";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวนไอเทมที่คุณ";
+		mes "ต้องการใช้เป็นของรางวัล หาก";
+		mes "ต้องการยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ItemAmount5;
+			next;
+			if (@ItemAmount5 == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "จำนวนไอเทมที่คุณจะแจกคือ";
+		mes "====================";
+		mes "^FF3E96"+@ItemAmount5+"^000000";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $5_Hour_Item,@ItemID5;
+		set $5_Hour_Amount,@ItemAmount5;
+		mes ""+.name$+"";
+		mes "ของรางวัลของออนไลน์ 5 ชั่วโมง:";
+		mes "====================";
+		mes "^FF3E96"+getitemname($5_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$5_Hour_Amount+"^000000 ชิ้น";
+		mes "====================";
+		close;
+
+
+///---------------------- 6th Hr. : Item - [HI006] ----------------------\\\
+	L_Item_6HR:
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่ Item ID ที่คุณต้องการ";
+		mes "ใช้เป็นของรางวัล หากต้องการ";
+		mes "ยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ItemID6;
+			next;
+			if (@ItemID6 == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "ไอเทมที่คุณใช้เป็นของรางวัลคือ";
+		mes "====================";
+		mes "^FF3E96"+getitemname(@ItemID6)+"^000000";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวนไอเทมที่คุณ";
+		mes "ต้องการใช้เป็นของรางวัล หาก";
+		mes "ต้องการยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ItemAmount6;
+			next;
+			if (@ItemAmount6 == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "จำนวนไอเทมที่คุณจะแจกคือ";
+		mes "====================";
+		mes "^FF3E96"+@ItemAmount6+"^000000";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $6_Hour_Item,@ItemID6;
+		set $6_Hour_Amount,@ItemAmount6;
+		mes ""+.name$+"";
+		mes "ของรางวัลของออนไลน์ 6 ชั่วโมง:";
+		mes "====================";
+		mes "^FF3E96"+getitemname($6_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$6_Hour_Amount+"^000000 ชิ้น";
+		mes "====================";
+		close;
+
+///-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o- ตั้งค่าของรางวัล: Zeny - [HZ000] -o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-\\\
+///---------------------- 1st Hr. : Zeny - [HZ001] ----------------------\\\
+	L_Zeny_1HR:
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวนเงินที่คุณต้องการ";
+		mes "ใช้เป็นของรางวัล หากต้องการ";
+		mes "ยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ZenyAMT;
+			next;
+			if (@ZenyAMT == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "จำนวนเงินที่คุณใช้เป็นของรางวัลคือ";
+		mes "====================";
+		mes "^FF3E96"+@ZenyAMT+"^000000 Zeny";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $1_Hour_Zeny,@ZenyAMT;
+		mes ""+.name$+"";
+		mes "เงินรางวัลของออนไลน์ 1 ชั่วโมง:";
+		mes "====================";
+		mes "^FF3E96"+$1_Hour_Zeny+"^000000 Zeny";
+		mes "====================";
+		close;
+
+
+///---------------------- 2nd Hr. : Zeny - [HZ002] ----------------------\\\
+	L_Zeny_2HR:
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวนเงินที่คุณต้องการ";
+		mes "ใช้เป็นของรางวัล หากต้องการ";
+		mes "ยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ZenyAMT2;
+			next;
+			if (@ZenyAMT2 == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "จำนวนเงินที่คุณใช้เป็นของรางวัลคือ";
+		mes "====================";
+		mes "^FF3E96"+@ZenyAMT2+"^000000 Zeny";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $2_Hour_Zeny,@ZenyAMT2;
+		mes ""+.name$+"";
+		mes "เงินรางวัลของออนไลน์ 2 ชั่วโมง:";
+		mes "====================";
+		mes "^FF3E96"+$2_Hour_Zeny+"^000000 Zeny";
+		mes "====================";
+		close;
+
+
+///---------------------- 3rd Hr. : Zeny - [HZ003] ----------------------\\\
+	L_Zeny_3HR:
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวนเงินที่คุณต้องการ";
+		mes "ใช้เป็นของรางวัล หากต้องการ";
+		mes "ยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ZenyAMT3;
+			next;
+			if (@ZenyAMT3 == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "จำนวนเงินที่คุณใช้เป็นของรางวัลคือ";
+		mes "====================";
+		mes "^FF3E96"+@ZenyAMT3+"^000000 Zeny";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $3_Hour_Zeny,@ZenyAMT3;
+		mes ""+.name$+"";
+		mes "เงินรางวัลของออนไลน์ 3 ชั่วโมง:";
+		mes "====================";
+		mes "^FF3E96"+$3_Hour_Zeny+"^000000 Zeny";
+		mes "====================";
+		close;
+
+
+///---------------------- 4th Hr. : Zeny - [HZ004] ----------------------\\\
+	L_Zeny_4HR:
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวนเงินที่คุณต้องการ";
+		mes "ใช้เป็นของรางวัล หากต้องการ";
+		mes "ยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ZenyAMT4;
+			next;
+			if (@ZenyAMT4 == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "จำนวนเงินที่คุณใช้เป็นของรางวัลคือ";
+		mes "====================";
+		mes "^FF3E96"+@ZenyAMT4+"^000000 Zeny";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $4_Hour_Zeny,@ZenyAMT4;
+		mes ""+.name$+"";
+		mes "เงินรางวัลของออนไลน์ 4 ชั่วโมง:";
+		mes "====================";
+		mes "^FF3E96"+$4_Hour_Zeny+"^000000 Zeny";
+		mes "====================";
+		close;
+
+
+///---------------------- 5th Hr. : Zeny - [HZ005] ----------------------\\\
+	L_Zeny_5HR:
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวนเงินที่คุณต้องการ";
+		mes "ใช้เป็นของรางวัล หากต้องการ";
+		mes "ยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ZenyAMT5;
+			next;
+			if (@ZenyAMT5 == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "จำนวนเงินที่คุณใช้เป็นของรางวัลคือ";
+		mes "====================";
+		mes "^FF3E96"+@ZenyAMT5+"^000000 Zeny";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $5_Hour_Zeny,@ZenyAMT5;
+		mes ""+.name$+"";
+		mes "เงินรางวัลของออนไลน์ 5 ชั่วโมง:";
+		mes "====================";
+		mes "^FF3E96"+$5_Hour_Zeny+"^000000 Zeny";
+		mes "====================";
+		close;
+
+
+///---------------------- 6th Hr. : Zeny - [HZ006] ----------------------\\\
+	L_Zeny_6HR:
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวนเงินที่คุณต้องการ";
+		mes "ใช้เป็นของรางวัล หากต้องการ";
+		mes "ยกเลิก กรุณาใส่ 0 ค่ะ";
+			input @ZenyAMT6;
+			next;
+			if (@ZenyAMT6 == 0) goto L_EXIT;	
+		mes ""+.name$+"";
+		mes "จำนวนเงินที่คุณใช้เป็นของรางวัลคือ";
+		mes "====================";
+		mes "^FF3E96"+@ZenyAMT6+"^000000 Zeny";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $6_Hour_Zeny,@ZenyAMT6;
+		mes ""+.name$+"";
+		mes "เงินรางวัลของออนไลน์ 6 ชั่วโมง:";
+		mes "====================";
+		mes "^FF3E96"+$6_Hour_Zeny+"^000000 Zeny";
+		mes "====================";
+		close;
+
+///-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o- ตั้งค่าของรางวัล: Cash Point - [HC000] -o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-\\\
+///---------------------- ตั้งเวลาสำหรับแลก Cash Point - [HC001] ----------------------\\\
+	L_Cash_Setup_01:
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวนเวลาที่คุณต้อง";
+		mes "การใช้แลก 1 Cash Point ด้วยค่ะ";
+		mes "^FF0000- การใส่เวลา ใส่เป็นจำนวนนาทีค่ะ";
+		mes "- ต้องการยกเลิก กรุณาใส่ 0 ค่ะ^000000";
+			input @CashTime;
+			next;
+			if (@CashTime == 0) goto L_EXIT;
+		mes ""+.name$+"";
+		mes "จำนวนเวลาสำหรับแลก 1 Cash คือ";
+		mes "====================";
+		mes "^FF3E96"+@CashTime+"^000000 นาที";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $Cash_Minute,@CashTime;
+		set $Cash_TradeRate,@CashTime*60;
+		mes ""+.name$+"";
+		mes "ตั้งค่าเรียบร้อยค่ะ";
+		mes "====================";
+		mes "1 Cash = ^FF3E96"+$Cash_Minute+"^000000 นาที";
+		mes "====================";
+		close;
+
+
+///---------------------- รีเซ็ตเวลาสำหรับแลก Cash Point - [HC002] ----------------------\\\
+	L_Cash_Setup_02:
+		next;
+		mes ""+.name$+"";
+		mes "^FF0000การรีเซ็ตเวลาสำหรับแลก Cash Point";
+		mes "จะทำให้เมนูแลก Cash Pint ในหมวด";
+		mes "แลกของรางวัลไม่สามารถใช้งานได้";
+		mes "แน่ใจไหมว่าจะทำการรีเซ็ตเวลาใหม่^000000";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $Cash_Minute,0;
+		set $Cash_TradeRate,0;
+		mes ""+.name$+"";
+		mes "เรียบร้อยค่ะ";
+		mes "การตั้งค่าทั้งหมดถูกรีเซ็ตแล้ว";
+		close;
+
+
+///-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o- ตั้งค่าของรางวัล: Poring Coin - [HP000] -o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-\\\
+///---------------------- ตั้งเวลาสำหรับแลก Poring Coin - [HP001] ----------------------\\\
+	L_Poring_Setup_01:
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวนเวลาที่คุณต้อง";
+		mes "การใช้แลก 1 Poring Coin ด้วยค่ะ";
+		mes "^FF0000- การใส่เวลา ใส่เป็นจำนวนนาทีค่ะ";
+		mes "- ต้องการยกเลิก กรุณาใส่ 0 ค่ะ^000000";
+			input @PoringTime;
+			next;
+			if (@PoringTime == 0) goto L_EXIT;
+		mes ""+.name$+"";
+		mes "จำนวนเวลาสำหรับแลก 1 Coin คือ";
+		mes "====================";
+		mes "^FF3E96"+@PoringTime+"^000000 นาที";
+		mes "====================";
+		mes "กรุณายืนยัน หากยกเลิกจะเป็นการ";
+		mes "ออกจากเมนูนี้";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $Poring_Minute,@PoringTime;
+		set $Poring_TradeRate,@PoringTime*60;
+		mes ""+.name$+"";
+		mes "ตั้งค่าเรียบร้อยค่ะ";
+		mes "====================";
+		mes "1 Coin = ^FF3E96"+$Poring_Minute+"^000000 นาที";
+		mes "====================";
+		close;
+
+
+///---------------------- รีเซ็ตเวลาสำหรับแลก Poring Coin - [HP002] ----------------------\\\
+	L_Poring_Setup_02:
+		next;
+		mes ""+.name$+"";
+		mes "^FF0000การรีเซ็ตเวลาสำหรับแลก Poring Coin";
+		mes "จะทำให้เมนูแลก Poring Coin ใน";
+		mes "หมวดแลกของรางวัลไม่สามารถใช้";
+		mes "งานได้ แน่ใจไหมว่าจะทำการรีเซ็ต";
+		mes "เวลาใหม่^000000";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		set $Poring_Minute,0;
+		set $Poring_TradeRate,0;
+		mes ""+.name$+"";
+		mes "เรียบร้อยค่ะ";
+		mes "การตั้งค่าทั้งหมดถูกรีเซ็ตแล้ว";
+		close;
+
+
+///-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o- แลก เวลาออนไลน์ -> ไอเทม - [HTI00] -o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-\\\
+	L_Tr_Item:
+		next;
+			if ((($1_Hour_Item == 0) || ($2_Hour_Item == 0) || ($3_Hour_Item == 0) || ($4_Hour_Item == 0) || ($5_Hour_Item == 0) || ($6_Hour_Item == 0)) && (getgmlevel() < 90)) {
+				mes ""+.name$+"";
+				mes "เสียใจด้วย แต่ขณะนี้ ยังไม่มีของ";
+				mes "รางวัลใดๆให้คุณแลก โปรดแจ้งผู้";
+				mes "ดูแลระบบเกี่ยวกับความผิดพลาด";
+				mes "ด้วยนะคะ";
+				close;
+			}
+			if ((($1_Hour_Item == 0) || ($2_Hour_Item == 0) || ($3_Hour_Item == 0) || ($4_Hour_Item == 0) || ($5_Hour_Item == 0) || ($6_Hour_Item == 0)) && (getgmlevel() > 90)) {
+				mes ""+.name$+"";
+				mes "ขณะนี้ ยังไม่มีของรางวัลใดๆให้แลก";
+				mes "ผู้ดูแลระบบโปรดตั้งค่าไอเทมที่จะใช้";
+				mes "เป็นรางวัลให้ครบถ้วนเพื่อให้ระบบ";
+				mes "แลกของทำงานได้ด้วยค่ะ";
+				next;
+				goto L_Item_Setup;
+			}
+		mes ""+.name$+"";
+		mes "เวลาออนไลน์ของคุณคือ:";
+		mes "^0000cc"+.@Day+"^000000 วัน";
+		mes "^0000cc"+.@Hour+"^000000 ชั่วโมง";
+		mes "^0000cc"+.@Minute+"^000000 นาที";
+		mes "^0000cc"+.@Second+"^000000 วินาที";
+		if (#Online_Count >= 21600){ 
+		menu
+			"- ^BA55D31 Hour^000000 - [^CD853F"+getitemname($1_Hour_Item)+"^000000]",L_Get_1HR,
+			"- ^6959CD2 Hour^000000 - [^CD853F"+getitemname($2_Hour_Item)+"^000000]",L_Get_2HR,
+			"- ^1E90FF3 Hour^000000 - [^CD853F"+getitemname($3_Hour_Item)+"^000000]",L_Get_3HR,
+			"- ^76EE004 Hour^000000 - [^CD853F"+getitemname($4_Hour_Item)+"^000000]",L_Get_4HR,
+			"- ^FFC1255 Hour^000000 - [^CD853F"+getitemname($5_Hour_Item)+"^000000]",L_Get_5HR,
+			"- ^FF7F006 Hour^000000 - [^CD853F"+getitemname($6_Hour_Item)+"^000000]",L_Get_6HR,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		} else if (#Online_Count >= 18000){ 
+		menu
+			"- ^BA55D31 Hour^000000 - [^CD853F"+getitemname($1_Hour_Item)+"^000000]",L_Get_1HR,
+			"- ^6959CD2 Hour^000000 - [^CD853F"+getitemname($2_Hour_Item)+"^000000]",L_Get_2HR,
+			"- ^1E90FF3 Hour^000000 - [^CD853F"+getitemname($3_Hour_Item)+"^000000]",L_Get_3HR,
+			"- ^76EE004 Hour^000000 - [^CD853F"+getitemname($4_Hour_Item)+"^000000]",L_Get_4HR,
+			"- ^FFC1255 Hour^000000 - [^CD853F"+getitemname($5_Hour_Item)+"^000000]",L_Get_5HR,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		} else if (#Online_Count >= 14400){ 
+		menu
+			"- ^BA55D31 Hour^000000 - [^CD853F"+getitemname($1_Hour_Item)+"^000000]",L_Get_1HR,
+			"- ^6959CD2 Hour^000000 - [^CD853F"+getitemname($2_Hour_Item)+"^000000]",L_Get_2HR,
+			"- ^1E90FF3 Hour^000000 - [^CD853F"+getitemname($3_Hour_Item)+"^000000]",L_Get_3HR,
+			"- ^76EE004 Hour^000000 - [^CD853F"+getitemname($4_Hour_Item)+"^000000]",L_Get_4HR,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		} else if (#Online_Count >= 10800){ 
+		menu
+			"- ^BA55D31 Hour^000000 - [^CD853F"+getitemname($1_Hour_Item)+"^000000]",L_Get_1HR,
+			"- ^6959CD2 Hour^000000 - [^CD853F"+getitemname($2_Hour_Item)+"^000000]",L_Get_2HR,
+			"- ^1E90FF3 Hour^000000 - [^CD853F"+getitemname($3_Hour_Item)+"^000000]",L_Get_3HR,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		} else if (#Online_Count >= 7200){ 
+		menu
+			"- ^BA55D31 Hour^000000 - [^CD853F"+getitemname($1_Hour_Item)+"^000000]",L_Get_1HR,
+			"- ^6959CD2 Hour^000000 - [^CD853F"+getitemname($2_Hour_Item)+"^000000]",L_Get_2HR,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		} else if (#Online_Count >= 3600){ 
+		menu
+			"- ^BA55D31 Hour^000000 - [^CD853F"+getitemname($1_Hour_Item)+"^000000]",L_Get_1HR,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		} else if (#Online_Count < 3600){ 
+		menu
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		}
+
+///-o-o-o-o-o-o-o-o-o-o-o-o-o- รับไอเทมจาก แลก เวลาออนไลน์ -> ไอเทม - [GIH00] -o-o-o-o-o-o-o-o-o-o-o-o-o-\\\
+///---------------------- 1st Hr. : Get Item - [GIH01] ----------------------\\\
+	L_Get_1HR:
+		next;
+		mes ""+.name$+"";
+		mes "คุณต้องการจะแลก";
+		mes "====================";
+		mes "^FF3E96"+getitemname($1_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$1_Hour_Amount+"^000000 ชิ้น";
+		mes "====================";
+		mes "หรือไม่ ?";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "การแลกเปลี่ยนเรียบร้อย";
+		mes "คุณได้รับไอเทม:";
+		mes "^FF3E96"+getitemname($1_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$1_Hour_Amount+"^000000 ชิ้น";
+		mes "ขอบคุณที่ใช้บริการกับเรานะคะ";
+		set #Online_Count,#Online_Count - 3600;
+		getitem $1_Hour_Item,$1_Hour_Amount;
+			set .@Day,#Online_Count/86400;
+			set .@Hour,(#Online_Count - .@Day*86400)/3600;
+			set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+			set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+			set @Login_Time, gettimetick(2);
+			dispbottom "[ "+strcharinfo(0)+" ] : เวลาออนไลน์ทั้งหมด [ "+.@Day+" ] วัน [ "+.@Hour+" ] ช.ม. [ "+.@Minute+" ] นาที [ "+.@Second+" ] วินาที";
+		close;
+
+
+///---------------------- 2nd Hr. : Get Item - [GIH02] ----------------------\\\
+	L_Get_2HR:
+		next;
+		mes ""+.name$+"";
+		mes "คุณต้องการจะแลก";
+		mes "====================";
+		mes "^FF3E96"+getitemname($2_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$2_Hour_Amount+"^000000 ชิ้น";
+		mes "====================";
+		mes "หรือไม่ ?";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "การแลกเปลี่ยนเรียบร้อย";
+		mes "คุณได้รับไอเทม:";
+		mes "^FF3E96"+getitemname($2_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$2_Hour_Amount+"^000000 ชิ้น";
+		mes "ขอบคุณที่ใช้บริการกับเรานะคะ";
+		set #Online_Count,#Online_Count - 7200;
+		getitem $2_Hour_Item,$2_Hour_Amount;
+			set .@Day,#Online_Count/86400;
+			set .@Hour,(#Online_Count - .@Day*86400)/3600;
+			set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+			set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+			set @Login_Time, gettimetick(2);
+			dispbottom "[ "+strcharinfo(0)+" ] : เวลาออนไลน์ทั้งหมด [ "+.@Day+" ] วัน [ "+.@Hour+" ] ช.ม. [ "+.@Minute+" ] นาที [ "+.@Second+" ] วินาที";
+		close;
+
+
+///---------------------- 3rd Hr. : Get Item - [GIH03] ----------------------\\\
+	L_Get_3HR:
+		next;
+		mes ""+.name$+"";
+		mes "คุณต้องการจะแลก";
+		mes "====================";
+		mes "^FF3E96"+getitemname($3_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$3_Hour_Amount+"^000000 ชิ้น";
+		mes "====================";
+		mes "หรือไม่ ?";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "การแลกเปลี่ยนเรียบร้อย";
+		mes "คุณได้รับไอเทม:";
+		mes "^FF3E96"+getitemname($3_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$3_Hour_Amount+"^000000 ชิ้น";
+		mes "ขอบคุณที่ใช้บริการกับเรานะคะ";
+		set #Online_Count,#Online_Count - 10800;
+		getitem $3_Hour_Item,$3_Hour_Amount;
+			set .@Day,#Online_Count/86400;
+			set .@Hour,(#Online_Count - .@Day*86400)/3600;
+			set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+			set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+			set @Login_Time, gettimetick(2);
+			dispbottom "[ "+strcharinfo(0)+" ] : เวลาออนไลน์ทั้งหมด [ "+.@Day+" ] วัน [ "+.@Hour+" ] ช.ม. [ "+.@Minute+" ] นาที [ "+.@Second+" ] วินาที";
+		close;
+
+
+///---------------------- 4th Hr. : Get Item - [GIH04] ----------------------\\\
+	L_Get_4HR:
+		next;
+		mes ""+.name$+"";
+		mes "คุณต้องการจะแลก";
+		mes "====================";
+		mes "^FF3E96"+getitemname($4_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$4_Hour_Amount+"^000000 ชิ้น";
+		mes "====================";
+		mes "หรือไม่ ?";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "การแลกเปลี่ยนเรียบร้อย";
+		mes "คุณได้รับไอเทม:";
+		mes "^FF3E96"+getitemname($4_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$4_Hour_Amount+"^000000 ชิ้น";
+		mes "ขอบคุณที่ใช้บริการกับเรานะคะ";
+		set #Online_Count,#Online_Count - 14400;
+		getitem $4_Hour_Item,$4_Hour_Amount;
+			set .@Day,#Online_Count/86400;
+			set .@Hour,(#Online_Count - .@Day*86400)/3600;
+			set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+			set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+			set @Login_Time, gettimetick(2);
+			dispbottom "[ "+strcharinfo(0)+" ] : เวลาออนไลน์ทั้งหมด [ "+.@Day+" ] วัน [ "+.@Hour+" ] ช.ม. [ "+.@Minute+" ] นาที [ "+.@Second+" ] วินาที";
+		close;
+
+
+///---------------------- 5th Hr. : Get Item - [GIH05] ----------------------\\\
+	L_Get_5HR:
+		next;
+		mes ""+.name$+"";
+		mes "คุณต้องการจะแลก";
+		mes "====================";
+		mes "^FF3E96"+getitemname($5_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$5_Hour_Amount+"^000000 ชิ้น";
+		mes "====================";
+		mes "หรือไม่ ?";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "การแลกเปลี่ยนเรียบร้อย";
+		mes "คุณได้รับไอเทม:";
+		mes "^FF3E96"+getitemname($5_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$5_Hour_Amount+"^000000 ชิ้น";
+		mes "ขอบคุณที่ใช้บริการกับเรานะคะ";
+		set #Online_Count,#Online_Count - 18000;
+		getitem $5_Hour_Item,$5_Hour_Amount;
+			set .@Day,#Online_Count/86400;
+			set .@Hour,(#Online_Count - .@Day*86400)/3600;
+			set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+			set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+			set @Login_Time, gettimetick(2);
+			dispbottom "[ "+strcharinfo(0)+" ] : เวลาออนไลน์ทั้งหมด [ "+.@Day+" ] วัน [ "+.@Hour+" ] ช.ม. [ "+.@Minute+" ] นาที [ "+.@Second+" ] วินาที";
+		close;
+
+
+///---------------------- 6th Hr. : Get Item - [GIH06] ----------------------\\\
+	L_Get_6HR:
+		next;
+		mes ""+.name$+"";
+		mes "คุณต้องการจะแลก";
+		mes "====================";
+		mes "^FF3E96"+getitemname($6_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$6_Hour_Amount+"^000000 ชิ้น";
+		mes "====================";
+		mes "หรือไม่ ?";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "การแลกเปลี่ยนเรียบร้อย";
+		mes "คุณได้รับไอเทม:";
+		mes "^FF3E96"+getitemname($6_Hour_Item)+"^000000";
+		mes "จำนวน ^FF3E96"+$6_Hour_Amount+"^000000 ชิ้น";
+		mes "ขอบคุณที่ใช้บริการกับเรานะคะ";
+		set #Online_Count,#Online_Count - 21600;
+		getitem $6_Hour_Item,$6_Hour_Amount;
+			set .@Day,#Online_Count/86400;
+			set .@Hour,(#Online_Count - .@Day*86400)/3600;
+			set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+			set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+			set @Login_Time, gettimetick(2);
+			dispbottom "[ "+strcharinfo(0)+" ] : เวลาออนไลน์ทั้งหมด [ "+.@Day+" ] วัน [ "+.@Hour+" ] ช.ม. [ "+.@Minute+" ] นาที [ "+.@Second+" ] วินาที";
+		close;
+
+
+///-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o- แลก เวลาออนไลน์ -> Zeny - [HTZ00] -o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-\\\
+	L_Tr_Zeny:
+		next;
+			if ((($1_Hour_Zeny == 0) || ($2_Hour_Zeny == 0) || ($3_Hour_Zeny == 0) || ($4_Hour_Zeny == 0) || ($5_Hour_Zeny == 0) || ($6_Hour_Zeny == 0)) && (getgmlevel() < 90)) {
+				mes ""+.name$+"";
+				mes "เสียใจด้วย แต่ขณะนี้ ยังไม่มีเงิน";
+				mes "รางวัลใดๆให้คุณแลก โปรดแจ้งผู้";
+				mes "ดูแลระบบเกี่ยวกับความผิดพลาด";
+				mes "ด้วยนะคะ";
+				close;
+			}
+			if ((($1_Hour_Zeny == 0) || ($2_Hour_Zeny == 0) || ($3_Hour_Zeny == 0) || ($4_Hour_Zeny == 0) || ($5_Hour_Zeny == 0) || ($6_Hour_Zeny == 0)) && (getgmlevel() > 90)) {
+				mes ""+.name$+"";
+				mes "ขณะนี้ ยังไม่มีเงินรางวัลใดๆให้แลก";
+				mes "ผู้ดูแลระบบโปรดตั้งค่าเงินที่จะใช้";
+				mes "เป็นรางวัลให้ครบถ้วนเพื่อให้ระบบ";
+				mes "แลกของทำงานได้ด้วยค่ะ";
+				next;
+				goto L_Zeny_Setup;
+			}
+		mes ""+.name$+"";
+		mes "เวลาออนไลน์ของคุณคือ:";
+		mes "^0000cc"+.@Day+"^000000 วัน";
+		mes "^0000cc"+.@Hour+"^000000 ชั่วโมง";
+		mes "^0000cc"+.@Minute+"^000000 นาที";
+		mes "^0000cc"+.@Second+"^000000 วินาที";
+		if (#Online_Count >= 21600){ 
+		menu
+			"- ^BA55D31 Hour^000000 - [^CD853F"+$1_Hour_Zeny+"^000000 Zeny]",L_GeZ_1HR,
+			"- ^6959CD2 Hour^000000 - [^CD853F"+$2_Hour_Zeny+"^000000 Zeny]",L_GeZ_2HR,
+			"- ^1E90FF3 Hour^000000 - [^CD853F"+$3_Hour_Zeny+"^000000 Zeny]",L_GeZ_3HR,
+			"- ^76EE004 Hour^000000 - [^CD853F"+$4_Hour_Zeny+"^000000 Zeny]",L_GeZ_4HR,
+			"- ^FFC1255 Hour^000000 - [^CD853F"+$5_Hour_Zeny+"^000000 Zeny]",L_GeZ_5HR,
+			"- ^FF7F006 Hour^000000 - [^CD853F"+$6_Hour_Zeny+"^000000 Zeny]",L_GeZ_6HR,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		} else if (#Online_Count >= 18000){ 
+		menu
+			"- ^BA55D31 Hour^000000 - [^CD853F"+$1_Hour_Zeny+"^000000 Zeny]",L_GeZ_1HR,
+			"- ^6959CD2 Hour^000000 - [^CD853F"+$2_Hour_Zeny+"^000000 Zeny]",L_GeZ_2HR,
+			"- ^1E90FF3 Hour^000000 - [^CD853F"+$3_Hour_Zeny+"^000000 Zeny]",L_GeZ_3HR,
+			"- ^76EE004 Hour^000000 - [^CD853F"+$4_Hour_Zeny+"^000000 Zeny]",L_GeZ_4HR,
+			"- ^FFC1255 Hour^000000 - [^CD853F"+$5_Hour_Zeny+"^000000 Zeny]",L_GeZ_5HR,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		} else if (#Online_Count >= 14400){ 
+		menu
+			"- ^BA55D31 Hour^000000 - [^CD853F"+$1_Hour_Zeny+"^000000 Zeny]",L_GeZ_1HR,
+			"- ^6959CD2 Hour^000000 - [^CD853F"+$2_Hour_Zeny+"^000000 Zeny]",L_GeZ_2HR,
+			"- ^1E90FF3 Hour^000000 - [^CD853F"+$3_Hour_Zeny+"^000000 Zeny]",L_GeZ_3HR,
+			"- ^76EE004 Hour^000000 - [^CD853F"+$4_Hour_Zeny+"^000000 Zeny]",L_GeZ_4HR,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		} else if (#Online_Count >= 10800){ 
+		menu
+			"- ^BA55D31 Hour^000000 - [^CD853F"+$1_Hour_Zeny+"^000000 Zeny]",L_GeZ_1HR,
+			"- ^6959CD2 Hour^000000 - [^CD853F"+$2_Hour_Zeny+"^000000 Zeny]",L_GeZ_2HR,
+			"- ^1E90FF3 Hour^000000 - [^CD853F"+$3_Hour_Zeny+"^000000 Zeny]",L_GeZ_3HR,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		} else if (#Online_Count >= 7200){ 
+		menu
+			"- ^BA55D31 Hour^000000 - [^CD853F"+$1_Hour_Zeny+"^000000 Zeny]",L_GeZ_1HR,
+			"- ^6959CD2 Hour^000000 - [^CD853F"+$2_Hour_Zeny+"^000000 Zeny]",L_GeZ_2HR,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		} else if (#Online_Count >= 3600){ 
+		menu
+			"- ^BA55D31 Hour^000000 - [^CD853F"+$1_Hour_Zeny+"^000000 Zeny]",L_GeZ_1HR,
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		} else if (#Online_Count < 3600){ 
+		menu
+			"- ^FF0000ยกเลิก^000000",L_EXIT;
+		}
+		
+
+///-o-o-o-o-o-o-o-o-o-o-o-o-o- รับเงินจาก แลก เวลาออนไลน์ -> Zeny - [GZH00] -o-o-o-o-o-o-o-o-o-o-o-o-o-\\\
+///---------------------- 1st Hr. : Get Zeny - [GZH01] ----------------------\\\
+	L_GeZ_1HR:
+		next;
+		mes ""+.name$+"";
+		mes "คุณต้องการจะแลกเงิน";
+		mes "====================";
+		mes "^FF3E96"+$1_Hour_Zeny+"^000000 Zeny";
+		mes "====================";
+		mes "หรือไม่ ?";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "การแลกเปลี่ยนเรียบร้อย";
+		mes "คุณได้รับเงิน:";
+		mes "^FF3E96"+$1_Hour_Zeny+"^000000 Zeny";
+		mes "ขอบคุณที่ใช้บริการกับเรานะคะ";
+		set #Online_Count,#Online_Count - 3600;
+		set Zeny,Zeny + $1_Hour_Zeny;
+			set .@Day,#Online_Count/86400;
+			set .@Hour,(#Online_Count - .@Day*86400)/3600;
+			set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+			set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+			set @Login_Time, gettimetick(2);
+			dispbottom "[ "+strcharinfo(0)+" ] : เวลาออนไลน์ทั้งหมด [ "+.@Day+" ] วัน [ "+.@Hour+" ] ช.ม. [ "+.@Minute+" ] นาที [ "+.@Second+" ] วินาที";
+		close;
+
+
+///---------------------- 2nd Hr. : Get Zeny - [GZH02] ----------------------\\\
+	L_GeZ_2HR:
+		next;
+		mes ""+.name$+"";
+		mes "คุณต้องการจะแลกเงิน";
+		mes "====================";
+		mes "^FF3E96"+$2_Hour_Zeny+"^000000 Zeny";
+		mes "====================";
+		mes "หรือไม่ ?";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "การแลกเปลี่ยนเรียบร้อย";
+		mes "คุณได้รับเงิน:";
+		mes "^FF3E96"+$2_Hour_Zeny+"^000000 Zeny";
+		mes "ขอบคุณที่ใช้บริการกับเรานะคะ";
+		set #Online_Count,#Online_Count - 7200;
+		set Zeny,Zeny + $2_Hour_Zeny;
+			set .@Day,#Online_Count/86400;
+			set .@Hour,(#Online_Count - .@Day*86400)/3600;
+			set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+			set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+			set @Login_Time, gettimetick(2);
+			dispbottom "[ "+strcharinfo(0)+" ] : เวลาออนไลน์ทั้งหมด [ "+.@Day+" ] วัน [ "+.@Hour+" ] ช.ม. [ "+.@Minute+" ] นาที [ "+.@Second+" ] วินาที";
+		close;
+
+
+///---------------------- 3rd Hr. : Get Zeny - [GZH03] ----------------------\\\
+	L_GeZ_3HR:
+		next;
+		mes ""+.name$+"";
+		mes "คุณต้องการจะแลกเงิน";
+		mes "====================";
+		mes "^FF3E96"+$3_Hour_Zeny+"^000000 Zeny";
+		mes "====================";
+		mes "หรือไม่ ?";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "การแลกเปลี่ยนเรียบร้อย";
+		mes "คุณได้รับเงิน:";
+		mes "^FF3E96"+$3_Hour_Zeny+"^000000 Zeny";
+		mes "ขอบคุณที่ใช้บริการกับเรานะคะ";
+		set #Online_Count,#Online_Count - 10800;
+		set Zeny,Zeny + $3_Hour_Zeny;
+			set .@Day,#Online_Count/86400;
+			set .@Hour,(#Online_Count - .@Day*86400)/3600;
+			set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+			set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+			set @Login_Time, gettimetick(2);
+			dispbottom "[ "+strcharinfo(0)+" ] : เวลาออนไลน์ทั้งหมด [ "+.@Day+" ] วัน [ "+.@Hour+" ] ช.ม. [ "+.@Minute+" ] นาที [ "+.@Second+" ] วินาที";
+		close;
+
+
+///---------------------- 4th Hr. : Get Zeny - [GZH04] ----------------------\\\
+	L_GeZ_4HR:
+		next;
+		mes ""+.name$+"";
+		mes "คุณต้องการจะแลกเงิน";
+		mes "====================";
+		mes "^FF3E96"+$4_Hour_Zeny+"^000000 Zeny";
+		mes "====================";
+		mes "หรือไม่ ?";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "การแลกเปลี่ยนเรียบร้อย";
+		mes "คุณได้รับเงิน:";
+		mes "^FF3E96"+$4_Hour_Zeny+"^000000 Zeny";
+		mes "ขอบคุณที่ใช้บริการกับเรานะคะ";
+		set #Online_Count,#Online_Count - 14400;
+		set Zeny,Zeny + $4_Hour_Zeny;
+			set .@Day,#Online_Count/86400;
+			set .@Hour,(#Online_Count - .@Day*86400)/3600;
+			set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+			set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+			set @Login_Time, gettimetick(2);
+			dispbottom "[ "+strcharinfo(0)+" ] : เวลาออนไลน์ทั้งหมด [ "+.@Day+" ] วัน [ "+.@Hour+" ] ช.ม. [ "+.@Minute+" ] นาที [ "+.@Second+" ] วินาที";
+		close;
+
+
+///---------------------- 5th Hr. : Get Zeny - [GZH05] ----------------------\\\
+	L_GeZ_5HR:
+		next;
+		mes ""+.name$+"";
+		mes "คุณต้องการจะแลกเงิน";
+		mes "====================";
+		mes "^FF3E96"+$5_Hour_Zeny+"^000000 Zeny";
+		mes "====================";
+		mes "หรือไม่ ?";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "การแลกเปลี่ยนเรียบร้อย";
+		mes "คุณได้รับเงิน:";
+		mes "^FF3E96"+$5_Hour_Zeny+"^000000 Zeny";
+		mes "ขอบคุณที่ใช้บริการกับเรานะคะ";
+		set #Online_Count,#Online_Count - 18000;
+		set Zeny,Zeny + $5_Hour_Zeny;
+			set .@Day,#Online_Count/86400;
+			set .@Hour,(#Online_Count - .@Day*86400)/3600;
+			set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+			set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+			set @Login_Time, gettimetick(2);
+			dispbottom "[ "+strcharinfo(0)+" ] : เวลาออนไลน์ทั้งหมด [ "+.@Day+" ] วัน [ "+.@Hour+" ] ช.ม. [ "+.@Minute+" ] นาที [ "+.@Second+" ] วินาที";
+		close;
+
+
+///---------------------- 6th Hr. : Get Zeny - [GZH06] ----------------------\\\
+	L_GeZ_6HR:
+		next;
+		mes ""+.name$+"";
+		mes "คุณต้องการจะแลกเงิน";
+		mes "====================";
+		mes "^FF3E96"+$6_Hour_Zeny+"^000000 Zeny";
+		mes "====================";
+		mes "หรือไม่ ?";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "การแลกเปลี่ยนเรียบร้อย";
+		mes "คุณได้รับเงิน:";
+		mes "^FF3E96"+$6_Hour_Zeny+"^000000 Zeny";
+		mes "ขอบคุณที่ใช้บริการกับเรานะคะ";
+		set #Online_Count,#Online_Count - 21600;
+		set Zeny,Zeny + $6_Hour_Zeny;
+			set .@Day,#Online_Count/86400;
+			set .@Hour,(#Online_Count - .@Day*86400)/3600;
+			set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+			set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+			set @Login_Time, gettimetick(2);
+			dispbottom "[ "+strcharinfo(0)+" ] : เวลาออนไลน์ทั้งหมด [ "+.@Day+" ] วัน [ "+.@Hour+" ] ช.ม. [ "+.@Minute+" ] นาที [ "+.@Second+" ] วินาที";
+		close;
+
+
+///-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o- แลก เวลาออนไลน์ -> Cash point - [HTC00] -o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-\\\
+	L_Tr_Cash:
+		next;
+			if ((($Cash_Minute == 0) || ($Cash_TradeRate == 0)) && (getgmlevel() < 90)) {
+				mes ""+.name$+"";
+				mes "เสียใจด้วย แต่ขณะนี้ Cash Point";
+				mes "ยังไม่สามารถแลกได้ โปรดแจ้งผู้";
+				mes "ดูแลระบบเกี่ยวกับความผิดพลาด";
+				mes "ด้วยนะคะ";
+				close;
+			}
+			if ((($Cash_Minute == 0) || ($Cash_TradeRate == 0)) && (getgmlevel() > 90)) {
+				mes ""+.name$+"";
+				mes "ขณะนี้ คุณยังไม่ได้ตั้งเวลา";
+				mes "สำหรับแลก Cash Point นะคะ";
+				mes "กรุณาตั้งค่าเพื่อให้ใช้งานเมนูนี้";
+				mes "ได้ค่ะ";
+				next;
+				goto L_Cash_Menu;
+			}
+		mes ""+.name$+"";
+		mes "เวลาออนไลน์ของคุณคือ:";
+		mes "^0000cc"+.@Day+"^000000 วัน";
+		mes "^0000cc"+.@Hour+"^000000 ชั่วโมง";
+		mes "^0000cc"+.@Minute+"^000000 นาที";
+		mes "^0000cc"+.@Second+"^000000 วินาที";
+		next;
+		mes ""+.name$+"";
+		mes "อัตราการแลกเปลี่ยน Cash Point:";
+		mes "^0000CC"+$Cash_Minute+"^000000 นาที = ^0000CC1^000000 Point";
+		mes "---------------------------------";
+		mes "^FF0000คุณต้องการจะแลก Cash Point หรือไม่^000000";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวน Cash Point:";
+		mes "^FF0000หากต้องการยกเลิก กรุณาใส่ 0^000000";
+		input @CashTrade;
+		next;
+		if (@CashTrade == 0) goto L_EXIT;
+		if (#Online_Count < @CashTrade*$Cash_TradeRate) {
+			mes ""+.name$+"";
+			mes "เสียใจด้วย เวลา Online ของคุณ";
+			mes "ไม่เพียงพอที่จะแลก Cash Point";
+			mes "ที่คุณต้องการได้";
+			close;
+		}
+		mes ""+.name$+"";
+		mes "เรียบร้อยค่ะ";
+		mes "คุณได้รับ Cash Point จำนวน:";
+		mes "---------------------------------";
+		mes "^FF5555"+@CashTrade+"^000000 Points";
+		mes "---------------------------------";
+		set #Online_Count,#Online_Count - @CashTrade*$Cash_TradeRate;
+		set #CASHPOINTS,#CASHPOINTS + @CashTrade;
+			set .@Day,#Online_Count/86400;
+			set .@Hour,(#Online_Count - .@Day*86400)/3600;
+			set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+			set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+			set @Login_Time, gettimetick(2);
+			dispbottom "[ "+strcharinfo(0)+" ] : เวลาออนไลน์ทั้งหมด [ "+.@Day+" ] วัน [ "+.@Hour+" ] ช.ม. [ "+.@Minute+" ] นาที [ "+.@Second+" ] วินาที";
+			dispbottom "[ "+strcharinfo(o)+" ] : ได้รับ Cash Point จำนวน "+@CashTrade+" Points, จำนวน Cash Points ทั้งหมดคือ "+#CASHPOINTS+" Points";
+		close;
+		
+
+///-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o- แลก เวลาออนไลน์ -> Poring Coin - [HTP00] -o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-\\\
+	L_Tr_PCoin:
+		next;
+			if ((($Poring_Minute == 0) || ($Poring_TradeRate == 0)) && (getgmlevel() < 90)) {
+				mes ""+.name$+"";
+				mes "เสียใจด้วย แต่ขณะนี้ Poring Coin";
+				mes "ยังไม่สามารถแลกได้ โปรดแจ้งผู้";
+				mes "ดูแลระบบเกี่ยวกับความผิดพลาด";
+				mes "ด้วยนะคะ";
+				close;
+			}
+			if ((($Poring_Minute == 0) || ($Poring_TradeRate == 0)) && (getgmlevel() > 90)) {
+				mes ""+.name$+"";
+				mes "ขณะนี้ คุณยังไม่ได้ตั้งเวลา";
+				mes "สำหรับแลก Poring Coin นะคะ";
+				mes "กรุณาตั้งค่าเพื่อให้ใช้งานเมนูนี้";
+				mes "ได้ค่ะ";
+				next;
+				goto L_Poring_Menu;
+			}
+		mes ""+.name$+"";
+		mes "เวลาออนไลน์ของคุณคือ:";
+		mes "^0000cc"+.@Day+"^000000 วัน";
+		mes "^0000cc"+.@Hour+"^000000 ชั่วโมง";
+		mes "^0000cc"+.@Minute+"^000000 นาที";
+		mes "^0000cc"+.@Second+"^000000 วินาที";
+		next;
+		mes ""+.name$+"";
+		mes "อัตราการแลกเปลี่ยน Poring Coin:";
+		mes "^0000CC"+$Poring_Minute+"^000000 นาที = ^0000CC1^000000 Coin";
+		mes "---------------------------------";
+		mes "^FF0000คุณต้องการจะแลก Poring Coin หรือไม่^000000";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาใส่จำนวน Poring Coin:";
+		mes "^FF0000หากต้องการยกเลิก กรุณาใส่ 0^000000";
+		input @PoringCoinTrade;
+		next;
+		if (@PoringCoinTrade == 0) goto L_EXIT;
+		if (#Online_Count < @PoringCoinTrade*$Poring_TradeRate) {
+			mes ""+.name$+"";
+			mes "เสียใจด้วย เวลา Online ของคุณ";
+			mes "ไม่เพียงพอที่จะแลก Poring Coin";
+			mes "ที่คุณต้องการได้";
+			close;
+		}
+		mes ""+.name$+"";
+		mes "เรียบร้อยค่ะ";
+		mes "คุณได้รับ Poring Coin จำนวน:";
+		mes "---------------------------------";
+		mes "^FF5555"+@PoringCoinTrade+"^000000 Coins";
+		mes "---------------------------------";
+		set #Online_Count,#Online_Count - @PoringCoinTrade*$Poring_TradeRate;
+		getitem 7539,@PoringCoinTrade;
+			set .@Day,#Online_Count/86400;
+			set .@Hour,(#Online_Count - .@Day*86400)/3600;
+			set .@Minute,(#Online_Count - .@Day*86400 - .@Hour*3600)/60;
+			set .@Seconds,#Online_Count - .@Day*86400 - .@Hour*3600 - .@Minute*60;
+			set @Login_Time, gettimetick(2);
+			dispbottom "[ "+strcharinfo(0)+" ] : เวลาออนไลน์ทั้งหมด [ "+.@Day+" ] วัน [ "+.@Hour+" ] ช.ม. [ "+.@Minute+" ] นาที [ "+.@Second+" ] วินาที";
+			dispbottom "[ "+strcharinfo(o)+" ] : ได้รับ Poring Coin จำนวน "+@PoringCoinTrade+" Coins, จำนวน Poring Coin ทั้งหมดคือ "+countitem(7539)+" Coins";
+		close;
+
+
+///-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o- รายละเอียดของรางวัลไอเทมและ Zeny - [AZD00] -o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-\\\
+///---------------------- Item Details - [AZD01] ----------------------\\\
+	L_ItemR_Det:
+		next;
+		mes ""+.name$+"";
+		mes "- ^BA55D31 Hour^000000 - [^CD853F"+getitemname($1_Hour_Item)+"^000000 ^2E8B57"+$1_Hour_Amount+"^000000 ชิ้น]";
+		mes "- ^6959CD2 Hour^000000 - [^CD853F"+getitemname($2_Hour_Item)+"^000000 ^2E8B57"+$2_Hour_Amount+"^000000 ชิ้น]";
+		mes "- ^1E90FF3 Hour^000000 - [^CD853F"+getitemname($3_Hour_Item)+"^000000 ^2E8B57"+$3_Hour_Amount+"^000000 ชิ้น]";
+		mes "- ^76EE004 Hour^000000 - [^CD853F"+getitemname($4_Hour_Item)+"^000000 ^2E8B57"+$4_Hour_Amount+"^000000 ชิ้น]";
+		mes "- ^FFC1255 Hour^000000 - [^CD853F"+getitemname($5_Hour_Item)+"^000000 ^2E8B57"+$5_Hour_Amount+"^000000 ชิ้น]";
+		mes "- ^FF7F006 Hour^000000 - [^CD853F"+getitemname($6_Hour_Item)+"^000000 ^2E8B57"+$6_Hour_Amount+"^000000 ชิ้น]";
+		next;
+		goto main;
+
+
+///---------------------- Zeny Details - [AZD02] ----------------------\\\
+	L_ZenyR_Det:
+		next;
+		mes ""+.name$+"";
+		mes "- ^BA55D31 Hour^000000 - [^CD853F"+$1_Hour_Zeny+"^000000 Zeny]";
+		mes "- ^6959CD2 Hour^000000 - [^CD853F"+$2_Hour_Zeny+"^000000 Zeny]";
+		mes "- ^1E90FF3 Hour^000000 - [^CD853F"+$3_Hour_Zeny+"^000000 Zeny]";
+		mes "- ^76EE004 Hour^000000 - [^CD853F"+$4_Hour_Zeny+"^000000 Zeny]";
+		mes "- ^FFC1255 Hour^000000 - [^CD853F"+$5_Hour_Zeny+"^000000 Zeny]";
+		mes "- ^FF7F006 Hour^000000 - [^CD853F"+$6_Hour_Zeny+"^000000 Zeny]";
+		next;
+		goto main;
+
+
+///---------------------- Cash Point Details - [ACD03] ----------------------\\\
+	L_CashR_Det:
+		next;
+		mes ""+.name$+"";
+		mes "- ^66CCFF1 Cash Point^000000 - [^993399"+$Cash_Minute+"^000000 นาที]";
+		next;
+		goto main;
+
+
+///---------------------- Poring Coin Details - [APD04] ----------------------\\\
+	L_PoringR_Det:
+		next;
+		mes ""+.name$+"";
+		mes "- ^66CCFF1 Poring Coin^000000 - [^993399"+$Poring_Minute+"^000000 นาที]";
+		next;
+		goto main;
+
+
+///-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o- รีเซ็ตเวลาออนไลน์ใหม่ - [RES00] -o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-\\\
+	L_Reset:
+		next;
+		if (#OnlineBonusPass != 0) {
+		mes ""+.name$+"";
+		mes "--------------------------------";
+		mes "กรุณาใส่รหัสผ่านของคุณค่ะ";
+		mes "--------------------------------";
+			input @PasswordOB;
+			next;
+				if (@PasswordOB != #OnlineBonusPass) {
+						mes ""+.name$+"";
+						mes "--------------------------------";
+						mes "เสียใจด้วย คุณใส่รหัสผ่านผิดค่ะ";
+						mes "--------------------------------";
+						close;
+						}
+			}
+		mes ""+.name$+"";
+		mes "^FF0000การรีเซ็ตเวลาออนไลน์ใหม่ หมายถึง";
+		mes "การลบเวลาออนไลน์ทั้งหมดที่คุณเคย";
+		mes "สะสมมาทิ้ง";
+		mes "คุณแน่ใจไหมว่าต้องการทำเช่นนั้น ?^000000";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+			set #Online_Count,0;
+			mes ""+.name$+"";
+			mes "การรีเซ็ตเวลาออนไลน์เรียบร้อย";
+			mes "ขอบคุณที่ช้บริการกับเรา";
+			close;
+
+
+///-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o- ตัวจัดการด้าน Password - [PAS00] -o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-\\\
+///---------------------- ตั้งรหัสผ่านเมื่อใช้งาน NPC ครั้งแรก - [PAS01] ----------------------\\\
+	L_First_Setpass:
+		if (#OnlineBonusPass != 0) {
+			mes ""+.name$+"";
+			mes "เสียใจด้วย แต่คุณได้ทำการตั้งรหัส";
+			mes "ผ่านไปแล้ว หากต้องการเปลี่ยนรหัส";
+			mes "ผ่าน กรุณาใช้งานเมนู ^336666แก้ไขรหัสผ่าน^000000";
+			mes "นะคะ";
+			close;
+			}
+		mes ""+.name$+"";
+		mes "กรุณาใส่ตัวเลข";
+		mes "ตั้งแต่ 1000~10000000 ค่ะ:";
+		mes "^FF0000การตั้งรหัสผ่านครั้งแรกไม่";
+		mes "สามารถยกเลิกได้ไม่ว่ากรณีใดๆค่ะ^000000";
+			input @FirstPW;
+			next;
+			if (@FirstPW < 1000) {
+				mes ""+.name$+"";
+				mes "รหัสผ่านของคุณสั้นเกินไปค่ะ";
+				mes "กรุณากรอกใหม่อีกครั้ง";
+				next;
+				goto L_First_Setpass;
+				}
+			if (@FirstPW > 10000000) {
+				mes ""+.name$+"";
+				mes "รหัสผ่านของคุณยาวเกินไปค่ะ";
+				mes "กรุณากรอกใหม่อีกครั้ง";
+				next;
+				goto L_First_Setpass;
+				}
+			mes ""+.name$+"";
+			mes "รหัสผ่านของคุณคือ";
+			mes "-=-=-=-=-=-=-=-=-=-=-=-=-=-";
+			mes "^FF9933"+@FirstPW+"^000000";
+			mes "-=-=-=-=-=-=-=-=-=-=-=-=-=-";
+			mes "กรุณายืนยันค่ะ";
+				if (select("- ^B3EE3Aยืนยัน^000000","- ^CC6699ใส่รหัสผ่านใหม่^000000") == 2) {
+						goto L_First_Setpass;
+						end;
+				 }
+			next;
+			mes ""+.name$+"";
+			mes "รหัสผ่านของคุณคือ";
+			mes "-=-=-=-=-=-=-=-=-=-=-=-=-=-";
+			mes "^FF9933"+@FirstPW+"^000000";
+			mes "-=-=-=-=-=-=-=-=-=-=-=-=-=-";
+			mes "กรุณาเก็บรหัสผ่านของคุณให้ดีค่ะ";
+			set #OnlineBonusPass,@FirstPW;
+			close;
+
+
+///---------------------- แก้ไขรหัสผ่าน - [PAS02] ----------------------\\\
+	L_Change_Pass:
+		next;
+		if (#OnlineBonusPass == 0) {
+			mes ""+.name$+"";
+			mes "เสียใจด้วย แต่คุณไม่มีรหัสผ่านใน";
+			mes "ขณะนี้ คุณไม่สามารถใช้งานเมนูนี้ได้";
+			mes "หากคุณยังไม่ทำการตั้งรหัสผ่านของ";
+			mes "คุณเอง";
+			close;
+			}
+		mes ""+.name$+"";
+		mes "การแก้ไขรหัสผ่าน เราไม่คิดค่า";
+		mes "ธรรมเนียนในการเปลี่ยนแต่อย่างใด";
+		mes "คุณต้องการเปลี่ยนรหัสผ่านไหม ?";
+		menu "- ^B3EE3Aยืนยัน^000000",-,"- ^FF0000ยกเลิก^000000",L_EXIT;
+		next;
+		mes ""+.name$+"";
+		mes "กรุณาทำตามขั้นตอนต่อไปนี้";
+		mes "-----------------------------------";
+		mes "กรุณากรอกรหัสผ่านเก่าของคุณ";
+			input @PasswordOB;
+				next;
+					if (@PasswordOB != #OnlineBonusPass) {
+						mes ""+.name$+"";
+						mes "--------------------------------";
+						mes "เสียใจด้วย คุณใส่รหัสผ่านผิดค่ะ";
+						mes "--------------------------------";
+						close;
+						}
+			mes ""+.name$+"";
+			mes "กรุณากรอกรหัสผ่านใหม่ของคุณค่ะ";
+			mes "กรุณาใส่ตัวเลข";
+			mes "ตั้งแต่ 1000~10000000 ค่ะ:";
+			mes "^FF0000หากต้องการยกเลิก กรุณาใส่ 0^000000";
+			input @NewPass;
+				next;
+				if (@NewPass == 0) goto L_EXIT;
+				if (@NewPass < 1000) {
+				mes ""+.name$+"";
+				mes "รหัสผ่านของคุณสั้นเกินไปค่ะ";
+				mes "กรุณากลับไปเริ่มขั้นตอนแรก";
+				mes "ใหม่ค่ะ";
+				next;
+				goto L_Change_Pass;
+				}
+			if (@NewPass > 10000000) {
+				mes ""+.name$+"";
+				mes "รหัสผ่านของคุณยาวเกินไปค่ะ";
+				mes "กรุณากลับไปเริ่มขั้นตอนแรก";
+				mes "ใหม่ค่ะ";
+				next;
+				goto L_Change_Pass;
+				}
+			mes ""+.name$+"";
+			mes "รหัสผ่านใหม่ของคุณคือ";
+			mes "-=-=-=-=-=-=-=-=-=-=-=-=-=-";
+			mes "^FF9933"+@NewPass+"^000000";
+			mes "-=-=-=-=-=-=-=-=-=-=-=-=-=-";
+			mes "กรุณายืนยันค่ะ";
+				if (select("- ^B3EE3Aยืนยัน^000000","- ^CC6699เริ่มใหม่ทั้งหมด^000000") == 2) {
+						goto L_Change_Pass;
+						end;
+				 }
+			next;
+			mes ""+.name$+"";
+			mes "รหัสผ่านของคุณคือ";
+			mes "-=-=-=-=-=-=-=-=-=-=-=-=-=-";
+			mes "^FF9933"+@NewPass+"^000000";
+			mes "-=-=-=-=-=-=-=-=-=-=-=-=-=-";
+			mes "กรุณาเก็บรหัสผ่านของคุณให้ดีค่ะ";
+			set #OnlineBonusPass,@NewPass;
+			close;
+
+
+///-o-o-o-o-o-o-o-o-o-o-o-o- ตัวเลือก 'ยกเลิก' - [ESC00] -o-o-o-o-o-o-o-o-o-o-o-o-\\\
+
+	L_EXIT:
+		close;
+
+
+///-o-o-o-o-o-o-o-o-o-o-o-o- ตั้งห้องบนหัว NPC : ชื่อห้อง 'Online Manager' - [ONI00] -o-o-o-o-o-o-o-o-o-o-o-o-\\\
+OnInit:
+waitingroom "ออนไลน์แลกไอเทม",0;
+end;
+
+
+}

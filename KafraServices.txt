@@ -1,0 +1,335 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+-	script	KafraServices::KFSV	-1,{
+
+mes "[ Kafra ]";
+mes "ยินดีต้อนรับ : ^FF0000 "+strcharinfo(0)+" ^000000"; 
+mes "คุณต้องการให้ฉันช่วยอะไร ?";
+//next;
+menu 
+"^FF0000•^000000 เซฟจุดเกิด",saves,
+"^FF0000•^000000 เก็บของ",Storages,
+"^FF0000•^000000 คลังกิลด์",GStorages,
+//"^FF0000•^000000 ฝากเงิน / มีดอกเบี้ยให้",GBankManager,
+"^FF0000•^000000 เรียกลูกกิล / ปาร์ตี้",recallgp,
+"^FF0000•^000000 โอนหัวหน้ากิลด์",mehguild,
+"^FF0000•^000000 ยกเลิก",Lcancel;
+
+//==============================================
+mehguild:
+
+	set @npc$,"^0066FF[ Change Guild Leader ]^000000";
+	set @GID,getcharid(2);
+
+	if(agitcheck() || agitcheck2() ) {
+		mes @npc$;
+		mes "^6b1cd5-------------------------------^000000";
+		mes "^FF0000ไม่สามารถทำรายการในช่วงเวลากิลด์วอได้ค่ะ^000000";
+		mes "^6b1cd5-------------------------------^000000";
+		close;
+	}
+	
+	if( @GID == 0 ) {
+		mes @npc$;
+		mes "^6b1cd5-------------------------------^000000";
+		mes "^FF0000ไม่สามารถทำรายการได้เนื่องจาก^000000";
+		mes "^FF0000ท่านไม่มีกิลด์^000000";
+		mes "^6b1cd5-------------------------------^000000";
+		close;
+	}
+	
+	if(strcharinfo(0) == getguildmaster(@GID)) goto GuildMaster;
+		mes @npc$;
+		mes "^6b1cd5-------------------------------^000000";
+		mes "^FF0000ไม่สามารถทำรายการได้เนื่องจาก^000000 ";
+		mes "^FF0000ท่านไม่มีกิลด์^000000";
+		mes "^6b1cd5-------------------------------^000000";
+		close;
+	
+	
+GuildMaster:
+	mes @npc$;
+	mes "^6b1cd5-------------------------------^000000";
+	mes "^1cd51cกรุณาเลือกเมนูเพื่อทำรายการค่ะ^000000";
+	mes "^6b1cd5-------------------------------^000000";
+	mes "^FF0000*จะไม่สามารถโอนได้เนื่องจาก*^000000";
+	mes "^FF0000*ตัวละครไม่ได้ออนไลน์อยู่*^000000";
+	mes "^6b1cd5-------------------------------^000000";
+	next;
+	switch(select("^1cd51c-> Change Leader ^000000:^FF0000-> Cancel ^000000")) {
+		case 1:
+			mes "^1cd51cกรุณากรอกชื่อหัวกิลด์ปัจจุบัน^000000";
+			input .@oldowner$;
+			next;
+			mes "^1cd51cกรุณากรอกชื่อตัวละครที่จะทำการโอนหัวกิลด์^000000";
+			input .@newowner$;
+			next;
+			set .@nb, query_sql("select guild_id from guild_member where name in ('" + escape_sql(.@newowner$) + "', '" + escape_sql(.@oldowner$) + "') order by name", .@GID);
+			if (.@GID[0] != .@GID[1] && .@GID != getcharid(2, .@old$)) {
+				mes .@newowner$ + "^FF0000และ^000000" + .@oldowner$ + " ^FF0000ไม่ได้อยู่ในกิลด์เดียวกันค่ะ.^000000";
+				close;
+			}
+			if (getguildmaster(.@GID) != .@oldowner$) {
+				mes @npc$;
+				mes .@oldowner$ + " ^FF0000ไม่ไช่หัวหน้ากิลด์ในปัจจุบันค่ะ.^000000";
+				close;
+			}
+			if (guildchangegm(.@GID, .@newowner$)) {
+				mes " ^1cd51cทำการโอนหัวหน้ากิลด์เรียบร้อยแล้วค่ะ ^000000";
+				close;
+			}
+			else {
+				set $changeGM$[getarraysize($changeGM$)], .@newowner$;
+				mes @npc$;
+				mes "^6b1cd5-------------------------------^000000";
+				mes "^1cd51cไม่สามารถทำรายการได้ เนื่องจาก^000000";
+				mes "^6b1cd5-------------------------------^000000";
+				mes "^FF0000 ตัวละครไม่ได้ ออนไลน์อยู่ ^000000 ";
+				mes "^FF0000 ไม่มีชื่อตัวละคร ^000000";
+				mes "^6b1cd5-------------------------------^000000";
+				close;
+			}
+			close2;
+			break;
+			
+		case 2:
+			mes @npc$;
+			mes "^6b1cd5-------------------------------^000000";
+			mes "^1cd51cขอบคุณที่ใช้บริการค่ะ^000000";
+			mes "^6b1cd5-------------------------------^000000";
+			close2;
+			break;
+		}
+		
+OnPCLoginEvent:
+	for (set .@i, 0; .@i < getarraysize($changeGM$); set .@i, .@i + 1)
+		if (strcharinfo(0) == $changeGM$[.@i]) {
+			guildchangegm(getcharid(2), $changeGM$[.@i]);
+			deletearray $changeGM$[.@i], 1;
+		}
+	end;
+//}
+
+//==============================================
+GStorages:
+set .@npcname$,"[Guild Storage]";
+set @GID,getcharid(2);
+
+mes .@npcname$;
+mes "สวัสดีครับ ยินดีให้บริการครับ";
+mes "เลือกเมนูที่คุณต้องการครับ";
+next;
+menu "^009933•^000000 เปิดคลังกิลด์",-,"^FF0000•^000000 เปลี่ยนรหัสคลังกิลด์",change,"^FF0000•^000000 ยกเลิก",ende;
+
+mes .@npcname$;
+mes "กรุณาใส่รหัสคลังกิลด์ครับ";
+input .@GuildPW;
+if ( getd("$GuildPW_"+getcharid(2)) == .@GuildPW) goto open;
+if ( getd("$GuildPW_"+getcharid(2)) != .@GuildPW) goto wrong;
+close;
+
+open:
+if(guildopenstorage0 == 1) goto wait;
+guildopenstorage();
+close;
+
+wait:
+mes .@npcname$;
+mes "สมาชิกท่านอื่นใช้คลังกิลด์อยู่ครับ";
+close;
+
+wrong:
+mes "";
+mes "ท่านใส่รหัสคลังกิลด์ผิด";
+close;
+
+passwort:
+if(@GID == 0) goto L_NoGuild;
+if(strcharinfo(0) == getguildmaster(@GID)) goto change;
+mes .@npcname$;
+mes "หัวกิลด์เท่านั้นที่เปลี่ยนรหัสได้ครับ";
+close;
+
+change:
+mes .@npcname$;
+mes "โปรดใส่รหัสที่คุณต้องการครับ :";
+input .@GuildPW;
+setd "$GuildPW_"+getcharid(2),.@GuildPW;
+mes "รหัสใหม่คือ ^0000FF"+.@GuildPW+"^000000 ครับ";
+close;
+
+L_NoGuild:
+mes .@npcname$;
+mes "คุณไม่ใช่สมาชิกกิลด์นี้ครับ";
+close;
+
+ende:
+mes .@npcname$;
+mes "ยินดีให้บริการครับ";
+close;
+//////////////////////////////////////////////
+GBankManager:
+if (Sex==0) {
+mes "[เคลาส์]";
+mes "คุณหนูมีอะไรให้ผมรับไช้หรือครับ";
+}
+if (Sex==1) {
+mes "[เคลาส์]";
+mes "คุณชายมีอะไรให้ผมรับไช้หรือครับ";
+}
+if (Bank==0){
+set Bank,1;
+set #bankday,gettime(8);
+set #bankyear,gettime(7);
+}
+
+if (Bank==1)goto Interest_Chk;
+BANK_MAIN:
+mes "จำนวนเงินในบัญชี  : ^135445" + #bank + "^000000z";
+set #bankday,gettime(8);
+set #bankyear,gettime(7);
+next;
+menu "ฝากเงิน",BANK_IN,"ถอนเงิน",BANK_OUT,"ออก",B_EXIT;
+BANK_IN:
+mes "[เคลาส์]";
+mes "ต้องการจะฝากเพิ่มเท่าไหร่ครับ";
+next;
+input @bank;
+if(@bank<1) goto B_EXIT;
+if(@bank>Zeny) goto BANK_F;
+set Zeny,Zeny-@bank;
+set #bank,#bank+@bank;
+mes "จำนวนเงินในบัญชี : ^135445" + #bank + "^000000z";
+goto B_EXIT;
+BANK_OUT:
+mes "[เคลาส์]";
+mes "ต้องการถอนออกเท่าไหร่ครับ";
+next;
+input @bank;
+if(@bank<1) goto B_EXIT;
+if(@bank>#bank) goto BANK_F;
+set Zeny,Zeny+@bank;
+set #bank,#bank-@bank;
+mes "จำนวนเงินในบัญชี : ^135445" + #bank + "^000000z";
+goto B_EXIT;
+BANK_F:
+mes "ท่านมีเงินไม่พอครับ";
+close;
+B_EXIT:
+set #bankday,gettime(8);
+set #bankyear,gettime(7);
+mes "ขอบคุณที่มาไช้บริการครับ";
+close;
+Interest_Chk:
+if (gettime(7)-#bankyear>0) {
+  set @bankday,((366-#bankday)+gettime(8));
+  goto Interest_B;
+  end;
+}
+set @bankday,gettime(8)-#bankday;
+goto Interest_B;
+end;
+Interest_B:
+if (@bankday>0) {
+  set #bank,(#bank+((#bank*(@bankday*7))/1000));
+}
+goto BANK_MAIN;
+end;
+//////////////////////////////////////////////
+saves:
+atcommand "@save";
+close;
+
+recallgp:
+callfunc "recallguildparty";
+close;
+
+
+Storages:
+mes "[ ^FF0000Storage^000000 ]";
+mes "เปิดโกดังสำเร็จแล้ว...";
+close2;
+openstorage;
+end;
+
+Lcancel:
+mes "ยินดีให้บริการคะ";
+close;
+}
+//*********************************
+function	script	recallguildparty	{
+if(getcharid(0) == getguildmasterid(getcharid(2))) {
+set @CS1$,"คุณเป็นหัวหน้าของกิลด์";
+} else if(getcharid(2) == 0) {
+set @CS1$,"คุณยังไม่ได้เข้าร่วมกิลด์";
+} else {
+set @CS1$,"คุณเป็นสมาชิกของกิลด์";
+}
+if(getcharid(2) == 0) {
+set @CS2$," ";
+} else {
+set @CS2$,""+getguildname(getcharid(2))+"";
+}
+
+if(getcharid(0) == getpartyleader(getcharid(1),2)) {
+set @CS3$,"คุณเป็นหัวหน้าของปาร์ตี้";
+} else if(getcharid(1) == 0) {
+set @CS3$,"คุณยังไม่ได้เข้าร่วมปาร์ตี้";
+} else {
+set @CS3$,"คุณเป็นสมาชิกของปาร์ตี้";
+}
+if(getcharid(1) == 0) {
+set @CS4$," ";
+} else {
+set @CS4$,""+getpartyname(getcharid(1))+"";
+}
+
+mes "[ RECALL SYSTEM ]";
+mes "สวัสดีคุณ ^FF0000"+strcharinfo(0)+"^000000";
+mes "สถานะของคุณขณะนี้คือ";
+mes "^008080"+@CS1$+"^000000";
+mes "^FF8040"+@CS2$+"^000000";
+mes "^0000FF"+@CS3$+"^000000";
+mes "^006611"+@CS4$+"^000000";
+
+if(getcharid(0) == getguildmasterid(getcharid(2)) && getcharid(0) == getpartyleader(getcharid(1),2)) {
+switch(select("- เรียกสมาชิกกิลด์","- เรียกสมาชิกปาร์ตี้","- ยกเลิก")) {
+case 1:
+atcommand "@guildrecall "+getcharid(2);
+break;
+case 2:
+atcommand "@partyrecall "+getcharid(1);
+break;
+case 3:
+break;
+}
+} else if(getcharid(1) == 0 && getcharid(0) == getguildmasterid(getcharid(2))) {
+switch(select("- เรียกสมาชิกกิลด์","- ยกเลิก")) {
+case 1:
+atcommand "@guildrecall "+getcharid(2);
+break;
+case 2:
+break;
+}
+} else if(getcharid(2) == 0 && getcharid(0) == getpartyleader(getcharid(1),2)) {
+switch(select("- เรียกสมาชิกปาร์ตี้","- ยกเลิก")) {
+case 1:
+atcommand "@partyrecall "+getcharid(1);
+break;
+case 2:
+break;
+}
+}
+close;
+end;
+}
+/////////////////////////
+izlude,127,148,4	duplicate(KFSV)	คาเฟ่เซอร์วิส#01	861
+izlude,126,251,4	duplicate(KFSV)	คาเฟ่เซอร์วิส#02	861
+izlude,95,168,4	duplicate(KFSV)	คาเฟ่เซอร์วิส#03	861
+izlude,48,104,4	duplicate(KFSV)	คาเฟ่เซอร์วิส#04	861
+izlude,52,169,4	duplicate(KFSV)	คาเฟ่เซอร์วิส#05	861
+izlude,205,172,4	duplicate(KFSV)	คาเฟ่เซอร์วิส#06	861

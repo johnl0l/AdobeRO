@@ -1,0 +1,197 @@
+//==============================================
+boss_a01,0,0,0,0	monster	Poring	1002,100,0,0,0
+boss_a01,0,0,0,0	monster	Lunatic	1063,100,0,0,0
+
+boss_a01,0,0,0,0	monster	Osiris	1038,3,0,0,0
+boss_a01,0,0,0,0	monster	Baphomet	1039,3,0,0,0
+boss_a01,0,0,0,0	monster	Doppelganger	1046,3,0,0,0
+boss_a01,0,0,0,0	monster	Mistress	1059,3,0,0,0
+boss_a01,0,0,0,0	monster	Golden†Bug	1086,3,0,0,0
+boss_a01,0,0,0,0	monster	Orc†Hero	1087,3,0,0,0
+boss_a01,0,0,0,0	monster	Angeling	1096,3,0,0,0
+boss_a01,0,0,0,0	monster	Drake	1112,3,0,0,0
+boss_a01,0,0,0,0	monster	Eddga	1115,3,0,0,0
+boss_a01,0,0,0,0	monster	Ghostring	1120,3,0,0,0
+boss_a01,0,0,0,0	monster	Maya	1147,3,0,0,0
+boss_a01,0,0,0,0	monster	Moonlight	1150,3,0,0,0
+boss_a01,0,0,0,0	monster	Pharaoh	1157,3,0,0,0
+boss_a01,0,0,0,0	monster	Phreeoni	1159,3,0,0,0
+boss_a01,0,0,0,0	monster	Orc†Lord	1190,3,0,0,0
+boss_a01,0,0,0,0	monster	Stormy†Knight	1251,3,0,0,0
+boss_a01,0,0,0,0	monster	Garm	1252,3,0,0,0
+boss_a01,0,0,0,0	monster	Dark†Lord	1272,3,0,0,0
+boss_a01,0,0,0,0	monster	Turtle†Generial	1312,3,0,0,0
+boss_a01,0,0,0,0	monster	Lord†of†Death	1373,3,0,0,0
+boss_a01,0,0,0,0	monster	Arc Angeling	1388,3,0,0,0
+boss_a01,0,0,0,0	monster	Dracula	1389,3,0,0,0
+boss_a01,0,0,0,0	monster	Dark Snake Lord	1418,3,0,0,0
+boss_a01,0,0,0,0	monster	Incantation†Samurai	1492,3,0,0,0
+boss_a01,0,0,0,0	monster	Amon Ra	1511,3,0,0,0
+boss_a01,0,0,0,0	monster	Deviling	1582,3,0,0,0
+boss_a01,0,0,0,0	monster	Tao†Gunka	1583,3,0,0,0
+boss_a01,0,0,0,0	monster	RSX-0806	1623,3,0,0,0
+boss_a01,0,0,0,0	monster	White Lady	1630,3,0,0,0
+boss_a01,0,0,0,0	monster	Egnigem Cenia	1658,3,0,0,0
+boss_a01,0,0,0,0	monster	Vesper	1685,3,0,0,0
+boss_a01,0,0,0,0	monster	Lady Tanee	1688,3,0,0,0
+boss_a01,0,0,0,0	monster	Thanatos	1708,3,0,0,0
+boss_a01,0,0,0,0	monster	Detardeurus	1719,3,0,0,0
+boss_a01,0,0,0,0	monster	Kiel D-01	1734,3,0,0,0
+boss_a01,0,0,0,0	monster	Valkyrie's†Randgris	1751,3,0,0,0
+boss_a01,0,0,0,0	monster	Gloom Under Night	1768,3,0,0,0
+boss_a01,0,0,0,0	monster	Ktullanux	1779,3,0,0,0
+boss_a01,0,0,0,0	monster	Atros	1785,3,0,0,0
+boss_a01,0,0,0,0	monster	Ifrit	1832,3,0,0,0
+boss_a01,0,0,0,0	monster	Fallen Bishop Hibram	1871,3,0,0,0
+boss_a01,0,0,0,0	monster	Beelzebub	1873,3,0,0,0
+boss_a01,0,0,0,0	monster	Gopinich	1885,3,0,0,0
+boss_a01,0,0,0,0	monster	Nidhoggr's†Shadow	2022,3,0,0,0
+boss_a01,0,0,0,0	monster	Boitata	2068,3,0,0,0
+//boss_a01,0,0,0,0	monster	Scaraba Queen	2087,3,0,0,0
+//‡æ‘Ë¡‡µ‘¡
+boss_a01,0,0,0,0	monster	Assassin Cross Eremes	1647,3,0,0,0
+boss_a01,0,0,0,0	monster	Beelzebub	1874,3,0,0,0
+boss_a01,0,0,0,0	monster	Entweihen Crothen	1957,3,0,0,0
+boss_a01,0,0,0,0	monster	Lord Knight Seyren	1646,3,0,0,0
+boss_a01,0,0,0,0	monster	Naght Sieger	1956,3,0,0,0
+boss_a01,0,0,0,0	monster	Sniper Cecil	1650,3,0,0,0
+boss_a01,0,0,0,0	monster	Whitesmith Howard	1648,3,0,0,0
+boss_a01,0,0,0,0	monster	Satan Morroc	1916,3,0,0,0
+//==============================================
+//==============================================
+boss_a02,0,0,0,0	monster	Poring	1002,100,0,0,0
+boss_a02,0,0,0,0	monster	Lunatic	1063,100,0,0,0
+
+boss_a02,0,0,0,0	monster	Osiris	1038,3,0,0,0
+boss_a02,0,0,0,0	monster	Baphomet	1039,3,0,0,0
+boss_a02,0,0,0,0	monster	Doppelganger	1046,3,0,0,0
+boss_a02,0,0,0,0	monster	Mistress	1059,3,0,0,0
+boss_a02,0,0,0,0	monster	Golden†Bug	1086,3,0,0,0
+boss_a02,0,0,0,0	monster	Orc†Hero	1087,3,0,0,0
+boss_a02,0,0,0,0	monster	Angeling	1096,3,0,0,0
+boss_a02,0,0,0,0	monster	Drake	1112,3,0,0,0
+boss_a02,0,0,0,0	monster	Eddga	1115,3,0,0,0
+boss_a02,0,0,0,0	monster	Ghostring	1120,3,0,0,0
+boss_a02,0,0,0,0	monster	Maya	1147,3,0,0,0
+boss_a02,0,0,0,0	monster	Moonlight	1150,3,0,0,0
+boss_a02,0,0,0,0	monster	Pharaoh	1157,3,0,0,0
+boss_a02,0,0,0,0	monster	Phreeoni	1159,3,0,0,0
+boss_a02,0,0,0,0	monster	Orc†Lord	1190,3,0,0,0
+boss_a02,0,0,0,0	monster	Stormy†Knight	1251,3,0,0,0
+boss_a02,0,0,0,0	monster	Garm	1252,3,0,0,0
+boss_a02,0,0,0,0	monster	Dark†Lord	1272,3,0,0,0
+boss_a02,0,0,0,0	monster	Turtle†Generial	1312,3,0,0,0
+boss_a02,0,0,0,0	monster	Lord†of†Death	1373,3,0,0,0
+boss_a02,0,0,0,0	monster	Arc Angeling	1388,3,0,0,0
+boss_a02,0,0,0,0	monster	Dracula	1389,3,0,0,0
+boss_a02,0,0,0,0	monster	Dark Snake Lord	1418,3,0,0,0
+boss_a02,0,0,0,0	monster	Incantation†Samurai	1492,3,0,0,0
+boss_a02,0,0,0,0	monster	Amon Ra	1511,3,0,0,0
+boss_a02,0,0,0,0	monster	Deviling	1582,3,0,0,0
+boss_a02,0,0,0,0	monster	Tao†Gunka	1583,3,0,0,0
+boss_a02,0,0,0,0	monster	RSX-0806	1623,3,0,0,0
+boss_a02,0,0,0,0	monster	White Lady	1630,3,0,0,0
+boss_a02,0,0,0,0	monster	Egnigem Cenia	1658,3,0,0,0
+boss_a02,0,0,0,0	monster	Vesper	1685,3,0,0,0
+boss_a02,0,0,0,0	monster	Lady Tanee	1688,3,0,0,0
+boss_a02,0,0,0,0	monster	Thanatos	1708,3,0,0,0
+boss_a02,0,0,0,0	monster	Detardeurus	1719,3,0,0,0
+boss_a02,0,0,0,0	monster	Kiel D-01	1734,3,0,0,0
+boss_a02,0,0,0,0	monster	Valkyrie's†Randgris	1751,3,0,0,0
+boss_a02,0,0,0,0	monster	Gloom Under Night	1768,3,0,0,0
+boss_a02,0,0,0,0	monster	Ktullanux	1779,3,0,0,0
+boss_a02,0,0,0,0	monster	Atros	1785,3,0,0,0
+boss_a02,0,0,0,0	monster	Ifrit	1832,3,0,0,0
+boss_a02,0,0,0,0	monster	Fallen Bishop Hibram	1871,3,0,0,0
+boss_a02,0,0,0,0	monster	Beelzebub	1873,3,0,0,0
+boss_a02,0,0,0,0	monster	Gopinich	1885,3,0,0,0
+boss_a02,0,0,0,0	monster	Nidhoggr's†Shadow	2022,3,0,0,0
+boss_a02,0,0,0,0	monster	Boitata	2068,3,0,0,0
+//boss_a02,0,0,0,0	monster	Scaraba Queen	2087,3,0,0,0
+//‡æ‘Ë¡‡µ‘¡
+boss_a02,0,0,0,0	monster	Assassin Cross Eremes	1647,3,0,0,0
+boss_a02,0,0,0,0	monster	Beelzebub	1874,3,0,0,0
+boss_a02,0,0,0,0	monster	Entweihen Crothen	1957,3,0,0,0
+boss_a02,0,0,0,0	monster	Lord Knight Seyren	1646,3,0,0,0
+boss_a02,0,0,0,0	monster	Naght Sieger	1956,3,0,0,0
+boss_a02,0,0,0,0	monster	Sniper Cecil	1650,3,0,0,0
+boss_a02,0,0,0,0	monster	Whitesmith Howard	1648,3,0,0,0
+boss_a02,0,0,0,0	monster	Satan Morroc	1916,3,0,0,0
+//==============================================
+boss_a03,0,0,0,0	monster	Poring	1002,100,0,0,0
+boss_a03,0,0,0,0	monster	Lunatic	1063,100,0,0,0
+
+boss_a03,0,0,0,0	monster	Osiris	1038,3,0,0,0
+boss_a03,0,0,0,0	monster	Baphomet	1039,3,0,0,0
+boss_a03,0,0,0,0	monster	Doppelganger	1046,3,0,0,0
+boss_a03,0,0,0,0	monster	Mistress	1059,3,0,0,0
+boss_a03,0,0,0,0	monster	Golden†Bug	1086,3,0,0,0
+boss_a03,0,0,0,0	monster	Orc†Hero	1087,3,0,0,0
+boss_a03,0,0,0,0	monster	Angeling	1096,3,0,0,0
+boss_a03,0,0,0,0	monster	Drake	1112,3,0,0,0
+boss_a03,0,0,0,0	monster	Eddga	1115,3,0,0,0
+boss_a03,0,0,0,0	monster	Ghostring	1120,3,0,0,0
+boss_a03,0,0,0,0	monster	Maya	1147,3,0,0,0
+boss_a03,0,0,0,0	monster	Moonlight	1150,3,0,0,0
+boss_a03,0,0,0,0	monster	Pharaoh	1157,3,0,0,0
+boss_a03,0,0,0,0	monster	Phreeoni	1159,3,0,0,0
+boss_a03,0,0,0,0	monster	Orc†Lord	1190,3,0,0,0
+boss_a03,0,0,0,0	monster	Stormy†Knight	1251,3,0,0,0
+boss_a03,0,0,0,0	monster	Garm	1252,3,0,0,0
+boss_a03,0,0,0,0	monster	Dark†Lord	1272,3,0,0,0
+boss_a03,0,0,0,0	monster	Turtle†Generial	1312,3,0,0,0
+boss_a03,0,0,0,0	monster	Lord†of†Death	1373,3,0,0,0
+boss_a03,0,0,0,0	monster	Arc Angeling	1388,3,0,0,0
+boss_a03,0,0,0,0	monster	Dracula	1389,3,0,0,0
+boss_a03,0,0,0,0	monster	Dark Snake Lord	1418,3,0,0,0
+boss_a03,0,0,0,0	monster	Incantation†Samurai	1492,3,0,0,0
+boss_a03,0,0,0,0	monster	Amon Ra	1511,3,0,0,0
+boss_a03,0,0,0,0	monster	Deviling	1582,3,0,0,0
+boss_a03,0,0,0,0	monster	Tao†Gunka	1583,3,0,0,0
+boss_a03,0,0,0,0	monster	RSX-0806	1623,3,0,0,0
+boss_a03,0,0,0,0	monster	White Lady	1630,3,0,0,0
+boss_a03,0,0,0,0	monster	Egnigem Cenia	1658,3,0,0,0
+boss_a03,0,0,0,0	monster	Vesper	1685,3,0,0,0
+boss_a03,0,0,0,0	monster	Lady Tanee	1688,3,0,0,0
+boss_a03,0,0,0,0	monster	Thanatos	1708,3,0,0,0
+boss_a03,0,0,0,0	monster	Detardeurus	1719,3,0,0,0
+boss_a03,0,0,0,0	monster	Kiel D-01	1734,3,0,0,0
+boss_a03,0,0,0,0	monster	Valkyrie's†Randgris	1751,3,0,0,0
+boss_a03,0,0,0,0	monster	Gloom Under Night	1768,3,0,0,0
+boss_a03,0,0,0,0	monster	Ktullanux	1779,3,0,0,0
+boss_a03,0,0,0,0	monster	Atros	1785,3,0,0,0
+boss_a03,0,0,0,0	monster	Ifrit	1832,3,0,0,0
+boss_a03,0,0,0,0	monster	Fallen Bishop Hibram	1871,3,0,0,0
+boss_a03,0,0,0,0	monster	Beelzebub	1873,3,0,0,0
+boss_a03,0,0,0,0	monster	Gopinich	1885,3,0,0,0
+boss_a03,0,0,0,0	monster	Nidhoggr's†Shadow	2022,3,0,0,0
+boss_a03,0,0,0,0	monster	Boitata	2068,3,0,0,0
+//boss_a03,0,0,0,0	monster	Scaraba Queen	2087,3,0,0,0
+//‡æ‘Ë¡‡µ‘¡
+boss_a03,0,0,0,0	monster	Assassin Cross Eremes	1647,3,0,0,0
+boss_a03,0,0,0,0	monster	Beelzebub	1874,3,0,0,0
+boss_a03,0,0,0,0	monster	Entweihen Crothen	1957,3,0,0,0
+boss_a03,0,0,0,0	monster	Lord Knight Seyren	1646,3,0,0,0
+boss_a03,0,0,0,0	monster	Naght Sieger	1956,3,0,0,0
+boss_a03,0,0,0,0	monster	Sniper Cecil	1650,3,0,0,0
+boss_a03,0,0,0,0	monster	Whitesmith Howard	1648,3,0,0,0
+boss_a03,0,0,0,0	monster	Satan Morroc	1916,3,0,0,0
+//==============================================
+//2320
+//2317
+//1399
+//2319
+//2238
+//2240
+//2236
+//2165
+//2241
+//2202
+//1980
+//2156
+//2131
+//2235
+//1502
+//2237
+//2239
+//1917

@@ -1,0 +1,296 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+-	script	Clockpage	-1,{
+end;
+OnClock0100:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock0115:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock0130:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock0145:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock0200:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock0215:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock0230:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock0245:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock0300:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock0315:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock0330:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock0345:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock0400:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock0415:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock0430:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock0445:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock0500:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock0515:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock0530:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock0545:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock0600:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock0615:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock0630:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock0645:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock0700:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock0715:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock0730:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock0745:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock0800:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock0815:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock0830:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock0845:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock0900:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock0915:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock0930:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock0945:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock1000:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock1015:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock1030:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock1045:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock1100:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock1115:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock1130:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock1145:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock1200:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock1215:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock1230:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock1245:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock1300:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock1315:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock1330:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock1345:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock1400:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock1415:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock1430:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock1445:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock1500:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock1515:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock1530:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock1545:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock1600:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock1615:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock1630:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock1645:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock1700:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock1715:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock1730:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock1745:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock1800:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock1815:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock1830:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock1845:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock1900:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock1915:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock1930:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock1945:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock2000:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock2015:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock2030:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock2045:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock2100:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock2115:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock2130:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock2145:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock2200:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock2215:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock2230:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock2245:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock2300:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock2315:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock2330:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock2345:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+OnClock0000:
+announce "สวัสดีค่ะยินดีตอนรับ Hello-Ro ขอให้มีความสุขในการเล่นนะค่ะ",0;
+end;
+OnClock0015:
+announce "FB Page สามารถติดตามได้ที่หน้าเวป www.ro-hello.com ได้ 24 ชม. นะค่ะ และ กลุ่ม Line : hello-ro",0;
+end;
+OnClock0030:
+announce "กลุ่ม Line : hello-ro มีอะไรแนะนำ หรือ ข้อเสนอแนะ ติดต่อมาได้นะค่ะ ทางเรา ยินดีทำค่ะ",0;
+end;
+OnClock0045:
+announce "พบปัญหาบัคและปัญหาต่างๆ สามารถแจ้งได้ที่ GM ในเกม หรือ Fan Page ค่ะ",0;
+end;
+}

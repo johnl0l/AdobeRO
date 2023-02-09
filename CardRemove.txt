@@ -1,0 +1,201 @@
+//==============================================
+// - Script By : M-Ro Online
+// - Script City : Thailand 
+// - Script Support Server : Hercules & rAthena
+//==============================================
+-	script	RemoveCard	-1,{
+set @cardbatzeny1,20000; //ค่าถอดการ์ด
+set @cardbatzeny2,10000; //ค่าบริการเพิ่มต่อการ์ดแต่ละใบ
+set @cardbatzeny3,1; // จำนวน Star Crumb
+set @cardbatzeny4,1; // จำนวน Yellow Gemstone
+
+set @failbatrate1,1; //อัตรา การ์ด และ Item เสียหาย ทั้งคู่
+set @failbatrate2,4; //เสียหายอย่างใดอย่างหนึ่ง
+set @failbatrate3,10; //ไม่สามารถถอดได้ แต่ Item ไม่เสียหาย
+set @failbatrate4,@failbatrate1+@failbatrate2+@failbatrate3; //ไม่สามารถถอดได้ แต่ Item ไม่เสียหายสรุปคือ โอกาสผิดพลาดเท่ากับ 15%
+
+UPGRADEROOT:
+mes "^808080[ นักถอดการ์ด ]^000000";
+mes "ข้ามีบริการใหม่ที่จะถอดการ์ดออกจากอาวุธ ";
+mes "และชุดเกราะของเจ้า";
+next;
+mes "^808080[ นักถอดการ์ด ]^000000";
+mes "ค่าบริการ [ "+ @cardbatzeny1 +" ] Zeny";
+mes "และค่าถอดการ์ดใบละ [ "+ @cardbatzeny2 +" ] Zeny";
+mes "ต้องใช้ Star Crumb [ "+ @cardbatzeny3 +" ] อัน";
+mes "และ Yellow Gems [ "+ @cardbatzeny4 +" ]  อันด้วย";
+mes "ท่านสนใจที่จะใช้บริการไหม";
+next;
+menu "น่าสนใจดี ขอข้าทำหน่อย",REMOVEMENU,"ไม่ล่ะ ขอบใจ",CLOSEOUT;
+
+REMOVEMENU:
+mes "^808080[ นักถอดการ์ด ]^000000";
+mes "เอาล่ะ ท่านต้องการถอดการ์ดจากส่วนไหน";
+next;
+menu"ไม่ล่ะ ข้าเปลี่ยนใจแล้ว",CLOSEOUT,
+getequipname(1),SLOT1,
+getequipname(2),SLOT2,
+getequipname(3),SLOT3,
+getequipname(4),SLOT4,
+getequipname(5),SLOT5,
+getequipname(6),SLOT6,
+getequipname(7),SLOT7,
+getequipname(8),SLOT8,
+getequipname(9),SLOT9,
+getequipname(10),SLOT10;
+
+SLOT1:
+set @part,1;
+goto CARDNUMCHECK;
+
+SLOT2:
+set @part,2;
+goto CARDNUMCHECK;
+
+SLOT3:
+set @part,3;
+goto CARDNUMCHECK;
+
+SLOT4:
+set @part,4;
+goto CARDNUMCHECK;
+
+SLOT5:
+set @part,5;
+goto CARDNUMCHECK;
+
+SLOT6:
+set @part,6;
+goto CARDNUMCHECK;
+
+SLOT7:
+set @part,7;
+goto CARDNUMCHECK;
+
+SLOT8:
+set @part,8;
+goto CARDNUMCHECK;
+
+SLOT9:
+set @part,9;
+goto CARDNUMCHECK;
+
+SLOT10:
+set @part,10;
+goto CARDNUMCHECK;
+
+CARDNUMCHECK:
+if(getequipcardcnt(@part) == 0) goto DENYCARDCOUNT;
+set @cardcount,getequipcardcnt(@part);
+set @cardbatzenyall, (@cardbatzeny2 * @cardcount) + @cardbatzeny1;
+mes "^808080[ นักถอดการ์ด ]^000000";
+mes "ของชิ้นนี้มีการ์ดจำนวน [ " + @cardcount + " ] ใบ";
+mes "รวมค่าบริการ [ "+ @cardbatzenyall +" ] Zeny";
+mes "ต้องใช้ Star Crumb [ "+ @cardbatzeny3 +" ] อัน";
+mes "และ Yellow Gems [ "+ @cardbatzeny4 +" ]  อัน";
+mes "ท่านยังยืนยันจะทำต่อไปหรือไม่";
+next;
+menu "ตกลง ข้ายังยืนยัน",REMOVECARDWARNING,"ไม่ดีกว่า แพงเกินไป",CLOSEOUT;
+
+REMOVECARDWARNING:
+mes "^808080[ นักถอดการ์ด ]^000000";
+mes "การทำครั้งนี้ มีโอกาสพลาดด้วยคือ";
+mes "เสียหายทั้ง การ์ดและ Item [ "+ @failbatrate1 +" ]  %";
+mes "เสียหายอย่างใดอย่างหนึ่ง [ "+ @failbatrate2 +" ]  %";
+mes "และเพียงแค่ถอดการ์ดไม่ได้ [ "+ @failbatrate3 +" ]  %";
+mes "รวมโอกาสผิดพลาดทั้งหมด [ "+ @failbatrate4 +" ]  %";
+mes "ท่านยังยืนยันหรือไม่";
+next;
+menu "ข้ายืนยันที่จะทำต่อ",-,"มีโอกาสแตกด้วยหรอ ไม่เอาแล้ว",CLOSEOUT;
+
+mes "^808080[ นักถอดการ์ด ]^000000";
+mes "ต่อไปท่านต้องเลือกว่า เสียหายบางอย่าง";
+mes "ท่านจะให้ของชิ้นไหน ไม่เสียหาย";
+next;
+menu "ถ้าเลือกได้ ข้าจะเลือกให้ Item ยังคงอยู่",PRIORITYITEM,
+"ถ้าเลือกได้ ข้าเลือกให้ Card ยังคงอยู่",PRIORITYCARD;
+
+PRIORITYITEM:
+set @failtype,1;
+goto REMOVECARD;
+
+PRIORITYCARD:
+set @failtype,2;
+goto REMOVECARD;
+
+REMOVECARD:
+mes "^808080[ นักถอดการ์ด ]^000000";
+mes "เอาล่ะ เราจะเริ่มกันแล้วนะ";
+next;
+if((Zeny < @cardbatzenyall) || (countitem(1000) < @cardbatzeny3) || (countitem(715) < @cardbatzeny4)) goto DENYMATERIAL;
+set Zeny,Zeny - @cardbatzenyall;
+delitem 1000,@cardbatzeny3;
+delitem 715,@cardbatzeny4;
+
+set @failchance,rand(100);
+set @failbatratecal1,@failbatrate1;
+set @failbatratecal2,@failbatrate1+@failbatrate2;
+set @failbatratecal3,@failbatrate1+@failbatrate2+@failbatrate3;
+
+if(@failchance < @failbatratecal1) goto FAILREMOVECARD0;
+if((@failchance < @failbatratecal2) && (@failtype == 1)) goto FAILREMOVECARD1;
+if((@failchance < @failbatratecal2) && (@failtype == 2)) goto FAILREMOVECARD2;
+if(@failchance < @failbatratecal3) goto FAILREMOVECARD3;
+
+successremovecards @part;
+mes "^808080[ นักถอดการ์ด ]^000000";
+mes "วู้ว... การถอดการ์ดสำเร็จ ขอแสดงความยินดีด้วย";
+close;
+
+FAILREMOVECARD0:
+failedremovecards @part,0;
+mes "^808080[ นักถอดการ์ด ]^000000";
+mes "โอ้...พระเจ้า การถอดการ์ดครั้งนี้ผิดพลาด";
+mes "ท่านเสียทั้งไอเท่มและการ์ด";
+mes "ข้าเสียใจด้วย";
+close;
+
+FAILREMOVECARD1:
+failedremovecards @part,1;
+mes "^808080[ นักถอดการ์ด ]^000000";
+mes "โอ้...พระเจ้า การถอดการ์ดครั้งนี้ผิดพลาด";
+mes "ท่านเสีย Card ไป แต่ Item ของท่านยังคงอยู่";
+close;
+
+FAILREMOVECARD2:
+failedremovecards @part,2;
+mes "^808080[ นักถอดการ์ด ]^000000";
+mes "โอ้...พระเจ้า การถอดการ์ดครั้งนี้ผิดพลาด";
+mes "ท่านเสีย Item ไป แต่ Card ของท่านยังคงอยู่";
+close;
+
+FAILREMOVECARD3:
+failedremovecards @part,3;
+mes "^808080[ นักถอดการ์ด ]^000000";;
+mes "โอ้...พระเจ้า การถอดการ์ดครั้งนี้ผิดพลาด";
+mes "โชคดีที่ Item และ Card ไม่เสียหาย";
+close;
+
+DENYCARDCOUNT:
+mes "^808080[ นักถอดการ์ด ]^000000";
+mes "ของชิ้นนี้ไม่มีการ์ดติดมา... เจ้าคิดจะทำอะไรน่ะ";
+close;
+
+DENYMATERIAL:
+mes "^808080[ นักถอดการ์ด ]^000000";
+mes "เจ้ามีของไม่ครบตามที่ข้าต้องการ";
+close;
+
+CLOSEOUT:
+mes "^808080[ นักถอดการ์ด ]^000000";
+mes "ไม่เป็นไร ยังรอเจ้าอยู่เหมือนเดิมนะ";
+close;
+OnInit: 
+waitingroom "บริการถอดการ์ด",0; 
+end; 
+}
+//==============================================
+//ที่ตั้งNPC
+//==============================================
+wonderworld,131,114,4	duplicate(RemoveCard)	บริการถอดการ์ด#01	756
+//==============================================

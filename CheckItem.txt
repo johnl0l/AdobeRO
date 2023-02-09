@@ -1,0 +1,21 @@
+izlude,156,141,4	script	บริการเช็คไอเทม	533,{
+	mes "สวัสดีค่ะต้องการเช็คไอเทมชิ้นไหนค่ะ";
+	mes "กรอกรหัสไอเทมได้เลยค่ะ";
+	next;
+	input .@item_id;
+	query_sql( "SELECT SUM(`amount`) FROM `inventory` WHERE `nameid` = '"+.@item_id+"';", .@inventory );
+	query_sql( "SELECT SUM(`amount`) FROM `cart_inventory` WHERE `nameid` = '"+.@item_id+"';", .@cart );
+	query_sql( "SELECT SUM(`amount`) FROM `storage` WHERE `nameid` = '"+.@item_id+"';", .@storage );
+	query_sql( "SELECT SUM(`amount`) FROM `guild_storage` WHERE `nameid` = '"+.@item_id+"';", .@g_storage );
+	mes "ชื่อไอเทม: "+getitemname(.@item_id)+" /"+.@item_id;
+	mes " ";
+	mes "ในตัวผู้เล่น: "+.@inventory+"ชิ้น";
+	mes "ในรถเข็น: "+.@cart+"ชิ้น";
+	mes "ในคลัง: "+.@storage+"ชิ้น";
+	mes "ในคลังกิล: "+.@g_storage+"ชิ้น";
+	mes "รวมทั้งหมด  = "+(.@inventory+.@cart+.@storage+.@g_storage)+"ชิ้น";
+close;
+OnInit:
+waitingroom "บริการเช็คไอเทม",0;
+end;
+}
