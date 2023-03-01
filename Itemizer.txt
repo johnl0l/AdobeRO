@@ -1,0 +1,657 @@
+//===== eAthena Script ======================================= 
+//= Itemizer
+//===== By: ================================================== 
+//= Latheesan (HeliosRO Server Admin) (C) 2009 HeliosRO.Com
+//===== Current Version: ===================================== 
+//= 1.5
+//===== Compatible With: ===================================== 
+//= Any SQL eAthena Version 
+//===== Description: ========================================= 
+//= To prevent GM Corruption, you can disable all item related
+//= commands and use this NPC to distribute Items and/or KCP.
+//===== Additional Comments: =================================
+//= v1.0 - Initial Release (Report Bugs On eAthena Board)
+//= v1.1 - Fixed A Few Typo In Script
+//= v1.2 - Fixed GM Detection Bug and Cleaned Up The Code
+//= v1.3 - Added User Menu In GM Menu
+//= v1.4 - Added New @check_online and @notify_player Config
+//= v1.5 - Added Announce Feature and code optimized
+//============================================================
+
+//===== SQL Table ============================================ 
+//= Execute This Query On Your Ragnarok Database Prior To Use.
+//= 
+//CREATE TABLE IF NOT EXISTS `itemizer` (
+//  `id` int(11) unsigned NOT NULL auto_increment,
+//  `item_id` int(11) NOT NULL,
+//  `item_amount` int(11) NOT NULL,
+//  `item_name` varchar(255) NOT NULL,
+//  `char_id` int(11) NOT NULL,
+//  `char_name` varchar(255) NOT NULL,
+//  `reason` varchar(255) NOT NULL,
+//  `by_gm` varchar(255) NOT NULL,
+//  `when` datetime NOT NULL,
+//  `for` varchar(255) NOT NULL,
+//  `collected` tinyint(1) NOT NULL,
+//  PRIMARY KEY  (`id`)
+//) ENGINE=MyISAM ;
+
+//
+// Script Interface For Event Prize NPC
+//
+prt_vilg01,124,120,4	script	Itemizer	906,{
+
+// Script Config
+set @npc$,"^008000[ Itemizer ]^000000"; // NPC Name
+
+// Advance Script Config
+set @dummy_kcp_id,123;		// Dummy Item ID Used To Identify If Collection Item == KCP
+set @check_weight,1;		// 1 == Yes | 0 == No (Check If Player Is Over Weight)
+set @min_gm_lvl,60;			// Minimum GM Level Required To "Make Item"
+set @min_eventgm_lvl,60;	// Minimum GM Level Required To "Give Item" and "Give KCP"
+set @min_item_amount,1;		// Minimum Item Amount
+set @max_item_amount,1000;	// Maximum Item Amount
+set @min_kcp_amount,1;		// Minimum KCP Amount
+set @max_kcp_amount,10;		// Maximum KCP Amount
+set @check_online,1;		// Check If Target Player Is Online Before Giving Item
+set @notify_player,1;		// 1 == Yes | 0 == No (Notify Player When GM Gives Them Item)
+set @allow_announce,1;		// 1 == Yes | 0 == No (Let GM Choose If He/She Wants To Announce)
+setarray @announce_loc$,	// Possible Announce Locations
+			"bc_all",
+			"bc_map",
+			"bc_area"; 
+
+// Main Script
+L_Main:
+	mes @npc$;
+	mes " ";
+	if (getgmlevel() > @min_gm_lvl)
+	{
+		mes "Hello GM "+ strcharinfo(0) +".";
+		mes " ";
+		mes "What would you like today?";
+		switch(select("Make Item","Give Item","Give KCP","Player Menu","Nothing"))
+		{
+			// Make Item
+			case 1: goto L_EP_MakeItem; break;
+			
+			// Give Item
+			case 2: goto L_EP_GiveItem; break;
+			
+			// Give KCP
+			case 3: goto L_EP_GiveKCP; break;
+			
+			// Player Menu
+			case 4: goto L_EP_Collect; break;
+			
+			// Nothing
+			default: close; break;
+		}
+	}
+	else
+	{
+		mes "Hello, what would you like today?";
+		switch(select("Collect Event Prize","Collection Log","Nothing"))
+		{
+			// Collect Event Prize
+			case 1: goto L_EP_Collect; break;
+			
+			// Collection Log
+			case 2: goto L_EP_CLog; break;
+			
+			// Nothing
+			default: close; break;
+		}
+	}
+
+// Make Item [GM]
+L_EP_MakeItem:
+	next;
+	mes @npc$;
+	mes " ";
+	mes "What item would you like?";
+	mes "Enter the ID.";
+	input @ep_item_id;
+	next;
+	if (getitemname(@ep_item_id) == "" || getitemname(@ep_item_id) == "null")
+	{
+		mes @npc$;
+		mes " ";
+		mes "^CC0000Sorry, "+ @ep_item_id +" is an invalid item ID.^000000";
+		close;
+	}
+	mes @npc$;
+	mes " ";
+	mes "Okay, how many "+ getitemname(@ep_item_id) +" do you want?";
+	mes " ";
+	mes "Min "+ @min_item_amount +" and Max "+ @max_item_amount +".";
+	input @ep_item_count;
+	next;
+	if (@ep_item_count < @min_item_amount || @ep_item_count > @max_item_amount)
+	{
+		mes @npc$;
+		mes " ";
+		mes "^CC0000Sorry, "+ @ep_item_count +" is an invalid amount.";
+		mes " ";
+		mes "Min "+ @min_item_amount +" and Max "+ @max_item_amount +".^000000";
+		close;
+	}
+	if (@check_weight && checkweight(@ep_item_id, @ep_item_count) == 0)
+	{
+		mes @npc$;
+		mes " ";
+		mes "^CC0000Sorry, you cannot hold "+ @ep_item_count +"x "+ getitemname(@ep_item_id) +".";
+		mes " ";
+		mes "Your inventory is full.^000000";
+		close;
+	}
+	set @when$,callfunc("makeTimestamp");
+	set @nb,query_sql("INSERT INTO `itemizer` VALUES(NULL,'"+ escape_sql(@ep_item_id) +"','"+ escape_sql(@ep_item_count) +"','"+ escape_sql(getitemname(@ep_item_id)) +"','"+ escape_sql(getcharid(0)) +"','"+ escape_sql(strcharinfo(0)) +"','N/A','[GM] "+ escape_sql(strcharinfo(0)) +"','"+ escape_sql(@when$) +"','gm','1')");
+	getitem @ep_item_id,@ep_item_count;
+	mes @npc$;
+	mes " ";
+	mes "All done ~";	
+	close;
+
+// Give Item [GM]
+L_EP_GiveItem:
+	next;
+	mes @npc$;
+	mes " ";
+	if (getgmlevel() < @min_eventgm_lvl)
+	{
+		mes "^CC0000Access Denied!";
+		mes " ";
+		mes "You must be atleast level "+ @min_eventgm_lvl +" GM.^000000";
+		close;
+	}
+	mes "Enter the ID of the Item you would like to give a player.";
+	mes " ";
+	mes "E.g. ^0000FFID 512^000000 == ^008000Apple^000000";
+	input @ep_item_id;
+	next;
+	if (getitemname(@ep_item_id) == "" || getitemname(@ep_item_id) == "null")
+	{
+		mes @npc$;
+		mes " ";
+		mes "^CC0000Sorry, "+ @ep_item_id +" is an invalid item ID.^000000";
+		close;
+	}
+	mes @npc$;
+	mes " ";
+	mes "Okay, how many "+ getitemname(@ep_item_id) +" do you want to give a player?";
+	mes " ";
+	mes "Min "+ @min_item_amount +" and Max "+ @max_item_amount +".";
+	input @ep_item_count;
+	next;
+	if (@ep_item_count < @min_item_amount || @ep_item_count > @max_item_amount)
+	{
+		mes @npc$;
+		mes " ";
+		mes "^CC0000Sorry, "+ @ep_item_count +" is an invalid amount.";
+		mes " ";
+		mes "Min "+ @min_item_amount +" and Max "+ @max_item_amount +".^000000";
+		close;
+	}
+	mes @npc$;
+	mes " ";
+	mes "Okay, who do you want to give "+ @ep_item_count +"x "+ getitemname(@ep_item_id) +"?";
+	mes " ";
+	mes "Enter player name"+ (@check_online ? " (must be online)." : " .");
+	input @ep_char_name$;
+	next;
+	set @ep_char_id,getcharid(0,@ep_char_name$);
+	if (@check_online && !isloggedin(getcharid(3,@ep_char_name$)))
+	{
+		mes @npc$;
+		mes " ";
+		mes "^CC0000Sorry, "+ @ep_char_name$ +" is invalid.";
+		mes " ";
+		mes "This player either doesn't exist or s/he is not online now.^000000";
+		close;
+	}
+	mes @npc$;
+	mes " ";
+	mes "Now, enter the reason for giving "+ @ep_item_count +"x "+ getitemname(@ep_item_id) +" to "+ @ep_char_name$ +".";
+	input @ep_reason$;
+	next;
+	if (@ep_reason$ == "")
+	{
+		mes @npc$;
+		mes " ";
+		mes "^CC0000Sorry, that is not a valid reason.^000000";
+		close;
+	}
+	if (@allow_announce)
+	{
+		mes @npc$;
+		mes " ";
+		mes "Do you want to announce the following message?";
+		mes " ";
+		set @anounce_msg$,"[GM] "+ strcharinfo(0) +" Gave "+ @ep_item_count +"x "+ getitemname(@ep_item_id) +" to "+ @ep_char_name$ +". Reason - "+ @ep_reason$;
+		mes @anounce_msg$;
+		if (select("Yes:No") == 1) { set @do_announce,1; } else { set @do_announce,0; }
+		next;
+		if (@do_announce)
+		{
+			mes @npc$;
+			mes " ";
+			mes "Where would you like to announce this message?";
+			mes " ";
+			mes @anounce_msg$;
+			set @options$,"";
+			for (set @i,0; @i < getarraysize(@announce_loc$); set @i,@i+1)
+			{
+				if (@announce_loc$[@i] == "bc_all") {
+					set @options$,@options$+"Server Wide";
+				} else if (@announce_loc$[@i] == "bc_map") {
+					set @options$,@options$+"Everyone In The Same Map";
+				} else if (@announce_loc$[@i] == "bc_area") {
+					set @options$,@options$+"Everyone Near You";
+				}
+				if (@i != (getarraysize(@announce_loc$) - 1)) { set @options$,@options$+":"; }
+			}
+			set @choice,select(@options$);
+			set @a_loc$,@announce_loc$[@choice];
+			next;
+			mes @npc$;
+			mes " ";
+			mes "What color do you want to announce in?";
+			if (select("Yello:Blue") == 1) { set @a_color$,"bc_yellow"; } else { set @a_color$,"bc_blue"; }
+			next;
+		}
+	}
+	mes @npc$;
+	mes " ";
+	mes "Is this correct?";
+	mes " ";
+	mes "Give ^0000FF"+ @ep_item_count +"x^000000 ^008000"+ getitemname(@ep_item_id) +"^000000 to ^CC0000"+ @ep_char_name$ +"^000000.";
+	mes " ";
+	mes "Reason : "+ @ep_reason$;
+	if (select("Yes:No") == 1)
+	{
+		next;
+		set @when$,callfunc("makeTimestamp");
+		set @nb,query_sql("INSERT INTO `itemizer` VALUES(NULL,'"+ escape_sql(@ep_item_id) +"','"+ escape_sql(@ep_item_count) +"','"+ escape_sql(getitemname(@ep_item_id)) +"','"+ escape_sql(@ep_char_id) +"','"+ escape_sql(@ep_char_name$) +"','"+ escape_sql(@ep_reason$) +"','[GM] "+ escape_sql(strcharinfo(0)) +"','"+ escape_sql(@when$) +"','player','0')");
+		mes @npc$;
+		mes " ";
+		mes "All Done~";
+		close2;
+		if (@notify_player) { message @ep_char_name$,"[GM] "+ strcharinfo(0) +" Has Given You "+ @ep_item_count +"x "+ getitemname(@ep_item_id) +"."; }
+		if (@do_announce)
+		{
+			if (@a_color$ == "bc_yellow")
+			{
+				if (@a_loc$ == "bc_all") {
+					announce @anounce_msg$,bc_yellow|bc_all;
+				} else if (@a_loc$ == "bc_map") {
+					announce @anounce_msg$,bc_yellow|bc_map;
+				} else {
+					announce @anounce_msg$,bc_yellow|bc_area;
+				}
+			}
+			else
+			{
+				if (@a_loc$ == "bc_all") {
+					announce @anounce_msg$,bc_blue|bc_all;
+				} else if (@a_loc$ == "bc_map") {
+					announce @anounce_msg$,bc_blue|bc_map;
+				} else {
+					announce @anounce_msg$,bc_blue|bc_area;
+				}
+			}
+		}
+		end;
+	}
+	close;
+
+// Give KCP [GM]
+L_EP_GiveKCP:
+	next;
+	mes @npc$;
+	mes " ";
+	if (getgmlevel() < @min_eventgm_lvl)
+	{
+		mes "^CC0000Access Denied!";
+		mes " ";
+		mes "You must be atleast level "+ @min_eventgm_lvl +" GM.^000000";
+		close;
+	}
+	mes "Okay, how many KCP would you like to give?";
+	mes " ";
+	mes "Min "+ @min_kcp_amount +" and Max "+ @max_kcp_amount +".";
+	input @ep_kcp_count;
+	next;
+	if (@ep_kcp_count < @min_kcp_amount || @ep_kcp_count > @max_kcp_amount)
+	{
+		mes @npc$;
+		mes " ";
+		mes "^CC0000Sorry, "+ @ep_kcp_count +" is an invalid amount.";
+		mes " ";
+		mes "Min "+ @min_kcp_amount +" and Max "+ @max_kcp_amount +".^000000";
+		close;
+	}
+	mes @npc$;
+	mes " ";
+	mes "Okay, who do you want to give "+ @ep_kcp_count +" KCP?";
+	mes " ";
+	mes "Enter player name"+ (@check_online ? " (must be online)." : " .");
+	input @ep_char_name$;
+	next;
+	set @ep_char_id,getcharid(0,@ep_char_name$);
+	if (@check_online && !isloggedin(getcharid(3,@ep_char_name$)))
+	{
+		mes @npc$;
+		mes " ";
+		mes "^CC0000Sorry, "+ @ep_char_name$ +" is invalid.";
+		mes " ";
+		mes "This player either doesn't exist or s/he is not online now.^000000";
+		close;
+	}
+	mes @npc$;
+	mes " ";
+	mes "Now, enter the reason for giving "+ @ep_kcp_count +" KCP to "+ @ep_char_name$ +".";
+	input @ep_reason$;
+	next;
+	if (@ep_reason$ == "")
+	{
+		mes @npc$;
+		mes " ";
+		mes "^CC0000Sorry, that is not a valid reason.^000000";
+		close;
+	}
+	if (@allow_announce)
+	{
+		mes @npc$;
+		mes " ";
+		mes "Do you want to announce the following message?";
+		mes " ";
+		set @anounce_msg$,"[GM] "+ strcharinfo(0) +" Gave "+ @ep_kcp_count +"x Kafra Credit Point (KCP) to "+ @ep_char_name$ +". Reason - "+ @ep_reason$;
+		mes @anounce_msg$;
+		if (select("Yes:No") == 1) { set @do_announce,1; } else { set @do_announce,0; }
+		next;
+		if (@do_announce)
+		{
+			mes @npc$;
+			mes " ";
+			mes "Where would you like to announce this message?";
+			mes " ";
+			mes @anounce_msg$;
+			set @options$,"";
+			for (set @i,0; @i < getarraysize(@announce_loc$); set @i,@i+1)
+			{
+				if (@announce_loc$[@i] == "bc_all") {
+					set @options$,@options$+"Server Wide";
+				} else if (@announce_loc$[@i] == "bc_map") {
+					set @options$,@options$+"Everyone In The Same Map";
+				} else if (@announce_loc$[@i] == "bc_area") {
+					set @options$,@options$+"Everyone Near You";
+				}
+				if (@i != (getarraysize(@announce_loc$) - 1)) { set @options$,@options$+":"; }
+			}
+			set @choice,select(@options$);
+			set @a_loc$,@announce_loc$[@choice];
+			next;
+			mes @npc$;
+			mes " ";
+			mes "What color do you want to announce in?";
+			if (select("Yello:Blue") == 1) { set @a_color$,"bc_yellow"; } else { set @a_color$,"bc_blue"; }
+			next;
+		}
+	}
+	mes @npc$;
+	mes " ";
+	mes "Is this correct?";
+	mes " ";
+	mes "Give ^0000FF"+ @ep_kcp_count +"^000000 ^008000KCP^000000 to ^CC0000"+ @ep_char_name$ +"^000000.";
+	mes " ";
+	mes "Reason : "+ @ep_reason$;
+	if (select("Yes:No") == 1)
+	{
+		next;
+		set @when,callfunc("makeTimestamp");
+		set @nb,query_sql("INSERT INTO `itemizer` VALUES(NULL,'"+ @dummy_kcp_id +"','"+ @ep_kcp_count +"','Kafra Credit Point (KCP)','"+ @ep_char_id +"','"+ @ep_char_name$ +"','"+ @ep_reason$ +"','[GM] "+ strcharinfo(0) +"','"+ @when +"','player','0')");
+		mes @npc$;
+		mes " ";
+		mes "All Done~";
+		close2;
+		if (@notify_player) { message @ep_char_name$,"[GM] "+ strcharinfo(0) +" Has Given You "+ @ep_kcp_count +" Kafra Credit Point (KCP)."; }
+		if (@do_announce)
+		{
+			if (@a_color$ == "bc_yellow")
+			{
+				if (@a_loc$ == "bc_all") {
+					announce @anounce_msg$,bc_yellow|bc_all;
+				} else if (@a_loc$ == "bc_map") {
+					announce @anounce_msg$,bc_yellow|bc_map;
+				} else {
+					announce @anounce_msg$,bc_yellow|bc_area;
+				}
+			}
+			else
+			{
+				if (@a_loc$ == "bc_all") {
+					announce @anounce_msg$,bc_blue|bc_all;
+				} else if (@a_loc$ == "bc_map") {
+					announce @anounce_msg$,bc_blue|bc_map;
+				} else {
+					announce @anounce_msg$,bc_blue|bc_area;
+				}
+			}
+		}
+		end;
+	}
+	close;
+
+// Collect Event Prize (Part 1) [Player]
+L_EP_Collect:
+	next;
+	mes @npc$;
+	mes " ";
+	mes "Would you like to check if any item is waiting to be collected?";
+	if (select("Yes Please:No Thanks") == 1)
+	{
+		next;
+		if (getarraysize(@db_id))
+		{
+			deletearray @db_id,127;
+			deletearray @item_id,127;
+			deletearray @item_name$,127;
+			deletearray @item_amount,127;
+			deletearray @reason$,127;
+			deletearray @by_gm$,127;
+		}
+		set @result,query_sql("SELECT `id`,`item_id`,`item_name`,`item_amount`,`reason`,`by_gm` FROM `itemizer` WHERE (`char_id` = '"+ getcharid(0) +"' AND `for` = 'player' AND `collected` = 0) LIMIT 127",
+							  @db_id,
+							  @item_id,
+							  @item_name$,
+							  @item_amount,
+							  @reason$,
+							  @by_gm$);
+		if (!@result)
+		{
+			mes @npc$;
+			mes " ";
+			mes "^CC0000No items are waiting to be collected by you.^000000";
+			close;
+		}
+		else
+		{
+			goto L_EP_C_Final;
+		}
+	}
+	close;
+
+// Collect Event Prize (Part 2) [Player]
+L_EP_C_Final:
+	set @options$,"";
+	for (set @i,0; @i < @result; set @i,@i+1)
+	{
+		set @options$,@options$+@item_amount[@i] +"x "+@item_name$[@i]+":";
+	}
+	mes @npc$;
+	mes " ";
+	mes "Here is a list of item(s) waiting to be collected by you.";
+	mes " ";
+	mes "Pick the item you want to collect now.";
+	set @choice,select(@options$) - 1;
+	next;
+	mes @npc$;
+	mes " ";
+	if (@item_id[@choice] != @dummy_kcp_id) { mes "ID - "+ @item_id[@choice]; }
+	mes "Name - "+ @item_name$[@choice];
+	mes "Amount - "+ @item_amount[@choice] +"x";
+	mes "By - "+ @by_gm$[@choice];
+	mes " ";
+	mes "Reason - "+ @reason$[@choice];
+	if (select("Collect Now:Collect Later") == 1)
+	{
+		next;
+		if (@item_id[@choice] != @dummy_kcp_id)
+		{
+			if (@check_weight && checkweight(@item_id[@choice], @item_amount[@choice]) == 0)
+			{
+				mes @npc$;
+				mes " ";
+				mes "^CC0000Sorry, you cannot hold "+ @item_amount[@choice] +"x "+ @item_name$[@choice] +".";
+				mes " ";
+				mes "Your inventory is full.^000000";
+				close;
+			}
+		}
+		set @nb,query_sql("UPDATE `itemizer` SET `collected` = 1 WHERE (`id` = '"+ @db_id[@choice] +"') LIMIT 1");
+		if (@item_id[@choice] != @dummy_kcp_id)
+		{
+			getitem @item_id[@choice],@item_amount[@choice];
+		}
+		else
+		{
+			set #CASHPOINTS,(#CASHPOINTS + @item_amount[@choice]);
+		}
+		set @result,(@result - 1);
+		deletearray @db_id[@choice],1;
+		deletearray @item_id[@choice],1;
+		deletearray @item_name$[@choice],1;
+		deletearray @item_amount[@choice],1;
+		deletearray @reason$[@choice],1;
+		deletearray @by_gm$[@choice],1;
+		goto L_EP_C_Final;
+	}
+	else
+	{
+		next;
+		goto L_EP_C_Final;
+	}
+
+// Collection Log [Player]
+L_EP_CLog:
+	next;
+	mes @npc$;
+	mes " ";
+	if (getarraysize(@item_name$))
+	{
+		deletearray @item_name$,127;
+		deletearray @item_amount,127;
+		deletearray @reason$,127;
+		deletearray @by_gm$,127;
+		deletearray @when$,127;
+	}
+	if (!@offset){ set @offset,0; }
+	if (!@rows_per_page) { set @rows_per_page,10; }
+	set @result,query_sql("SELECT `item_name`,`item_amount`,`reason`,`by_gm`,`when` FROM `itemizer` WHERE (`char_id` = '"+ getcharid(0) +"' AND `for` = 'player' AND `collected` = 1) ORDER BY `when` DESC LIMIT "+ @offset +","+ @rows_per_page,
+				@item_name$,
+				@item_amount,
+				@reason$,
+				@by_gm$,
+				@when$);
+	if(!@result)
+	{
+		if (@offset == 10) {
+			mes "^CC0000You have not collected any items from me yet.^000000";
+		} else {
+			mes "^CC0000Sorry, there is no more data.^000000";
+		}
+		close2;
+		if (@offset) { set @offset,0; }
+		end;
+	}
+	else
+	{
+		for (set @i,0; @i < @result; set @i,@i+1)
+		{
+			mes "^0000FF"+ @item_amount[@i] +"x^000000 ^008000"+ @item_name$[@i] +"^000000";
+			mes "Reason - "+ @reason$[@i];
+			mes "By - "+ @by_gm$[@i];
+			mes "When - "+ @when$[@i];
+			if (@i != (@result - 1)) { mes " "; }
+		}
+		set @offset,(@offset + @rows_per_page);
+		if (select("Next "+ @rows_per_page +" Logs:Cancel") == 2)
+		{
+			close2;
+			if (@offset) { set @offset,0; }
+			end;
+		}
+		goto L_EP_CLog;
+	}
+
+}
+
+//
+// Func To Make MySQL Friendly Timestamp
+//
+function	script	makeTimestamp	{
+
+// Get Current Date & Time Variables
+set @curYear,gettime(7);
+set @curMonth,gettime(6);
+set @curDay,gettime(5);
+set @curHour,gettime(3);
+set @curMinute,gettime(2);
+set @curSecond,gettime(1);
+
+// Start A New Timestamp Variable
+set @timestamp$,"";
+
+// MySQL Timestamp Friendly :: Year
+set @timestamp$,@timestamp$+@curYear+"-";
+
+// MySQL Timestamp Friendly :: Month
+if (@curMonth <= 9) {
+	set @timestamp$,@timestamp$+"0"+@curMonth+"-";
+} else {
+	set @timestamp$,@timestamp$+@curMonth+"-";
+}
+
+// MySQL Timestamp Friendly :: Day
+if (@curDay <= 9) {
+	set @timestamp$,@timestamp$+"0"+@curDay+" ";
+} else {
+	set @timestamp$,@timestamp$+@curDay+" ";
+}
+
+// MySQL Timestamp Friendly :: Hour
+if (@curHour <= 9) {
+	set @timestamp$,@timestamp$+"0"+@curHour+":";
+} else {
+	set @timestamp$,@timestamp$+@curHour+":";
+}
+
+// MySQL Timestamp Friendly :: Minute
+if (@curMinute <= 9) {
+	set @timestamp$,@timestamp$+"0"+@curMinute+":";
+} else {
+	set @timestamp$,@timestamp$+@curMinute+":";
+}
+
+// MySQL Timestamp Friendly :: Second
+if (@curSecond <= 9) {
+	set @timestamp$,@timestamp$+"0"+@curSecond;
+} else {
+	set @timestamp$,@timestamp$+@curSecond;
+}
+
+// Return MySQL Friendly Timestamp
+return @timestamp$;
+
+}
